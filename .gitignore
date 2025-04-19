@@ -31,8 +31,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# environment files
+.env.local
+/apps/web/.env.local
 
 # vercel
 .vercel
@@ -42,4 +43,5 @@ yarn-error.log*
 next-env.d.ts
 
 # supabase
-/supabase/.temp
+# ignore Supabase CLI temp files under packages/db
+/packages/db/supabase/.temp
