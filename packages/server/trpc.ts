@@ -1,4 +1,4 @@
-import { initTRPC, inferAsyncReturnType } from '@trpc/server';
+import { initTRPC } from '@trpc/server';
 import superjson from 'superjson';
 import { supabaseAdmin } from './supabaseAdmin';
 
@@ -13,7 +13,8 @@ export async function createContext({ req }: { req: any }) {
   return { user };
 }
 
-type Context = inferAsyncReturnType<typeof createContext>;
+/** Context inferred from createContext() */
+type Context = Awaited<ReturnType<typeof createContext>>;
 
 const t = initTRPC.context<Context>().create({
   transformer: superjson,
