@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "next dev apps/web --turbopack",
+    "build": "next build apps/web",
+    "start": "next start apps/web",
+    "lint": "next lint apps/web"
   },
   "dependencies": {
     "@shadcn/ui": "^0.0.4",
