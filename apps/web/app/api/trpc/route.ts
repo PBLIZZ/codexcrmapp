@@ -1,16 +1,26 @@
-import { createNextRouteHandler } from '@trpc/server/adapters/next';
-import superjson from 'superjson';
-import { appRouter } from '../../../../../packages/server/routers';
-import { createContext } from '../../../../../packages/server/trpc';
+import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
+
+// Use dynamic imports to correctly reference the server packages
+// This approach works better with monorepo setups where path aliases might not be properly configured
+import { appRouter } from '../../../../packages/server/routers/client';
+import { createContext } from '../../../../packages/server/trpc';
 
 /**
- * Next.js Route Handler for tRPC
+ * Next.js App Router Route Handler for tRPC
  */
-export const GET = handler;
-export const POST = handler;
+const handler = async (req: Request) => {
+  return fetchRequestHandler({
+    endpoint: '/api/trpc',
+    req,
+    router: appRouter,
+    createContext: () => createContext({ req }),
+    onError: 
+      process.env.NODE_ENV === 'development'
+        ? ({ path, error }: { path: string | undefined; error: Error }) => {
+            console.error(`❌ tRPC failed on ${path ?? '<no-path>'}: ${error.message}`);
+          }
+        : undefined,
+  });
+};
 
-const handler = createNextRouteHandler({
-  router: appRouter,
-  createContext,
-  transformer: superjson,
-});
+export { handler as GET, handler as POST };

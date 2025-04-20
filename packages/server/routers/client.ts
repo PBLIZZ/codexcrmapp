@@ -1,9 +1,13 @@
 import { z } from 'zod';
-import { router, publicProcedure } from '../trpc';
+import { router, procedure } from '../trpc';
 import { supabaseAdmin } from '../supabaseAdmin';
-
-export const clientRouter = router({
-  list: publicProcedure.query(async ({ ctx }) => {
+    
+export const appRouter = router({
+  list: procedure.query(async ({ ctx }) => {
+    if (!ctx.user) {
+      throw new Error('Unauthorized: User not authenticated');
+    }
+    // TypeScript now knows ctx.user is not null, but we need to ensure it has the right properties
     const { data, error } = await supabaseAdmin
       .from('clients')
       .select('*')
@@ -13,7 +17,7 @@ export const clientRouter = router({
     return data;
   }),
 
-  upsert: publicProcedure
+  upsert: procedure
     .input(
       z.object({
         id: z.number().optional(),
@@ -23,6 +27,10 @@ export const clientRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
+      if (!ctx.user) {
+        throw new Error('Unauthorized: User not authenticated');
+      }
+      // After null check, TypeScript knows ctx.user is not null
       const { data, error } = await supabaseAdmin
         .from('clients')
         .upsert({ ...input, user_id: ctx.user.id })
