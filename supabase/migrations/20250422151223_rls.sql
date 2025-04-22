@@ -7,15 +7,15 @@
 -- NOTE: auth.users.id is UUID, so we use uuid here.
 -- If you keep bigint PKs for data tables, that’s OK; the owner column is *still* uuid.
 
-ALTER TABLE clients              ADD COLUMN user_id uuid NOT NULL DEFAULT auth.uid();
-ALTER TABLE services             ADD COLUMN user_id uuid NOT NULL DEFAULT auth.uid();
-ALTER TABLE programs             ADD COLUMN user_id uuid NOT NULL DEFAULT auth.uid();
-ALTER TABLE sessions             ADD COLUMN user_id uuid NOT NULL DEFAULT auth.uid();
-ALTER TABLE session_attendees    ADD COLUMN user_id uuid NOT NULL DEFAULT auth.uid();
-ALTER TABLE program_enrollments  ADD COLUMN user_id uuid NOT NULL DEFAULT auth.uid();
-ALTER TABLE payments             ADD COLUMN user_id uuid NOT NULL DEFAULT auth.uid();
-ALTER TABLE follow_ups           ADD COLUMN user_id uuid NOT NULL DEFAULT auth.uid();
-ALTER TABLE notes                ADD COLUMN user_id uuid NOT NULL DEFAULT auth.uid();
+ALTER TABLE clients              ADD COLUMN IF NOT EXISTS user_id uuid NOT NULL DEFAULT auth.uid();
+ALTER TABLE services             ADD COLUMN IF NOT EXISTS user_id uuid NOT NULL DEFAULT auth.uid();
+ALTER TABLE programs             ADD COLUMN IF NOT EXISTS user_id uuid NOT NULL DEFAULT auth.uid();
+ALTER TABLE sessions             ADD COLUMN IF NOT EXISTS user_id uuid NOT NULL DEFAULT auth.uid();
+ALTER TABLE session_attendees    ADD COLUMN IF NOT EXISTS user_id uuid NOT NULL DEFAULT auth.uid();
+ALTER TABLE program_enrollments  ADD COLUMN IF NOT EXISTS user_id uuid NOT NULL DEFAULT auth.uid();
+ALTER TABLE payments             ADD COLUMN IF NOT EXISTS user_id uuid NOT NULL DEFAULT auth.uid();
+ALTER TABLE follow_ups           ADD COLUMN IF NOT EXISTS user_id uuid NOT NULL DEFAULT auth.uid();
+ALTER TABLE notes                ADD COLUMN IF NOT EXISTS user_id uuid NOT NULL DEFAULT auth.uid();
 
 -- (Optional but recommended)
 -- Add FK back to auth.users for referential integrity
