@@ -32,6 +32,7 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # environment files
+.env    
 .env.local
 /apps/web/.env.local
 
@@ -45,3 +46,4 @@ next-env.d.ts
 # supabase
 # ignore Supabase CLI temp files under packages/db
 /packages/db/supabase/.temp
+.env
