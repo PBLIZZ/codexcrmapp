@@ -2,8 +2,8 @@ import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 
 // Use dynamic imports to correctly reference the server packages
 // This approach works better with monorepo setups where path aliases might not be properly configured
-import { appRouter } from '../../../../packages/server/routers/client';
-import { createContext } from '../../../../packages/server/trpc';
+import { appRouter } from '../../../../../packages/server/routers/client';
+import { createContext } from '../../../../../packages/server/trpc';
 
 /**
  * Next.js App Router Route Handler for tRPC

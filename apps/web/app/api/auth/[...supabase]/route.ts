@@ -1,5 +1,5 @@
-// /Users/peterjamesblizzard/projects/codexcrmapp/shadcn-supabase-app/apps/web/app/api/auth/[...supabase]/route.ts
-import { createServerClient, type CookieOptions } from '@supabase/ssr';
+// /Users/peterjamesblizzard/projects/codexcrmapp/apps/web/app/api/auth/[...supabase]/route.ts
+import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { NextResponse, type NextRequest } from 'next/server';
 
@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
   const next = searchParams.get('next') ?? '/'; // Default redirect to home page
 
   if (code) {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -21,12 +21,6 @@ export async function GET(request: NextRequest) {
         cookies: {
           get(name: string) {
             return cookieStore.get(name)?.value;
-          },
-          set(name: string, value: string, options: CookieOptions) {
-            cookieStore.set({ name, value, ...options });
-          },
-          remove(name: string, options: CookieOptions) {
-            cookieStore.delete({ name, ...options });
           },
         },
       }

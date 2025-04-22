@@ -3,11 +3,11 @@ import { trpc } from "@/lib/trpc";
 import { useState } from "react";
 
 export default function ClientsPage() {
-  const { data: clients, isLoading } = trpc.client.list.useQuery();
-  const utils = trpc.useContext();
-  const mutation = trpc.client.upsert.useMutation({
+  const { data: clients, isLoading } = trpc.list.useQuery();
+  const utils = trpc.useUtils();
+  const mutation = trpc.upsert.useMutation({
     async onSuccess() {
-      await utils.client.list.invalidate();
+      await utils.list.invalidate();
       setForm({ id: undefined, first_name: "", last_name: "", email: "" });
     },
   });
@@ -64,9 +64,9 @@ export default function ClientsPage() {
         <button
           type="submit"
           className="bg-blue-600 text-white rounded p-2 mt-2"
-          disabled={mutation.isLoading}
+          disabled={mutation.status === 'pending'}
         >
-          {mutation.isLoading ? 'Saving...' : 'Add Client'}
+          {mutation.status === 'pending' ? 'Saving...' : 'Add Client'}
         </button>
       </form>
     </div>

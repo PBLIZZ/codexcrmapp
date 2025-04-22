@@ -7,7 +7,7 @@ import { trpc } from '../lib/trpc';
  * Home page: tests the tRPC client.list query
  */
 export default function Page() {
-  const { data, isLoading, error } = trpc.client.list.useQuery();
+  const { data, isLoading, error } = trpc.list.useQuery();
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
