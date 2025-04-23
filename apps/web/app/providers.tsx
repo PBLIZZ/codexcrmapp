@@ -8,9 +8,8 @@ import superjson from 'superjson';
 // Import the actual type from the package for tRPC
 import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
 
-// Import the router from the server package using relative path
-// since path aliases might not be configured to reach into packages directory
-import { appRouter } from '../../../packages/server/src/routers/client';
+// Import the router from the server package using the correct path alias
+import { appRouter } from '@codexcrm/server/src/root';
 
 // Import the tRPC React hook creator
 import { createTRPCReact } from '@trpc/react-query';
@@ -29,23 +28,29 @@ export type RouterOutputs = inferRouterOutputs<AppRouter>;
 function getBaseUrl() {
   if (typeof window !== 'undefined') return '';
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-  return `http://localhost:${process.env.PORT ?? 3000}`;
+  return 'http://localhost:3000';
 }
 
 /**
- * Client-side providers wrapper for tRPC and React Query
+ * Provider component for tRPC and React Query
  */
 export function Providers({ children }: { children: React.ReactNode }) {
   // Create React Query client once
-  const [queryClient] = React.useState(() => new QueryClient());
-  
-  // Create tRPC client once
+  const [queryClient] = React.useState(() => new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+      },
+    },
+  }));
+
+  // Create tRPC client once - for tRPC v10 with TanStack Query v4
   const [trpcClient] = React.useState(() => {
     return trpc.createClient({
+      transformer: superjson,
       links: [
         httpBatchLink({
           url: `${getBaseUrl()}/api/trpc`,
-          transformer: superjson,
         }),
       ],
     });

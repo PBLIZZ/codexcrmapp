@@ -3,13 +3,19 @@ import { trpc } from "@/lib/trpc";
 import { useState } from "react";
 
 export default function ClientsPage() {
-  const { data: clients, isLoading } = trpc.list.useQuery();
-  const utils = trpc.useUtils();
-  const mutation = trpc.upsert.useMutation({
+  const { data: clients, isLoading } = trpc.clients.list.useQuery();
+  // We're using refetch instead of utils.invalidate
+  const mutation = trpc.clients.upsert.useMutation({
     async onSuccess() {
-      await utils.list.invalidate();
+      // Refetch the query instead of using invalidate
+      await refetch();
       setForm({ id: undefined, first_name: "", last_name: "", email: "" });
     },
+  });
+  
+  // Add refetch function from the query
+  const { refetch } = trpc.clients.list.useQuery(undefined, {
+    enabled: false, // Don't run automatically since we already have the data
   });
   const [form, setForm] = useState({
     id: undefined as number | undefined,
@@ -64,9 +70,9 @@ export default function ClientsPage() {
         <button
           type="submit"
           className="bg-blue-600 text-white rounded p-2 mt-2"
-          disabled={mutation.status === 'pending'}
+          disabled={mutation.status === 'loading'}
         >
-          {mutation.status === 'pending' ? 'Saving...' : 'Add Client'}
+          {mutation.status === 'loading' ? 'Saving...' : 'Add Client'}
         </button>
       </form>
     </div>

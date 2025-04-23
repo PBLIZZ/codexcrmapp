@@ -1,22 +1,35 @@
 {
   /* Inherit all compilerOptions & paths from the repo‑root tsconfig.json */
   "extends": "../../tsconfig.json",
-
   "compilerOptions": {
     /* === App‑specific tweaks === */
-    "baseUrl": ".",                       // enables "@/..." alias below
+    "baseUrl": ".", // enables "@/..." alias below
     "paths": {
-      "@/*": ["./*"]                      // internal alias for app code
+      "@/*": [
+        "./*"
+      ] // internal alias for app code
     },
-
     /* Next.js / React settings */
     "jsxImportSource": "react",
-    "plugins": [{ "name": "next" }],
-
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
     /* Let Next.js handle emitting JS */
-    "noEmit": true
+    "noEmit": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "incremental": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve"
   },
-
   /* Files the app should compile */
   "include": [
     "next-env.d.ts",
@@ -25,6 +38,7 @@
     ".next/types/**/*.ts",
     "types/**/*.d.ts"
   ],
-
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }
