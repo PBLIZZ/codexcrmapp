@@ -6,7 +6,7 @@ import { httpBatchLink } from '@trpc/client';
 import superjson from 'superjson';
 
 // Import the tRPC client from the correct location
-import { api } from '@/lib/trpc/client';
+import { api } from '@/lib/trpc';
 
 // Export the api client as trpc for backward compatibility
 export const trpc = api;
