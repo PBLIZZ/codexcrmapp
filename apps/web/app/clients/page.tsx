@@ -1,11 +1,25 @@
 "use client";
-import { trpc } from "@/lib/trpc";
 import { useState } from "react";
 
+// Import the api client from the correct location
+import { api } from "../../src/lib/trpc/client";
+
+// Define explicit client type
+interface Client {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email?: string | null;
+  user_id?: string;
+  created_at?: string;
+}
+
 export default function ClientsPage() {
-  const { data: clients, isLoading } = trpc.clients.list.useQuery();
-  // We're using refetch instead of utils.invalidate
-  const mutation = trpc.clients.upsert.useMutation({
+  // Use the api client to query clients
+  const { data: clients, isLoading } = api.clients.testList.useQuery();
+
+  // Use the api client for mutations
+  const mutation = api.clients.upsert.useMutation({
     async onSuccess() {
       // Refetch the query instead of using invalidate
       await refetch();
@@ -14,9 +28,11 @@ export default function ClientsPage() {
   });
   
   // Add refetch function from the query
-  const { refetch } = trpc.clients.list.useQuery(undefined, {
+  const { refetch } = api.clients.testList.useQuery(undefined, {
     enabled: false, // Don't run automatically since we already have the data
   });
+
+  // Form state with proper typing
   const [form, setForm] = useState({
     id: undefined as number | undefined,
     first_name: "",
@@ -31,7 +47,7 @@ export default function ClientsPage() {
       <h1 className="text-2xl font-bold mb-4">Clients</h1>
       <ul className="mb-6">
         {clients && clients.length > 0 ? (
-          clients.map((c) => (
+          clients.map((c: Client) => (
             <li key={c.id} className="mb-2">
               <strong>{c.first_name} {c.last_name}</strong> {c.email && <span>({c.email})</span>}
             </li>

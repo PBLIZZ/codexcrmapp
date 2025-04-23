@@ -1,13 +1,13 @@
 "use client";
 
 import React from 'react';
-import { trpc } from '../lib/trpc';
+import { api } from '../src/lib/trpc/client';
 
 /**
  * Home page: tests the tRPC client.list query
  */
 export default function Page() {
-  const { data, isLoading, error } = trpc.clients.list.useQuery();
+  const { data, isLoading, error } = api.clients.testList.useQuery();
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;

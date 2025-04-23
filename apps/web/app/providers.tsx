@@ -5,20 +5,15 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { httpBatchLink } from '@trpc/client';
 import superjson from 'superjson';
 
-// Import the actual type from the package for tRPC
+// Import the tRPC client from the correct location
+import { api } from '../src/lib/trpc/client';
+
+// Export the api client as trpc for backward compatibility
+export const trpc = api;
+
+// Export types for inputs and outputs
 import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
-
-// Import the router from the server package using the correct path alias
-import { appRouter } from '@codexcrm/server/src/root';
-
-// Import the tRPC React hook creator
-import { createTRPCReact } from '@trpc/react-query';
-
-// Create the React tRPC client properly typed with the router's type
-type AppRouter = typeof appRouter;
-export const trpc = createTRPCReact<AppRouter>();
-
-// Useful types that infer input/output types from the router
+import type { AppRouter } from '@codexcrm/server/src/root';
 export type RouterInputs = inferRouterInputs<AppRouter>;
 export type RouterOutputs = inferRouterOutputs<AppRouter>;
 
@@ -46,7 +41,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   // Create tRPC client once - for tRPC v10 with TanStack Query v4
   const [trpcClient] = React.useState(() => {
-    return trpc.createClient({
+    return api.createClient({
       transformer: superjson,
       links: [
         httpBatchLink({
@@ -57,10 +52,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
   });
 
   return (
-    <trpc.Provider client={trpcClient} queryClient={queryClient}>
+    <api.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
         {children}
       </QueryClientProvider>
-    </trpc.Provider>
+    </api.Provider>
   );
 }

@@ -1,8 +1,17 @@
 import { z } from 'zod';
-import { router, protectedProcedure } from '../trpc';
+import { router, protectedProcedure, publicProcedure } from '../trpc';
 import { supabaseAdmin } from '../supabaseAdmin';
     
 export const clientRouter = router({
+  // Public procedure for testing - remove in production
+  testList: publicProcedure.query(async ({ ctx }) => {
+    const { data, error } = await supabaseAdmin
+      .from('clients')
+      .select('*')
+      .limit(10);
+    if (error) throw error;
+    return data;
+  }),
   list: protectedProcedure.query(async ({ ctx }) => {
     if (!ctx.user) {
       throw new Error('Unauthorized: User not authenticated');

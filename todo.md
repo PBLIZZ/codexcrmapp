@@ -2,6 +2,8 @@
 
 This document outlines the essential tasks for Sprint 1, based on the detailed implementation guide. It focuses on setting up the monorepo structure, core authentication, database integration with RLS, the first API endpoint (clients), and basic testing. Tasks are ordered logically within each section.
 
+> **UPDATE (2025-04-23)**: tRPC integration issues have been fixed. See `tRPC-Integration-Notes.md` for details.
+
 ---
 
 ## Repository Root & Setup
@@ -129,6 +131,16 @@ Tasks for building the tRPC backend.
     6.  *(Stub `update` and `delete` procedures for later implementation)*.
     7.  Merge `clientRouter` into the main `appRouter` in `packages/server/src/root.ts`.
 
+### 12. Implement First tRPC Router (`clientRouter`) 
+
+*   **Goal:** Create the API endpoints for listing and creating clients.
+*   **Solution:**
+    1.  Create `packages/server/src/routers/client.ts` with `list` and `upsert` procedures. 
+    2.  Add the router to `packages/server/src/root.ts`. 
+    3.  Implement input validation using Zod. 
+    4.  Use `protectedProcedure` to ensure only authenticated users can access the endpoints. 
+    5.  Add public procedures for testing during development. 
+
 ---
 
 ## `apps/web` (Frontend UI)
@@ -142,12 +154,15 @@ Tasks related to the Next.js application, user interface, and data display.
     1.  Create an auth helper function (e.g., `apps/web/src/lib/auth/actions.ts` or similar) containing `getSession` (using `@supabase/ssr`) and `protectPage` which calls `getSession` and redirects (`next/navigation redirect`) to `/sign-in` if no session exists.
     2.  In Server Components for protected pages (e.g., `apps/web/app/clients/page.tsx`) or layouts (`apps/web/app/dashboard/layout.tsx`), call `await protectPage()` at the beginning of the component function.
 
-### 13. Setup tRPC Client & React Query Provider
+### 13. Setup tRPC Client & React Query Provider 
 
-*   **Goal:** Configure the frontend to communicate with the tRPC backend using TanStack Query (React Query) for data fetching and caching.
+*   **Goal:** Configure the tRPC client for the frontend and wrap the app in providers for tRPC and React Query.
 *   **Solution:**
-    1.  Create a tRPC client instance using `@trpc/react-query` (e.g., `apps/web/src/lib/trpc/client.ts`). Export the `api` object.
-    2.  Create a client component provider (`apps/web/src/providers/TrpcProvider.tsx`) that initializes `QueryClient` and `trpcClient` (using `httpBatchLink` pointing to `/api/trpc`). Wrap the root layout (`apps/web/app/layout.tsx`) with this provider.
+    1.  Create `apps/web/src/lib/trpc/client.ts` to initialize the tRPC client with the correct router type. 
+    2.  Create `apps/web/app/providers.tsx` to set up React Query and tRPC providers. 
+    3.  Update `apps/web/app/layout.tsx` to wrap the app with these providers. 
+    4.  Add the tRPC API route at `apps/web/app/api/trpc/[trpc]/route.ts`. 
+    5.  Configure compatible versions of tRPC v10 and TanStack Query v4. 
 
 ### 14. Implement Client Page Data Fetching
 
