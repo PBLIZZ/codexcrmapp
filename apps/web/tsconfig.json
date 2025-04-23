@@ -6,7 +6,7 @@
     "baseUrl": ".", // enables "@/..." alias below
     "paths": {
       "@/*": [
-        "./*"
+        "./*" // Points to apps/web root, aligning with actual structure
       ] // internal alias for app code
     },
     /* Next.js / React settings */

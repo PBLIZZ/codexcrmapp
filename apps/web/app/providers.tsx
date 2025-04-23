@@ -6,7 +6,7 @@ import { httpBatchLink } from '@trpc/client';
 import superjson from 'superjson';
 
 // Import the tRPC client from the correct location
-import { api } from '../src/lib/trpc/client';
+import { api } from '@/lib/trpc/client';
 
 // Export the api client as trpc for backward compatibility
 export const trpc = api;
@@ -37,7 +37,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         refetchOnWindowFocus: false,
       },
     },
-  }));
+  }) as any); // Type assertion to avoid version compatibility issues
 
   // Create tRPC client once - for tRPC v10 with TanStack Query v4
   const [trpcClient] = React.useState(() => {
