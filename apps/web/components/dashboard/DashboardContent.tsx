@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { api } from '@/lib/trpc/client';
+import { api } from '@/lib/trpc';
 
 /**
  * Dashboard content component - client component that uses tRPC

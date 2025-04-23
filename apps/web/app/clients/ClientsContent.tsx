@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 // Import the api client using the correct path alias
-import { api } from '@/lib/trpc/client'; 
+import { api } from '@/lib/trpc'; 
 import type { TRPCClientError } from '@trpc/client'; 
 import type { AppRouter } from '@codexcrm/server/src/root'; 
 
