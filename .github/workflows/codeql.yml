@@ -1,0 +1,62 @@
+# .github/workflows/codeql.yml
+name: "CodeQL"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    - cron: '30 1 * * 1' # Example: Run weekly on Monday at 1:30 AM UTC
+
+permissions:
+  actions: read
+  contents: read
+  security-events: write
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'javascript-typescript' ] # Specify language
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # Setup pnpm
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 10 # Match your local pnpm version if needed
+
+    # Setup Node.js (compatible with your project)
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18 # Or your required Node.js version
+        cache: 'pnpm' # Cache pnpm dependencies
+
+    # Install dependencies using pnpm install with frozen lockfile
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+
+    # Initializes the CodeQL tools for scanning.
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+        # If you had queries in separate files, specify them here
+        # queries: ./path/to/local/queries
+
+    # Autobuild is disabled/implicitly handled by our explicit `pnpm install` step.
+    # CodeQL Action will detect the built files after install.
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:${{matrix.language}}"
