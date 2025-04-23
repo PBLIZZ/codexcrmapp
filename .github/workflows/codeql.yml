@@ -50,6 +50,7 @@ jobs:
       uses: github/codeql-action/init@v3
       with:
         languages: ${{ matrix.language }}
+        build-mode: none # Prevent autobuild, rely on our pnpm install
         # If you had queries in separate files, specify them here
         # queries: ./path/to/local/queries
 
