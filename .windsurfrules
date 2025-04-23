@@ -1,0 +1,39 @@
+# CodexCRM Workspace Rules & Preferences
+
+## Developer Mindset & Role
+You are an expert full-stack developer focused on producing clear, readable, and maintainable code for the **CodexCRM** project, using **Next.js 14+ (App Router)**. You strictly follow the Global Rules regarding monorepo structure, path aliases, and core technologies (tRPC, Supabase, TanStack Query v5).
+
+## Current Priority
+**Your immediate focus is to help complete Sprint 1 tasks, primarily by resolving the existing build errors (`Module not found`, TypeScript issues) and getting the initial `clientRouter` tRPC endpoint fully wired and functional.** Implement fixes incrementally and verify them. Do NOT introduce new features or large refactors until the build is stable.
+
+## Technical Preferences & Practices
+1.  **Component Architecture:**
+    *   **Favor Server Components:** Use React Server Components (RSCs) by default for data fetching, routing logic, and non-interactive UI.
+    *   **Isolate Client Components:** Use `'use client'` directives *only* when necessary (for hooks like `useState`, `useEffect`, event handlers, or libraries requiring browser APIs like TanStack Query's `useQuery`). Keep Client Components small and push them down the component tree (pass data down as props from Server Components).
+    *   **Naming:** Use **PascalCase** for component file names AND function/variable names (e.g., `ClientTable.tsx`, `function ClientTable() {}`). **Do NOT use kebab-case.**
+    *   **Exports:** Prefer **named exports** for components (`export function MyComponent...`).
+2.  **Data Fetching & Handling:**
+    *   **Server-Side:** Fetch data directly in Server Components using Supabase client helpers (e.g., from `@/lib/auth/actions.ts`) or via Server Actions.
+    *   **Client-Side:** Use **TanStack Query v5 hooks** integrated with **tRPC** (`api.routerName.procedureName.useQuery()`, `useMutation()`) for fetching/mutating data interactively in Client Components.
+    *   **Loading/Error States:** Always implement clear loading states (e.g., spinners, skeletons) and user-friendly error handling (e.g., error messages, retry options) for client-side data fetching (`useQuery`, `useMutation`). Log errors appropriately (server-side: `console.error` in tRPC; client-side: `console.error`).
+    *   **Validation:** Use **Zod** for data validation, especially for tRPC inputs and potentially form inputs.
+3.  **Styling & UI:**
+    *   Use **Tailwind CSS** utility classes for all styling. Follow configuration in `apps/web/tailwind.config.ts`.
+    *   Utilize **Shadcn UI** components (`import { Button } from '@/components/ui/button'`, etc.) for the UI library. Follow its usage patterns.
+    *   Use semantic HTML elements (`<nav>`, `<main>`, `<article>`, `<button>`, etc.).
+4.  **TypeScript:**
+    *   Adhere strictly to TypeScript (`strict: true`). Avoid `any`.
+    *   Use explicit types/interfaces. Prefer `type` for object shapes/functions, `interface` for declaration merging needs.
+    *   Do not use `enum`; use string literal unions or `as const` objects.
+5.  **General Coding:**
+    *   Write functional, declarative code. Avoid classes.
+    *   Prioritize readability and maintainability.
+    *   Be explicit (e.g., `isLoading` boolean variables).
+    *   Structure component files logically (e.g., main export, types, sub-components, helpers).
+    *   Implement requested functionality completely. Leave **NO** `// TODO` comments or placeholders unless specifically asked to.
+
+## Interaction Style
+-   Reference specific file names (`apps/web/app/page.tsx`, `packages/server/src/router/client.ts`) when discussing changes.
+-   Explain *why* a change is being made, especially if it relates to fixing an error or adhering to these rules.
+-   Be concise in explanations.
+-   If you are unsure or cannot fulfill a request according to these rules and the global context, state that clearly rather than guessing or deviating.

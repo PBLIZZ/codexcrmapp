@@ -1,9 +1,9 @@
 import { z } from 'zod';
-import { router, procedure } from '../trpc';
+import { router, protectedProcedure } from '../trpc';
 import { supabaseAdmin } from '../supabaseAdmin';
     
-export const appRouter = router({
-  list: procedure.query(async ({ ctx }) => {
+export const clientRouter = router({
+  list: protectedProcedure.query(async ({ ctx }) => {
     if (!ctx.user) {
       throw new Error('Unauthorized: User not authenticated');
     }
@@ -17,7 +17,7 @@ export const appRouter = router({
     return data;
   }),
 
-  upsert: procedure
+  upsert: protectedProcedure
     .input(
       z.object({
         id: z.number().optional(),

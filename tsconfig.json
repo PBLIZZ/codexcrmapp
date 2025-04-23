@@ -1,37 +1,17 @@
 {
   "compilerOptions": {
-    /* Compile‑target / language features */
-    "target": "es2020",
-    "lib": ["dom", "dom.iterable", "es2020"],
-
-    /* Strictness */
-    "strict": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitReturns": true,
-
-    /* Module resolution */
+    "target": "es2017",
     "module": "esnext",
-    "moduleResolution": "bundler",
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-
-    /* Paths for monorepo aliases */
+    "moduleResolution": "node",
+    "strict": true,
+    "skipLibCheck": false,
     "baseUrl": ".",
     "paths": {
-      "@codexcrm/db/*":      ["packages/db/src/*"],
-      "@codexcrm/server/*":  ["packages/server/src/*"],
-      "@codexcrm/jobs/*":    ["packages/jobs/*"],
-      "@codexcrm/ui/*":      ["packages/ui/src/*"],
-      "@codexcrm/web/*":     ["apps/web/*"]
-    },
-
-    /* Root config never emits JS; each build tool handles that */
-    "noEmit": true
-  },
-  /* Leave include/ exclude empty; every package has its own tsconfig */
-  "include": [],
-  "exclude": ["node_modules"]
+      "@codexcrm/server/*": ["packages/server/src/*"],
+      "@codexcrm/db/*":     ["packages/db/src/*"],
+      "@codexcrm/jobs/*":   ["packages/jobs/*"],
+      "@codexcrm/ui/*":     ["packages/ui/src/*"],
+      "@codexcrm/web/*":    ["apps/web/*"]
+    }
+  }
 }

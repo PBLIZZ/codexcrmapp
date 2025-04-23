@@ -1,8 +1,14 @@
 {
-  "name": "@codexcrmapp/server",
+  "name": "@codexcrm/server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./root": "./src/root.ts",
+    "./context": "./src/context.ts"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

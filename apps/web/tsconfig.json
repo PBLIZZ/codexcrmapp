@@ -1,34 +1,23 @@
 {
+  /* Inherit all compilerOptions & paths from the repo‑root tsconfig.json */
+  "extends": "../../tsconfig.json",
+
   "compilerOptions": {
-    "target": "ES2017",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
-    "skipLibCheck": false,
-    "strict": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "jsxImportSource": "react",
-    "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    /* === App‑specific tweaks === */
+    "baseUrl": ".",                       // enables "@/..." alias below
     "paths": {
-      "@/*": [
-        "./*"
-      ]
-    }
+      "@/*": ["./*"]                      // internal alias for app code
+    },
+
+    /* Next.js / React settings */
+    "jsxImportSource": "react",
+    "plugins": [{ "name": "next" }],
+
+    /* Let Next.js handle emitting JS */
+    "noEmit": true
   },
+
+  /* Files the app should compile */
   "include": [
     "next-env.d.ts",
     "**/*.ts",
@@ -36,7 +25,6 @@
     ".next/types/**/*.ts",
     "types/**/*.d.ts"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+
+  "exclude": ["node_modules"]
 }

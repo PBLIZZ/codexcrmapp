@@ -10,7 +10,7 @@ import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
 
 // Import the router from the server package using relative path
 // since path aliases might not be configured to reach into packages directory
-import { appRouter } from '../../../packages/server/routers/client';
+import { appRouter } from '../../../packages/server/src/routers/client';
 
 // Import the tRPC React hook creator
 import { createTRPCReact } from '@trpc/react-query';
