@@ -59,14 +59,23 @@ export async function protectPage() {
  */
 export async function getCurrentUser() {
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
+  // Use getUser() for server-verified authentication check
+  const { data: { user }, error } = await supabase.auth.getUser();
   
-  if (!session) {
+  // Handle potential errors during getUser call
+  if (error) {
+    console.error("Error getting user:", error.message);
+    return { user: null, supabase }; // Return null user on error
+  }
+  
+  // If getUser returns null (no valid session), return null
+  if (!user) { 
     return { user: null, supabase };
   }
   
+  // Return the verified user object
   return {
-    user: session.user,
+    user, // Return the user object directly from getUser data
     supabase,
   };
 }
