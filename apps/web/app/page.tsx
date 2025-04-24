@@ -1,11 +1,18 @@
-// Use relative path for auth actions
-import { protectPage } from "../lib/auth/actions"; 
 // Import DashboardContent using a relative path
 import DashboardContent from "../components/dashboard/DashboardContent"; 
+// Redirect import is no longer needed here
+// import { redirect } from 'next/navigation';
+// protectPage import is no longer needed here
+// import { protectPage } from "../lib/auth/actions"; 
 
 export default async function Home() {
-  // Protect this page - redirects to /sign-in if not authenticated
-  await protectPage();
+  // Authentication is now handled by middleware
+  // const user = await protectPage();
+  // 
+  // if (!user) {
+  //   redirect('/sign-in');
+  // }
   
+  // Render the dashboard directly
   return <DashboardContent />;
 }

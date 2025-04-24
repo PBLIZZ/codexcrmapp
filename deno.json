@@ -1,0 +1,27 @@
+{
+  "importMap": "import_map.json",
+  "tasks": {
+    "dev": "deno run --watch --allow-net --allow-read src/main.ts",
+    "fmt": "deno fmt",
+    "lint": "deno lint",
+    "test": "deno test"
+  },
+  "fmt": {
+    "options": {
+      "useTabs": false,
+      "lineWidth": 80,
+      "indentWidth": 2,
+      "singleQuote": true
+    }
+  },
+  "lint": {
+    "rules": {
+      "exclude": ["no-explicit-any"]
+    }
+  },
+  "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "jsx": "react-jsx",
+    "strict": true
+  }
+}
