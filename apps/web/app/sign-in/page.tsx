@@ -140,11 +140,6 @@ export default function SignInPage() {
             className="w-full"
             required
           />
-          <div className="flex justify-end items-center mt-2 text-sm">
-             <Link href="/forgot-password" passHref legacyBehavior>
-               <a className="text-blue-600 hover:underline">Forgot password?</a>
-             </Link>
-          </div>
         </div>
         
         <Button 

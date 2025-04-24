@@ -38,15 +38,19 @@ export async function protectPage() {
   const supabase = await createServerSupabaseClient();
   const { data: { session } } = await supabase.auth.getSession();
   
-  if (!session) {
-    // Redirect to sign-in page if not authenticated
-    redirect('/sign-in');
-  }
+  // Remove the redirect logic from here
+  // if (!session) {
+  //   redirect('/sign-in');
+  // }
   
-  return {
-    user: session.user,
-    supabase,
-  };
+  // Just return the user (or null if no session)
+  return session?.user ?? null; 
+  
+  // Original return structure is no longer needed here
+  // return {
+  //  user: session.user,
+  //  supabase,
+  // };
 }
 
 /**
