@@ -1,6 +1,6 @@
 # CodexCRM Project Status & AI Guidance (Root Document)
 
-*Last Updated: (24th April 2025)*
+*Last Updated: (25th April 2025)*
 
 ## SYSTEM (AI Instruction)
 You are an expert Senior Full-Stack Engineer assisting Peter on the 'CodexCRM' project. Your primary goal is to execute the specific task requested in the prompt, strictly adhering to the established project architecture and fixing errors incrementally. Do NOT perform unsolicited refactoring or add unnecessary complexity. Prioritize stability and correctness. If a significant change is needed, ask for confirmation first.
@@ -25,9 +25,9 @@ You are an expert Senior Full-Stack Engineer assisting Peter on the 'CodexCRM' p
 
 ## Sprint 1 Status: In Progress - Stabilization Required
 
-### ✅ Completed Items (Foundation)
+### ✅ Completed Items (Foundation & Recent Fixes)
 
-1.  **Core Architecture Setup**
+1.  **Core Architecture Setup (Initial)**
     - Monorepo structure with pnpm workspaces (`apps/web`, `packages/*`).
     - Next.js App Router basic setup in `apps/web`.
     - tRPC v10 integration basics (routers, context, client, API handler).
@@ -37,19 +37,31 @@ You are an expert Senior Full-Stack Engineer assisting Peter on the 'CodexCRM' p
     - Basic UI setup with ShadCN components.
     - Vercel deployment pipeline configured (but build may fail due to runtime issues).
 
+2.  **Authentication Flow Improvements (Apr 25th)**
+    - Magic Link Authentication Implemented (UI & Logic).
+    - Authentication Redirects Fixed (Magic Link/OAuth now use correct callback).
+
+3.  **Client Management Fixes (Apr 25th)**
+    - Client Creation Flow Fixed (Works reliably on first submit, UI updates correctly).
+    - Client Email Validation Enforced (UI Zod schema & label updated to require email).
+    - Unused tRPC Test Procedures Removed (`clientRouter.testList`, `clientRouter.testUpsert`).
+
+4.  **Build & Type Safety (Apr 25th)**
+    - DB Package Type Errors Resolved (`Cannot find name 'Tables'`).
+
 ### 🚧 CURRENT BLOCKERS & IMMEDIATE PRIORITIES
 
 1.  **Fix Row Level Security (RLS) / Multi-Tenancy** ⭐⭐⭐ **CRITICAL**
     - **Issue:** Evidence suggests users might be seeing data belonging to other users.
     - **Action:** Verify RLS enabled & policies are correct (`auth.uid() = user_id`) in Supabase Dashboard for `clients` table. Audit tRPC `list` procedure to ensure it uses a user-scoped client (`ctx.supabaseUser`) from context, not `ctx.supabaseAdmin`. Update tRPC context if needed. Rigorously test data isolation between users.
 
-2.  **Fix Client CRUD Functionality** ⭐⭐ **HIGH PRIORITY**
-    - **Issue:** Adding new clients is not working. Edit/Delete buttons are non-functional.
-    - **Action:** Debug the "Add Client" tRPC mutation (`client.upsert`) flow end-to-end (form -> API -> DB). Implement and debug `client.update` and `client.delete` tRPC procedures and connect them to UI buttons. Ensure database operations respect `user_id` for security.
+2.  **Fix Client CRUD Functionality (Edit/Delete)** ⭐⭐ **HIGH PRIORITY**
+    - **Issue:** Client Creation is working. **Edit and Delete buttons are non-functional.**
+    - **Action:** Implement and debug `client.update` and `client.delete` tRPC procedures. Connect them to the UI buttons in `ClientsContent.tsx`. Ensure database operations respect `user_id` for security. Implement confirmation dialogs for delete.
 
 3.  **Stabilize & Complete Core Authentication Flow** ⭐⭐ **HIGH PRIORITY**
-    - **Issue:** Current login may be fragile (rate limits hit previously). Sign-up, Forgot Password, Account Management flows are missing. Google OAuth incomplete. Email confirmation needs verification.
-    *   **Action:** Once rate limits clear, thoroughly test email/password login. Implement `signUp` flow (check SMTP/email confirmation). Implement `resetPasswordForEmail` flow. Implement basic `/account` page for password change/sign out. Complete and test Google OAuth setup.
+    - **Issue:** Password & Magic Link login implemented. Redirects fixed. Google OAuth started but may be incomplete. **Sign-in page sometimes gets stuck on spinner.** Sign-up, Forgot Password, Account Management flows are missing. Email confirmation setup needs verification.
+    *   **Action:** Investigate and fix the sign-in page spinner issue. Complete and test Google OAuth setup. Implement `signUp` flow (check SMTP/email confirmation). Implement `resetPasswordForEmail` flow. Implement basic `/account` page for password change/sign out.
 
 4.  **Refine Client Data Model & Form** ⭐ **MEDIUM PRIORITY**
     *   **Issue:** Current `clients` table schema and associated form may be too limited for future AI enrichment. ID types (`bigint` vs `uuid`) need review.
@@ -67,7 +79,9 @@ You are an expert Senior Full-Stack Engineer assisting Peter on the 'CodexCRM' p
 
 **Next Steps:**
 
-1.  **Verify RLS Settings & Policies in Supabase Dashboard.**
-2.  **Modify tRPC Context & `clientRouter.list` Procedure** to use `ctx.supabaseUser` for reads.
-3.  **Remove `testList` and `testUpsert`** public procedures from `clientRouter`.
-4.  **Test data isolation** between two different user accounts rigorously.
+1.  **Verify RLS Settings & Policies in Supabase Dashboard.** (CRITICAL)
+2.  **Modify tRPC Context & `clientRouter.list` Procedure** (if needed) to use `ctx.supabaseUser` for reads & test data isolation rigorously. (CRITICAL)
+3.  **Implement Client Edit/Delete** functionality (tRPC procedures & UI connection). (HIGH)
+4.  **Investigate & Fix Sign-in Page Spinner** issue. (HIGH)
+5.  **Complete remaining Auth flows** (Google OAuth, Sign-up, Forgot Password, Account page). (HIGH)
+6.  **Refine Client Data Model** and update form/schemas. (MEDIUM)
