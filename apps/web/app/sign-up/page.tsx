@@ -1,5 +1,6 @@
 "use client";
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client'; 
 import { Input } from '@/components/ui/input'; 
 import { Button } from '@/components/ui/button'; 
@@ -10,6 +11,7 @@ export default function SignUpPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState('');
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -23,20 +25,22 @@ export default function SignUpPage() {
 
     setIsLoading(true);
     try {
-      // Attempt sign up
-      const { data, error } = await supabase.auth.signUp({ email, password });
-
+      // Attempt sign up with email confirmation redirect
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/api/auth/callback`,
+        },
+      });
       if (error) {
         setMessage(error.message);
-      } else if (data.user) {
-        // Standard sign-up success message requiring email confirmation
-        setMessage('Account created! Please check your email and click the confirmation link to activate your account and sign in.');
       } else {
-         // Handle case where user might already exist but confirmation is pending etc.
-         setMessage('Sign-up process initiated. If you have an account, check your email for next steps.');
+        // Redirect to confirmation page
+        router.push('/sign-up/confirmation');
       }
-    } catch (error: any) {
-      setMessage(error.message || 'An error occurred during sign up');
+    } catch (err: any) {
+      setMessage(err.message || 'An error occurred during sign up');
     } finally {
       setIsLoading(false);
     }
