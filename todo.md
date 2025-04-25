@@ -1,5 +1,7 @@
 # CodexCRM App - Sprint 1 TODO List
 
+> **DEPRECATED:** This TODO list has been superseded by [Sprint1-Status.md](./Sprint1-Status.md), which contains the most up-to-date information about the project status and remaining tasks for Sprint 1. Please refer to Sprint1-Status.md for current development priorities.
+
 This document outlines the essential tasks for Sprint 1, based on the detailed implementation guide. It focuses on setting up the monorepo structure, core authentication, database integration with RLS, the first API endpoint (clients), and basic testing. Tasks are ordered logically within each section.
 
 > **UPDATE (2025-04-23)**: tRPC integration issues have been fixed. See `tRPC-Integration-Notes.md` for details.

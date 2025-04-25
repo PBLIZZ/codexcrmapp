@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import SupabaseProvider from '@/lib/supabase/provider';
 import { Navbar } from '@/components/layout/Navbar';
 import { Providers } from './providers';
 
@@ -30,12 +29,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <SupabaseProvider>
-          <Providers>
-            <Navbar />
-            {children}
-          </Providers>
-        </SupabaseProvider>
+        <Providers>
+          <Navbar />
+          {children}
+        </Providers>
       </body>
     </html>
   );

@@ -1,5 +1,7 @@
 # tRPC Integration Summary (CodexCRM)
 
+> **NOTE:** While this document contains useful information about the tRPC integration, please refer to [Sprint1-Status.md](./Sprint1-Status.md) for the most up-to-date information about the project status and remaining tasks for Sprint 1.
+
 This document summarizes the final working configuration for tRPC integration within the CodexCRM monorepo project.
 
 ## Core Setup & Configuration

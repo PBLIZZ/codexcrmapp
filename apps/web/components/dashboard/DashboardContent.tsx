@@ -7,10 +7,17 @@ import { api } from '@/lib/trpc';
  * Dashboard content component - client component that uses tRPC
  */
 export default function DashboardContent() {
-  const { data, isLoading, error } = api.clients.testList.useQuery();
+  const { data, isLoading, error } = api.clients.list.useQuery();
+  console.log('Dashboard client data:', data);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {String(error)}</div>;
+  if (isLoading) return <div className="p-6 flex justify-center items-center">
+    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+  </div>;
+  
+  if (error) return <div className="p-6 text-red-600 bg-red-50 rounded-md">
+    <h2 className="text-lg font-semibold">Error loading clients</h2>
+    <p>{error.message || String(error)}</p>
+  </div>;
 
   return (
     <main className="p-6 max-w-6xl mx-auto">

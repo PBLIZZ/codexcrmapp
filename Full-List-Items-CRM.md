@@ -1,5 +1,7 @@
 # Full List of Items for CRM
 
+> **DEPRECATED:** This document has been superseded by [Sprint1-Status.md](./Sprint1-Status.md), which contains the most up-to-date information about the project status and remaining tasks for Sprint 1. Please refer to Sprint1-Status.md for current development priorities.
+
 Okay, let's break down these implementation steps for your `codexcrmapp` project. This plan involves significant restructuring towards a more scalable monorepo architecture, integrating robust backend patterns with tRPC, enhancing security with RLS, and setting up a solid foundation with migrations and testing.
 
 I'll follow the order you provided, explaining each item and giving detailed commands and context based on your current repository state (assuming it's a standard Next.js app currently named `shadcn-supabase-app` at the root) and the target monorepo structure.
