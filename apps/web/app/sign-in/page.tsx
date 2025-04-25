@@ -5,6 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
 
 // Google Icon SVG Component
 const GoogleIcon = () => (
@@ -121,76 +123,76 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md space-y-8">
-        <div className="text-center">
-          <span className="text-3xl font-bold text-gray-900">CodexCRM</span>
-        </div>
+    <div className="flex min-h-screen items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+      <Card className="w-full max-w-md shadow-lg">
+        <CardHeader className="text-center space-y-2">
+          <CardTitle className="text-3xl font-bold text-blue-600">CodexCRM</CardTitle>
+          <CardDescription>Welcome back! Sign in to your account.</CardDescription>
+        </CardHeader>
 
-        <div className="text-center">
-          <h2 className="text-2xl font-bold tracking-tight text-gray-900">Welcome back</h2>
-          <p className="mt-2 text-sm text-gray-600">Sign in to your account</p>
-        </div>
-
-        <div className="space-y-3">
-          <Button 
-            type="button" 
-            onClick={() => handleOAuthLogin('google')}
-            variant="outline"
-            className="w-full flex items-center justify-center gap-2 disabled:opacity-50"
-            disabled={isLoading || !!isOauthLoading}
-          >
-            <GoogleIcon />
-            {isOauthLoading === 'google' ? 'Redirecting...' : 'Continue with Google'}
-          </Button>
-          <Button 
-            type="button" 
-            onClick={() => handleOAuthLogin('apple')}
-            variant="outline"
-            className="w-full flex items-center justify-center gap-2 disabled:opacity-50"
-            disabled={isLoading || !!isOauthLoading}
-          >
-            <AppleIcon />
-            {isOauthLoading === 'apple' ? 'Redirecting...' : 'Continue with Apple'}
-          </Button>
-        </div>
-
-        <div className="relative py-2">
-          <div className="absolute inset-0 flex items-center" aria-hidden="true">
-            <div className="w-full border-t border-gray-300" />
+        <CardContent className="space-y-6">
+          {/* OAuth Buttons */}
+          <div className="space-y-3">
+            <Button 
+              type="button" 
+              onClick={() => handleOAuthLogin('google')}
+              variant="outline"
+              className="w-full flex items-center justify-center gap-2 disabled:opacity-50"
+              disabled={isLoading || !!isOauthLoading}
+            >
+              <GoogleIcon />
+              {isOauthLoading === 'google' ? 'Redirecting...' : 'Continue with Google'}
+            </Button>
+            <Button 
+              type="button" 
+              onClick={() => handleOAuthLogin('apple')}
+              variant="outline"
+              className="w-full flex items-center justify-center gap-2 disabled:opacity-50"
+              disabled={isLoading || !!isOauthLoading}
+            >
+              <AppleIcon />
+              {isOauthLoading === 'apple' ? 'Redirecting...' : 'Continue with Apple'}
+            </Button>
           </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-gray-50 px-2 text-gray-500">or</span>
+
+          {/* Separator */}
+          <div className="relative py-2">
+            <div className="absolute inset-0 flex items-center" aria-hidden="true">
+              <div className="w-full border-t border-gray-300" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-white px-2 text-gray-500">or continue with</span>
+            </div>
           </div>
-        </div>
 
-        <div className="flex justify-center space-x-4 mb-6">
-          <Button 
-            type="button" 
-            variant={authMethod === 'password' ? 'default' : 'outline'}
-            onClick={() => setAuthMethod('password')}
-            size="sm"
-            className={authMethod === 'password' ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : ''}
-          >
-            Password
-          </Button>
-          <Button 
-            type="button" 
-            variant={authMethod === 'magicLink' ? 'default' : 'outline'}
-            onClick={() => setAuthMethod('magicLink')}
-            size="sm"
-            className={authMethod === 'magicLink' ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : ''}
-          >
-            Magic Link
-          </Button>
-        </div>
+          {/* Method Selection Buttons */}
+          <div className="flex justify-center space-x-4">
+            <Button 
+              type="button" 
+              variant={authMethod === 'password' ? 'default' : 'outline'}
+              onClick={() => setAuthMethod('password')}
+              size="sm"
+              className={authMethod === 'password' ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : ''}
+            >
+              Password
+            </Button>
+            <Button 
+              type="button" 
+              variant={authMethod === 'magicLink' ? 'default' : 'outline'}
+              onClick={() => setAuthMethod('magicLink')}
+              size="sm"
+              className={authMethod === 'magicLink' ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : ''}
+            >
+              Magic Link
+            </Button>
+          </div>
 
-        <form onSubmit={authMethod === 'password' ? handlePasswordLogin : handleMagicLinkLogin} className="space-y-6">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
-            <div className="mt-1">
+          {/* Form */}
+          <form onSubmit={authMethod === 'password' ? handlePasswordLogin : handleMagicLinkLogin} className="space-y-4">
+            <div>
+              <Label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                Email
+              </Label>
               <Input
                 id="email"
                 name="email"
@@ -206,21 +208,12 @@ export default function SignInPage() {
                 spellCheck="false"
               />
             </div>
-          </div>
 
-          {authMethod === 'password' && (
-            <div>
-              <div className="flex items-center justify-between">
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            {authMethod === 'password' && (
+              <div>
+                <Label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                   Password
-                </label>
-                <div className="text-sm">
-                  <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
-                    Forgot Password?
-                  </a>
-                </div>
-              </div>
-              <div className="mt-1">
+                </Label>
                 <Input
                   id="password"
                   name="password"
@@ -236,48 +229,36 @@ export default function SignInPage() {
                   spellCheck="false"
                 />
               </div>
+            )}
+
+            {/* Message Display */} 
+            {message && (
+              <p className={`text-sm ${messageType === 'error' ? 'text-red-600' : 'text-green-600'}`}>
+                {message}
+              </p>
+            )}
+
+            <div>
+              <Button 
+                type="submit" 
+                className="w-full flex justify-center disabled:opacity-50"
+                disabled={authMethod === 'password' ? (isLoading || !!isOauthLoading) : (isMagicLinkLoading || !!isOauthLoading)}
+              >
+                {authMethod === 'password'
+                  ? (isLoading ? 'Signing in...' : 'Sign in with Password')
+                  : (isMagicLinkLoading ? 'Sending link...' : 'Send Magic Link')}
+              </Button>
             </div>
-          )}
+          </form>
 
-          <div>
-            <Button 
-              type="submit" 
-              variant="default"
-              className="flex w-full justify-center bg-emerald-600 hover:bg-emerald-700 focus:ring-emerald-500 disabled:opacity-50"
-              disabled={authMethod === 'password' ? (isLoading || !!isOauthLoading) : (isMagicLinkLoading || !!isOauthLoading)}
-            >
-              {authMethod === 'password' ? 
-                (isLoading ? 'Signing in...' : 'Sign In') :
-                (isMagicLinkLoading ? 'Sending Link...' : 'Send Magic Link')}
-            </Button>
-          </div>
-        </form>
+        </CardContent>
 
-        {message && (
-          <div className={`rounded-md p-4 ${messageType === 'error' ? 'bg-red-50' : 'bg-green-50'}`}>
-            <div className="flex">
-              <div className="ml-3">
-                <p className={`text-sm font-medium ${messageType === 'error' ? 'text-red-800' : 'text-green-800'}`}>{message}</p>
-              </div>
-            </div>
-          </div>
-        )}
-        
-        <p className="mt-8 text-center text-sm text-gray-600">
-          Don't have an account?{' '}
-          <Link href="/sign-up" className="font-medium text-indigo-600 hover:text-indigo-500">
-            Sign Up Now
-          </Link>
-        </p>
+        {/* Optional Footer for Sign Up link etc. */}
+        <CardFooter className="text-center text-sm text-gray-600">
+          Don't have an account? <Link href="/sign-up" className="font-medium text-blue-600 hover:text-blue-500">Sign up</Link>
+        </CardFooter>
 
-        <p className="mt-6 text-center text-xs text-gray-500">
-          By continuing, you agree to Omnipotency AI's{' '}
-          <a href="#" className="underline hover:text-gray-700">Terms of Service</a> and{' '}
-          <a href="#" className="underline hover:text-gray-700">Privacy Policy</a>, 
-          and to receive periodic emails with updates.
-        </p>
-
-      </div>
+      </Card>
     </div>
   );
 }

@@ -15,7 +15,7 @@ const clientSchema = z.object({
   id: z.number().optional(), // Optional for creation
   first_name: z.string().min(1, "First name is required"),
   last_name: z.string().min(1, "Last name is required"),
-  email: z.string().email("Invalid email format").optional().or(z.literal('')), // Allow empty string or valid email
+  email: z.string().email("Invalid email format").min(1, "Email is required"), // Email is now required
   // user_id will be handled by the backend procedure
 });
 
@@ -40,7 +40,7 @@ export function ClientsContent() {
   // --- Queries & Mutations ---
   const { data: clients, isLoading, error: queryError } = api.clients.list.useQuery<Client[]>();
 
-  const upsertMutation = api.clients.upsert.useMutation({
+  const saveMutation = api.clients.save.useMutation({
     // We'll handle success/error in the onSubmit function to have more control
     // and avoid race conditions
     onMutate: (variables) => {
@@ -85,7 +85,7 @@ export function ClientsContent() {
         id: editingClientId || undefined,
         first_name: data.first_name.trim(),
         last_name: data.last_name.trim(),
-        email: data.email === '' ? null : data.email?.trim(),
+        email: data.email.trim(),
     };
     
     console.log("Mutation data being sent to server:", mutationData);
@@ -100,28 +100,33 @@ export function ClientsContent() {
         return;
       }
       
-      console.log("Authenticated as user:", user.id);
+      console.log(`[onSubmit:Async] Authenticated as user: ${user.id}`);
       
       // Execute mutation
-      upsertMutation.mutate(mutationData, {
-        onSuccess: (result) => {
-          console.log("Mutation succeeded:", result);
-          // Explicitly refetch instead of invalidate (more reliable)
-          utils.clients.list.refetch();
-          setIsFormOpen(false);
-          reset();
-          setFormError(null);
-          setEditingClientId(null);
-        },
-        onError: (err) => {
-          console.error("Mutation error in submit handler:", err);
-          setFormError(typeof err === 'string' ? err : 
-            err instanceof Error ? err.message : 'Unknown error saving client');
-        }
-      });
-    } catch (err) {
-      console.error("Exception during client save:", err);
-      setFormError(err instanceof Error ? err.message : 'Unknown error');
+      console.log('[onSubmit:Async] Calling saveMutation.mutateAsync...');
+      try {
+        const result = await saveMutation.mutateAsync(mutationData);
+        console.log('[onSubmit:Async] Mutation successful. Result:', result);
+
+        // --- Success Handling --- 
+        console.log('[onSubmit:Async] Calling utils.clients.list.invalidate()...');
+        await utils.clients.list.invalidate(); // Can await invalidation if needed, though not strictly necessary
+        console.log('[onSubmit:Async] Invalidation complete. Closing form and resetting.');
+        setIsFormOpen(false);
+        reset();
+        setFormError(null);
+        setEditingClientId(null);
+      } catch (err: any) {
+        // --- Error Handling --- 
+        console.error('[onSubmit:Async] Mutation failed:', err);
+        // Attempt to get a more specific message from tRPC error
+        const message = err.message ?? 'Unknown error saving client';
+        setFormError(message);
+      }
+      console.log('[onSubmit:Async] Finished handling mutation.');
+    } catch (authError) {
+      console.error('[onSubmit:Async] Authentication check failed:', authError);
+      setFormError(authError instanceof Error ? authError.message : 'Authentication error');
     }
   };
 
@@ -153,6 +158,13 @@ export function ClientsContent() {
     return <p className="p-4 text-red-600">Error loading clients: {queryError.message}</p>;
   }
 
+  if (isLoading) {
+    return <p className="p-4 text-gray-500">Loading clients...</p>;
+  }
+
+  // Ensure clients is an array before mapping (handle potential undefined/null)
+  const clientList = Array.isArray(clients) ? clients : [];
+
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <div className="flex justify-between items-center mb-6">
@@ -165,101 +177,91 @@ export function ClientsContent() {
         </button>
       </div>
 
-      {/* Form Section - Conditionally Rendered */}
-      {isFormOpen && (
-        <div className="mb-8 bg-white shadow-md rounded-lg p-6 border border-blue-200">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">{editingClientId ? "Edit Client" : "Add New Client"}</h2>
-            <button 
-              onClick={() => {
-                setIsFormOpen(false); 
-                reset(); 
-                setFormError(null); 
-                setEditingClientId(null);
-              }}
-              className="text-gray-500 hover:text-gray-700"
-            >
-              &times;
-            </button> 
-          </div>
-          <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Hidden ID field - value is managed by useEffect and setValue */}
-            <input type="hidden" {...register("id")} />
-            
-            {/* First Name */}
-            <div className="flex flex-col space-y-1">
-              <label htmlFor="firstName" className="text-sm font-medium text-gray-700">First Name</label>
-              <input
-                id="firstName"
-                {...register("first_name")}
-                className={`border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500 ${errors.first_name ? 'border-red-500' : 'border-gray-300'}`}
-                placeholder="First Name"
-                disabled={isSubmitting}
-              />
-              {errors.first_name && <p className="text-xs text-red-600">{errors.first_name.message}</p>}
-            </div>
-
-            {/* Last Name */}
-            <div className="flex flex-col space-y-1">
-              <label htmlFor="lastName" className="text-sm font-medium text-gray-700">Last Name</label>
-              <input
-                id="lastName"
-                {...register("last_name")}
-                className={`border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500 ${errors.last_name ? 'border-red-500' : 'border-gray-300'}`}
-                placeholder="Last Name"
-                disabled={isSubmitting}
-              />
-              {errors.last_name && <p className="text-xs text-red-600">{errors.last_name.message}</p>}
-            </div>
-
-            {/* Email */}
-            <div className="flex flex-col space-y-1 md:col-span-2">
-              <label htmlFor="email" className="text-sm font-medium text-gray-700">Email</label>
-              <input
-                id="email"
-                type="email"
-                {...register("email")}
-                className={`border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500 ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
-                placeholder="Email (optional)"
-                disabled={isSubmitting}
-              />
-              {errors.email && <p className="text-xs text-red-600">{errors.email.message}</p>}
-            </div>
-
-            {/* Form Actions */}
-            <div className="md:col-span-2 flex justify-end items-center mt-4 space-x-3">
-               {formError && <p className="text-sm text-red-600 mr-auto">{formError}</p>}
-               <button 
-                 type="button" 
-                 onClick={() => {
-                   setIsFormOpen(false); 
-                   reset(); 
-                   setFormError(null); 
-                   setEditingClientId(null);
-                 }}
-                 className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors disabled:opacity-50"
-                 disabled={isSubmitting}
-                >
-                 Cancel
-               </button>
-               <button
-                type="submit"
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
-                disabled={isSubmitting || upsertMutation.isLoading}
-              >
-                {isSubmitting || upsertMutation.isLoading ? "Saving..." : (editingClientId ? "Update Client" : "Save Client")}
-              </button>
-            </div>
-          </form>
+      {/* Form Section - Visibility controlled by CSS */}
+      <div className={`mb-8 bg-white shadow-md rounded-lg p-6 border border-blue-200 transition-all duration-300 ease-in-out ${isFormOpen ? 'opacity-100 max-h-[1000px]' : 'opacity-0 max-h-0 overflow-hidden p-0 border-0'}`}>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold">{editingClientId ? "Edit Client" : "Add New Client"}</h2>
+          <button 
+            type="button" // Important: Prevent default form submission
+            onClick={() => { setIsFormOpen(false); reset(); setFormError(null); setEditingClientId(null); }}
+            className="text-gray-500 hover:text-gray-700"
+          >
+            &times;
+          </button> 
         </div>
-      )}
+        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Hidden ID field - value is managed by useEffect and setValue */}
+          <input type="hidden" {...register("id")} />
+          
+          {/* First Name */}
+          <div className="flex flex-col space-y-1">
+            <label htmlFor="firstName" className="text-sm font-medium text-gray-700">First Name</label>
+            <input
+              id="firstName"
+              {...register("first_name")}
+              className={`border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500 ${errors.first_name ? 'border-red-500' : 'border-gray-300'}`}
+              placeholder="First Name"
+              disabled={isSubmitting}
+            />
+            {errors.first_name && <p className="text-xs text-red-600">{errors.first_name.message}</p>}
+          </div>
+
+          {/* Last Name */}
+          <div className="flex flex-col space-y-1">
+            <label htmlFor="lastName" className="text-sm font-medium text-gray-700">Last Name</label>
+            <input
+              id="lastName"
+              {...register("last_name")}
+              className={`border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500 ${errors.last_name ? 'border-red-500' : 'border-gray-300'}`}
+              placeholder="Last Name"
+              disabled={isSubmitting}
+            />
+            {errors.last_name && <p className="text-xs text-red-600">{errors.last_name.message}</p>}
+          </div>
+
+          {/* Email */}
+          <div className="flex flex-col space-y-1 md:col-span-2">
+            <label htmlFor="email" className="text-sm font-medium text-gray-700">Email</label>
+            <input
+              id="email"
+              type="email"
+              {...register("email")}
+              className={`border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500 ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
+              placeholder="Email"
+              disabled={isSubmitting}
+            />
+            {errors.email && <p className="text-xs text-red-600">{errors.email.message}</p>}
+          </div>
+
+          {/* Form Actions */}
+          <div className="md:col-span-2 flex justify-end items-center mt-4 space-x-3">
+             {formError && <p className="text-sm text-red-600 mr-auto">{formError}</p>}
+             <button 
+               type="button" 
+               onClick={() => {
+                 setIsFormOpen(false); 
+                 reset(); 
+                 setFormError(null); 
+                 setEditingClientId(null);
+               }}
+               className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
+               disabled={isSubmitting} // Keep disabled state if needed
+             >
+               Cancel
+             </button>
+             <button
+              type="submit"
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+              disabled={isSubmitting || saveMutation.isLoading}
+            >
+              {isSubmitting || saveMutation.isLoading ? "Saving..." : (editingClientId ? "Update Client" : "Save Client")}
+            </button>
+          </div>
+        </form>
+      </div>
 
       {/* Client List Table */}
-      {isLoading ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-        </div>
-      ) : clients && clients.length > 0 ? (
+      {clientList.length > 0 ? (
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
@@ -271,7 +273,7 @@ export function ClientsContent() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {clients.map((client: Client) => (
+              {clientList.map((client: Client) => (
                 <tr key={client.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                      <div className="flex items-center">
@@ -296,7 +298,7 @@ export function ClientsContent() {
                     <button 
                       onClick={() => handleEditClick(client)}
                       className="text-blue-600 hover:text-blue-900 mr-3 disabled:opacity-50 disabled:cursor-not-allowed"
-                      disabled={upsertMutation.isLoading}
+                      disabled={saveMutation.isLoading}
                     >
                       Edit
                     </button>

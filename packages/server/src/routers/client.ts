@@ -2,67 +2,16 @@ import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { router, protectedProcedure, publicProcedure } from '../trpc';
 import { supabaseAdmin } from '../supabaseAdmin';
-    
+import { Database } from '@codexcrm/db';
+
+const clientInputSchema = z.object({
+  id: z.number().optional(),
+  first_name: z.string().min(1, 'First name is required'),
+  last_name: z.string().min(1, 'Last name is required'),
+  email: z.string().email('Invalid email address').optional().nullable(),
+});
+
 export const clientRouter = router({
-
-  // ===== Test Procedures (for development only) =====
-  // These allow testing the client functionality without authentication
-  // They should be removed or secured in production
-
-  testList: publicProcedure.query(async () => {
-    console.log('Using test list procedure');
-    const { data, error } = await supabaseAdmin
-      .from('clients')
-      .select('*')
-      .order('created_at', { ascending: false });
-      
-    if (error) {
-      console.error("Error fetching test clients:", error);
-      throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to fetch test clients' });
-    }
-    return data || [];
-  }),
-
-  testUpsert: publicProcedure
-    .input(
-      z.object({
-        id: z.number().optional(),
-        first_name: z.string(),
-        last_name: z.string(),
-        email: z.string().email().optional().nullable(),
-      })
-    )
-    .mutation(async ({ input }) => {
-      console.log('Using test upsert procedure');
-      
-      try {
-        // Generate a valid UUID instead of using "mock-user-id"
-        const mockUserId = '00000000-0000-4000-a000-000000000000'; // Valid UUID format for testing
-        
-        const { data, error } = await supabaseAdmin
-          .from('clients')
-          .upsert({ ...input, user_id: mockUserId })
-          .select()
-          .single();
-
-        if (error) {
-          console.error('Supabase test upsert error:', error);
-          throw new TRPCError({ 
-            code: 'INTERNAL_SERVER_ERROR', 
-            message: `Failed to save test client: ${error.message}` 
-          });
-        }
-
-        console.log('Test client upsert successful:', data);
-        return data;
-      } catch (err) {
-        console.error('Unexpected error in test upsert procedure:', err);
-        throw new TRPCError({ 
-          code: 'INTERNAL_SERVER_ERROR', 
-          message: err instanceof Error ? err.message : 'An unknown error occurred' 
-        });
-      }
-    }),
 
   // ===== Protected Procedures (require authentication) =====
 
@@ -70,7 +19,7 @@ export const clientRouter = router({
   // Now uses supabaseUser to properly enforce RLS
   list: protectedProcedure.query(async ({ ctx }) => {
     if (!ctx.user) {
-      throw new Error('Unauthorized: User not authenticated');
+      throw new TRPCError({ code: 'UNAUTHORIZED' });
     }
     
     // Use the USER-SCOPED client from context for reads to respect RLS!
@@ -88,54 +37,76 @@ export const clientRouter = router({
   }),
 
   // Protected procedure for creating/updating clients
-  upsert: protectedProcedure
+  save: protectedProcedure
     .input(
-      z.object({
-        id: z.number().optional(),
-        first_name: z.string(),
-        last_name: z.string(),
-        email: z.string().email().optional().nullable(), // Accept null values for empty emails
-      })
+      clientInputSchema
     )
     .mutation(async ({ input, ctx }) => {
       if (!ctx.user) {
-        throw new TRPCError({ 
-          code: 'UNAUTHORIZED', 
-          message: 'User not authenticated' 
-        });
+        throw new TRPCError({ code: 'UNAUTHORIZED' });
       }
       
-      try {
-        console.log('Attempting client upsert:', { 
-          ...input, 
-          user_id: ctx.user.id,
-          email_type: input.email === null ? 'null' : typeof input.email  
-        });
+      const { id, ...clientData } = input;
 
-        // After null check, TypeScript knows ctx.user is not null
-        const { data, error } = await supabaseAdmin
-          .from('clients')
-          .upsert({ ...input, user_id: ctx.user.id })
-          .select()
-          .single();
+      const dataToSave = {
+        ...clientData,
+        email: clientData.email === '' ? null : clientData.email,
+      };
+
+      try {
+        let savedClient: Database['public']['Tables']['clients']['Row'] | null = null;
+        let error: any = null;
+
+        if (id) {
+          console.log(`Attempting client update for id: ${id}`, dataToSave);
+          const { data: updateData, error: updateError } = await ctx.supabaseUser
+            .from('clients')
+            .update(dataToSave)
+            .eq('id', id)
+            .select()
+            .single();
+
+          savedClient = updateData;
+          error = updateError;
+          if (!error && !savedClient) {
+            console.warn(`Client update for id ${id} executed but returned no data. Check RLS SELECT policy or if record exists/is owned.`);
+            throw new TRPCError({ code: 'NOT_FOUND', message: `Client with ID ${id} not found or you don't have permission to edit it.` });
+          }
+        } else {
+          console.log('Attempting client insert with user context', { ...dataToSave, user_id: ctx.user.id });
+          // Use user-scoped client for insert to ensure consistency with RLS
+          const { data: insertData, error: insertError } = await ctx.supabaseUser 
+            .from('clients')
+            .insert({ ...dataToSave, user_id: ctx.user.id }) 
+            .select()
+            .single();
+
+          savedClient = insertData;
+          error = insertError;
+        }
 
         if (error) {
-          console.error('Supabase upsert error:', error, { input, userId: ctx.user.id });
-          throw new TRPCError({ 
-            code: 'INTERNAL_SERVER_ERROR', 
-            message: `Failed to save client: ${error.message}` 
+          console.error('Supabase save error:', error, { input, userId: ctx.user.id });
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: `Failed to save client: ${error.message}`,
+            cause: error,
           });
         }
 
-        console.log('Client upsert successful:', data);
-        return data;
+        if (!savedClient) {
+          console.error('Supabase save operation returned no data and no error.');
+          throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to save client due to an unexpected issue.' });
+        }
+
+        console.log('Client save successful:', savedClient);
+        return savedClient;
       } catch (err) {
-        console.error('Unexpected error in upsert procedure:', err);
+        console.error('Unexpected error in save procedure:', err);
         if (err instanceof TRPCError) throw err;
-        
-        throw new TRPCError({ 
-          code: 'INTERNAL_SERVER_ERROR', 
-          message: err instanceof Error ? err.message : 'An unknown error occurred' 
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: err instanceof Error ? err.message : 'An unknown error occurred while saving the client.',
         });
       }
     }),
