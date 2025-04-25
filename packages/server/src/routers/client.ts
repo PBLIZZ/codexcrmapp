@@ -1,78 +1,90 @@
 import { z } from 'zod';
+import { TRPCError } from '@trpc/server';
 import { router, protectedProcedure, publicProcedure } from '../trpc';
 import { supabaseAdmin } from '../supabaseAdmin';
     
 export const clientRouter = router({
-  // Public procedure for testing - will be removed in production
-  testList: publicProcedure.query(async ({ ctx }) => {
-    // Try to fetch from Supabase first
+
+  // ===== Test Procedures (for development only) =====
+  // These allow testing the client functionality without authentication
+  // They should be removed or secured in production
+
+  testList: publicProcedure.query(async () => {
+    console.log('Using test list procedure');
     const { data, error } = await supabaseAdmin
       .from('clients')
       .select('*')
-      .limit(10);
-    
-    // If there's an error or no data, return mock data
-    if (error || !data || data.length === 0) {
-      console.log('Using mock client data');
-      return [
-        {
-          id: 1,
-          first_name: 'John',
-          last_name: 'Doe',
-          email: 'john.doe@example.com',
-          user_id: 'mock-user-id',
-          created_at: new Date().toISOString(),
-        },
-        {
-          id: 2,
-          first_name: 'Jane',
-          last_name: 'Smith',
-          email: 'jane.smith@example.com',
-          user_id: 'mock-user-id',
-          created_at: new Date().toISOString(),
-        },
-        {
-          id: 3,
-          first_name: 'Robert',
-          last_name: 'Johnson',
-          email: 'robert.johnson@example.com',
-          user_id: 'mock-user-id',
-          created_at: new Date().toISOString(),
-        },
-        {
-          id: 4,
-          first_name: 'Emily',
-          last_name: 'Williams',
-          email: 'emily.williams@example.com',
-          user_id: 'mock-user-id',
-          created_at: new Date().toISOString(),
-        },
-        {
-          id: 5,
-          first_name: 'Michael',
-          last_name: 'Brown',
-          email: 'michael.brown@example.com',
-          user_id: 'mock-user-id',
-          created_at: new Date().toISOString(),
-        }
-      ];
+      .order('created_at', { ascending: false });
+      
+    if (error) {
+      console.error("Error fetching test clients:", error);
+      throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to fetch test clients' });
     }
-    
-    return data;
+    return data || [];
   }),
+
+  testUpsert: publicProcedure
+    .input(
+      z.object({
+        id: z.number().optional(),
+        first_name: z.string(),
+        last_name: z.string(),
+        email: z.string().email().optional().nullable(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      console.log('Using test upsert procedure');
+      
+      try {
+        // Generate a valid UUID instead of using "mock-user-id"
+        const mockUserId = '00000000-0000-4000-a000-000000000000'; // Valid UUID format for testing
+        
+        const { data, error } = await supabaseAdmin
+          .from('clients')
+          .upsert({ ...input, user_id: mockUserId })
+          .select()
+          .single();
+
+        if (error) {
+          console.error('Supabase test upsert error:', error);
+          throw new TRPCError({ 
+            code: 'INTERNAL_SERVER_ERROR', 
+            message: `Failed to save test client: ${error.message}` 
+          });
+        }
+
+        console.log('Test client upsert successful:', data);
+        return data;
+      } catch (err) {
+        console.error('Unexpected error in test upsert procedure:', err);
+        throw new TRPCError({ 
+          code: 'INTERNAL_SERVER_ERROR', 
+          message: err instanceof Error ? err.message : 'An unknown error occurred' 
+        });
+      }
+    }),
+
+  // ===== Protected Procedures (require authentication) =====
+
   // Protected procedure for listing authenticated user's clients
+  // Now uses supabaseUser to properly enforce RLS
   list: protectedProcedure.query(async ({ ctx }) => {
     if (!ctx.user) {
       throw new Error('Unauthorized: User not authenticated');
     }
-    // TypeScript now knows ctx.user is not null, but we need to ensure it has the right properties
-    const { data, error } = await supabaseAdmin
+    
+    // Use the USER-SCOPED client from context for reads to respect RLS!
+    const { data, error } = await ctx.supabaseUser
       .from('clients')
       .select('*')
-      .eq('user_id', ctx.user.id)
+      // .eq('user_id', ctx.user.id) // Not needed with proper RLS, but can keep for defense-in-depth
       .order('created_at', { ascending: false });
-    if (error) throw error;
-    return data;
+      
+    if (error) {
+      console.error("Error fetching clients (RLS scope):", error);
+      throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to fetch clients' });
+    }
+    return data || [];
   }),
 
   // Protected procedure for creating/updating clients
@@ -82,66 +94,51 @@ export const clientRouter = router({
         id: z.number().optional(),
         first_name: z.string(),
         last_name: z.string(),
-        email: z.string().email().optional(),
+        email: z.string().email().optional().nullable(), // Accept null values for empty emails
       })
     )
     .mutation(async ({ input, ctx }) => {
       if (!ctx.user) {
-        throw new Error('Unauthorized: User not authenticated');
+        throw new TRPCError({ 
+          code: 'UNAUTHORIZED', 
+          message: 'User not authenticated' 
+        });
       }
-      // After null check, TypeScript knows ctx.user is not null
-      const { data, error } = await supabaseAdmin
-        .from('clients')
-        .upsert({ ...input, user_id: ctx.user.id })
-        .select()
-        .single();
-      if (error) throw error;
-      return data;
-    }),
-    
-  // Public procedure for testing client creation - will be removed in production
-  testUpsert: publicProcedure
-    .input(
-      z.object({
-        id: z.number().optional(),
-        first_name: z.string(),
-        last_name: z.string(),
-        email: z.string().email().optional(),
-      })
-    )
-    .mutation(async ({ input }) => {
+      
       try {
-        // Generate a mock user ID for testing
-        const mockUserId = 'mock-user-id';
-        
-        // Try to insert into Supabase
+        console.log('Attempting client upsert:', { 
+          ...input, 
+          user_id: ctx.user.id,
+          email_type: input.email === null ? 'null' : typeof input.email  
+        });
+
+        // After null check, TypeScript knows ctx.user is not null
         const { data, error } = await supabaseAdmin
           .from('clients')
-          .upsert({ ...input, user_id: mockUserId })
+          .upsert({ ...input, user_id: ctx.user.id })
           .select()
           .single();
-          
+
         if (error) {
-          console.error('Supabase error:', error);
-          // Return mock data for testing
-          return {
-            id: Math.floor(Math.random() * 1000) + 6, // Random ID starting from 6
-            ...input,
-            user_id: mockUserId,
-            created_at: new Date().toISOString()
-          };
+          console.error('Supabase upsert error:', error, { input, userId: ctx.user.id });
+          throw new TRPCError({ 
+            code: 'INTERNAL_SERVER_ERROR', 
+            message: `Failed to save client: ${error.message}` 
+          });
         }
-        
+
+        console.log('Client upsert successful:', data);
         return data;
       } catch (err) {
-        console.error('Error in testUpsert:', err);
-        // Return mock data as fallback
-        return {
-          id: Math.floor(Math.random() * 1000) + 6,
-          ...input,
-          user_id: 'mock-user-id',
-          created_at: new Date().toISOString()
-        };
+        console.error('Unexpected error in upsert procedure:', err);
+        if (err instanceof TRPCError) throw err;
+        
+        throw new TRPCError({ 
+          code: 'INTERNAL_SERVER_ERROR', 
+          message: err instanceof Error ? err.message : 'An unknown error occurred' 
+        });
       }
     }),
+    
+
 });

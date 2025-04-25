@@ -9,6 +9,7 @@
     "lint": "cd apps/web && next lint"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.0.1",
     "@shadcn/ui": "^0.0.4",
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.49.4",
@@ -22,6 +23,7 @@
     "next": "15.3.1",
     "react": "^19.0.2",
     "react-dom": "^19.0.2",
+    "react-hook-form": "^7.56.1",
     "superjson": "^2.2.2",
     "tailwind-merge": "^3.2.0",
     "tailwind-variants": "^1.0.0",

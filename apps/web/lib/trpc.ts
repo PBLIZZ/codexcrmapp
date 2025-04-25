@@ -4,7 +4,7 @@
  */
 
 // Re-export the tRPC client from the correct path alias
-export { api } from '../src/lib/trpc/client';
+export { api, API_VERSION } from '../src/lib/trpc/client';
 
 // Re-export as trpc for backward compatibility
 export { trpc } from '../app/providers';

@@ -10,8 +10,10 @@
   },
   "packageManager": "pnpm@10.9.0",
   "dependencies": {
+    "@codexcrm/db": "workspace:*",
     "@codexcrm/server": "workspace:*",
     "@radix-ui/react-separator": "^1.1.4",
+    "@radix-ui/react-slot": "^1.2.0",
     "@shadcn/ui": "^0.0.4",
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.49.4",

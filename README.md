@@ -1,5 +1,7 @@
 # CodexCRM
 
+> **NOTE:** For the current sprint status and remaining tasks, please refer to [Sprint1-Status.md](./Sprint1-Status.md) which contains the most up-to-date information.
+
 A simple CRM application built with a modern full-stack TypeScript setup.
 
 ## Tech Stack

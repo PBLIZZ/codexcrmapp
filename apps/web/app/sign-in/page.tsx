@@ -3,39 +3,35 @@ import { useState } from 'react';
 import { supabase } from '@/lib/supabase/client';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
+import { Separator } from '@/components/ui/separator';
+
+// Google Icon SVG Component
+const GoogleIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M22.56 12.25C22.56 11.47 22.49 10.72 22.35 10H12V14.26H18.19C17.94 15.63 17.1 16.79 15.8 17.57V20.34H19.94C21.63 18.67 22.56 15.69 22.56 12.25Z" fill="#4285F4"/>
+    <path d="M12 23C14.97 23 17.45 22.02 19.28 20.34L15.8 17.57C14.83 18.23 13.5 18.66 12 18.66C9.14 18.66 6.7 16.73 5.84 14.09H1.69V16.92C3.47 20.53 7.39 23 12 23Z" fill="#34A853"/>
+    <path d="M5.84 14.09C5.62 13.43 5.5 12.73 5.5 12C5.5 11.27 5.62 10.57 5.84 9.91V7.08H1.69C.97 8.55 0.5 10.22 0.5 12C0.5 13.78 .97 15.45 1.69 16.92L5.84 14.09Z" fill="#FBBC05"/>
+    <path d="M12 5.34C13.62 5.34 15.06 5.93 16.2 7L19.34 3.86C17.45 2.09 14.97 1 12 1C7.39 1 3.47 3.47 1.69 7.08L5.84 9.91C6.7 7.27 9.14 5.34 12 5.34Z" fill="#EA4335"/>
+  </svg>
+);
+
+// Apple Icon SVG Component
+const AppleIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18.816 14.6179C18.816 14.6179 18.031 12.0519 19.805 10.5889C20.948 9.6889 21.299 8.0409 20.68 6.7179C19.63 4.4509 17.489 3.7919 16.621 3.7389C14.617 3.5809 12.858 4.7839 11.907 4.7839C10.956 4.7839 9.576 3.7379 7.91 3.7649C6.081 3.7949 4.242 4.8109 3.174 6.8319C1.034 10.7899 3.299 16.3029 5.311 19.0999C6.353 20.5269 7.691 22.0269 9.319 22.0009C10.861 21.9749 11.346 21.1129 13.238 21.0869C15.142 21.0599 15.577 21.9999 17.167 21.9749C18.798 21.9499 19.881 20.4499 20.832 19.0239C21.167 18.4929 21.466 17.9309 21.702 17.3439C21.769 17.1879 19.63 16.1409 18.816 14.6179ZM14.939 2.6179C15.744 1.7439 16.205 0.5969 16.091 0.0249C14.932 0.1009 13.676 0.7819 12.882 1.6549C12.206 2.3659 11.617 3.4659 11.817 4.3659C13.056 4.3989 14.225 3.4009 14.939 2.6179Z"/>
+  </svg>
+);
 
 export default function SignInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isMagicLinkLoading, setIsMagicLinkLoading] = useState(false);
+  const [isOauthLoading, setIsOauthLoading] = useState<'google' | 'apple' | null>(null);
+  const [authMethod, setAuthMethod] = useState<'password' | 'magicLink'>('password');
 
-  const handleMagicLinkLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setMessage('');
-    
-    try {
-      const { error } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          emailRedirectTo: `${window.location.origin}/api/auth/callback`,
-        },
-      });
-      if (error) {
-        setMessage(error.message);
-      } else {
-        setMessage('Check your email for the login link!');
-      }
-    } catch (error: any) {
-      setMessage(error.message || 'An error occurred during sign in');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  
   const handlePasswordLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -49,153 +45,239 @@ export default function SignInPage() {
       
       if (error) {
         setMessage(error.message);
+        setMessageType('error');
+      } else {
+        // Successful login - redirect to dashboard explicitly
+        // This ensures the login screen disappears
+        window.location.href = '/dashboard';
       }
+      // Middleware will handle redirect, but we force it here too for better UX
     } catch (error: any) {
       setMessage(error.message || 'An error occurred during sign in');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  
-  const handleGoogleLogin = async () => {
-    setIsLoading(true);
-    setMessage('');
-    
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/api/auth/callback`,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          },
-        },
-      });
-      
-      if (error) {
-        setMessage(error.message);
-      }
-    } catch (error: any) {
-      setMessage(error.message || 'An error occurred during Google sign in');
+      setMessageType('error');
     } finally {
       setIsLoading(false);
     }
   };
 
+  const [messageType, setMessageType] = useState<'error' | 'success'>('error');
+
+  const handleMagicLinkLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsMagicLinkLoading(true);
+    setMessage('');
+    
+    try {
+      // Use the official Supabase auth callback handler with the 'next' parameter
+      // to specify where to redirect after authentication
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/api/auth/callback?next=/dashboard`,
+        },
+      });
+      
+      if (error) {
+        setMessage(error.message);
+        setMessageType('error');
+      } else {
+        setMessage('Check your email for a login link!');
+        setMessageType('success');
+      }
+    } catch (error: any) {
+      setMessage(error.message || 'An error occurred sending the magic link');
+      setMessageType('error');
+    } finally {
+      setIsMagicLinkLoading(false);
+    }
+  };
+
+  const handleOAuthLogin = async (provider: 'google' | 'apple') => {
+    setIsOauthLoading(provider);
+    setMessage('');
+    
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/api/auth/callback?next=/dashboard`,
+          // These params help ensure we get refresh tokens for better persistence
+          queryParams: provider === 'google' ? { access_type: 'offline', prompt: 'consent' } : undefined,
+        },
+      });
+      
+      if (error) {
+        setMessage(error.message);
+        setMessageType('error');
+        setIsOauthLoading(null);
+      }
+      // OAuth will redirect to provider automatically
+    } catch (error: any) {
+      setMessage(`An error occurred during ${provider} sign in`);
+      setMessageType('error');
+      setIsOauthLoading(null);
+    }
+    // Note: We don't reset loading state in finally block as the page will redirect
+  };
+
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
-      <h1 className="mb-6 text-2xl font-bold text-center">Sign In to CodexCRM</h1>
-      
-      {/* Google Sign In Button */}
-      <div className="mb-6">
-        <Button 
-          type="button" 
-          onClick={handleGoogleLogin} 
-          className="w-full flex items-center justify-center gap-2 bg-white text-gray-800 border border-gray-300 hover:bg-gray-50"
-          disabled={isLoading}
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24">
-            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-          </svg>
-          Sign in with Google
-        </Button>
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md space-y-8">
+        <div className="text-center">
+          <span className="text-3xl font-bold text-gray-900">CodexCRM</span>
+        </div>
+
+        <div className="text-center">
+          <h2 className="text-2xl font-bold tracking-tight text-gray-900">Welcome back</h2>
+          <p className="mt-2 text-sm text-gray-600">Sign in to your account</p>
+        </div>
+
+        <div className="space-y-3">
+          <Button 
+            type="button" 
+            onClick={() => handleOAuthLogin('google')}
+            variant="outline"
+            className="w-full flex items-center justify-center gap-2 disabled:opacity-50"
+            disabled={isLoading || !!isOauthLoading}
+          >
+            <GoogleIcon />
+            {isOauthLoading === 'google' ? 'Redirecting...' : 'Continue with Google'}
+          </Button>
+          <Button 
+            type="button" 
+            onClick={() => handleOAuthLogin('apple')}
+            variant="outline"
+            className="w-full flex items-center justify-center gap-2 disabled:opacity-50"
+            disabled={isLoading || !!isOauthLoading}
+          >
+            <AppleIcon />
+            {isOauthLoading === 'apple' ? 'Redirecting...' : 'Continue with Apple'}
+          </Button>
+        </div>
+
+        <div className="relative py-2">
+          <div className="absolute inset-0 flex items-center" aria-hidden="true">
+            <div className="w-full border-t border-gray-300" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-gray-50 px-2 text-gray-500">or</span>
+          </div>
+        </div>
+
+        <div className="flex justify-center space-x-4 mb-6">
+          <Button 
+            type="button" 
+            variant={authMethod === 'password' ? 'default' : 'outline'}
+            onClick={() => setAuthMethod('password')}
+            size="sm"
+            className={authMethod === 'password' ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : ''}
+          >
+            Password
+          </Button>
+          <Button 
+            type="button" 
+            variant={authMethod === 'magicLink' ? 'default' : 'outline'}
+            onClick={() => setAuthMethod('magicLink')}
+            size="sm"
+            className={authMethod === 'magicLink' ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : ''}
+          >
+            Magic Link
+          </Button>
+        </div>
+
+        <form onSubmit={authMethod === 'password' ? handlePasswordLogin : handleMagicLinkLogin} className="space-y-6">
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
+            <div className="mt-1">
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck="false"
+              />
+            </div>
+          </div>
+
+          {authMethod === 'password' && (
+            <div>
+              <div className="flex items-center justify-between">
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                  Password
+                </label>
+                <div className="text-sm">
+                  <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                    Forgot Password?
+                  </a>
+                </div>
+              </div>
+              <div className="mt-1">
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck="false"
+                />
+              </div>
+            </div>
+          )}
+
+          <div>
+            <Button 
+              type="submit" 
+              variant="default"
+              className="flex w-full justify-center bg-emerald-600 hover:bg-emerald-700 focus:ring-emerald-500 disabled:opacity-50"
+              disabled={authMethod === 'password' ? (isLoading || !!isOauthLoading) : (isMagicLinkLoading || !!isOauthLoading)}
+            >
+              {authMethod === 'password' ? 
+                (isLoading ? 'Signing in...' : 'Sign In') :
+                (isMagicLinkLoading ? 'Sending Link...' : 'Send Magic Link')}
+            </Button>
+          </div>
+        </form>
+
+        {message && (
+          <div className={`rounded-md p-4 ${messageType === 'error' ? 'bg-red-50' : 'bg-green-50'}`}>
+            <div className="flex">
+              <div className="ml-3">
+                <p className={`text-sm font-medium ${messageType === 'error' ? 'text-red-800' : 'text-green-800'}`}>{message}</p>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        <p className="mt-8 text-center text-sm text-gray-600">
+          Don't have an account?{' '}
+          <Link href="/sign-up" className="font-medium text-indigo-600 hover:text-indigo-500">
+            Sign Up Now
+          </Link>
+        </p>
+
+        <p className="mt-6 text-center text-xs text-gray-500">
+          By continuing, you agree to Omnipotency AI's{' '}
+          <a href="#" className="underline hover:text-gray-700">Terms of Service</a> and{' '}
+          <a href="#" className="underline hover:text-gray-700">Privacy Policy</a>, 
+          and to receive periodic emails with updates.
+        </p>
+
       </div>
-      
-      <div className="relative mb-6">
-        <Separator className="absolute inset-0 flex items-center">
-          <span className="w-full border-t border-gray-300" />
-        </Separator>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-white px-2 text-gray-500">Or continue with</span>
-        </div>
-      </div>
-      
-      {/* Email/Password Sign In Form */}
-      <form onSubmit={handlePasswordLogin} className="space-y-4 mb-6">
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="you@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full"
-            required
-          />
-        </div>
-        
-        <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-          <Input
-            id="password"
-            type="password"
-            placeholder="••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full"
-            required
-          />
-        </div>
-        
-        <Button 
-          type="submit" 
-          className="w-full bg-blue-600 hover:bg-blue-700"
-          disabled={isLoading}
-        >
-          {isLoading ? 'Signing in...' : 'Sign in'}
-        </Button>
-        
-        <div className="text-center text-sm text-gray-600">
-           Don't have an account?{' '}
-           <Link href="/sign-up" passHref legacyBehavior>
-             <a className="font-medium text-blue-600 hover:underline">Sign up</a>
-           </Link>
-         </div>
-      </form>
-      
-      {/* Magic Link Option */}
-      <div className="relative mb-6">
-        <Separator className="absolute inset-0 flex items-center">
-          <span className="w-full border-t border-gray-300" />
-        </Separator>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-white px-2 text-gray-500">Or</span>
-        </div>
-      </div>
-      
-      <form onSubmit={handleMagicLinkLogin} className="space-y-4">
-        <div>
-          <label htmlFor="magic-email" className="block text-sm font-medium text-gray-700 mb-1">Email for Magic Link</label>
-          <Input
-            id="magic-email"
-            type="email"
-            placeholder="you@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full"
-            required
-          />
-        </div>
-        
-        <Button 
-          type="submit" 
-          className="w-full bg-gray-800 hover:bg-gray-900"
-          disabled={isLoading}
-        >
-          {isLoading ? 'Sending...' : 'Send Magic Link'}
-        </Button>
-      </form>
-      
-      {message && (
-        <div className={`mt-4 p-3 rounded ${message.includes('Check your email') ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}>
-          {message}
-        </div>
-      )}
     </div>
   );
 }

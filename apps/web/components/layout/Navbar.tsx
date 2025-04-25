@@ -3,14 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { useSupabase } from "@/lib/supabase/provider";
+import { supabase } from "@/lib/supabase/client";
 import { useState, useEffect } from "react";
-import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
+import type { AuthChangeEvent, Session, User } from '@supabase/supabase-js';
 
 export function Navbar() {
   const pathname = usePathname();
-  const { supabase } = useSupabase();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -30,9 +29,9 @@ export function Navbar() {
     );
 
     return () => {
-      authListener.subscription.unsubscribe();
+      authListener?.subscription.unsubscribe();
     };
-  }, [supabase]);
+  }, []);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -75,7 +74,7 @@ export function Navbar() {
             ) : user ? (
               <div className="flex items-center space-x-4">
                 <div className="text-sm text-gray-700">
-                  {user.email?.split("@")[0]}
+                  {user?.email?.split("@")[0]}
                 </div>
                 <Button
                   variant="outline"

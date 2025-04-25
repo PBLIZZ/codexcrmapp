@@ -1,5 +1,7 @@
 # CodexCRM: Idealized Setup Guide
 
+> **NOTE:** This document is for reference only. For the current sprint status and remaining tasks, please refer to [Sprint1-Status.md](./Sprint1-Status.md) which contains the most up-to-date information about the project status.
+
 This guide outlines the recommended steps to set up the CodexCRM project from scratch, reflecting the final working configuration and incorporating lessons learned.
 
 **Phase 0: Prerequisites**

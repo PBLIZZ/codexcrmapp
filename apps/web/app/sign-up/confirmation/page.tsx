@@ -8,8 +8,8 @@ export default function SignUpConfirmationPage() {
         Thank you for registering your account. Please check your email for the confirmation link to activate your account.
       </p>
       <div className="text-center">
-        <Link href="/sign-in" passHref legacyBehavior>
-          <a className="font-medium text-blue-600 hover:underline">Back to Sign In</a>
+        <Link href="/sign-in" className="font-medium text-blue-600 hover:underline">
+          Back to Sign In
         </Link>
       </div>
     </div>

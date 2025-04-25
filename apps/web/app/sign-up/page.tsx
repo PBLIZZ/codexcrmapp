@@ -110,8 +110,8 @@ export default function SignUpPage() {
 
       <div className="text-center text-sm text-gray-600">
         Already have an account?{' '}
-        <Link href="/sign-in" passHref legacyBehavior>
-          <a className="font-medium text-blue-600 hover:underline">Sign in</a>
+        <Link href="/sign-in" className="font-medium text-blue-600 hover:underline">
+          Sign in
         </Link>
       </div>
     </div>
