@@ -56,11 +56,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
   }) as any); // Type assertion to avoid version compatibility issues
 
   // Force reset the cache on component mount to avoid stale references
-  React.useEffect(() => {
-    // Clear all queries on initial load to prevent stale cache issues
-    queryClient.clear();
-    console.log('React Query cache cleared');
-  }, [queryClient]);
+  // React.useEffect(() => {
+  //   // Clear all queries on initial load to prevent stale cache issues
+  //   // queryClient.clear(); // <-- Commented out: Likely causing issues with mutation updates
+  //   // console.log('React Query cache cleared');
+  // }, [queryClient]);
 
   // Create tRPC client with better error handling
   const [trpcClient] = React.useState(() => {

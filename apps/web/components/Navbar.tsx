@@ -3,10 +3,12 @@ import Link from 'next/link';
 import { useSupabase } from './SupabaseProvider';
 import { useState, useEffect } from 'react';
 import { Session } from '@supabase/supabase-js';
+import { useRouter } from 'next/navigation';
 
 export default function Navbar() {
   const [session, setSession] = useState<Session | null>(null);
   const supabase = useSupabase();
+  const router = useRouter();
   useEffect(() => {
     if (!supabase) return;
     
@@ -25,9 +27,29 @@ export default function Navbar() {
   }, [supabase]);
   
   const signOut = async () => {
-    if (supabase) {
-      await supabase.auth.signOut();
+    console.log('Attempting sign out...'); // Log start
+    // Add null check for supabase client
+    if (!supabase) {
+      console.error('Sign out failed: Supabase client not available.');
+      return;
     }
+
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error('Supabase sign out error:', error);
+        throw error;
+      }
+      console.log('Supabase signOut successful. Clearing user state.'); // Log success
+      setSession(null); // Clear user state locally
+      console.log('Pushing to / route...'); // Log before redirect
+      router.push('/'); // Redirect to home page
+      console.log('router.push called.'); // Log after redirect call
+      // router.refresh(); // Keep refresh commented out for now
+    } catch (error) { 
+      console.error('Error during sign out process:', error);
+      // Handle error display if necessary
+    } 
   };
   return (
     <nav className="p-4 flex justify-between bg-gray-100">

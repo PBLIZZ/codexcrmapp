@@ -1,0 +1,20 @@
+// packages/db/tsconfig.build.json
+{
+  "extends": "../../tsconfig.json", // Inherit base settings
+  "compilerOptions": {
+    "outDir": "./dist", // Output directory for compiled files
+    "rootDir": "./src",  // Source directory
+    "declaration": true, // Generate .d.ts files
+    "declarationMap": true, // Generate source maps for declarations (optional)
+    "sourceMap": true, // Generate source maps for JS files (optional)
+    "composite": false, // Set to false unless part of TS project references
+    "emitDeclarationOnly": false, // Ensure JS files are emitted too
+    // Ensure module/target match your project needs, inherited is likely fine
+    // "module": "esnext", // Or "commonjs" depending on target environment
+    // "target": "es2017",
+    "baseUrl": ".", // Keep baseUrl relative to this tsconfig
+    "paths": {} // Clear paths, they are resolved from the root for the build context
+  },
+  "include": ["src/**/*"], // Files to include in compilation
+  "exclude": ["node_modules", "dist"] // Folders to exclude
+}

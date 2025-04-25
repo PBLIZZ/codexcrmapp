@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase/client";
 import { useState, useEffect } from "react";
@@ -9,6 +9,7 @@ import type { AuthChangeEvent, Session, User } from '@supabase/supabase-js';
 
 export function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -34,7 +35,19 @@ export function Navbar() {
   }, []);
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
+    console.log("Layout Navbar: Attempting sign out...");
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error('Layout Navbar: Supabase sign out error:', error);
+        throw error; // Re-throw or handle as needed
+      }
+      console.log("Layout Navbar: Sign out successful. Redirecting...");
+      router.push('/'); // Redirect to home page after successful sign out
+    } catch (error) {
+      console.error('Layout Navbar: Error during sign out process:', error);
+      // Optionally show an error message to the user
+    }
   };
 
   const navItems = [
