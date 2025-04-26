@@ -5,11 +5,13 @@ import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase/client";
 import { useState, useEffect } from "react";
+import { useQueryClient } from '@tanstack/react-query';
 import type { AuthChangeEvent, Session, User } from '@supabase/supabase-js';
 
 export function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -35,18 +37,26 @@ export function Navbar() {
   }, []);
 
   const handleSignOut = async () => {
-    console.log("Layout Navbar: Attempting sign out...");
+    console.log('Layout Navbar: Attempting sign out...');
     try {
       const { error } = await supabase.auth.signOut();
       if (error) {
-        console.error('Layout Navbar: Supabase sign out error:', error);
-        throw error; // Re-throw or handle as needed
+        console.error('Layout Navbar: Error signing out:', error);
+        // Optionally show an error message to the user
+      } else {
+        console.log('Layout Navbar: Sign out successful.');
+        // Clear user state immediately
+        setUser(null);
+        setIsLoading(true);
+        // Clear React Query cache to prevent stale data fetches
+        console.log('Layout Navbar: Clearing query cache...');
+        queryClient.clear();
+        // Explicitly redirect to the sign-in page using full page load
+        console.log('Layout Navbar: Redirecting to /sign-in via full page load...');
+        window.location.href = '/sign-in'; 
       }
-      console.log("Layout Navbar: Sign out successful. Redirecting...");
-      router.push('/'); // Redirect to home page after successful sign out
     } catch (error) {
-      console.error('Layout Navbar: Error during sign out process:', error);
-      // Optionally show an error message to the user
+      console.error('Layout Navbar: Unexpected error during sign out:', error);
     }
   };
 
