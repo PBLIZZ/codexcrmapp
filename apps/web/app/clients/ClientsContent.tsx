@@ -12,7 +12,7 @@ import type { AppRouter } from '@codexcrm/server/src/root';
 
 // Zod schema for validation
 const clientSchema = z.object({
-  id: z.number().optional(), // Optional for creation
+  id: z.number().int().positive().optional(), // ID is optional (for creating new)
   first_name: z.string().min(1, "First name is required"),
   last_name: z.string().min(1, "Last name is required"),
   email: z.string().email("Invalid email format").min(1, "Email is required"), // Email is now required
@@ -23,7 +23,7 @@ type ClientFormData = z.infer<typeof clientSchema>;
 
 // Manually define Client type based on expected data from the list query
 interface Client {
-  id: number;
+  id: number; // ID is numeric (int8)
   first_name: string;
   last_name: string;
   email?: string | null;
@@ -33,7 +33,8 @@ interface Client {
 export function ClientsContent() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
-  const [editingClientId, setEditingClientId] = useState<number | null>(null); // Track if editing
+  const [editingClientId, setEditingClientId] = useState<number | null>(null); // Track if editing - ID is numeric
+  const [deleteError, setDeleteError] = useState<string | null>(null); // For delete errors
   
   const utils = api.useContext(); // Get tRPC context for cache invalidation
 
@@ -45,6 +46,19 @@ export function ClientsContent() {
     // and avoid race conditions
     onMutate: (variables) => {
       console.log('Starting mutation with variables:', variables);
+    },
+  });
+
+  // Mutation for deleting a client
+  const deleteMutation = api.clients.delete.useMutation({
+    onSuccess: (data) => {
+      console.log(`Successfully deleted client ${data.deletedClientId}. Invalidating list cache.`);
+      utils.clients.list.invalidate(); // Refresh the list on successful delete
+      setDeleteError(null); // Clear any previous delete error
+    },
+    onError: (error) => {
+      console.error('Error deleting client:', error);
+      setDeleteError(`Failed to delete client: ${error.message}`);
     },
   });
 
@@ -135,6 +149,7 @@ export function ClientsContent() {
     reset({ id: undefined, first_name: "", last_name: "", email: "" }); // Clear form
     setEditingClientId(null); // Ensure not in editing mode
     setFormError(null);
+    setDeleteError(null);
     setIsFormOpen(true);
   };
 
@@ -144,13 +159,22 @@ export function ClientsContent() {
       id: client.id,
       first_name: client.first_name,
       last_name: client.last_name,
-      // Ensure email is string or undefined, never null for the form
-      email: client.email === null || client.email === undefined ? '' : client.email, 
+      // Ensure email is string or empty string, never null/undefined for the form
+      email: client.email ?? '', 
     };
     reset(formData); // Pass explicitly typed data to reset
     setEditingClientId(client.id); 
     setFormError(null);
+    setDeleteError(null);
     setIsFormOpen(true);
+  };
+
+  const handleDeleteClick = (clientId: number) => {
+    setDeleteError(null); // Clear previous errors
+    if (window.confirm('Are you sure you want to delete this client? This action cannot be undone.')) {
+      console.log(`Attempting to delete client with ID: ${clientId}`);
+      deleteMutation.mutate({ clientId });
+    }
   };
 
   // --- Rendering ---
@@ -177,13 +201,20 @@ export function ClientsContent() {
         </button>
       </div>
 
+      {/* Display Delete Error */}
+      {deleteError && (
+        <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+          {deleteError}
+        </div>
+      )}
+
       {/* Form Section - Visibility controlled by CSS */}
       <div className={`mb-8 bg-white shadow-md rounded-lg p-6 border border-blue-200 transition-all duration-300 ease-in-out ${isFormOpen ? 'opacity-100 max-h-[1000px]' : 'opacity-0 max-h-0 overflow-hidden p-0 border-0'}`}>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">{editingClientId ? "Edit Client" : "Add New Client"}</h2>
           <button 
             type="button" // Important: Prevent default form submission
-            onClick={() => { setIsFormOpen(false); reset(); setFormError(null); setEditingClientId(null); }}
+            onClick={() => { setIsFormOpen(false); reset(); setFormError(null); setEditingClientId(null); setDeleteError(null); }}
             className="text-gray-500 hover:text-gray-700"
           >
             &times;
@@ -243,6 +274,7 @@ export function ClientsContent() {
                  reset(); 
                  setFormError(null); 
                  setEditingClientId(null);
+                 setDeleteError(null);
                }}
                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
                disabled={isSubmitting} // Keep disabled state if needed
@@ -301,6 +333,13 @@ export function ClientsContent() {
                       disabled={saveMutation.isLoading}
                     >
                       Edit
+                    </button>
+                    <button 
+                      onClick={() => handleDeleteClick(client.id)} // Pass numeric ID
+                      className="ml-2 text-red-600 hover:text-red-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                      disabled={deleteMutation.isLoading} // Disable while deleting
+                    >
+                      Delete
                     </button>
                   </td>
                 </tr>

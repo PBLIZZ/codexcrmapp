@@ -5,7 +5,7 @@ import { supabaseAdmin } from '../supabaseAdmin';
 import { Database } from '@codexcrm/db';
 
 const clientInputSchema = z.object({
-  id: z.number().optional(),
+  id: z.number().int().positive().optional(), // ID is numeric, optional for creation
   first_name: z.string().min(1, 'First name is required'),
   last_name: z.string().min(1, 'Last name is required'),
   email: z.string().email('Invalid email address').optional().nullable(),
@@ -46,7 +46,7 @@ export const clientRouter = router({
         throw new TRPCError({ code: 'UNAUTHORIZED' });
       }
       
-      const { id, ...clientData } = input;
+      const { id: clientId, ...clientData } = input;
 
       const dataToSave = {
         ...clientData,
@@ -57,27 +57,36 @@ export const clientRouter = router({
         let savedClient: Database['public']['Tables']['clients']['Row'] | null = null;
         let error: any = null;
 
-        if (id) {
-          console.log(`Attempting client update for id: ${id}`, dataToSave);
+        if (clientId) {
+          console.log(`Attempting client update for id: ${clientId}`, dataToSave);
           const { data: updateData, error: updateError } = await ctx.supabaseUser
             .from('clients')
-            .update(dataToSave)
-            .eq('id', id)
+            .update({
+              first_name: input.first_name,
+              last_name: input.last_name,
+              email: input.email,
+            })
+            .match({ id: clientId, user_id: ctx.user.id }) // Match on numeric ID and user_id
             .select()
             .single();
 
           savedClient = updateData;
           error = updateError;
           if (!error && !savedClient) {
-            console.warn(`Client update for id ${id} executed but returned no data. Check RLS SELECT policy or if record exists/is owned.`);
-            throw new TRPCError({ code: 'NOT_FOUND', message: `Client with ID ${id} not found or you don't have permission to edit it.` });
+            console.warn(`Client update for id ${clientId} executed but returned no data. Check RLS SELECT policy or if record exists/is owned.`);
+            throw new TRPCError({ code: 'NOT_FOUND', message: `Client with ID ${clientId} not found or you don't have permission to edit it.` });
           }
         } else {
           console.log('Attempting client insert with user context', { ...dataToSave, user_id: ctx.user.id });
           // Use user-scoped client for insert to ensure consistency with RLS
           const { data: insertData, error: insertError } = await ctx.supabaseUser 
             .from('clients')
-            .insert({ ...dataToSave, user_id: ctx.user.id }) 
+            .insert({ 
+              first_name: input.first_name,
+              last_name: input.last_name,
+              email: input.email,
+              user_id: ctx.user.id, // Explicitly set user_id for insert
+            }) 
             .select()
             .single();
 
@@ -110,6 +119,25 @@ export const clientRouter = router({
         });
       }
     }),
-    
 
+  // Procedure to delete a client
+  delete: protectedProcedure
+    .input(z.object({
+      clientId: z.number().int().positive(), // Expect number ID
+    }))
+    .mutation(async ({ input, ctx }) => {
+      console.log(`Attempting to delete client ID: ${input.clientId} by user ${ctx.user.id}`);
+      const { error } = await ctx.supabaseUser
+        .from('clients')
+        .delete()
+        .match({ id: input.clientId, user_id: ctx.user.id }); // Match on numeric ID and user_id
+
+      if (error) {
+        console.error('Error deleting client:', error);
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to delete client' });
+      }
+
+      console.log(`Client ${input.clientId} deleted successfully by user ${ctx.user.id}`);
+      return { success: true, deletedClientId: input.clientId };
+    }),
 });
