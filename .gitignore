@@ -47,3 +47,35 @@ next-env.d.ts
 # ignore Supabase CLI temp files under packages/db
 /packages/db/supabase/.temp
 .env
+
+# Sentry Config File
+.sentry.properties
+
+# API keys and secrets
+client_secret*.json
+.cursor/mcp.json
+**/mcp.json
+.cursor/
+google_credentials.json
+.env.sentry-build-plugin
+
+# Added by Claude Task Master
+# Logs
+logs
+*.log
+dev-debug.log
+# Dependency directories
+node_modules/
+# Environment variables
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+# OS specific
+# Task files
+tasks.json
+tasks/ 

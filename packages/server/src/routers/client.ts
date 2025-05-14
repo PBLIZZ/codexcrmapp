@@ -5,7 +5,7 @@ import { supabaseAdmin } from '../supabaseAdmin';
 import { Database } from '@codexcrm/db';
 
 const clientInputSchema = z.object({
-  id: z.number().int().positive().optional(), // ID is numeric, optional for creation
+  id: z.string().uuid().optional(), // ID is UUID string, optional for creation
   first_name: z.string().min(1, 'First name is required'),
   last_name: z.string().min(1, 'Last name is required'),
   email: z.string().email('Invalid email address').optional().nullable(),
@@ -66,7 +66,7 @@ export const clientRouter = router({
               last_name: input.last_name,
               email: input.email,
             })
-            .match({ id: clientId, user_id: ctx.user.id }) // Match on numeric ID and user_id
+            .match({ id: clientId, user_id: ctx.user.id }) // Match on UUID string ID and user_id
             .select()
             .single();
 
@@ -123,14 +123,14 @@ export const clientRouter = router({
   // Procedure to delete a client
   delete: protectedProcedure
     .input(z.object({
-      clientId: z.number().int().positive(), // Expect number ID
+      clientId: z.string().uuid(), // Expect UUID string ID
     }))
     .mutation(async ({ input, ctx }) => {
       console.log(`Attempting to delete client ID: ${input.clientId} by user ${ctx.user.id}`);
       const { error } = await ctx.supabaseUser
         .from('clients')
         .delete()
-        .match({ id: input.clientId, user_id: ctx.user.id }); // Match on numeric ID and user_id
+        .match({ id: input.clientId, user_id: ctx.user.id }); // Match on UUID string ID and user_id
 
       if (error) {
         console.error('Error deleting client:', error);

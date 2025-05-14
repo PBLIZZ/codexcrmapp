@@ -31,72 +31,111 @@ export type Database = {
         Tables: {
             clients: {
                 Row: {
-                    address: string | null;
-                    created_at: string | null;
+                    address_city: string | null;
+                    address_country: string | null;
+                    address_postal_code: string | null;
+                    address_state: string | null;
+                    address_street: string | null;
+                    company_name: string | null;
+                    created_at: string;
                     date_of_birth: string | null;
-                    email: string;
+                    email: string | null;
+                    enrichment_data: Json | null;
                     first_name: string;
-                    id: number;
+                    id: string;
+                    job_title: string | null;
                     last_name: string;
                     notes: string | null;
                     phone: string | null;
+                    profile_image_url: string | null;
+                    social_profiles: Json | null;
+                    tags: string[] | null;
+                    updated_at: string;
                     user_id: string;
                 };
                 Insert: {
-                    address?: string | null;
-                    created_at?: string | null;
+                    address_city?: string | null;
+                    address_country?: string | null;
+                    address_postal_code?: string | null;
+                    address_state?: string | null;
+                    address_street?: string | null;
+                    company_name?: string | null;
+                    created_at?: string;
                     date_of_birth?: string | null;
-                    email: string;
+                    email?: string | null;
+                    enrichment_data?: Json | null;
                     first_name: string;
-                    id?: never;
+                    id?: string;
+                    job_title?: string | null;
                     last_name: string;
                     notes?: string | null;
                     phone?: string | null;
-                    user_id?: string;
+                    profile_image_url?: string | null;
+                    social_profiles?: Json | null;
+                    tags?: string[] | null;
+                    updated_at?: string;
+                    user_id: string;
                 };
                 Update: {
-                    address?: string | null;
-                    created_at?: string | null;
+                    address_city?: string | null;
+                    address_country?: string | null;
+                    address_postal_code?: string | null;
+                    address_state?: string | null;
+                    address_street?: string | null;
+                    company_name?: string | null;
+                    created_at?: string;
                     date_of_birth?: string | null;
-                    email?: string;
+                    email?: string | null;
+                    enrichment_data?: Json | null;
                     first_name?: string;
-                    id?: never;
+                    id?: string;
+                    job_title?: string | null;
                     last_name?: string;
                     notes?: string | null;
                     phone?: string | null;
+                    profile_image_url?: string | null;
+                    social_profiles?: Json | null;
+                    tags?: string[] | null;
+                    updated_at?: string;
                     user_id?: string;
                 };
                 Relationships: [];
             };
             follow_ups: {
                 Row: {
-                    client_id: number;
-                    completed: boolean;
+                    client_id: string;
+                    completed_at: string | null;
+                    created_at: string;
                     due_date: string | null;
                     id: number;
                     notes: string | null;
                     session_id: number | null;
                     type: string;
+                    updated_at: string;
                     user_id: string;
                 };
                 Insert: {
-                    client_id: number;
-                    completed?: boolean;
+                    client_id: string;
+                    completed_at?: string | null;
+                    created_at?: string;
                     due_date?: string | null;
                     id?: never;
                     notes?: string | null;
                     session_id?: number | null;
                     type: string;
-                    user_id?: string;
+                    updated_at?: string;
+                    user_id: string;
                 };
                 Update: {
-                    client_id?: number;
-                    completed?: boolean;
+                    client_id?: string;
+                    completed_at?: string | null;
+                    created_at?: string;
                     due_date?: string | null;
                     id?: never;
                     notes?: string | null;
                     session_id?: number | null;
                     type?: string;
+                    updated_at?: string;
                     user_id?: string;
                 };
                 Relationships: [
@@ -118,27 +157,39 @@ export type Database = {
             };
             notes: {
                 Row: {
-                    client_id: number | null;
-                    created_at: string | null;
+                    client_id: string | null;
+                    created_at: string;
                     id: number;
+                    is_pinned: boolean;
                     note_text: string;
+                    program_id: number | null;
                     session_id: number | null;
+                    title: string | null;
+                    updated_at: string;
                     user_id: string;
                 };
                 Insert: {
-                    client_id?: number | null;
-                    created_at?: string | null;
+                    client_id?: string | null;
+                    created_at?: string;
                     id?: never;
+                    is_pinned?: boolean;
                     note_text: string;
+                    program_id?: number | null;
                     session_id?: number | null;
-                    user_id?: string;
+                    title?: string | null;
+                    updated_at?: string;
+                    user_id: string;
                 };
                 Update: {
-                    client_id?: number | null;
-                    created_at?: string | null;
+                    client_id?: string | null;
+                    created_at?: string;
                     id?: never;
+                    is_pinned?: boolean;
                     note_text?: string;
+                    program_id?: number | null;
                     session_id?: number | null;
+                    title?: string | null;
+                    updated_at?: string;
                     user_id?: string;
                 };
                 Relationships: [
@@ -147,6 +198,13 @@ export type Database = {
                         columns: ["client_id"];
                         isOneToOne: false;
                         referencedRelation: "clients";
+                        referencedColumns: ["id"];
+                    },
+                    {
+                        foreignKeyName: "notes_program_id_fkey";
+                        columns: ["program_id"];
+                        isOneToOne: false;
+                        referencedRelation: "programs";
                         referencedColumns: ["id"];
                     },
                     {
@@ -161,41 +219,53 @@ export type Database = {
             payments: {
                 Row: {
                     amount: number;
-                    client_id: number;
+                    client_id: string;
+                    created_at: string;
                     currency: string;
+                    external_payment_id: string | null;
                     id: number;
                     method: string | null;
+                    notes: string | null;
                     paid_at: string | null;
                     program_id: number | null;
+                    service_id: number | null;
                     session_id: number | null;
                     status: string;
-                    stripe_payment_id: string | null;
+                    updated_at: string;
                     user_id: string;
                 };
                 Insert: {
                     amount: number;
-                    client_id: number;
+                    client_id: string;
+                    created_at?: string;
                     currency?: string;
+                    external_payment_id?: string | null;
                     id?: never;
                     method?: string | null;
+                    notes?: string | null;
                     paid_at?: string | null;
                     program_id?: number | null;
+                    service_id?: number | null;
                     session_id?: number | null;
                     status: string;
-                    stripe_payment_id?: string | null;
-                    user_id?: string;
+                    updated_at?: string;
+                    user_id: string;
                 };
                 Update: {
                     amount?: number;
-                    client_id?: number;
+                    client_id?: string;
+                    created_at?: string;
                     currency?: string;
+                    external_payment_id?: string | null;
                     id?: never;
                     method?: string | null;
+                    notes?: string | null;
                     paid_at?: string | null;
                     program_id?: number | null;
+                    service_id?: number | null;
                     session_id?: number | null;
                     status?: string;
-                    stripe_payment_id?: string | null;
+                    updated_at?: string;
                     user_id?: string;
                 };
                 Relationships: [
@@ -214,6 +284,13 @@ export type Database = {
                         referencedColumns: ["id"];
                     },
                     {
+                        foreignKeyName: "payments_service_id_fkey";
+                        columns: ["service_id"];
+                        isOneToOne: false;
+                        referencedRelation: "services";
+                        referencedColumns: ["id"];
+                    },
+                    {
                         foreignKeyName: "payments_session_id_fkey";
                         columns: ["session_id"];
                         isOneToOne: false;
@@ -224,33 +301,39 @@ export type Database = {
             };
             program_enrollments: {
                 Row: {
-                    client_id: number;
+                    client_id: string;
                     completion_date: string | null;
-                    enrolled_at: string | null;
+                    created_at: string;
+                    enrolled_at: string;
                     id: number;
+                    notes: string | null;
                     program_id: number;
-                    sessions_remaining: number | null;
                     status: string;
+                    updated_at: string;
                     user_id: string;
                 };
                 Insert: {
-                    client_id: number;
+                    client_id: string;
                     completion_date?: string | null;
-                    enrolled_at?: string | null;
+                    created_at?: string;
+                    enrolled_at?: string;
                     id?: never;
+                    notes?: string | null;
                     program_id: number;
-                    sessions_remaining?: number | null;
                     status?: string;
-                    user_id?: string;
+                    updated_at?: string;
+                    user_id: string;
                 };
                 Update: {
-                    client_id?: number;
+                    client_id?: string;
                     completion_date?: string | null;
-                    enrolled_at?: string | null;
+                    created_at?: string;
+                    enrolled_at?: string;
                     id?: never;
+                    notes?: string | null;
                     program_id?: number;
-                    sessions_remaining?: number | null;
                     status?: string;
+                    updated_at?: string;
                     user_id?: string;
                 };
                 Relationships: [
@@ -272,69 +355,72 @@ export type Database = {
             };
             programs: {
                 Row: {
-                    created_at: string | null;
+                    created_at: string;
                     description: string | null;
                     end_date: string | null;
                     id: number;
                     name: string;
                     price: number | null;
-                    sessions_count: number | null;
                     start_date: string | null;
-                    type: string | null;
+                    updated_at: string;
                     user_id: string;
                 };
                 Insert: {
-                    created_at?: string | null;
+                    created_at?: string;
                     description?: string | null;
                     end_date?: string | null;
                     id?: never;
                     name: string;
                     price?: number | null;
-                    sessions_count?: number | null;
                     start_date?: string | null;
-                    type?: string | null;
-                    user_id?: string;
+                    updated_at?: string;
+                    user_id: string;
                 };
                 Update: {
-                    created_at?: string | null;
+                    created_at?: string;
                     description?: string | null;
                     end_date?: string | null;
                     id?: never;
                     name?: string;
                     price?: number | null;
-                    sessions_count?: number | null;
                     start_date?: string | null;
-                    type?: string | null;
+                    updated_at?: string;
                     user_id?: string;
                 };
                 Relationships: [];
             };
             services: {
                 Row: {
-                    created_at: string | null;
+                    created_at: string;
                     description: string | null;
                     duration: number | null;
                     id: number;
+                    is_active: boolean;
                     name: string;
-                    price: number;
+                    price: number | null;
+                    updated_at: string;
                     user_id: string;
                 };
                 Insert: {
-                    created_at?: string | null;
+                    created_at?: string;
                     description?: string | null;
                     duration?: number | null;
                     id?: never;
+                    is_active?: boolean;
                     name: string;
-                    price: number;
-                    user_id?: string;
+                    price?: number | null;
+                    updated_at?: string;
+                    user_id: string;
                 };
                 Update: {
-                    created_at?: string | null;
+                    created_at?: string;
                     description?: string | null;
                     duration?: number | null;
                     id?: never;
+                    is_active?: boolean;
                     name?: string;
-                    price?: number;
+                    price?: number | null;
+                    updated_at?: string;
                     user_id?: string;
                 };
                 Relationships: [];
@@ -343,28 +429,34 @@ export type Database = {
                 Row: {
                     attendance_status: string;
                     check_in_time: string | null;
-                    client_id: number;
+                    client_id: string;
+                    created_at: string;
                     id: number;
-                    payment_status: string | null;
+                    notes: string | null;
                     session_id: number;
+                    updated_at: string;
                     user_id: string;
                 };
                 Insert: {
                     attendance_status?: string;
                     check_in_time?: string | null;
-                    client_id: number;
+                    client_id: string;
+                    created_at?: string;
                     id?: never;
-                    payment_status?: string | null;
+                    notes?: string | null;
                     session_id: number;
-                    user_id?: string;
+                    updated_at?: string;
+                    user_id: string;
                 };
                 Update: {
                     attendance_status?: string;
                     check_in_time?: string | null;
-                    client_id?: number;
+                    client_id?: string;
+                    created_at?: string;
                     id?: never;
-                    payment_status?: string | null;
+                    notes?: string | null;
                     session_id?: number;
+                    updated_at?: string;
                     user_id?: string;
                 };
                 Relationships: [
@@ -386,7 +478,8 @@ export type Database = {
             };
             sessions: {
                 Row: {
-                    created_at: string | null;
+                    client_id: string | null;
+                    created_at: string;
                     end_time: string | null;
                     id: number;
                     location: string | null;
@@ -395,10 +488,12 @@ export type Database = {
                     service_id: number | null;
                     start_time: string;
                     status: string;
+                    updated_at: string;
                     user_id: string;
                 };
                 Insert: {
-                    created_at?: string | null;
+                    client_id?: string | null;
+                    created_at?: string;
                     end_time?: string | null;
                     id?: never;
                     location?: string | null;
@@ -407,10 +502,12 @@ export type Database = {
                     service_id?: number | null;
                     start_time: string;
                     status: string;
-                    user_id?: string;
+                    updated_at?: string;
+                    user_id: string;
                 };
                 Update: {
-                    created_at?: string | null;
+                    client_id?: string | null;
+                    created_at?: string;
                     end_time?: string | null;
                     id?: never;
                     location?: string | null;
@@ -419,9 +516,17 @@ export type Database = {
                     service_id?: number | null;
                     start_time?: string;
                     status?: string;
+                    updated_at?: string;
                     user_id?: string;
                 };
                 Relationships: [
+                    {
+                        foreignKeyName: "sessions_client_id_fkey";
+                        columns: ["client_id"];
+                        isOneToOne: false;
+                        referencedRelation: "clients";
+                        referencedColumns: ["id"];
+                    },
                     {
                         foreignKeyName: "sessions_program_id_fkey";
                         columns: ["program_id"];
