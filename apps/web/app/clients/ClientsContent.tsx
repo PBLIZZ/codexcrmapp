@@ -12,7 +12,7 @@ import type { AppRouter } from '@codexcrm/server/src/root';
 
 // Zod schema for validation
 const clientSchema = z.object({
-  id: z.number().int().positive().optional(), // ID is optional (for creating new)
+  id: z.string().uuid().optional(), // ID is UUID string, optional (for creating new)
   first_name: z.string().min(1, "First name is required"),
   last_name: z.string().min(1, "Last name is required"),
   email: z.string().email("Invalid email format").min(1, "Email is required"), // Email is now required
@@ -23,7 +23,7 @@ type ClientFormData = z.infer<typeof clientSchema>;
 
 // Manually define Client type based on expected data from the list query
 interface Client {
-  id: number; // ID is numeric (int8)
+  id: string; // ID is now UUID string
   first_name: string;
   last_name: string;
   email?: string | null;
@@ -33,7 +33,7 @@ interface Client {
 export function ClientsContent() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
-  const [editingClientId, setEditingClientId] = useState<number | null>(null); // Track if editing - ID is numeric
+  const [editingClientId, setEditingClientId] = useState<string | null>(null); // Track if editing - ID is UUID string
   const [deleteError, setDeleteError] = useState<string | null>(null); // For delete errors
   
   const utils = api.useContext(); // Get tRPC context for cache invalidation
@@ -169,7 +169,7 @@ export function ClientsContent() {
     setIsFormOpen(true);
   };
 
-  const handleDeleteClick = (clientId: number) => {
+  const handleDeleteClick = (clientId: string) => {
     setDeleteError(null); // Clear previous errors
     if (window.confirm('Are you sure you want to delete this client? This action cannot be undone.')) {
       console.log(`Attempting to delete client with ID: ${clientId}`);
@@ -335,7 +335,7 @@ export function ClientsContent() {
                       Edit
                     </button>
                     <button 
-                      onClick={() => handleDeleteClick(client.id)} // Pass numeric ID
+                      onClick={() => handleDeleteClick(client.id)} // Pass UUID string ID
                       className="ml-2 text-red-600 hover:text-red-900 disabled:opacity-50 disabled:cursor-not-allowed"
                       disabled={deleteMutation.isLoading} // Disable while deleting
                     >
