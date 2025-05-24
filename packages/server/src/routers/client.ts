@@ -10,12 +10,32 @@ const clientInputSchema = z.object({
   last_name: z.string().min(1, 'Last name is required'),
   email: z.string().email('Invalid email address').optional().nullable(),
   phone: z.string().optional().nullable(),
-  company: z.string().optional().nullable(),
+  company_name: z.string().optional().nullable(),
   job_title: z.string().optional().nullable(),
-  avatar_url: z.string().url('Invalid URL').optional().nullable(),
+  profile_image_url: z.string().refine(
+    (val) => {
+      // Accept empty string, null, undefined, or valid URL
+      return !val || val === "" || /^https?:\/\/[^\s]+$/.test(val);
+    },
+    {
+      message: "Invalid URL for profile image. Must start with http:// or https://",
+    }
+  ).optional().nullable(),
   notes: z.string().optional().nullable(),
-  // Additional fields (source, last_contacted_at, enrichment_status, enriched_data)
-  // require DB schema updates and are not included here
+  source: z.string().optional().nullable(), // Added source
+  last_contacted_at: z.preprocess((arg) => { // Added last_contacted_at
+    // Empty string or null/undefined should become null
+    if (arg === '' || arg === null || arg === undefined) {
+      return null;
+    }
+    // Try to parse as date if it's a string or Date
+    if (typeof arg === 'string' || arg instanceof Date) {
+      const date = new Date(arg);
+      // Check if date is valid
+      return isNaN(date.getTime()) ? null : date;
+    }
+    return null; // Default to null for any other case
+  }, z.date().optional().nullable()),
 });
 
 export const clientRouter = router({
@@ -80,10 +100,12 @@ export const clientRouter = router({
         last_name: input.last_name,
         email: input.email || null,
         phone: input.phone || null,
-        company_name: input.company || null,
+        company_name: input.company_name || null,
         job_title: input.job_title || null,
-        profile_image_url: input.avatar_url || null,
+        profile_image_url: input.profile_image_url || null,
         notes: input.notes || null,
+        source: input.source || null, // Added source
+        last_contacted_at: input.last_contacted_at || null, // Added last_contacted_at
       };
 
       try {

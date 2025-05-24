@@ -23,9 +23,9 @@ interface Client {
   last_name: string;
   email?: string | null;
   phone?: string | null;
-  company?: string | null;
+  company_name?: string | null;
   job_title?: string | null;
-  avatar_url?: string | null;
+  profile_image_url?: string | null;
   source?: string | null;
   notes?: string | null;
   last_contacted_at?: string | null;
@@ -196,9 +196,9 @@ export function ClientDetailContent() {
         <div className="p-6">
           <div className="flex items-center mb-6">
             <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mr-4">
-              {client.avatar_url ? (
+              {client.profile_image_url ? (
                 <img 
-                  src={client.avatar_url} 
+                  src={client.profile_image_url} 
                   alt={`${client.first_name} ${client.last_name}`} 
                   className="w-16 h-16 rounded-full object-cover"
                 />
@@ -212,16 +212,16 @@ export function ClientDetailContent() {
               <h2 className="text-2xl font-bold text-gray-800">
                 {client.first_name} {client.last_name}
               </h2>
-              {client.job_title && client.company && (
+              {client.job_title && client.company_name && (
                 <p className="text-gray-600">
-                  {client.job_title} at {client.company}
+                  {client.job_title} at {client.company_name}
                 </p>
               )}
-              {client.job_title && !client.company && (
+              {client.job_title && !client.company_name && (
                 <p className="text-gray-600">{client.job_title}</p>
               )}
-              {!client.job_title && client.company && (
-                <p className="text-gray-600">{client.company}</p>
+              {!client.job_title && client.company_name && (
+                <p className="text-gray-600">{client.company_name}</p>
               )}
             </div>
           </div>

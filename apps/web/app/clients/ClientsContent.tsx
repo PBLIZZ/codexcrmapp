@@ -19,12 +19,28 @@ const clientSchema = z.object({
   last_name: z.string().min(1, "Last name is required"),
   email: z.string().email("Invalid email format").min(1, "Email is required"),
   phone: z.string().optional().nullable(),
-  company: z.string().optional().nullable(),
+  company_name: z.string().optional().nullable(),
   job_title: z.string().optional().nullable(),
-  avatar_url: z.string().url({ message: "Invalid URL for avatar" }).optional().nullable(),
+  profile_image_url: z.string().refine(
+    (val) => {
+      // Accept empty string or valid URL
+      return val === "" || val === null || val === undefined || /^https?:\/\/[^\s]+$/.test(val);
+    },
+    {
+      message: "Invalid URL for profile image. Must be a valid http:// or https:// URL or left empty.",
+    }
+  ).optional().nullable(),
   source: z.string().optional().nullable(),
   notes: z.string().optional().nullable(),
-  last_contacted_at: z.string().datetime({ message: "Invalid date format for Last Contacted At" }).optional().nullable(),
+  last_contacted_at: z.string().refine(
+    (val) => {
+      // Accept empty string or valid date
+      return val === "" || !isNaN(new Date(val).getTime());
+    },
+    {
+      message: "Invalid date format for Last Contacted At",
+    }
+  ).optional().nullable(),
   enrichment_status: z.string().optional().nullable(),
   enriched_data: z.any().optional().nullable(), // For JSONB fields
 });
@@ -38,9 +54,9 @@ interface Client {
   last_name: string;
   email?: string | null;
   phone?: string | null;
-  company?: string | null;
+  company_name?: string | null;
   job_title?: string | null;
-  avatar_url?: string | null;
+  profile_image_url?: string | null;
   source?: string | null;
   notes?: string | null;
   last_contacted_at?: string | null; // Stored as TIMESTAMPTZ, received as string
@@ -83,13 +99,7 @@ export function ClientsContent() {
   });
 
   // --- Form Handling ---
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue, // Use setValue to programmatically set values
-    formState: { errors, isSubmitting },
-  } = useForm<ClientFormData>({
+  const { register, handleSubmit, formState: { errors, isSubmitting }, reset, setValue } = useForm<ClientFormData>({
     resolver: zodResolver(clientSchema),
     defaultValues: {
       id: undefined,
@@ -97,9 +107,9 @@ export function ClientsContent() {
       last_name: "",
       email: "",
       phone: "",
-      company: "",
+      company_name: "",
       job_title: "",
-      avatar_url: "",
+      profile_image_url: "",
       source: "",
       notes: "",
       last_contacted_at: "",
@@ -122,7 +132,7 @@ export function ClientsContent() {
     setFormError(null);
     console.log("Submitting client form:", data);
     
-    // Ensure optional email is null if empty string for the backend
+    // Ensure optional fields are null if empty string for the backend
     const mutationData: ClientFormData = {
         ...data,
         id: editingClientId || undefined,
@@ -130,12 +140,12 @@ export function ClientsContent() {
         last_name: data.last_name.trim(),
         email: data.email.trim(),
         phone: data.phone?.trim() || null,
-        company: data.company?.trim() || null,
+        company_name: data.company_name?.trim() || null,
         job_title: data.job_title?.trim() || null,
-        avatar_url: data.avatar_url?.trim() || null,
+        profile_image_url: data.profile_image_url?.trim() || null,
         source: data.source?.trim() || null,
         notes: data.notes?.trim() || null,
-        last_contacted_at: parseInputDateString(data.last_contacted_at),
+        last_contacted_at: data.last_contacted_at ? parseInputDateString(data.last_contacted_at) : null,
         enrichment_status: data.enrichment_status?.trim() || null,
         enriched_data: data.enriched_data, // Pass as is, backend Zod schema uses z.any()
     };
@@ -184,21 +194,23 @@ export function ClientsContent() {
 
   // --- Action Handlers ---
   const handleAddNewClick = () => {
-    reset({
+    // Reset form with all fields using the correct field names
+    const emptyFormData: ClientFormData = {
       id: undefined,
       first_name: "",
       last_name: "",
       email: "",
       phone: "",
-      company: "",
+      company_name: "",
       job_title: "",
-      avatar_url: "",
+      profile_image_url: "",
       source: "",
       notes: "",
       last_contacted_at: "",
       enrichment_status: "",
       enriched_data: null,
-    });
+    };
+    reset(emptyFormData);
     setEditingClientId(null);
     setFormError(null);
     setDeleteError(null);
@@ -213,9 +225,9 @@ export function ClientsContent() {
       last_name: client.last_name,
       email: client.email ?? '',
       phone: client.phone ?? '',
-      company: client.company ?? '',
+      company_name: client.company_name ?? '',
       job_title: client.job_title ?? '',
-      avatar_url: client.avatar_url ?? '',
+      profile_image_url: client.profile_image_url ?? '',
       source: client.source ?? '',
       notes: client.notes ?? '',
       last_contacted_at: formatDateForInput(client.last_contacted_at),
@@ -334,6 +346,61 @@ export function ClientsContent() {
               />
               {errors.last_contacted_at && <p className="text-sm text-red-600">{errors.last_contacted_at.message}</p>}
             </div>
+
+            <div className="space-y-1">
+              <label htmlFor="company_name" className="block text-sm font-medium text-gray-700">Company</label>
+              <input
+                id="company_name"
+                type="text"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                {...register("company_name")}
+              />
+              {errors.company_name && <p className="text-sm text-red-600">{errors.company_name.message}</p>}
+            </div>
+
+            <div className="space-y-1">
+              <label htmlFor="job_title" className="block text-sm font-medium text-gray-700">Job Title</label>
+              <input
+                id="job_title"
+                type="text"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                {...register("job_title")}
+              />
+              {errors.job_title && <p className="text-sm text-red-600">{errors.job_title.message}</p>}
+            </div>
+
+            <div className="space-y-1">
+              <label htmlFor="profile_image_url" className="block text-sm font-medium text-gray-700">Profile Image URL</label>
+              <input
+                id="profile_image_url"
+                type="url"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                {...register("profile_image_url")}
+              />
+              {errors.profile_image_url && <p className="text-sm text-red-600">{errors.profile_image_url.message}</p>}
+            </div>
+
+            <div className="space-y-1">
+              <label htmlFor="source" className="block text-sm font-medium text-gray-700">Source</label>
+              <input
+                id="source"
+                type="text"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                {...register("source")}
+              />
+              {errors.source && <p className="text-sm text-red-600">{errors.source.message}</p>}
+            </div>
+          </div>
+
+          <div className="space-y-1 mt-4">
+            <label htmlFor="notes" className="block text-sm font-medium text-gray-700">Notes</label>
+            <textarea
+              id="notes"
+              rows={3}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              {...register("notes")}
+            />
+            {errors.notes && <p className="text-sm text-red-600">{errors.notes.message}</p>}
           </div>
           
           <div className="flex space-x-2 justify-end mt-4">
