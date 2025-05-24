@@ -12,22 +12,40 @@ import type { AppRouter } from '@codexcrm/server/src/root';
 
 // Zod schema for validation
 const clientSchema = z.object({
-  id: z.string().uuid().optional(), // ID is UUID string, optional (for creating new)
+  id: z.string().uuid().optional(),
   first_name: z.string().min(1, "First name is required"),
   last_name: z.string().min(1, "Last name is required"),
-  email: z.string().email("Invalid email format").min(1, "Email is required"), // Email is now required
-  // user_id will be handled by the backend procedure
+  email: z.string().email("Invalid email format").min(1, "Email is required"),
+  phone: z.string().optional().nullable(),
+  company: z.string().optional().nullable(),
+  job_title: z.string().optional().nullable(),
+  avatar_url: z.string().url({ message: "Invalid URL for avatar" }).optional().nullable(),
+  source: z.string().optional().nullable(),
+  notes: z.string().optional().nullable(),
+  last_contacted_at: z.string().datetime({ message: "Invalid date format for Last Contacted At" }).optional().nullable(),
+  enrichment_status: z.string().optional().nullable(),
+  enriched_data: z.any().optional().nullable(), // For JSONB fields
 });
 
 type ClientFormData = z.infer<typeof clientSchema>;
 
 // Manually define Client type based on expected data from the list query
 interface Client {
-  id: string; // ID is now UUID string
+  id: string;
   first_name: string;
   last_name: string;
   email?: string | null;
-  created_at?: string | Date | null; // Allow Date type as well
+  phone?: string | null;
+  company?: string | null;
+  job_title?: string | null;
+  avatar_url?: string | null;
+  source?: string | null;
+  notes?: string | null;
+  last_contacted_at?: string | null; // Stored as TIMESTAMPTZ, received as string
+  enrichment_status?: string | null;
+  enriched_data?: any | null; // JSONB
+  created_at?: string | Date | null;
+  updated_at?: string | Date | null;
 }
 
 export function ClientsContent() {
@@ -72,9 +90,19 @@ export function ClientsContent() {
   } = useForm<ClientFormData>({
     resolver: zodResolver(clientSchema),
     defaultValues: {
+      id: undefined,
       first_name: "",
       last_name: "",
       email: "",
+      phone: "",
+      company: "",
+      job_title: "",
+      avatar_url: "",
+      source: "",
+      notes: "",
+      last_contacted_at: "",
+      enrichment_status: "",
+      enriched_data: null,
     },
   });
 
@@ -93,13 +121,21 @@ export function ClientsContent() {
     console.log("Submitting client form:", data);
     
     // Ensure optional email is null if empty string for the backend
-    const mutationData = {
+    const mutationData: ClientFormData = {
         ...data,
-        // Make sure ID is properly handled for creation vs update
         id: editingClientId || undefined,
         first_name: data.first_name.trim(),
         last_name: data.last_name.trim(),
         email: data.email.trim(),
+        phone: data.phone?.trim() || null,
+        company: data.company?.trim() || null,
+        job_title: data.job_title?.trim() || null,
+        avatar_url: data.avatar_url?.trim() || null,
+        source: data.source?.trim() || null,
+        notes: data.notes?.trim() || null,
+        last_contacted_at: data.last_contacted_at ? new Date(data.last_contacted_at).toISOString() : null,
+        enrichment_status: data.enrichment_status?.trim() || null,
+        enriched_data: data.enriched_data, // Pass as is, backend Zod schema uses z.any()
     };
     
     console.log("Mutation data being sent to server:", mutationData);
@@ -146,21 +182,43 @@ export function ClientsContent() {
 
   // --- Action Handlers ---
   const handleAddNewClick = () => {
-    reset({ id: undefined, first_name: "", last_name: "", email: "" }); // Clear form
-    setEditingClientId(null); // Ensure not in editing mode
+    reset({
+      id: undefined,
+      first_name: "",
+      last_name: "",
+      email: "",
+      phone: "",
+      company: "",
+      job_title: "",
+      avatar_url: "",
+      source: "",
+      notes: "",
+      last_contacted_at: "",
+      enrichment_status: "",
+      enriched_data: null,
+    });
+    setEditingClientId(null);
     setFormError(null);
     setDeleteError(null);
     setIsFormOpen(true);
   };
 
   const handleEditClick = (client: Client) => {
-    // Map Client API data to ClientFormData, EXPLICITLY handling email
+    // Map Client API data to ClientFormData
     const formData: ClientFormData = { 
       id: client.id,
       first_name: client.first_name,
       last_name: client.last_name,
-      // Ensure email is string or empty string, never null/undefined for the form
-      email: client.email ?? '', 
+      email: client.email ?? '',
+      phone: client.phone ?? '',
+      company: client.company ?? '',
+      job_title: client.job_title ?? '',
+      avatar_url: client.avatar_url ?? '',
+      source: client.source ?? '',
+      notes: client.notes ?? '',
+      last_contacted_at: client.last_contacted_at ? new Date(client.last_contacted_at).toISOString().substring(0, 16) : '', // Format for datetime-local
+      enrichment_status: client.enrichment_status ?? '',
+      enriched_data: client.enriched_data ?? null,
     };
     reset(formData); // Pass explicitly typed data to reset
     setEditingClientId(client.id); 
@@ -218,70 +276,69 @@ export function ClientsContent() {
             className="text-gray-500 hover:text-gray-700"
           >
             &times;
-          </button> 
+          </button>
         </div>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Hidden ID field - value is managed by useEffect and setValue */}
-          <input type="hidden" {...register("id")} />
+        
+        {/* Form error message */}
+        {formError && (
+          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            {formError}
+          </div>
+        )}
+        
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {/* Form fields would go here */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label htmlFor="first_name" className="block text-sm font-medium text-gray-700">First Name</label>
+              <input
+                id="first_name"
+                type="text"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                {...register("first_name")}
+              />
+              {errors.first_name && <p className="text-sm text-red-600">{errors.first_name.message}</p>}
+            </div>
+            
+            <div className="space-y-1">
+              <label htmlFor="last_name" className="block text-sm font-medium text-gray-700">Last Name</label>
+              <input
+                id="last_name"
+                type="text"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                {...register("last_name")}
+              />
+              {errors.last_name && <p className="text-sm text-red-600">{errors.last_name.message}</p>}
+            </div>
+
+            <div className="space-y-1">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+              <input
+                id="email"
+                type="email"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                {...register("email")}
+              />
+              {errors.email && <p className="text-sm text-red-600">{errors.email.message}</p>}
+            </div>
+          </div>
           
-          {/* First Name */}
-          <div className="flex flex-col space-y-1">
-            <label htmlFor="firstName" className="text-sm font-medium text-gray-700">First Name</label>
-            <input
-              id="firstName"
-              {...register("first_name")}
-              className={`border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500 ${errors.first_name ? 'border-red-500' : 'border-gray-300'}`}
-              placeholder="First Name"
+          <div className="flex space-x-2 justify-end mt-4">
+            <button
+              type="button"
+              onClick={() => {
+                setIsFormOpen(false);
+                reset();
+                setFormError(null);
+                setEditingClientId(null);
+                setDeleteError(null);
+              }}
+              className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
               disabled={isSubmitting}
-            />
-            {errors.first_name && <p className="text-xs text-red-600">{errors.first_name.message}</p>}
-          </div>
-
-          {/* Last Name */}
-          <div className="flex flex-col space-y-1">
-            <label htmlFor="lastName" className="text-sm font-medium text-gray-700">Last Name</label>
-            <input
-              id="lastName"
-              {...register("last_name")}
-              className={`border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500 ${errors.last_name ? 'border-red-500' : 'border-gray-300'}`}
-              placeholder="Last Name"
-              disabled={isSubmitting}
-            />
-            {errors.last_name && <p className="text-xs text-red-600">{errors.last_name.message}</p>}
-          </div>
-
-          {/* Email */}
-          <div className="flex flex-col space-y-1 md:col-span-2">
-            <label htmlFor="email" className="text-sm font-medium text-gray-700">Email</label>
-            <input
-              id="email"
-              type="email"
-              {...register("email")}
-              className={`border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500 ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
-              placeholder="Email"
-              disabled={isSubmitting}
-            />
-            {errors.email && <p className="text-xs text-red-600">{errors.email.message}</p>}
-          </div>
-
-          {/* Form Actions */}
-          <div className="md:col-span-2 flex justify-end items-center mt-4 space-x-3">
-             {formError && <p className="text-sm text-red-600 mr-auto">{formError}</p>}
-             <button 
-               type="button" 
-               onClick={() => {
-                 setIsFormOpen(false); 
-                 reset(); 
-                 setFormError(null); 
-                 setEditingClientId(null);
-                 setDeleteError(null);
-               }}
-               className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
-               disabled={isSubmitting} // Keep disabled state if needed
-             >
-               Cancel
-             </button>
-             <button
+            >
+              Cancel
+            </button>
+            <button
               type="submit"
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
               disabled={isSubmitting || saveMutation.isLoading}
@@ -308,24 +365,24 @@ export function ClientsContent() {
               {clientList.map((client: Client) => (
                 <tr key={client.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
-                     <div className="flex items-center">
-                       <div className="flex-shrink-0 h-10 w-10 bg-gray-200 rounded-full flex items-center justify-center">
-                         {/* Handle missing names gracefully */}
-                         <span className="text-gray-500 font-medium">{(client.first_name?.[0] ?? '')}{(client.last_name?.[0] ?? '')}</span>
-                       </div>
-                       <div className="ml-4">
-                         <div className="text-sm font-medium text-gray-900">{client.first_name} {client.last_name}</div>
-                       </div>
-                     </div>
-                   </td>
-                   <td className="px-6 py-4 whitespace-nowrap">
-                     <div className="text-sm text-gray-900">{client.email || '-'}</div>
-                   </td>
-                   <td className="px-6 py-4 whitespace-nowrap">
-                     <div className="text-sm text-gray-500">
-                       {client.created_at ? new Date(client.created_at).toLocaleDateString() : 'N/A'}
-                     </div>
-                   </td>
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0 h-10 w-10 bg-gray-200 rounded-full flex items-center justify-center">
+                        {/* Handle missing names gracefully */}
+                        <span className="text-gray-500 font-medium">{(client.first_name?.[0] ?? '')}{(client.last_name?.[0] ?? '')}</span>
+                      </div>
+                      <div className="ml-4">
+                        <div className="text-sm font-medium text-gray-900">{client.first_name} {client.last_name}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{client.email || '-'}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-500">
+                      {client.created_at ? new Date(client.created_at).toLocaleDateString() : 'N/A'}
+                    </div>
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button 
                       onClick={() => handleEditClick(client)}
@@ -335,9 +392,9 @@ export function ClientsContent() {
                       Edit
                     </button>
                     <button 
-                      onClick={() => handleDeleteClick(client.id)} // Pass UUID string ID
+                      onClick={() => handleDeleteClick(client.id)}
                       className="ml-2 text-red-600 hover:text-red-900 disabled:opacity-50 disabled:cursor-not-allowed"
-                      disabled={deleteMutation.isLoading} // Disable while deleting
+                      disabled={deleteMutation.isLoading}
                     >
                       Delete
                     </button>
