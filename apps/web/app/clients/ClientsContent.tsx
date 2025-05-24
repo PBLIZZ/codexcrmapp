@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from 'next/link';
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -9,6 +10,7 @@ import { api } from '@/lib/trpc';
 import { supabase } from '@/lib/supabase/client';
 import type { TRPCClientError } from '@trpc/client';
 import type { AppRouter } from '@codexcrm/server/src/root';
+import { formatDateForInput, parseInputDateString } from '@/lib/dateUtils';
 
 // Zod schema for validation
 const clientSchema = z.object({
@@ -133,7 +135,7 @@ export function ClientsContent() {
         avatar_url: data.avatar_url?.trim() || null,
         source: data.source?.trim() || null,
         notes: data.notes?.trim() || null,
-        last_contacted_at: data.last_contacted_at ? new Date(data.last_contacted_at).toISOString() : null,
+        last_contacted_at: parseInputDateString(data.last_contacted_at),
         enrichment_status: data.enrichment_status?.trim() || null,
         enriched_data: data.enriched_data, // Pass as is, backend Zod schema uses z.any()
     };
@@ -216,7 +218,7 @@ export function ClientsContent() {
       avatar_url: client.avatar_url ?? '',
       source: client.source ?? '',
       notes: client.notes ?? '',
-      last_contacted_at: client.last_contacted_at ? new Date(client.last_contacted_at).toISOString().substring(0, 16) : '', // Format for datetime-local
+      last_contacted_at: formatDateForInput(client.last_contacted_at),
       enrichment_status: client.enrichment_status ?? '',
       enriched_data: client.enriched_data ?? null,
     };
@@ -321,6 +323,17 @@ export function ClientsContent() {
               />
               {errors.email && <p className="text-sm text-red-600">{errors.email.message}</p>}
             </div>
+
+            <div className="space-y-1">
+              <label htmlFor="last_contacted_at" className="block text-sm font-medium text-gray-700">Last Contacted At</label>
+              <input
+                id="last_contacted_at"
+                type="datetime-local"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                {...register("last_contacted_at")}
+              />
+              {errors.last_contacted_at && <p className="text-sm text-red-600">{errors.last_contacted_at.message}</p>}
+            </div>
           </div>
           
           <div className="flex space-x-2 justify-end mt-4">
@@ -371,7 +384,9 @@ export function ClientsContent() {
                         <span className="text-gray-500 font-medium">{(client.first_name?.[0] ?? '')}{(client.last_name?.[0] ?? '')}</span>
                       </div>
                       <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">{client.first_name} {client.last_name}</div>
+                        <Link href={`/clients/${client.id}`} className="text-sm font-medium text-gray-900 hover:text-blue-600">
+                          {client.first_name} {client.last_name}
+                        </Link>
                       </div>
                     </div>
                   </td>

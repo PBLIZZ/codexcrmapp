@@ -6,8 +6,9 @@
     "baseUrl": ".", // enables "@/..." alias below
     "paths": {
       "@/*": [
-        "./*" // Points to apps/web root, aligning with actual structure
-      ] // internal alias for app code
+        "./*",     // allow imports from root (components/, lib/, app/, etc.)
+        "./src/*"  // include src for legacy utilities
+      ]
     },
     /* Next.js / React settings */
     "jsxImportSource": "react",

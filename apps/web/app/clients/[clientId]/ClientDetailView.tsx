@@ -2,12 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-// Removed date-fns dependency; use native toLocale... for date formatting
 import { api } from "@/lib/trpc";
+import { formatDateTime, formatDateForInput, parseInputDateString } from '@/lib/dateUtils';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { supabase } from "@/lib/supabase/client";
 
 // UI Components
 import { Button } from "@/components/ui/button";
@@ -53,7 +52,8 @@ const clientSchema = z.object({
   avatar_url: z.string().url({ message: "Invalid URL for avatar" }).optional().nullable(),
   source: z.string().optional().nullable(),
   notes: z.string().optional().nullable(),
-  last_contacted_at: z.string().datetime({ message: "Invalid date format for Last Contacted At" }).optional().nullable(),
+  // Accept local datetime-local input (YYYY-MM-DDTHH:mm), we'll convert to ISO in onSubmit
+  last_contacted_at: z.string().optional().nullable(),
   enrichment_status: z.string().optional().nullable(),
   enriched_data: z.any().optional().nullable(), // For JSONB fields
 });
@@ -84,27 +84,6 @@ const getInitials = (firstName: string, lastName: string) => {
   return `${firstName?.[0] || ''}${lastName?.[0] || ''}`.toUpperCase();
 };
 
-// Helper function to format date as "MMM d, yyyy", e.g., "Jan 1, 2023"
-const formatDate = (dateString: string | Date | null | undefined) => {
-  if (!dateString) return 'N/A';
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-};
-
-// Helper function to format date with time as "MMM d, yyyy h:mm a", e.g., "Jan 1, 2023 3:30 PM"
-const formatDateTime = (dateString: string | Date | null | undefined) => {
-  if (!dateString) return 'N/A';
-  const date = new Date(dateString);
-  return date.toLocaleString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-    hour12: true,
-  });
-};
-
 export function ClientDetailView({ clientId }: { clientId: string }) {
   const router = useRouter();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -129,8 +108,11 @@ export function ClientDetailView({ clientId }: { clientId: string }) {
 
   // Save mutation
   const saveMutation = api.clients.save.useMutation({
-    onSuccess: () => {
-      utils.clients.getById.invalidate({ clientId });
+    // On success, immediately update cached client data and close dialog
+    onSuccess: (updatedClient) => {
+      // Update the detail cache so UI reflects new values without waiting for refetch
+      utils.clients.getById.setData({ clientId }, updatedClient);
+      // Invalidate the client list so list view will refresh when needed
       utils.clients.list.invalidate();
       setIsEditDialogOpen(false);
     },
@@ -169,6 +151,7 @@ export function ClientDetailView({ clientId }: { clientId: string }) {
       avatar_url: "",
       source: "",
       notes: "",
+      // last_contacted_at is a local datetime input (YYYY-MM-DDTHH:mm)
       last_contacted_at: "",
       enrichment_status: "",
       enriched_data: null,
@@ -189,9 +172,7 @@ export function ClientDetailView({ clientId }: { clientId: string }) {
         avatar_url: client.avatar_url ?? "",
         source: client.source ?? "",
         notes: client.notes ?? "",
-        last_contacted_at: client.last_contacted_at
-          ? new Date(client.last_contacted_at).toISOString().substring(0, 16)
-          : "",
+        last_contacted_at: formatDateForInput(client.last_contacted_at),
         enrichment_status: client.enrichment_status ?? "",
         enriched_data: client.enriched_data ?? null,
       });
@@ -201,34 +182,26 @@ export function ClientDetailView({ clientId }: { clientId: string }) {
   const onSubmit = async (data: ClientFormData) => {
     setFormError(null);
 
-    // Prepare data for mutation
-    const mutationData = {
+    const mutationData: ClientFormData = {
       ...data,
+      id: clientId,
+      // Ensure optional fields are null if empty, or use their values
       phone: data.phone?.trim() || null,
       company: data.company?.trim() || null,
       job_title: data.job_title?.trim() || null,
       avatar_url: data.avatar_url?.trim() || null,
       source: data.source?.trim() || null,
       notes: data.notes?.trim() || null,
-      last_contacted_at: data.last_contacted_at
-        ? new Date(data.last_contacted_at).toISOString()
-        : null,
+      last_contacted_at: parseInputDateString(data.last_contacted_at),
       enrichment_status: data.enrichment_status?.trim() || null,
-      enriched_data: data.enriched_data,
+      enriched_data: data.enriched_data, // Pass as is
     };
 
     try {
-      // First check if we're authenticated
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        setFormError("Authentication error. Please sign out and sign back in.");
-        return;
-      }
-      
+      // Trigger save mutation
       await saveMutation.mutateAsync(mutationData);
-    } catch (error: any) {
-      setFormError(error.message || "An unexpected error occurred");
+    } catch (err: any) {
+      setFormError(err?.message || "An unexpected error occurred");
     }
   };
 
@@ -402,7 +375,7 @@ export function ClientDetailView({ clientId }: { clientId: string }) {
                 {client.last_contacted_at && (
                   <Badge variant="secondary" className="flex items-center gap-1">
                     <Clock className="h-3 w-3" />
-                    Last contact: {formatDate(client.last_contacted_at)}
+                    Last contact: {formatDateTime(client.last_contacted_at)}
                   </Badge>
                 )}
               </div>

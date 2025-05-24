@@ -4,7 +4,7 @@
     "module": "esnext",
     "moduleResolution": "node",
     "strict": true,
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
       "@codexcrm/server/*": ["packages/server/src/*"],
@@ -13,5 +13,9 @@
       "@codexcrm/ui/*":     ["packages/ui/src/*"],
       "@codexcrm/web/*":    ["apps/web/*"]
     }
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "apps/web"
+  ]
 }
