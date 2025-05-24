@@ -99,27 +99,49 @@ export default function SignInPage() {
     setMessage('');
     
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
+      console.log(`Starting ${provider} OAuth login flow`);
+      
+      // Use current URL to determine appropriate return path
+      const returnPath = '/dashboard';
+      const redirectUrl = `${window.location.origin}/api/auth/callback?next=${returnPath}`;
+      
+      console.log(`OAuth redirect URL: ${redirectUrl}`);
+      
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${window.location.origin}/api/auth/callback?next=/dashboard`,
-          // These params help ensure we get refresh tokens for better persistence
-          queryParams: provider === 'google' ? { access_type: 'offline', prompt: 'consent' } : undefined,
+          redirectTo: redirectUrl,
+          // Force consent screen to ensure we get refresh tokens
+          queryParams: provider === 'google' ? 
+            { access_type: 'offline', prompt: 'consent', hd: '*' } : undefined,
         },
       });
       
       if (error) {
+        console.error(`${provider} OAuth error:`, error);
         setMessage(error.message);
         setMessageType('error');
         setIsOauthLoading(null);
+        return;
       }
-      // OAuth will redirect to provider automatically
+      
+      if (!data.url) {
+        console.error(`${provider} OAuth flow didn't return a URL`);
+        setMessage(`Error starting ${provider} sign in - no redirect URL returned`);
+        setMessageType('error');
+        setIsOauthLoading(null);
+        return;
+      }
+      
+      console.log(`${provider} OAuth initiated successfully, redirecting to:`, data.url);
+      // Force navigate to the provider's authorization URL
+      window.location.href = data.url;
     } catch (error: any) {
+      console.error(`Unexpected error in ${provider} OAuth:`, error);
       setMessage(`An error occurred during ${provider} sign in`);
       setMessageType('error');
       setIsOauthLoading(null);
     }
-    // Note: We don't reset loading state in finally block as the page will redirect
   };
 
   return (
@@ -210,47 +232,56 @@ export default function SignInPage() {
             </div>
 
             {authMethod === 'password' && (
-              <div>
-                <Label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                  Password
-                </Label>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                  autoCapitalize="none"
-                  autoCorrect="off"
-                  spellCheck="false"
-                />
-              </div>
+              <>
+                <div>
+                  <Label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                    Password
+                  </Label>
+                  <Input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autoComplete="current-password"
+                    required
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck="false"
+                  />
+                </div>
+
+                {/* Forgot Password Link for password method */} 
+                <div className="text-sm text-right mt-2">
+                  <Link href="/forgot-password" className="font-medium text-blue-600 hover:underline">
+                    Forgot Password?
+                  </Link>
+                </div>
+              </>
             )}
 
-            {/* Message Display */} 
-            {message && (
-              <p className={`text-sm ${messageType === 'error' ? 'text-red-600' : 'text-green-600'}`}>
-                {message}
-              </p>
-            )}
+          {/* Message Display */} 
+          {message && (
+            <p className={`text-sm ${messageType === 'error' ? 'text-red-600' : 'text-green-600'}`}>
+              {message}
+            </p>
+          )}
 
-            <div>
-              <Button 
-                type="submit" 
-                className="w-full flex justify-center disabled:opacity-50"
-                disabled={authMethod === 'password' ? (isLoading || !!isOauthLoading) : (isMagicLinkLoading || !!isOauthLoading)}
-              >
-                {authMethod === 'password'
-                  ? (isLoading ? 'Signing in...' : 'Sign in with Password')
-                  : (isMagicLinkLoading ? 'Sending link...' : 'Send Magic Link')}
-              </Button>
-            </div>
-          </form>
-
+          {/* Submit Button Container */}
+          <div>
+            <Button 
+              type="submit" 
+              className="w-full flex justify-center disabled:opacity-50"
+              disabled={authMethod === 'password' ? (isLoading || !!isOauthLoading) : (isMagicLinkLoading || !!isOauthLoading)}
+            >
+              {authMethod === 'password'
+                ? (isLoading ? 'Signing in...' : 'Sign in with Password')
+                : (isMagicLinkLoading ? 'Sending link...' : 'Send Magic Link')}
+            </Button>
+          </div>
+          </form> {/* Closing the form tag here */} 
         </CardContent>
 
         {/* Optional Footer for Sign Up link etc. */}
