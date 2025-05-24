@@ -67,9 +67,9 @@ interface Client {
   last_name: string;
   email?: string | null;
   phone?: string | null;
-  company?: string | null;
+  company_name?: string | null;
   job_title?: string | null;
-  avatar_url?: string | null;
+  profile_image_url?: string | null;
   source?: string | null;
   notes?: string | null;
   last_contacted_at?: string | null;
@@ -111,7 +111,10 @@ export function ClientDetailView({ clientId }: { clientId: string }) {
     // On success, immediately update cached client data and close dialog
     onSuccess: (updatedClient) => {
       // Update the detail cache so UI reflects new values without waiting for refetch
+      // Update the detail cache so UI reflects new values
       utils.clients.getById.setData({ clientId }, updatedClient);
+      // Also invalidate to ensure a fresh fetch if needed, and for other components
+      utils.clients.getById.invalidate({ clientId }); 
       // Invalidate the client list so list view will refresh when needed
       utils.clients.list.invalidate();
       setIsEditDialogOpen(false);
@@ -167,9 +170,9 @@ export function ClientDetailView({ clientId }: { clientId: string }) {
         last_name: client.last_name,
         email: client.email ?? "",
         phone: client.phone ?? "",
-        company: client.company ?? "",
+        company_name: client.company_name ?? "",
         job_title: client.job_title ?? "",
-        avatar_url: client.avatar_url ?? "",
+        profile_image_url: client.profile_image_url ?? "",
         source: client.source ?? "",
         notes: client.notes ?? "",
         last_contacted_at: formatDateForInput(client.last_contacted_at),
@@ -187,9 +190,9 @@ export function ClientDetailView({ clientId }: { clientId: string }) {
       id: clientId,
       // Ensure optional fields are null if empty, or use their values
       phone: data.phone?.trim() || null,
-      company: data.company?.trim() || null,
+      company_name: data.company_name?.trim() || null,
       job_title: data.job_title?.trim() || null,
-      avatar_url: data.avatar_url?.trim() || null,
+      profile_image_url: data.profile_image_url?.trim() || null,
       source: data.source?.trim() || null,
       notes: data.notes?.trim() || null,
       last_contacted_at: parseInputDateString(data.last_contacted_at),
@@ -306,9 +309,9 @@ export function ClientDetailView({ clientId }: { clientId: string }) {
             {/* Avatar Section */}
             <div className="flex flex-col items-center">
               <Avatar className="h-32 w-32 border-4 border-white shadow-lg">
-                {client.avatar_url ? (
+                {client.profile_image_url ? (
                   <AvatarImage
-                    src={client.avatar_url}
+                    src={client.profile_image_url}
                     alt={`${client.first_name} ${client.last_name}`}
                   />
                 ) : null}
@@ -356,10 +359,10 @@ export function ClientDetailView({ clientId }: { clientId: string }) {
                   </div>
                 )}
                 
-                {client.company && (
+                {client.company_name && (
                   <div className="flex items-center">
                     <Building className="h-4 w-4 mr-2 text-muted-foreground" />
-                    <span>{client.company}</span>
+                    <span>{client.company_name}</span>
                   </div>
                 )}
               </div>
@@ -433,7 +436,7 @@ export function ClientDetailView({ clientId }: { clientId: string }) {
                 <dl className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <dt className="text-sm font-medium text-muted-foreground">Company</dt>
-                    <dd className="mt-1">{client.company || "—"}</dd>
+                    <dd className="mt-1">{client.company_name || "—"}</dd>
                   </div>
                   <div>
                     <dt className="text-sm font-medium text-muted-foreground">Job Title</dt>

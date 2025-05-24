@@ -23,7 +23,7 @@ export interface Database {
           id?: string
           created_at?: string
           name: string
-          email?: string | null
+          company_name?: string | null
           phone?: string | null
           status?: string
           user_id: string
@@ -32,7 +32,7 @@ export interface Database {
           id?: string
           created_at?: string
           name?: string
-          email?: string | null
+          company_name?: string | null
           phone?: string | null
           status?: string
           user_id?: string
@@ -43,25 +43,25 @@ export interface Database {
           id: string
           created_at: string
           updated_at: string | null
-          email: string | null
+          company_name: string | null
           full_name: string | null
-          avatar_url: string | null
+          profile_image_url: string | null
         }
         Insert: {
           id: string
           created_at?: string
           updated_at?: string | null
-          email?: string | null
+          company_name?: string | null
           full_name?: string | null
-          avatar_url?: string | null
+          profile_image_url?: string | null
         }
         Update: {
           id?: string
           created_at?: string
           updated_at?: string | null
-          email?: string | null
+          company_name?: string | null
           full_name?: string | null
-          avatar_url?: string | null
+          profile_image_url?: string | null
         }
       }
     }
