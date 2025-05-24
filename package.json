@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "cd apps/web && next dev --turbopack",
+    "dev": "cd apps/web && next dev",
     "build": "cd apps/web && next build",
     "start": "cd apps/web && next start",
     "lint": "cd apps/web && next lint"

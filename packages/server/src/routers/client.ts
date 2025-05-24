@@ -35,6 +35,28 @@ export const clientRouter = router({
     }
     return data || [];
   }),
+  // Fetch a single client by ID
+  getById: protectedProcedure
+    .input(z.object({ clientId: z.string().uuid() }))
+    .query(async ({ input, ctx }) => {
+      if (!ctx.user) {
+        throw new TRPCError({ code: 'UNAUTHORIZED' });
+      }
+      const { data, error } = await ctx.supabaseUser
+        .from('clients')
+        .select('*')
+        .eq('id', input.clientId)
+        .single();
+      if (error) {
+        console.error('Error fetching client by id:', error);
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to fetch client',
+          cause: error,
+        });
+      }
+      return data;
+    }),
 
   // Protected procedure for creating/updating clients
   save: protectedProcedure
