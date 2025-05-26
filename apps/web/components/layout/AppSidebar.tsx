@@ -13,7 +13,8 @@ import {
   BarChart,
   MessagesSquare,
   Star,
-  PlusCircle
+  PlusCircle,
+  Upload
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -49,15 +50,6 @@ export function AppSidebar({
     return pathname.startsWith(path);
   };
   
-  // Navigation items
-  const mainNavItems = [
-    { href: "/", label: "Dashboard", icon: Home },
-    { href: "/contacts", label: "Contacts", icon: Users },
-    { href: "/messages", label: "Messages", icon: MessagesSquare },
-    { href: "/calendar", label: "Calendar", icon: Calendar },
-    { href: "/analytics", label: "Analytics", icon: BarChart },
-  ];
-  
   // Secondary navigation items
   const secondaryNavItems = [
     { href: "/settings", label: "Settings", icon: Settings },
@@ -65,34 +57,9 @@ export function AppSidebar({
 
   return (
     <div className="h-full flex flex-col">
-      {/* Sidebar Header */}
-      <div className="p-4 border-b">
-        <h2 className="font-semibold text-lg">CodexCRM</h2>
-      </div>
-      
-      {/* Main Navigation */}
-      <div className="px-3 py-2">
-        <nav className="space-y-1">
-          {mainNavItems.map((item) => (
-            <Link key={item.href} href={item.href}>
-              <div
-                className={cn(
-                  "flex items-center px-3 py-2 rounded-md text-sm transition-colors",
-                  isActive(item.href)
-                    ? "bg-primary/10 text-primary font-medium"
-                    : "text-muted-foreground hover:bg-muted"
-                )}
-              >
-                <item.icon className="w-4 h-4 mr-3" />
-                {item.label}
-              </div>
-            </Link>
-          ))}
-        </nav>
-      </div>
       
       {/* Contacts Section */}
-      <div className="px-3 py-2 border-t mt-2">
+      <div className="px-3 py-4 mt-2">
         <div className="flex items-center justify-between px-3 py-2 text-sm">
           <div className="flex items-center">
             <Users className="w-4 h-4 mr-3" />
@@ -123,11 +90,19 @@ export function AppSidebar({
               <span>Add Contact</span>
             </div>
           </Link>
+          
+          {/* Import Contacts Link */}
+          <Link href="/contacts/import" className="block ml-2">
+            <div className="flex items-center px-3 py-2 rounded-md text-sm hover:bg-muted text-muted-foreground">
+              <Upload className="w-4 h-4 mr-2" />
+              <span>Import Contacts</span>
+            </div>
+          </Link>
         </div>
       </div>
 
       {/* Groups Section */}
-      <div className="px-3 py-2 border-t mt-2">
+      <div className="px-3 py-2 border-t mt-4">
         <Collapsible open={isGroupsOpen} onOpenChange={setIsGroupsOpen}>
           <CollapsibleTrigger asChild>
             <div className="flex items-center justify-between px-3 py-2 text-sm cursor-pointer hover:bg-muted rounded-md">
@@ -186,8 +161,29 @@ export function AppSidebar({
         </Collapsible>
       </div>
       
+      {/* Secondary Navigation */}
+      <div className="px-3 py-2 border-t mt-auto mb-4">
+        <nav className="space-y-1">
+          {secondaryNavItems.map((item) => (
+            <Link key={item.href} href={item.href}>
+              <div
+                className={cn(
+                  "flex items-center px-3 py-2 rounded-md text-sm transition-colors",
+                  isActive(item.href)
+                    ? "bg-primary/10 text-primary font-medium"
+                    : "text-muted-foreground hover:bg-muted"
+                )}
+              >
+                <item.icon className="w-4 h-4 mr-3" />
+                {item.label}
+              </div>
+            </Link>
+          ))}
+        </nav>
+      </div>
+      
       {/* Future sections can be added here */}
-      <div className="px-3 py-2 border-t mt-2 hidden">
+      <div className="px-3 py-2 hidden">
         <Collapsible defaultOpen={false}>
           <CollapsibleTrigger asChild>
             <div className="flex items-center justify-between px-3 py-2 text-sm cursor-pointer hover:bg-muted rounded-md">

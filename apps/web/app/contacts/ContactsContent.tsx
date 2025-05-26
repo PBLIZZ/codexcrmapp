@@ -5,8 +5,9 @@ import Link from "next/link";
 import { api } from '@/lib/trpc';
 import { formatDateForInput, parseInputDateString } from '@/lib/dateUtils';
 import { ContactForm, ContactFormData } from './ContactForm';
-import { ContactList, Contact } from './ContactList';
+import { ContactList, Contact, NameSortField, DateFilterPeriod, SourceOption } from './ContactList';
 import { GroupsProvider } from './ContactGroupManager';
+
 import { ColumnSelector } from './ColumnSelector';
 
 // UI Components
@@ -46,10 +47,13 @@ export function ContactsContent({ initialGroupId = "" }: { initialGroupId?: stri
   const [formData, setFormData] = useState<ContactFormData | undefined>(undefined);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [visibleColumns, setVisibleColumns] = useState<string[]>([
-    'name', 'email', 'company', 'groups', 'tags'
+    'name', 'last_contacted', 'notes', 'source'
   ]);
   const [sortField, setSortField] = useState('name');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [nameSortField, setNameSortField] = useState<NameSortField>('first_name');
+  const [dateFilterPeriod, setDateFilterPeriod] = useState<DateFilterPeriod>('all');
+  const [selectedSourceFilters, setSelectedSourceFilters] = useState<SourceOption[]>([]);
   
   // Update filter if initialGroupId prop changes
   useEffect(() => {
@@ -62,7 +66,7 @@ export function ContactsContent({ initialGroupId = "" }: { initialGroupId?: stri
   const utils = api.useContext(); // Get tRPC context for cache invalidation
 
   // --- Queries & Mutations ---
-  // Use server-side filtering
+  // Apply client-side sorting based on sort field and direction
   const { 
     data: contacts = [], // Provide default empty array to avoid undefined
     isLoading, 
@@ -75,6 +79,43 @@ export function ContactsContent({ initialGroupId = "" }: { initialGroupId?: stri
     keepPreviousData: true,
   });
   
+  const sortedContacts = [...contacts].sort((a, b) => {
+    // Handle name sorting based on selected name sort field
+    if (sortField === 'first_name') {
+      const aValue = a.first_name || '';
+      const bValue = b.first_name || '';
+      return sortDirection === 'asc' 
+        ? aValue.localeCompare(bValue)
+        : bValue.localeCompare(aValue);
+    }
+    
+    if (sortField === 'last_name') {
+      const aValue = a.last_name || '';
+      const bValue = b.last_name || '';
+      return sortDirection === 'asc' 
+        ? aValue.localeCompare(bValue)
+        : bValue.localeCompare(aValue);
+    }
+    
+    // For other fields, sort normally
+    const aValue = a[sortField as keyof Contact] as string || '';
+    const bValue = b[sortField as keyof Contact] as string || '';
+    
+    if (typeof aValue === 'string' && typeof bValue === 'string') {
+      return sortDirection === 'asc' 
+        ? aValue.localeCompare(bValue)
+        : bValue.localeCompare(aValue);
+    }
+    
+    return 0;
+  });
+  
+  // Filter contacts based on search query
+  const filteredContacts = sortedContacts.filter((contact) => {
+    const searchRegex = new RegExp(searchQuery, 'i');
+    return searchRegex.test(contact.first_name) || searchRegex.test(contact.last_name) || searchRegex.test(contact.email) || searchRegex.test(contact.phone);
+  });
+
   // Get all available groups for filtering
   const { data: groups = [] } = api.groups.list.useQuery();
 
@@ -182,12 +223,23 @@ export function ContactsContent({ initialGroupId = "" }: { initialGroupId?: stri
 
   // --- Additional Handler Functions ---
   
+  // Toggle column visibility when a column is clicked
   const handleColumnToggle = (column: string) => {
     setVisibleColumns(prev => 
       prev.includes(column) 
         ? prev.filter(col => col !== column) 
         : [...prev, column]
     );
+  };
+  
+  // Handle date filter change for Last Contacted
+  const handleDateFilterChange = (period: DateFilterPeriod) => {
+    setDateFilterPeriod(period);
+  };
+  
+  // Handle source filter change
+  const handleSourceFilterChange = (sources: SourceOption[]) => {
+    setSelectedSourceFilters(sources);
   };
   
   const handleSortChange = (field: string) => {
@@ -199,6 +251,13 @@ export function ContactsContent({ initialGroupId = "" }: { initialGroupId?: stri
       setSortField(field);
       setSortDirection("asc");
     }
+  };
+  
+  // Handle name-specific sorting with different options
+  const handleNameSortChange = (field: NameSortField, direction: 'asc' | 'desc') => {
+    setNameSortField(field);
+    setSortField(field);
+    setSortDirection(direction);
   };
   
   // --- Rendering ---
@@ -233,95 +292,27 @@ export function ContactsContent({ initialGroupId = "" }: { initialGroupId?: stri
       {/* Main Content */}
       <div className="flex-1 overflow-auto p-4">
         <div className="mb-6">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-            <div className="flex items-center">
-              <button 
-                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className="mr-3 p-2 rounded-md bg-gray-100 hover:bg-gray-200 transition-colors"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm1 4a1 1 0 100 2h12a1 1 0 100-2H4z" clipRule="evenodd" />
-                </svg>
-              </button>
-              <h1 className="text-2xl font-bold">Contacts</h1>
-            </div>
-            
-            <div className="flex flex-wrap gap-2">
-              <Button 
-                onClick={handleAddNewClick} 
-                variant="default"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Add Contact
-              </Button>
-              
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline">
-                    <Upload className="w-4 h-4 mr-2" />
-                    Import
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem>Import from CSV</DropdownMenuItem>
-                  <DropdownMenuItem>Import from Excel</DropdownMenuItem>
-                  <DropdownMenuItem>Import from Google Contacts</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              
-              <Button variant="outline">
-                <Download className="w-4 h-4 mr-2" />
-                Export
-              </Button>
-            </div>
-          </div>
-          
-          {/* Toolbar */}
-          <div className="bg-white rounded-lg shadow p-4 mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
+          {/* Search and filters toolbar */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
             <div className="relative w-full md:w-64">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
                 placeholder="Search contacts..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
+                className="pl-10 border-gray-300"
               />
             </div>
             
             <div className="flex flex-wrap gap-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm">
-                    <Tag className="w-4 h-4 mr-2" />
-                    Filters
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuLabel>Filter by Group</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem 
-                    onClick={() => setSelectedGroupId("")}
-                    className="flex items-center justify-between"
-                  >
-                    <span>All Contacts</span>
-                    {selectedGroupId === "" && <span>✓</span>}
-                  </DropdownMenuItem>
-                  {groups.map((group: { id: string; name: string }) => (
-                    <DropdownMenuItem 
-                      key={group.id}
-                      onClick={() => setSelectedGroupId(group.id)}
-                      className="flex items-center justify-between"
-                    >
-                      <span>{group.name}</span>
-                      {selectedGroupId === group.id && <span>✓</span>}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <Button variant="outline" size="sm" className="border-gray-300">
+                <Tag className="w-4 h-4 mr-2" />
+                Filters
+              </Button>
               
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" className="border-gray-300">
                     <SlidersHorizontal className="w-4 h-4 mr-2" />
                     Columns
                   </Button>
@@ -347,13 +338,22 @@ export function ContactsContent({ initialGroupId = "" }: { initialGroupId?: stri
           
           {/* Contact List */}
           <ContactList 
-            contacts={contacts}
+            contacts={filteredContacts}
             onEditClick={handleEditClick}
             onDeleteClick={handleDeleteClick}
             isDeleteMutationLoading={deleteMutation.isLoading}
             isSaveMutationLoading={saveMutation.isLoading}
             searchQuery={searchQuery}
             selectedGroupId={selectedGroupId}
+            sortField={sortField}
+            sortDirection={sortDirection}
+            onSortChange={handleSortChange}
+            onNameSortChange={handleNameSortChange}
+            nameSortField={nameSortField}
+            dateFilterPeriod={dateFilterPeriod}
+            onDateFilterChange={handleDateFilterChange}
+            selectedSourceFilters={selectedSourceFilters}
+            onSourceFilterChange={handleSourceFilterChange}
           />
         </div>
       </div>
