@@ -1,8 +1,9 @@
-import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
-import { router, protectedProcedure, publicProcedure } from '../trpc';
-import { supabaseAdmin } from '../supabaseAdmin';
-import { Database } from '@codexcrm/db';
+import { z } from 'zod';
+
+import { supabaseAdmin as _supabaseAdmin } from '../supabaseAdmin';
+import { router, protectedProcedure } from '../trpc';
+
 
 const clientInputSchema = z.object({
   id: z.string().uuid().optional(), // ID is UUID string, optional for creation
@@ -110,11 +111,11 @@ export const clientRouter = router({
 
       try {
         // Iterative fallback for missing columns during update/insert
-        let attemptFields: any = { ...fields };
-        let data: any = null;
-        let dbError: any = null;
+        const attemptFields: Record<string, unknown> = { ...fields };
+        let data: Record<string, unknown> | null = null;
+        let dbError: { message: string } | null = null;
         if (clientId) {
-          console.log(`Attempting client update for id: ${clientId}`, attemptFields);
+          console.warn(`Attempting client update for id: ${clientId}`, attemptFields);
           do {
             ({ data, error: dbError } = await ctx.supabaseUser
               .from('clients')
@@ -124,16 +125,16 @@ export const clientRouter = router({
               .single());
             if (dbError) {
               const m = dbError.message.match(/Could not find the '(.+)' column/);
-              if (m && attemptFields.hasOwnProperty(m[1])) {
+              if (m && Object.hasOwn(attemptFields, m[1])) {
                 console.warn(`${m[1]} column missing, retrying without it`);
                 delete attemptFields[m[1]];
                 continue;
               }
             }
             break;
-          } while (true);
+          } while (dbError !== null);
         } else {
-          console.log('Attempting client insert with user context', { ...attemptFields, user_id: ctx.user.id });
+          console.warn('Attempting client insert with user context', { ...attemptFields, user_id: ctx.user.id });
           do {
             ({ data, error: dbError } = await ctx.supabaseUser
               .from('clients')
@@ -142,14 +143,14 @@ export const clientRouter = router({
               .single());
             if (dbError) {
               const m = dbError.message.match(/Could not find the '(.+)' column/);
-              if (m && attemptFields.hasOwnProperty(m[1])) {
+              if (m && Object.hasOwn(attemptFields, m[1])) {
                 console.warn(`${m[1]} column missing, retrying insert without it`);
                 delete attemptFields[m[1]];
                 continue;
               }
             }
             break;
-          } while (true);
+          } while (dbError !== null);
         }
         if (dbError) {
           console.error('Supabase save error:', dbError, { input, userId: ctx.user.id });
@@ -159,7 +160,7 @@ export const clientRouter = router({
           console.error('Supabase save returned no data and no error.');
           throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to save client due to unexpected issue.' });
         }
-        console.log('Client save successful:', data);
+        console.warn('Client save successful:', data);
         return data;
       } catch (err) {
         console.error('Unexpected error in save procedure:', err);
@@ -177,7 +178,7 @@ export const clientRouter = router({
       clientId: z.string().uuid(), // Expect UUID string ID
     }))
     .mutation(async ({ input, ctx }) => {
-      console.log(`Attempting to delete client ID: ${input.clientId} by user ${ctx.user.id}`);
+      console.warn(`Attempting to delete client ID: ${input.clientId} by user ${ctx.user.id}`);
       const { error } = await ctx.supabaseUser
         .from('clients')
         .delete()
@@ -188,7 +189,7 @@ export const clientRouter = router({
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to delete client' });
       }
 
-      console.log(`Client ${input.clientId} deleted successfully by user ${ctx.user.id}`);
+      console.warn(`Client ${input.clientId} deleted successfully by user ${ctx.user.id}`);
       return { success: true, deletedClientId: input.clientId };
     }),
 });

@@ -1,34 +1,93 @@
+import { appRouter, createContext } from '@codexcrm/server';
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 import superjson from 'superjson';
 
-// Import the main AppRouter and context creation function using the correct path aliases
-import { appRouter, createContext } from '@codexcrm/server';
+/**
+ * tRPC API endpoint configuration
+ * Handles both GET and POST requests for tRPC procedures
+ */
 
-export const runtime = 'edge'; // or delete for default Node
+// Define the tRPC endpoint path as a constant for maintainability
+const TRPC_ENDPOINT = '/api/trpc';
 
+// Remove edge runtime to use Node.js for better compatibility with tRPC and Supabase
+// export const runtime = 'edge';
+
+/**
+ * Standard error response format for consistency
+ */
+type ApiErrorResponse = {
+  error: string;
+  message: string;
+  code?: string;
+};
+
+/**
+ * Main request handler for tRPC API calls
+ */
 export const GET = async (req: Request) => {
-  // Add better error handling and debugging for tRPC API route handler
+  console.info(`[TRPC API] Handling ${req.method} request to ${req.url}`);
+  
   try {
-    return fetchRequestHandler({
-      endpoint: '/api/trpc',
+    // Log the headers at debug level for detailed troubleshooting only
+    if (process.env.NODE_ENV === 'development') {
+      const headers = Object.fromEntries(req.headers.entries());
+      // Use debug level for potentially sensitive or verbose information
+      console.debug('[TRPC API] Request headers:', JSON.stringify(headers, null, 2));
+    }
+    
+    // Handle the request with tRPC's fetchRequestHandler
+    const response = await fetchRequestHandler({
+      endpoint: TRPC_ENDPOINT,
       req,
       router: appRouter,
-      // Pass the request object to createContext
-      createContext: async () => createContext({ req }),
-      // Removed transformer property as it's already set in the router's create method
+      // Pass the request object to createContext with proper error handling
+      createContext: async () => {
+        try {
+          const ctx = await createContext({ req });
+          return ctx;
+        } catch (contextError) {
+          console.error('[TRPC API] Context creation error:', contextError);
+          throw contextError;
+        }
+      },
+      // Add transformer for proper data serialization (dates, BigInt, etc.)
+      transformer: superjson,
+      // Configure error handling based on environment
       onError:
         process.env.NODE_ENV === 'development'
           ? ({ path, error }) => {
-              console.error(`❌ tRPC failed on ${path}: ${error.message}`);
+              console.error(`❌ [TRPC API] Failed on ${path}: ${error.message}`);
               console.error(error.stack);
             }
-          : undefined,
+          : ({ path }) => {
+              // Log errors in production but without sensitive details
+              console.error(`[TRPC API] Error in procedure: ${path}`);
+            },
     });
+    
+    console.info(`[TRPC API] Response status: ${response.status}`);
+    return response;
   } catch (error) {
-    console.error('Unhandled error in tRPC API route:', error);
+    console.error('[TRPC API] Unhandled error:', error);
+    
+    // Create a standardized error response
+    const errorResponse: ApiErrorResponse = {
+      error: 'Internal Server Error',
+      // Provide generic message in production, detailed in development
+      message: process.env.NODE_ENV === 'production'
+        ? 'An unexpected error occurred.'
+        : error instanceof Error ? error.message : String(error),
+      // Add error code for easier client-side handling
+      code: 'INTERNAL_SERVER_ERROR'
+    };
+    
     return new Response(
-      JSON.stringify({ error: 'Internal Server Error' }),
-      { status: 500, headers: { 'content-type': 'application/json' } }
+      JSON.stringify(errorResponse),
+      { 
+        status: 500, 
+        headers: { 'content-type': 'application/json' } 
+      }
     );
   }
 };

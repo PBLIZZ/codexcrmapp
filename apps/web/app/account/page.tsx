@@ -1,87 +1,182 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import type { User } from '@supabase/supabase-js';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase/client';
-import { Input } from '@/components/ui/input';
+import { useState, useEffect, useReducer } from 'react';
+
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import type { User } from '@supabase/supabase-js';
+import { fetchCurrentUser, updateUserPassword, signOutUser, mapAuthErrorMessage } from '@/lib/auth/service';
+
+// Constants
+const MIN_PASSWORD_LENGTH = 6;
+const ROUTES = {
+  signIn: '/sign-in',
+  dashboard: '/dashboard'
+};
+
+// Message state management with useReducer
+type MessageState = {
+  text: string;
+  type: 'error' | 'success';
+};
+
+type MessageAction = 
+  | { type: 'SET_MESSAGE'; payload: { text: string; type: 'error' | 'success' } }
+  | { type: 'CLEAR_MESSAGE' };
+
+const initialMessageState: MessageState = { 
+  text: '', 
+  type: 'error' 
+};
+
+function messageReducer(state: MessageState, action: MessageAction): MessageState {
+  switch (action.type) {
+    case 'SET_MESSAGE':
+      return { 
+        text: action.payload.text, 
+        type: action.payload.type 
+      };
+    case 'CLEAR_MESSAGE':
+      return initialMessageState;
+    default:
+      return state;
+  }
+}
 
 export default function AccountPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isFetchingUser, setIsFetchingUser] = useState(true);
+  const [isSigningOut, setIsSigningOut] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
-  const [message, setMessage] = useState('');
-  const [messageType, setMessageType] = useState<'error' | 'success'>('error');
   const [isPasswordLoading, setIsPasswordLoading] = useState(false);
+  const [messageState, dispatchMessage] = useReducer(messageReducer, initialMessageState);
 
+  // Fetch user data on component mount
   useEffect(() => {
-    const fetchUser = async () => {
-      const { data: { user: currentUser }, error } = await supabase.auth.getUser();
+    const getUserData = async () => {
+      setIsFetchingUser(true);
+      
+      const { user: currentUser, error } = await fetchCurrentUser();
+      
       if (error || !currentUser) {
-        setMessage('Could not fetch user data. Please sign in again.');
-        setMessageType('error');
-        router.push('/sign-in'); // Redirect if no user
+        dispatchMessage({ 
+          type: 'SET_MESSAGE', 
+          payload: { 
+            text: 'Could not fetch user data. Please sign in again.', 
+            type: 'error' 
+          } 
+        });
+        router.push(ROUTES.signIn);
       } else {
         setUser(currentUser);
       }
-      setIsLoading(false);
+      
+      setIsFetchingUser(false);
     };
-    fetchUser();
+    
+    getUserData();
   }, [router]);
 
+  // Handle password update
   const handlePasswordUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsPasswordLoading(true);
-    setMessage('');
-    setMessageType('error');
+    dispatchMessage({ type: 'CLEAR_MESSAGE' });
+
+    // Validate passwords
+    if (!newPassword) {
+      dispatchMessage({ 
+        type: 'SET_MESSAGE', 
+        payload: { 
+          text: 'Password cannot be empty.', 
+          type: 'error' 
+        } 
+      });
+      setIsPasswordLoading(false);
+      return;
+    }
+
+    if (newPassword.length < MIN_PASSWORD_LENGTH) {
+      dispatchMessage({ 
+        type: 'SET_MESSAGE', 
+        payload: { 
+          text: `Password must be at least ${MIN_PASSWORD_LENGTH} characters long.`, 
+          type: 'error' 
+        } 
+      });
+      setIsPasswordLoading(false);
+      return;
+    }
 
     if (newPassword !== confirmNewPassword) {
-      setMessage('New passwords do not match.');
-      setMessageType('error');
-      setIsPasswordLoading(false);
-      return;
-    }
-    if (!newPassword) {
-      setMessage('Password cannot be empty.');
-      setMessageType('error');
+      dispatchMessage({ 
+        type: 'SET_MESSAGE', 
+        payload: { 
+          text: 'New passwords do not match.', 
+          type: 'error' 
+        } 
+      });
       setIsPasswordLoading(false);
       return;
     }
 
-    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    // Update password
+    const { error } = await updateUserPassword(newPassword);
 
     if (error) {
-      setMessage(`Password update failed: ${error.message}`);
-      setMessageType('error');
+      dispatchMessage({ 
+        type: 'SET_MESSAGE', 
+        payload: { 
+          text: `Password update failed: ${mapAuthErrorMessage(error.message)}`, 
+          type: 'error' 
+        } 
+      });
     } else {
-      setMessage('Password updated successfully!');
-      setMessageType('success');
-      setNewPassword('');
-      setConfirmNewPassword('');
+      dispatchMessage({ 
+        type: 'SET_MESSAGE', 
+        payload: { 
+          text: 'Password updated successfully!', 
+          type: 'success' 
+        } 
+      });
     }
+    
+    // Always clear password fields after attempt
+    setNewPassword('');
+    setConfirmNewPassword('');
     setIsPasswordLoading(false);
   };
 
+  // Handle sign out
   const handleSignOut = async () => {
-    setIsLoading(true);
-    const { error } = await supabase.auth.signOut();
+    setIsSigningOut(true);
+    dispatchMessage({ type: 'CLEAR_MESSAGE' });
+    
+    const { error } = await signOutUser();
+    
     if (error) {
-      setMessage(`Sign out failed: ${error.message}`);
-      setMessageType('error');
+      dispatchMessage({ 
+        type: 'SET_MESSAGE', 
+        payload: { 
+          text: `Sign out failed: ${mapAuthErrorMessage(error.message)}`, 
+          type: 'error' 
+        } 
+      });
+      setIsSigningOut(false);
     } else {
-      router.push('/sign-in');
+      router.push(ROUTES.signIn);
     }
-    setIsLoading(false);
   };
 
-  if (isLoading && !user) {
+  // Loading state
+  if (isFetchingUser && !user) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-100">
         <p>Loading account information...</p>
@@ -89,12 +184,12 @@ export default function AccountPage() {
     );
   }
 
+  // No user state (fallback if redirect in useEffect fails)
   if (!user) {
-    // This case should ideally be handled by the redirect in useEffect, but as a fallback:
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gray-100">
-            <p>Please <Link href="/sign-in" className="underline">sign in</Link> to view your account.</p>
-        </div>
+      <div className="flex min-h-screen items-center justify-center bg-gray-100">
+        <p>Please <Link href={ROUTES.signIn} className="underline">sign in</Link> to view your account.</p>
+      </div>
     );
   }
 
@@ -112,7 +207,7 @@ export default function AccountPage() {
             <p><span className="font-medium">Email:</span> {user.email}</p>
             <p><span className="font-medium">Account Created:</span> {user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}</p>
             {user.last_sign_in_at && (
-                <p><span className="font-medium">Last Sign In:</span> {new Date(user.last_sign_in_at).toLocaleString()}</p>
+              <p><span className="font-medium">Last Sign In:</span> {new Date(user.last_sign_in_at).toLocaleString()}</p>
             )}
           </div>
 
@@ -149,25 +244,30 @@ export default function AccountPage() {
             </form>
           </div>
 
-          {message && (
-            <p className={`mt-4 text-sm ${messageType === 'error' ? 'text-red-600' : 'text-green-600'}`}>
-              {message}
+          {messageState.text && (
+            <p className={`mt-4 text-sm ${messageState.type === 'error' ? 'text-red-600' : 'text-green-600'}`}>
+              {messageState.text}
             </p>
           )}
 
           <Separator />
 
           <div>
-            <Button variant="destructive" onClick={handleSignOut} className="w-full sm:w-auto" disabled={isLoading || isPasswordLoading}>
-              {isLoading && !isPasswordLoading ? 'Signing out...' : 'Sign Out'}
+            <Button 
+              variant="destructive" 
+              onClick={handleSignOut} 
+              className="w-full sm:w-auto" 
+              disabled={isSigningOut || isPasswordLoading}
+            >
+              {isSigningOut ? 'Signing out...' : 'Sign Out'}
             </Button>
           </div>
         </CardContent>
         
         <CardFooter className="justify-center">
-            <Link href="/dashboard" className="text-sm font-medium text-blue-600 hover:underline">
-                Back to Dashboard
-            </Link>
+          <Link href={ROUTES.dashboard} className="text-sm font-medium text-blue-600 hover:underline">
+            Back to Dashboard
+          </Link>
         </CardFooter>
       </Card>
     </div>

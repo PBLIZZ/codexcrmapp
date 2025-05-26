@@ -1,12 +1,12 @@
 "use client";
-import { useState } from 'react';
-import { supabase } from '@/lib/supabase/client';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { Separator } from '@/components/ui/separator';
+import { useState } from 'react';
+
+import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { supabase } from '@/lib/supabase/client';
 
 // Google Icon SVG Component
 const GoogleIcon = () => (
@@ -31,6 +31,7 @@ export default function SignInPage() {
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isMagicLinkLoading, setIsMagicLinkLoading] = useState(false);
+  const [_searchParams, _setSearchParams] = useState<URLSearchParams | null>(null);
   const [isOauthLoading, setIsOauthLoading] = useState<'google' | 'apple' | null>(null);
   const [authMethod, setAuthMethod] = useState<'password' | 'magicLink'>('password');
 
@@ -54,8 +55,8 @@ export default function SignInPage() {
         window.location.href = '/dashboard';
       }
       // Middleware will handle redirect, but we force it here too for better UX
-    } catch (error: any) {
-      setMessage(error.message || 'An error occurred during sign in');
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'An error occurred during sign in');
       setMessageType('error');
     } finally {
       setIsLoading(false);
@@ -86,8 +87,8 @@ export default function SignInPage() {
         setMessage('Check your email for a login link!');
         setMessageType('success');
       }
-    } catch (error: any) {
-      setMessage(error.message || 'An error occurred sending the magic link');
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'An error occurred sending the magic link');
       setMessageType('error');
     } finally {
       setIsMagicLinkLoading(false);
@@ -99,15 +100,15 @@ export default function SignInPage() {
     setMessage('');
     
     try {
-      console.log(`Starting ${provider} OAuth login flow`);
+      console.warn(`Starting ${provider} OAuth login flow`);
       
       // Use current URL to determine appropriate return path
       const returnPath = '/dashboard';
       const redirectUrl = `${window.location.origin}/api/auth/callback?next=${returnPath}`;
       
-      console.log(`OAuth redirect URL: ${redirectUrl}`);
+      console.warn(`OAuth redirect URL: ${redirectUrl}`);
       
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      const { data: _data, error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
           redirectTo: redirectUrl,
@@ -133,10 +134,10 @@ export default function SignInPage() {
         return;
       }
       
-      console.log(`${provider} OAuth initiated successfully, redirecting to:`, data.url);
+      console.warn(`${provider} OAuth initiated successfully, redirecting to:`, data.url);
       // Force navigate to the provider's authorization URL
       window.location.href = data.url;
-    } catch (error: any) {
+    } catch (error) {
       console.error(`Unexpected error in ${provider} OAuth:`, error);
       setMessage(`An error occurred during ${provider} sign in`);
       setMessageType('error');

@@ -1,12 +1,13 @@
 "use client";
 
+import type { AuthChangeEvent, Session, User } from '@supabase/supabase-js';
+import { useQueryClient } from '@tanstack/react-query';
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase/client";
-import { useState, useEffect } from "react";
-import { useQueryClient } from '@tanstack/react-query';
-import type { AuthChangeEvent, Session, User } from '@supabase/supabase-js';
 
 export function Navbar() {
   const pathname = usePathname();
@@ -37,32 +38,58 @@ export function Navbar() {
   }, []);
 
   const handleSignOut = async () => {
-    console.log('Layout Navbar: Attempting sign out...');
+    console.warn('Layout Navbar: Attempting sign out...');
     try {
+      // Add more detailed debugging
+      console.warn('Layout Navbar: Current user state before sign out:', user);
+      console.warn('Layout Navbar: QueryClient state:', queryClient);
+      
+      // Perform the sign out
       const { error } = await supabase.auth.signOut();
+      
       if (error) {
         console.error('Layout Navbar: Error signing out:', error);
+        console.error('Layout Navbar: Error details:', JSON.stringify(error, null, 2));
         // Optionally show an error message to the user
       } else {
-        console.log('Layout Navbar: Sign out successful.');
+        console.warn('Layout Navbar: Sign out successful.');
+        
         // Clear user state immediately
         setUser(null);
         setIsLoading(true);
+        
         // Clear React Query cache to prevent stale data fetches
-        console.log('Layout Navbar: Clearing query cache...');
-        queryClient.clear();
-        // Explicitly redirect to the sign-in page using full page load
-        console.log('Layout Navbar: Redirecting to /sign-in via full page load...');
-        window.location.href = '/sign-in'; 
+        console.warn('Layout Navbar: Clearing query cache...');
+        try {
+          queryClient.clear();
+          console.warn('Layout Navbar: Query cache cleared successfully');
+        } catch (cacheError) {
+          console.error('Layout Navbar: Error clearing query cache:', cacheError);
+        }
+        
+        // Add a small delay before redirecting to ensure state updates are processed
+        console.warn('Layout Navbar: Preparing to redirect...');
+        try {
+          // Use router for client-side navigation when possible
+          console.warn('Layout Navbar: Redirecting to /sign-in via router...');
+          router.push('/sign-in');
+        } catch (routerError) {
+          console.error('Layout Navbar: Router navigation failed:', routerError);
+          // Fallback to window.location if router fails
+          console.warn('Layout Navbar: Falling back to direct location change...');
+          window.location.href = '/sign-in';
+        }
       }
     } catch (error) {
       console.error('Layout Navbar: Unexpected error during sign out:', error);
+      console.error('Layout Navbar: Error stack:', error instanceof Error ? error.stack : 'No stack trace');
     }
   };
 
   const navItems = [
     { name: "Dashboard", href: "/" },
-    { name: "Clients", href: "/clients" },
+    { name: "Contacts", href: "/contacts" },
+    { name: "Groups", href: "/groups" },
   ];
 
   return (
@@ -71,7 +98,7 @@ export function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <span className="text-xl font-bold text-blue-600">CodexCRM</span>
+              <span className="text-xl font-bold text-purple-600">CodexCRM</span>
             </div>
             {!isLoading && user && (
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
@@ -81,8 +108,8 @@ export function Navbar() {
                     href={item.href}
                     className={`${
                       pathname === item.href
-                        ? "border-blue-500 text-gray-900"
-                        : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                        ? "border-purple-600 text-purple-900"
+                        : "border-transparent text-gray-600 hover:border-purple-300 hover:text-purple-700"
                     } inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium`}
                   >
                     {item.name}
@@ -103,13 +130,14 @@ export function Navbar() {
                   variant="outline"
                   size="sm"
                   onClick={handleSignOut}
+                  className="border-purple-200 text-purple-700 hover:bg-purple-50 hover:text-purple-800"
                 >
                   Sign Out
                 </Button>
               </div>
             ) : (
               <Link href="/sign-in">
-                <Button variant="default" size="sm">
+                <Button variant="default" size="sm" className="bg-purple-600 hover:bg-purple-700 text-white">
                   Sign In
                 </Button>
               </Link>

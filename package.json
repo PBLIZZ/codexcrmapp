@@ -2,11 +2,26 @@
   "name": "codexcrmapp",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "node scripts/ci-lint-guardrail.js --check",
+      "eslint --max-warnings 0 --fix"
+    ]
+  },
   "scripts": {
     "dev": "cd apps/web && next dev",
     "build": "cd apps/web && next build",
     "start": "cd apps/web && next start",
-    "lint": "cd apps/web && next lint"
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
+    "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
+    "lint:scan": "node scripts/ci-lint-guardrail.js --scan",
+    "lint:list": "node scripts/ci-lint-guardrail.js --list",
+    "lint:add": "node scripts/ci-lint-guardrail.js --add",
+    "lint:remove": "node scripts/ci-lint-guardrail.js --remove",
+    "lint:fix-legacy": "node scripts/fix-legacy-files.js --all",
+    "lint:fix-legacy-file": "node scripts/fix-legacy-files.js --file",
+    "prepare": "husky"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
@@ -33,14 +48,24 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@eslint/js": "^9.27.0",
+    "@next/eslint-plugin-next": "^15.3.2",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.3.1",
-    "supabase": "^2.20.12",
+    "eslint-formatter-table": "^7.32.1",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "globals": "^16.2.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.0.0",
+    "supabase": "^2.23.4",
     "tailwindcss": "^4.1.4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "typescript-eslint": "^8.32.1"
   }
 }

@@ -1,6 +1,7 @@
 import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
 import type { Session, User } from '@supabase/supabase-js';
+// We use a custom cookie handling approach for tRPC context
+
 import { supabaseAdmin } from './supabaseAdmin';
 
 /** Shape of the tRPC context object */
@@ -34,7 +35,7 @@ export async function createContext({ req }: { req: Request }): Promise<Context>
     .filter(([key]) => key.includes('sb-') || key.includes('supabase'))
     .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
   
-  console.log('tRPC context: Auth cookies found:', Object.keys(authCookies).length);
+  console.error('tRPC context: Auth cookies found:', Object.keys(authCookies).length);
   
   // Create a supabase client with enhanced cookie handling
   const supabase = createServerClient(
@@ -46,17 +47,17 @@ export async function createContext({ req }: { req: Request }): Promise<Context>
           const value = parsedCookies[name];
           // Log when accessing auth cookies to debug
           if (name.includes('sb-') || name.includes('supabase')) {
-            console.log(`tRPC context reading auth cookie: ${name}=${value ? '[EXISTS]' : '[NOT FOUND]'}`);
+            console.error(`tRPC context reading auth cookie: ${name}=${value ? '[EXISTS]' : '[NOT FOUND]'}`);
           }
           return value;
         },
-        set(name, value, options) {
+        set(name, value, _options) {
           // We can't set cookies in API routes directly
-          console.log(`tRPC context would set cookie: ${name}=${value ? '[VALUE]' : '[EMPTY]'}`);
+          console.error(`tRPC context would set cookie: ${name}=${value ? '[VALUE]' : '[EMPTY]'}`);
         },
-        remove(name, options) {
+        remove(name, _options) {
           // We can't remove cookies in API routes directly
-          console.log(`tRPC context would remove cookie: ${name}`);
+          console.error(`tRPC context would remove cookie: ${name}`);
         }
       }
     },
@@ -81,7 +82,7 @@ export async function createContext({ req }: { req: Request }): Promise<Context>
     }
 
     // Log authentication status with more details
-    console.log('tRPC context auth status:', { 
+    console.warn('tRPC context auth status:', { 
       authenticated: !!user,
       userId: user?.id,
       email: user?.email,

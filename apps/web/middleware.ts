@@ -1,8 +1,8 @@
-import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import { NextResponse, type NextRequest } from 'next/server';
 
 // Define paths that require authentication
-const protectedPaths = ['/', '/dashboard', '/clients']; 
+const protectedPaths = ['/', '/dashboard', '/clients', '/contacts', '/groups'];
 
 // Define paths that should be accessible only when logged out
 const publicOnlyPaths = ['/sign-in', '/sign-up'];
@@ -64,7 +64,7 @@ export async function middleware(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   
   // We can still use getSession() to get the session if needed
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session: _session } } = await supabase.auth.getSession();
 
   const { pathname } = request.nextUrl;
   const isProtectedPath = protectedPaths.some(path => pathname === path || (path !== '/' && pathname.startsWith(path + '/')));
@@ -72,16 +72,16 @@ export async function middleware(request: NextRequest) {
 
   // Use authenticated user object from getUser() for protection checks
   if (isProtectedPath && !user) {
-    console.log(`Middleware: No authenticated user, redirecting from protected path ${pathname} to /sign-in`);
+    console.warn(`Middleware: No authenticated user, redirecting from protected path ${pathname} to /sign-in`);
     return NextResponse.redirect(new URL('/sign-in', request.url));
   }
 
   if (isPublicOnlyPath && user) {
-    console.log(`Middleware: Authenticated user exists, redirecting from public-only path ${pathname} to /dashboard`);
+    console.warn(`Middleware: Authenticated user exists, redirecting from public-only path ${pathname} to /dashboard`);
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
   
-  console.log(`Middleware: Allowing request to ${pathname}. Authenticated user exists: ${!!user}`);
+  console.warn(`Middleware: Allowing request to ${pathname}. Authenticated user exists: ${!!user}`);
   return response; 
 }
 

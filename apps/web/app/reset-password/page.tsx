@@ -1,5 +1,7 @@
 import { Suspense } from 'react';
+
 import { ResetPasswordContent } from './ResetPasswordContent';
+
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 
 /**

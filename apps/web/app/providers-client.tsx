@@ -1,13 +1,15 @@
-'use client';
-
-import React, { useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import React, { useEffect } from 'react';
+export default function ClientProviders({ children }: { children: React.ReactNode }) {
 import { httpBatchLink } from '@trpc/client';
 import superjson from 'superjson';
-
-// Import the tRPC client from the correct location
 import { api, API_VERSION } from '@/lib/trpc';
 import { logDebugInfo } from '@/lib/debug-helper';
+
+'use client';
+
+
+// Import the tRPC client from the correct location
 
 /**
  * Helper to get the base URL for API requests depending on environment
@@ -22,14 +24,13 @@ function getBaseUrl() {
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
   
   // Dev SSR should use localhost
-  return 'http://localhost:3000';
+  return 'http://localhost:3008';
 }
 
 /**
  * Client-side providers component that wraps the app with tRPC and React Query providers
  * This is extracted as a separate client component to avoid issues with server components
  */
-export default function ClientProviders({ children }: { children: React.ReactNode }) {
   // Run debugging utilities on mount in development
   useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
@@ -53,12 +54,12 @@ export default function ClientProviders({ children }: { children: React.ReactNod
         },
       },
     },
-  }) as any); // Type assertion to avoid version compatibility issues
+  }) as Record<string, unknown>); // Type assertion to avoid version compatibility issues
 
   // Create tRPC client with better error handling
   const [trpcClient] = React.useState(() => {
     const baseUrl = getBaseUrl();
-    console.log(`Creating new tRPC client (version: ${API_VERSION}) with baseUrl: ${baseUrl}`);
+    console.warn(`Creating new tRPC client (version: ${API_VERSION}) with baseUrl: ${baseUrl}`);
     
     return api.createClient({
       transformer: superjson,
@@ -68,16 +69,36 @@ export default function ClientProviders({ children }: { children: React.ReactNod
           url: `${baseUrl}/api/trpc`,
           
           // Custom fetch handler for debugging
-          fetch: (input, init) => {
+          fetch: async (input, init) => {
             // Log request details
             const inputUrl = typeof input === 'string' ? input : input instanceof Request ? input.url : String(input);
-            console.log('tRPC fetch request to:', inputUrl);
+            console.warn('tRPC fetch request to:', inputUrl);
             
-            // Use the standard fetch API
-            return fetch(input, {
-              ...init,
-              credentials: 'include', // Include cookies for auth
-            });
+            try {
+              // Use the standard fetch API with timeout
+              const controller = new AbortController();
+              const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+              
+              const response = await fetch(input, {
+                ...init,
+                credentials: 'include', // Include cookies for auth
+                signal: controller.signal,
+              });
+              
+              clearTimeout(timeoutId);
+              
+              // Log response status for debugging
+              console.warn(`tRPC response from ${inputUrl}: ${response.status}`);
+              
+              if (!response.ok) {
+                console.error(`tRPC request failed: ${response.status} ${response.statusText}`);
+              }
+              
+              return response;
+            } catch (error) {
+              console.error('tRPC fetch error:', error);
+              throw error;
+            }
           },
           
           // Add headers for cache busting and debugging
