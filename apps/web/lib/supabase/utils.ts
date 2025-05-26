@@ -1,5 +1,6 @@
 // apps/web/lib/supabase/utils.ts
 import { Database } from '@codexcrm/db';
+
 import { supabase } from './client';
 import { createSupabaseServer } from './server';
 

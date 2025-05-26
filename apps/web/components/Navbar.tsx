@@ -1,9 +1,11 @@
 "use client";
-import Link from 'next/link';
-import { useSupabase } from './SupabaseProvider';
-import { useState, useEffect } from 'react';
 import { Session } from '@supabase/supabase-js';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+
+import { useSupabase } from './SupabaseProvider';
+
 
 export default function Navbar() {
   const [session, setSession] = useState<Session | null>(null);
@@ -27,7 +29,7 @@ export default function Navbar() {
   }, [supabase]);
   
   const signOut = async () => {
-    console.log('Attempting sign out...'); // Log start
+    console.warn('Attempting sign out...'); // Log start
     // Add null check for supabase client
     if (!supabase) {
       console.error('Sign out failed: Supabase client not available.');
@@ -40,11 +42,11 @@ export default function Navbar() {
         console.error('Supabase sign out error:', error);
         throw error;
       }
-      console.log('Supabase signOut successful. Clearing user state.'); // Log success
+      console.warn('Supabase signOut successful. Clearing user state.'); // Log success
       setSession(null); // Clear user state locally
-      console.log('Pushing to / route...'); // Log before redirect
+      console.warn('Pushing to / route...'); // Log before redirect
       router.push('/'); // Redirect to home page
-      console.log('router.push called.'); // Log after redirect call
+      console.warn('router.push called.'); // Log after redirect call
       // router.refresh(); // Keep refresh commented out for now
     } catch (error) { 
       console.error('Error during sign out process:', error);

@@ -1,10 +1,12 @@
 "use client";
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase/client'; 
-import { Input } from '@/components/ui/input'; 
-import { Button } from '@/components/ui/button'; 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input'; 
+import { supabase } from '@/lib/supabase/client'; 
+ 
 
 export default function SignUpPage() {
   const [email, setEmail] = useState('');
@@ -26,7 +28,7 @@ export default function SignUpPage() {
     setIsLoading(true);
     try {
       // Attempt sign up with email confirmation redirect
-      const { data, error } = await supabase.auth.signUp({
+      const { data: _data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -39,8 +41,8 @@ export default function SignUpPage() {
         // Redirect to confirmation page
         router.push('/sign-up/confirmation');
       }
-    } catch (err: any) {
-      setMessage(err.message || 'An error occurred during sign up');
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : 'An error occurred during sign up');
     } finally {
       setIsLoading(false);
     }

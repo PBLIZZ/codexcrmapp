@@ -1,19 +1,19 @@
 "use client";
 
-import React from 'react';
+import type { AppRouter } from '@codexcrm/server/src/root';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { httpBatchLink } from '@trpc/client';
+import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
+import React from 'react';
 import superjson from 'superjson';
 
 // Import the tRPC client from the correct location
 import { api, API_VERSION } from '@/lib/trpc';
 
+// Export types for inputs and outputs
+
 // Export the api client as trpc for backward compatibility
 export const trpc = api;
-
-// Export types for inputs and outputs
-import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
-import type { AppRouter } from '@codexcrm/server/src/root';
 export type RouterInputs = inferRouterInputs<AppRouter>;
 export type RouterOutputs = inferRouterOutputs<AppRouter>;
 
@@ -30,7 +30,7 @@ function getBaseUrl() {
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
   
   // Dev SSR should use localhost
-  return 'http://localhost:3000';
+  return 'http://localhost:3008';
 }
 
 /**
@@ -53,19 +53,19 @@ export function Providers({ children }: { children: React.ReactNode }) {
         },
       },
     },
-  }) as any); // Type assertion to avoid version compatibility issues
+  }) as QueryClient); // Type assertion to avoid version compatibility issues
 
   // Force reset the cache on component mount to avoid stale references
   // React.useEffect(() => {
   //   // Clear all queries on initial load to prevent stale cache issues
   //   // queryClient.clear(); // <-- Commented out: Likely causing issues with mutation updates
-  //   // console.log('React Query cache cleared');
+  //   // console.warn('React Query cache cleared');
   // }, [queryClient]);
 
   // Create tRPC client with better error handling
   const [trpcClient] = React.useState(() => {
     const baseUrl = getBaseUrl();
-    console.log(`Creating new tRPC client (version: ${API_VERSION}) with baseUrl: ${baseUrl}`);
+    console.warn(`Creating new tRPC client (version: ${API_VERSION}) with baseUrl: ${baseUrl}`);
     
     return api.createClient({
       transformer: superjson,
@@ -78,7 +78,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           fetch: (input, init) => {
             // Log request details
             const inputUrl = typeof input === 'string' ? input : input instanceof Request ? input.url : String(input);
-            console.log('tRPC fetch request to:', inputUrl);
+            console.warn('tRPC fetch request to:', inputUrl);
             
             // Use the standard fetch API
             return fetch(input, {

@@ -20,7 +20,7 @@ export function formatDateForDisplay(dateInput: string | Date | null | undefined
   const date = safeParseDate(dateInput);
   if (!date) return '—';
 
-  const options: Intl.DateTimeFormatOptions = {
+  const _options: Intl.DateTimeFormatOptions = {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',

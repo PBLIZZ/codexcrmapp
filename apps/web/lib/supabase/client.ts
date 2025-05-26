@@ -9,7 +9,7 @@ const supabaseClient = createBrowserClient(
 
 // Add event listeners for auth state changes to help debug auth issues
 supabaseClient.auth.onAuthStateChange((event, session) => {
-  console.log(`Supabase Auth State Change: ${event}`, { 
+  console.warn(`Supabase Auth State Change: ${event}`, { 
     sessionExists: !!session, 
     userId: session?.user?.id,
     timestamp: new Date().toISOString()

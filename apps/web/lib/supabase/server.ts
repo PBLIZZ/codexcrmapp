@@ -1,5 +1,5 @@
-import { cookies } from 'next/headers';
 import { createServerClient, type CookieOptions } from '@supabase/ssr'; // Also import CookieOptions if needed elsewhere, good practice
+import { cookies } from 'next/headers';
 
 // Define the function as async since cookies() returns a Promise
 export const createSupabaseServer = async () => {
@@ -17,7 +17,7 @@ export const createSupabaseServer = async () => {
         set(name: string, value: string, options: CookieOptions) {
           try {
             cookieStore.set({ name, value, ...options });
-          } catch (error) {
+          } catch (_error) {
             // The `set` method was called from a Server Component.
             // This can be ignored if you have middleware refreshing
             // user sessions.
@@ -26,7 +26,7 @@ export const createSupabaseServer = async () => {
         remove(name: string, options: CookieOptions) {
           try {
             cookieStore.set({ name, value: '', ...options });
-          } catch (error) {
+          } catch (_error) {
             // The `delete` method was called from a Server Component.
             // This can be ignored if you have middleware refreshing
             // user sessions.

@@ -1,0 +1,12 @@
+[
+  "apps/web/app/clients/ClientsContent.tsx",
+  "apps/web/app/clients/[clientId]/ClientDetailContent.tsx",
+  "apps/web/app/clients/[clientId]/ClientDetailView.tsx",
+  "apps/web/app/clients/[clientId]/edit/page.tsx",
+  "apps/web/app/contacts/ContactsContent.tsx",
+  "apps/web/app/contacts/[contactId]/ContactDetailView.tsx",
+  "apps/web/app/contacts/[contactId]/edit/page.tsx",
+  "apps/web/app/contacts/[contactId]/page.tsx",
+  "apps/web/app/providers-client.tsx",
+  "apps/web/app/contacts/pattern2/Pattern2TableView.tsx"
+]

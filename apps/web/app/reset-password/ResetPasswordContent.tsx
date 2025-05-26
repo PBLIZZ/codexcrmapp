@@ -1,17 +1,19 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { supabase } from '@/lib/supabase/client';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
+
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { supabase } from '@/lib/supabase/client';
+
 
 export function ResetPasswordContent() {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const _searchParams = useSearchParams();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState('');
@@ -35,7 +37,7 @@ export function ResetPasswordContent() {
         
         // Parse the URL fragment
         const params = new URLSearchParams(hash.substring(1)); // remove #
-        const accessToken = params.get('access_token');
+        const _accessToken = params.get('access_token');
         const type = params.get('type');
         
         if (!accessToken) {
@@ -101,10 +103,10 @@ export function ResetPasswordContent() {
       // Update password using the token in the URL hash
       const hash = window.location.hash;
       const params = new URLSearchParams(hash.substring(1));
-      const accessToken = params.get('access_token');
+      const _accessToken = params.get('access_token');
       
       // Call Supabase to update the password
-      const { data, error } = await supabase.auth.updateUser({
+      const { data: _data, error } = await supabase.auth.updateUser({
         password: password,
       });
       
@@ -113,7 +115,7 @@ export function ResetPasswordContent() {
         setMessage(`Failed to update password: ${error.message}`);
         setMessageType('error');
       } else {
-        console.log('Password updated successfully');
+        console.warn('Password updated successfully');
         setMessage('Password has been successfully reset! Redirecting to sign-in...');
         setMessageType('success');
         
