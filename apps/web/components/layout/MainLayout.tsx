@@ -7,7 +7,6 @@ import {
   CheckSquare, 
   Settings, 
   PlusCircle, 
-  Bell, 
   Menu,
   UserPlus,
   FileText,
@@ -15,7 +14,10 @@ import {
   Mail,
   Phone,
   MessageSquare,
-  BarChart
+  BarChart,
+  Upload,
+  User,
+  LogOut
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -43,7 +45,7 @@ import { cn } from "@/lib/utils";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 
 // Define type for section paths
-type SectionPath = "/dashboard" | "/contacts" | "/groups" | "/calendar" | "/tasks";
+type SectionPath = "/dashboard" | "/contacts" | "/tasks" | "/calendar" | "/messages" | "/analytics";
 
 // Define type for section colors
 type SectionColorScheme = {
@@ -70,12 +72,12 @@ const sectionColors: Record<SectionPath, SectionColorScheme> = {
     hoverBg: "hover:bg-teal-500",
     borderAccent: "border-teal-400"
   },
-  "/groups": {
-    accent: "bg-purple-400",
+  "/tasks": {
+    accent: "bg-teal-800",
     text: "text-white",
-    gradient: "bg-gradient-to-r from-purple-50 to-purple-100",
-    hoverBg: "hover:bg-purple-300",
-    borderAccent: "border-purple-400"
+    gradient: "bg-gradient-to-r from-teal-700 to-teal-800",
+    hoverBg: "hover:bg-teal-900",
+    borderAccent: "border-teal-800"
   },
   "/calendar": {
     accent: "bg-orange-500",
@@ -84,12 +86,19 @@ const sectionColors: Record<SectionPath, SectionColorScheme> = {
     hoverBg: "hover:bg-orange-600",
     borderAccent: "border-orange-500"
   },
-  "/tasks": {
-    accent: "bg-teal-800",
+  "/messages": {
+    accent: "bg-blue-500",
     text: "text-white",
-    gradient: "bg-gradient-to-r from-teal-700 to-teal-800",
-    hoverBg: "hover:bg-teal-900",
-    borderAccent: "border-teal-800"
+    gradient: "bg-gradient-to-r from-blue-50 to-blue-100",
+    hoverBg: "hover:bg-blue-600",
+    borderAccent: "border-blue-500"
+  },
+  "/analytics": {
+    accent: "bg-indigo-600",
+    text: "text-white",
+    gradient: "bg-gradient-to-r from-indigo-50 to-indigo-100",
+    hoverBg: "hover:bg-indigo-700",
+    borderAccent: "border-indigo-600"
   },
 };
 
@@ -99,28 +108,37 @@ const mainNavItems = [
     title: "Dashboard",
     href: "/dashboard",
     icon: Home,
+    disabled: false,
   },
   {
     title: "Contacts",
     href: "/contacts",
     icon: Users,
-  },
-  {
-    title: "Groups",
-    href: "/groups",
-    icon: Tag,
-  },
-  {
-    title: "Calendar",
-    href: "/calendar",
-    icon: Calendar,
-    disabled: true,
+    disabled: false,
   },
   {
     title: "Tasks",
     href: "/tasks",
     icon: CheckSquare,
-    disabled: true,
+    disabled: false,
+  },
+  {
+    title: "Calendar",
+    href: "/calendar",
+    icon: Calendar,
+    disabled: false,
+  },
+  {
+    title: "Messages",
+    href: "/messages",
+    icon: MessageSquare,
+    disabled: false,
+  },
+  {
+    title: "Analytics",
+    href: "/analytics",
+    icon: BarChart,
+    disabled: false,
   },
 ];
 
@@ -136,24 +154,24 @@ interface ContextualAction {
 const contextualActions: Record<SectionPath, ContextualAction[]> = {
   "/dashboard": [
     { title: "Add Contact", href: "/contacts?new=true", icon: UserPlus },
-    { title: "Create Group", href: "/groups?new=true", icon: Tag },
   ],
   "/contacts": [
     { title: "Add Contact", href: "/contacts?new=true", icon: UserPlus },
     { title: "Send Email", href: "#", icon: Mail, disabled: true },
     { title: "Call Contact", href: "#", icon: Phone, disabled: true },
   ],
-  "/groups": [
-    { title: "Create Group", href: "/groups?new=true", icon: Tag },
-    { title: "Add Contact to Group", href: "/contacts?group=new", icon: UserPlus },
+  "/tasks": [
+    { title: "Add Task", href: "#", icon: PlusCircle },
   ],
   "/calendar": [
-    { title: "Add Event", href: "#", icon: PlusCircle, disabled: true },
+    { title: "Add Event", href: "#", icon: PlusCircle },
   ],
-  "/tasks": [
-    { title: "Add Task", href: "#", icon: PlusCircle, disabled: true },
-    { title: "Create Note", href: "#", icon: FileText, disabled: true },
+  "/messages": [
+    { title: "New Message", href: "#", icon: MessageSquare },
   ],
+  "/analytics": [
+    { title: "Export Report", href: "#", icon: FileText },
+  ]
 };
 
 // Helper to get contextual actions for current path
@@ -161,19 +179,17 @@ const getContextualActions = (pathname: string): ContextualAction[] => {
   // Handle dynamic routes
   if (pathname.startsWith("/contacts/")) {
     return contextualActions["/contacts"];
-  } else if (pathname.startsWith("/groups/")) {
-    return contextualActions["/groups"];
-  } else if (pathname.startsWith("/calendar/")) {
-    return contextualActions["/calendar"];
-  } else if (pathname.startsWith("/tasks/")) {
-    return contextualActions["/tasks"];
   }
-  
-  // Check if the pathname is a key in our contextualActions
-  const path = Object.keys(contextualActions).find(key => key === pathname);
-  
-  // Return the contextual actions for the found path, or default to dashboard
-  return path ? contextualActions[path as SectionPath] : contextualActions["/dashboard"];
+
+  // Default to using the root path
+  for (const path of Object.keys(contextualActions) as SectionPath[]) {
+    if (pathname === path || pathname.startsWith(`${path}/`)) {
+      return contextualActions[path];
+    }
+  }
+
+  // Fallback to dashboard actions
+  return contextualActions["/dashboard"];
 };
 
 export function MainLayout({ children }: { children: React.ReactNode }) {
@@ -212,7 +228,7 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
   // This will include contactCount for each group
   const { data: sidebarGroups, isLoading: isLoadingSidebarGroups } =
     api.groups.list.useQuery(undefined, { 
-      enabled: currentSectionPath === '/groups' || currentSectionPath === '/contacts',
+      enabled: currentSectionPath === '/contacts',
       staleTime: 30000, // Cache results for 30 seconds to reduce API calls
       // Add error handling
       onError: (error) => {
@@ -242,10 +258,11 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
                 <div className="flex flex-col gap-6 py-4">
                   <div className="flex items-center gap-2">
                     <Link href="/" className="flex items-center gap-2">
-                      <div className="bg-teal-800 text-white p-2 rounded-md">
-                        <span className="font-bold text-xl">C</span>
+                      <img src="/images/logo.png" alt="OmniCRM" className="h-8" />
+                      <div className="flex flex-col">
+                        <span className="text-base font-bold text-teal-800">OmniCRM</span>
+                        <span className="text-xs text-gray-600">by omnipotency AI</span>
                       </div>
-                      <span className="text-xl font-bold bg-gradient-to-r from-teal-800 to-orange-500 bg-clip-text text-transparent">CodexCRM</span>
                     </Link>
                   </div>
                   <nav className="flex flex-col gap-2">
@@ -271,11 +288,11 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
               </SheetContent>
             </Sheet>
             <Link href="/" className="flex items-center gap-2">
-              <div className="bg-teal-800 text-white p-2 rounded-md">
-                <span className="font-bold text-xl">C</span>
+              <img src="/images/logo.png" alt="OmniCRM" className="h-8" />
+              <div className="flex flex-col">
+                <span className="text-xl font-bold text-teal-800">OmniCRM</span>
+                <span className="text-xs text-gray-600">by Omnipotency ai</span>
               </div>
-              <span className="hidden md:inline-block text-xl font-bold bg-gradient-to-r from-teal-800 to-orange-500 bg-clip-text text-transparent">CodexCRM</span>
-              <span className="md:hidden text-xl font-bold text-teal-800">CRM</span>
             </Link>
           </div>
           
@@ -304,44 +321,76 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
                     item.disabled && "pointer-events-none opacity-60"
                   )}
                 >
-                  {item.title}
+                  <item.icon className="h-4 w-4 sm:h-5 sm:w-5" />
+                  <span className="hidden lg:inline">{item.title}</span>
                 </Link>
               );
             })}
           </nav>
           
           {/* User Menu and Actions */}
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="text-muted-foreground">
-              <Bell className="h-5 w-5" />
+          <div className="flex items-center gap-3">
+            {/* Notifications/Mail Icon */}
+            <Button variant="ghost" size="icon" className="relative text-muted-foreground">
+              <Mail className="h-5 w-5" />
               <span className="sr-only">Notifications</span>
             </Button>
+            
+            {/* System Settings */}
             <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="text-muted-foreground">
+                  <Settings className="h-5 w-5" />
+                  <span className="sr-only">System Settings</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>System Settings</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <Link href="/settings/general">General</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href="/settings/appearance">Appearance</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href="/settings/notifications">Notifications</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href="/settings/security">Security</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          
+          {/* User Profile */}
+          <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="rounded-full">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src="/placeholder-avatar.jpg" alt="User" />
-                    <AvatarFallback>U</AvatarFallback>
+                    <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="User" />
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
+                <DropdownMenuItem>
+                  <User className="mr-2 h-4 w-4" />
                   <Link href="/account">Profile</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/account/settings">Settings</Link>
+                <DropdownMenuItem>
+                  <Upload className="mr-2 h-4 w-4" />
+                  <span>Upload Photo</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
+                <DropdownMenuItem>
+                  <LogOut className="mr-2 h-4 w-4" />
                   <Link href="/sign-out">Sign out</Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+            </div>
           </div>
-        </div>
       </header>
       
       {/* Main Content with Sidebar */}
@@ -371,37 +420,9 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
                       {getCurrentSectionTitle()}
                     </h3>
                     <nav className="flex flex-col gap-2 mt-2">
-                      {currentSectionPath === '/groups' ? (
-                        isLoadingSidebarGroups ? (
-                          <div className="px-3 py-2 text-sm text-gray-500">Loading groups...</div>
-                        ) : (
-                          sidebarGroups?.map((group: any) => (
-                            <Link
-                              key={group.id}
-                              href={`/groups/${group.id}`}
-                              className={cn(
-                                "flex items-center gap-2 rounded-md px-3 py-2 text-sm",
-                                // Highlight the active group link
-                                pathname === `/groups/${group.id}`
-                                  ? `${currentSectionColors.accent} ${currentSectionColors.text}`
-                                  : "hover:bg-muted"
-                              )}
-                            >
-                              <div
-                                className="h-5 w-5 flex-shrink-0 rounded-full flex items-center justify-center text-white text-xs font-medium"
-                                style={{ backgroundColor: group.color || '#c084fc' }}
-                              >
-                                {group.name.charAt(0).toUpperCase()}
-                              </div>
-                              <span className="flex-1 truncate">{group.name}</span>
-                              <Badge variant="secondary" className="ml-auto">
-                                {group.contactCount}
-                              </Badge>
-                            </Link>
-                          ))
-                        )
-                      ) : (
-                        currentContextualActions.map((action) => (
+                      {currentContextualActions.map((action: ContextualAction) => {
+                        const ActionIcon = action.icon;
+                        return (
                           <Link
                             key={action.title}
                             href={action.disabled ? "#" : action.href}
@@ -413,11 +434,11 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
                               action.disabled && "pointer-events-none opacity-60"
                             )}
                           >
-                            <action.icon className="h-4 w-4" />
+                            <ActionIcon className="h-4 w-4" />
                             <span>{action.title}</span>
                           </Link>
-                        ))
-                      )}
+                        );
+                      })}
                     </nav>
                   </div>
                   <div className="flex flex-col gap-1 mt-6">

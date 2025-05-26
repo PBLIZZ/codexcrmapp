@@ -2,11 +2,20 @@
 
 import Link from "next/link";
 import { ContactGroupManager, GroupsProvider } from './ContactGroupManager';
-import { ArrowDown, ArrowUp, Mail, MessageSquareText, Phone, Sparkles } from "lucide-react";
+import { ArrowDown, ArrowUp, Mail, MessageSquareText, Phone, Sparkles, ChevronDown, Calendar, Clock, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { api } from "@/lib/trpc";
+import { format, formatDistance, subDays, startOfDay, startOfWeek, endOfWeek, startOfMonth, endOfMonth, isAfter, isBefore, parseISO } from 'date-fns';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem
+} from "@/components/ui/dropdown-menu";
 
 export interface Contact {
   id: string;
@@ -27,6 +36,15 @@ export interface Contact {
   tags?: Array<{ id: string; name: string }> | null;
 }
 
+// Define name sort options
+export type NameSortField = 'first_name' | 'last_name';
+
+// Define date filter options
+export type DateFilterPeriod = 'today' | 'this_week' | 'last_week' | 'this_month' | 'last_month' | 'older' | 'all';
+
+// Define source types for filtering
+export type SourceOption = 'conference' | 'referral' | 'website' | 'event' | 'social_media' | 'cold_outreach' | 'other';
+
 interface ContactListProps {
   contacts: Contact[];
   onEditClick: (contact: Contact) => void;
@@ -39,6 +57,12 @@ interface ContactListProps {
   sortField?: string;
   sortDirection?: 'asc' | 'desc';
   onSortChange?: (field: string) => void;
+  onNameSortChange?: (field: NameSortField, direction: 'asc' | 'desc') => void;
+  nameSortField?: NameSortField;
+  dateFilterPeriod?: DateFilterPeriod;
+  onDateFilterChange?: (period: DateFilterPeriod) => void;
+  selectedSourceFilters?: SourceOption[];
+  onSourceFilterChange?: (sources: SourceOption[]) => void;
 }
 
 export function ContactList({
@@ -49,122 +73,363 @@ export function ContactList({
   isSaveMutationLoading,
   searchQuery,
   selectedGroupId,
-  visibleColumns = ['name', 'email', 'company', 'groups'],
+  visibleColumns = ['name', 'last_contacted', 'notes', 'source'],
   sortField = 'name',
   sortDirection = 'asc',
-  onSortChange = () => {}
+  onSortChange = () => {},
+  onNameSortChange = () => {},
+  nameSortField = 'first_name',
+  dateFilterPeriod = 'all',
+  onDateFilterChange = () => {},
+  selectedSourceFilters = [],
+  onSourceFilterChange = () => {}
 }: ContactListProps) {
-  // Pre-load groups once for the entire contact list
-  const { data: allGroups, isLoading: isLoadingGroups } = api.groups.list.useQuery(undefined, {
+  // Query groups for contact group management
+  const { data: allGroups = [], isLoading: isLoadingGroups } = api.groups.list.useQuery(undefined, {
     staleTime: 60000, // Cache for 60 seconds
     refetchOnWindowFocus: false, // Don't refetch on window focus
   });
-  return contacts.length > 0 ? (
-    <div className="bg-white shadow-md rounded-lg overflow-hidden">
+
+  // Get contacts filtered by date period
+  const getFilteredContactsByDate = (contacts: Contact[], period: DateFilterPeriod): Contact[] => {
+    if (period === 'all') return contacts;
+    
+    const today = new Date();
+    const startOfToday = startOfDay(today);
+    
+    return contacts.filter(contact => {
+      if (!contact.last_contacted_at) {
+        // If no last_contacted_at date and filtering for 'older', include it
+        return period === 'older';
+      }
+      
+      const contactDate = parseISO(contact.last_contacted_at);
+      
+      switch (period) {
+        case 'today':
+          return isAfter(contactDate, startOfToday);
+          
+        case 'this_week': {
+          const weekStart = startOfWeek(today, { weekStartsOn: 1 }); // Monday as week start
+          const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
+          return isAfter(contactDate, weekStart) && isBefore(contactDate, weekEnd);
+        }
+          
+        case 'last_week': {
+          const lastWeekStart = startOfWeek(subDays(today, 7), { weekStartsOn: 1 });
+          const lastWeekEnd = endOfWeek(subDays(today, 7), { weekStartsOn: 1 });
+          return isAfter(contactDate, lastWeekStart) && isBefore(contactDate, lastWeekEnd);
+        }
+          
+        case 'this_month': {
+          const monthStart = startOfMonth(today);
+          const monthEnd = endOfMonth(today);
+          return isAfter(contactDate, monthStart) && isBefore(contactDate, monthEnd);
+        }
+          
+        case 'last_month': {
+          const lastMonthStart = startOfMonth(subDays(today, 30));
+          const lastMonthEnd = endOfMonth(subDays(today, 30));
+          return isAfter(contactDate, lastMonthStart) && isBefore(contactDate, lastMonthEnd);
+        }
+          
+        case 'older':
+          // More than a month ago
+          return isBefore(contactDate, startOfMonth(subDays(today, 30)));
+          
+        default:
+          return true;
+      }
+    });
+  };
+  
+  // Available source options for filtering
+  const availableSourceOptions: SourceOption[] = [
+    'conference',
+    'referral', 
+    'website',
+    'event',
+    'social_media',
+    'cold_outreach',
+    'other'
+  ];
+
+  // First filter by date period
+  const dateFilteredContacts = getFilteredContactsByDate(contacts, dateFilterPeriod);
+  
+  // Then filter by source if any source filters are selected
+  const sourceFilteredContacts = selectedSourceFilters.length > 0
+    ? dateFilteredContacts.filter(contact => {
+        // If contact has no source and we're filtering, exclude it
+        if (!contact.source) return false;
+        
+        // Keep contact if its source is in the selected sources
+        return selectedSourceFilters.includes(contact.source as SourceOption);
+      })
+    : dateFilteredContacts;
+  
+  // Then filter by search query
+  const filteredContacts = sourceFilteredContacts
+    .filter(contact => {
+      // Apply search filter
+      if (searchQuery.trim() === '') return true;
+      
+      const searchLower = searchQuery.toLowerCase();
+      const fullName = `${contact.first_name || ''} ${contact.last_name || ''}`.toLowerCase();
+      const email = (contact.email || '').toLowerCase();
+      const phone = (contact.phone || '').toLowerCase();
+      const company = (contact.company_name || '').toLowerCase();
+      const notes = (contact.notes || '').toLowerCase();
+      const source = (contact.source || '').toLowerCase();
+      
+      return fullName.includes(searchLower) ||
+        email.includes(searchLower) ||
+        phone.includes(searchLower) ||
+        company.includes(searchLower) ||
+        notes.includes(searchLower) ||
+        source.includes(searchLower);
+    });
+
+  // We'll always render the table and headers, but show a message in the table body if no contacts are found
+
+  return (
+    <div className="overflow-x-auto rounded-lg border border-gray-200">
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            {visibleColumns.includes('name') && (
-              <th 
-                scope="col" 
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                onClick={() => onSortChange('name')}
-              >
-                <div className="flex items-center">
-                  Name
-                  {sortField === 'name' && (
-                    <span className="ml-1">
-                      {sortDirection === 'asc' ? 
-                        <ArrowUp className="h-3 w-3" /> : 
-                        <ArrowDown className="h-3 w-3" />}
+            {/* Name Column - Always visible */}
+            <th 
+              scope="col" 
+              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <div className="flex items-center cursor-pointer">
+                    <span>Name</span>
+                    <span className="ml-1 flex items-center">
+                      {sortField.includes('name') || sortField === 'first_name' || sortField === 'last_name' ? (
+                        sortDirection === 'asc' ? 
+                          <ArrowUp className="h-3 w-3" /> : 
+                          <ArrowDown className="h-3 w-3" />
+                      ) : (
+                        <ChevronDown className="h-3 w-3 ml-1" />
+                      )}
                     </span>
-                  )}
-                </div>
-              </th>
-            )}
-            {visibleColumns.includes('email') && (
-              <th 
-                scope="col" 
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                onClick={() => onSortChange('email')}
-              >
-                <div className="flex items-center">
-                  Email
-                  {sortField === 'email' && (
-                    <span className="ml-1">
-                      {sortDirection === 'asc' ? 
-                        <ArrowUp className="h-3 w-3" /> : 
-                        <ArrowDown className="h-3 w-3" />}
-                    </span>
-                  )}
-                </div>
-              </th>
-            )}
-            {visibleColumns.includes('phone') && (
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
-            )}
-            {visibleColumns.includes('company') && (
-              <th 
-                scope="col" 
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                onClick={() => onSortChange('company')}
-              >
-                <div className="flex items-center">
-                  Company
-                  {sortField === 'company' && (
-                    <span className="ml-1">
-                      {sortDirection === 'asc' ? 
-                        <ArrowUp className="h-3 w-3" /> : 
-                        <ArrowDown className="h-3 w-3" />}
-                    </span>
-                  )}
-                </div>
-              </th>
-            )}
-            {visibleColumns.includes('job_title') && (
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Job Title</th>
-            )}
-            {visibleColumns.includes('groups') && (
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Groups</th>
-            )}
-            {visibleColumns.includes('tags') && (
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tags</th>
-            )}
-            {visibleColumns.includes('source') && (
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Source</th>
-            )}
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-48">
+                  <DropdownMenuItem onClick={() => onNameSortChange('first_name', 'asc')}>
+                    <div className="flex items-center justify-between w-full">
+                      <span>First Name (A-Z)</span>
+                      {nameSortField === 'first_name' && sortDirection === 'asc' && <ArrowUp className="h-3 w-3" />}
+                    </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onNameSortChange('first_name', 'desc')}>
+                    <div className="flex items-center justify-between w-full">
+                      <span>First Name (Z-A)</span>
+                      {nameSortField === 'first_name' && sortDirection === 'desc' && <ArrowDown className="h-3 w-3" />}
+                    </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onNameSortChange('last_name', 'asc')}>
+                    <div className="flex items-center justify-between w-full">
+                      <span>Last Name (A-Z)</span>
+                      {nameSortField === 'last_name' && sortDirection === 'asc' && <ArrowUp className="h-3 w-3" />}
+                    </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onNameSortChange('last_name', 'desc')}>
+                    <div className="flex items-center justify-between w-full">
+                      <span>Last Name (Z-A)</span>
+                      {nameSortField === 'last_name' && sortDirection === 'desc' && <ArrowDown className="h-3 w-3" />}
+                    </div>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </th>
+            
+            {/* Last Contact Column */}
             {visibleColumns.includes('last_contacted') && (
               <th 
                 scope="col" 
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                onClick={() => onSortChange('last_contacted_at')}
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                <div className="flex items-center">
-                  Last Contacted
-                  {sortField === 'last_contacted_at' && (
-                    <span className="ml-1">
-                      {sortDirection === 'asc' ? 
-                        <ArrowUp className="h-3 w-3" /> : 
-                        <ArrowDown className="h-3 w-3" />}
-                    </span>
-                  )}
-                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <div className="flex items-center cursor-pointer">
+                      <span>Last Contacted</span>
+                      <span className="ml-1 flex items-center">
+                        <ChevronDown className="h-3 w-3 ml-1" />
+                      </span>
+                    </div>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-48">
+                    <DropdownMenuItem onClick={() => onDateFilterChange('all')}>
+                      <div className="flex items-center justify-between w-full">
+                        <span>All Contacts</span>
+                        {dateFilterPeriod === 'all' && <Check className="h-3 w-3" />}
+                      </div>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onDateFilterChange('today')}>
+                      <div className="flex items-center justify-between w-full">
+                        <span>Today</span>
+                        {dateFilterPeriod === 'today' && <Check className="h-3 w-3" />}
+                      </div>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onDateFilterChange('this_week')}>
+                      <div className="flex items-center justify-between w-full">
+                        <span>This Week</span>
+                        {dateFilterPeriod === 'this_week' && <Check className="h-3 w-3" />}
+                      </div>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onDateFilterChange('last_week')}>
+                      <div className="flex items-center justify-between w-full">
+                        <span>Last Week</span>
+                        {dateFilterPeriod === 'last_week' && <Check className="h-3 w-3" />}
+                      </div>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onDateFilterChange('this_month')}>
+                      <div className="flex items-center justify-between w-full">
+                        <span>This Month</span>
+                        {dateFilterPeriod === 'this_month' && <Check className="h-3 w-3" />}
+                      </div>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onDateFilterChange('last_month')}>
+                      <div className="flex items-center justify-between w-full">
+                        <span>Last Month</span>
+                        {dateFilterPeriod === 'last_month' && <Check className="h-3 w-3" />}
+                      </div>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onDateFilterChange('older')}>
+                      <div className="flex items-center justify-between w-full">
+                        <span>More than a Month</span>
+                        {dateFilterPeriod === 'older' && <Check className="h-3 w-3" />}
+                      </div>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </th>
             )}
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            
+            {/* Notes Column */}
+            {visibleColumns.includes('notes') && (
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Notes
+              </th>
+            )}
+            
+            {/* Source Column */}
+            {visibleColumns.includes('source') && (
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <div className="flex items-center cursor-pointer">
+                      <span>Source</span>
+                      <span className="ml-1 flex items-center">
+                        {sortField === 'source' ? (
+                          sortDirection === 'asc' ? 
+                            <ArrowUp className="h-3 w-3" /> : 
+                            <ArrowDown className="h-3 w-3" />
+                        ) : (
+                          <ChevronDown className="h-3 w-3 ml-1" />
+                        )}
+                      </span>
+                    </div>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-52">
+                    {/* Sorting options */}
+                    <div className="px-2 py-1.5 text-xs font-semibold">Sort By</div>
+                    <DropdownMenuItem onClick={() => onSortChange('source')}>
+                      <div className="flex items-center justify-between w-full">
+                        <span>A-Z</span>
+                        {sortField === 'source' && sortDirection === 'asc' && <ArrowUp className="h-3 w-3" />}
+                      </div>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => {
+                      if (sortField === 'source' && sortDirection === 'asc') {
+                        onSortChange('source'); // This will toggle to desc
+                      } else {
+                        onSortChange('source');
+                        if (sortDirection === 'asc') onSortChange('source'); // Toggle to desc
+                      }
+                    }}>
+                      <div className="flex items-center justify-between w-full">
+                        <span>Z-A</span>
+                        {sortField === 'source' && sortDirection === 'desc' && <ArrowDown className="h-3 w-3" />}
+                      </div>
+                    </DropdownMenuItem>
+                    
+                    <div className="h-px bg-slate-200 my-1" />
+                    
+                    {/* Filter options */}
+                    <div className="px-2 py-1.5 text-xs font-semibold">Filter By</div>
+                    
+                    {availableSourceOptions.map((source) => (
+                      <DropdownMenuItem key={source} onSelect={(e) => {
+                        e.preventDefault();
+                        const isSelected = selectedSourceFilters.includes(source);
+                        const updatedSources = isSelected
+                          ? selectedSourceFilters.filter(s => s !== source)
+                          : [...selectedSourceFilters, source];
+                        onSourceFilterChange(updatedSources);
+                      }}>
+                        <div className="flex items-center space-x-2">
+                          <div className={`w-4 h-4 border rounded flex items-center justify-center ${selectedSourceFilters.includes(source) ? 'bg-primary border-primary' : 'border-gray-300'}`}>
+                            {selectedSourceFilters.includes(source) && <Check className="h-3 w-3 text-white" />}
+                          </div>
+                          <span className="capitalize">{source.replace('_', ' ')}</span>
+                        </div>
+                      </DropdownMenuItem>
+                    ))}
+                    
+                    {selectedSourceFilters.length > 0 && (
+                      <>
+                        <div className="h-px bg-slate-200 my-1" />
+                        <DropdownMenuItem onSelect={(e) => {
+                          e.preventDefault();
+                          onSourceFilterChange([]);
+                        }}>
+                          <div className="flex items-center justify-center w-full text-xs text-red-500 font-medium">
+                            Clear Filters
+                          </div>
+                        </DropdownMenuItem>
+                      </>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </th>
+            )}
+            
+            {/* Actions Column - Always visible */}
+            <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Actions
+            </th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {contacts.map((contact) => (
-            <tr key={contact.id} className="hover:bg-gray-50">
-              {visibleColumns.includes('name') && (
+          {filteredContacts.length > 0 ? (
+            filteredContacts.map((contact) => (
+              <tr key={contact.id} className="hover:bg-gray-50">
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
                     <div className="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
                       {contact.profile_image_url ? (
-                        <img src={contact.profile_image_url} alt={`${contact.first_name} ${contact.last_name}`} className="h-full w-full object-cover" />
+                        <img 
+                          src={contact.profile_image_url} 
+                          alt={`${contact.first_name} ${contact.last_name}`} 
+                          className="h-full w-full object-cover" 
+                        />
                       ) : (
-                        <span className="text-gray-500 font-medium">{(contact.first_name?.[0] ?? '')}{(contact.last_name?.[0] ?? '')}</span>
+                        <img 
+                          src="/images/placeholder-avatar.jpg" 
+                          alt="Avatar" 
+                          className="h-full w-full object-cover" 
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.onerror = null;
+                            // Use a safer approach for SVG data URI
+                            const initials = `${contact.first_name?.[0] || ''}${contact.last_name?.[0] || ''}`;
+                            target.src = `data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect width='40' height='40' fill='%23f1f5f9'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='14' fill='%2394a3b8' dominant-baseline='middle' text-anchor='middle'%3E${initials}%3C/text%3E%3C/svg%3E`;
+                          }} 
+                        />
                       )}
                     </div>
                     <div className="ml-4">
@@ -174,145 +439,67 @@ export function ContactList({
                     </div>
                   </div>
                 </td>
-              )}
-              
-              {visibleColumns.includes('email') && (
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">{contact.email || '-'}</div>
-                </td>
-              )}
-              
-              {visibleColumns.includes('phone') && (
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">{contact.phone || '-'}</div>
-                </td>
-              )}
-              
-              {visibleColumns.includes('company') && (
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-500">
-                    {contact.company_name || '-'}
-                  </div>
-                </td>
-              )}
-              
-              {visibleColumns.includes('job_title') && (
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-500">
-                    {contact.job_title || '-'}
-                  </div>
-                </td>
-              )}
-              
-              {visibleColumns.includes('groups') && (
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {isLoadingGroups ? (
-                    <div className="text-sm text-gray-400">Loading groups...</div>
-                  ) : (
-                    <ContactGroupManager 
-                      contactId={contact.id} 
-                      contactName={`${contact.first_name || ''} ${contact.last_name || ''}`.trim()}
-                      preloadedGroups={allGroups}
-                    />
-                  )}
-                </td>
-              )}
-              
-              {visibleColumns.includes('tags') && (
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex flex-wrap gap-1">
-                    {contact.tags ? (
-                      Array.isArray(contact.tags) && contact.tags.length > 0 ? (
-                        contact.tags.map((tag: any) => (
-                          <Badge key={tag.id} variant="secondary" className="text-xs">
-                            {tag.name}
-                          </Badge>
-                        ))
-                      ) : <span className="text-gray-400 text-sm">No tags</span>
-                    ) : <span className="text-gray-400 text-sm">No tags</span>}
-                  </div>
-                </td>
-              )}
-              
-              {visibleColumns.includes('source') && (
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-500">
+                
+                {/* Last Contact Column */}
+                {visibleColumns.includes('last_contacted') && (
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {contact.last_contacted_at ? new Date(contact.last_contacted_at).toLocaleDateString() : '-'}
+                  </td>
+                )}
+                  
+                {/* Notes Column */}
+                {visibleColumns.includes('notes') && (
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <div className="max-w-xs truncate">{contact.notes || '-'}</div>
+                  </td>
+                )}
+                  
+                {/* Source Column */}
+                {visibleColumns.includes('source') && (
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {contact.source || '-'}
+                  </td>
+                )}
+                  
+                {/* Actions Column */}
+                <td className="px-6 py-4 whitespace-nowrap text-center">
+                  <div className="flex justify-center space-x-3">
+                    <button className="text-blue-600 hover:text-blue-800" aria-label="Email contact">
+                      <Mail className="h-4 w-4" />
+                    </button>
+                    <button className="text-green-600 hover:text-green-800" aria-label="Call contact">
+                      <Phone className="h-4 w-4" />
+                    </button>
+                    <button className="text-purple-600 hover:text-purple-800" aria-label="Message contact">
+                      <MessageSquareText className="h-4 w-4" />
+                    </button>
+                    <button className="text-amber-600 hover:text-amber-800" aria-label="AI assistant">
+                      <Sparkles className="h-4 w-4" />
+                    </button>
                   </div>
                 </td>
-              )}
-              
-              {visibleColumns.includes('last_contacted') && (
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-500">
-                    {contact.last_contacted_at ? new Date(contact.last_contacted_at).toLocaleDateString() : 'Never'}
-                  </div>
-                </td>
-              )}
-              
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <div className="flex space-x-2">
-                  {contact.email && (
-                    <Button size="icon" variant="ghost" className="h-8 w-8" title="Send Email">
-                      <Mail className="h-4 w-4 text-blue-600" />
-                    </Button>
-                  )}
-                  
-                  {contact.phone && (
-                    <Button size="icon" variant="ghost" className="h-8 w-8" title="Call">
-                      <Phone className="h-4 w-4 text-green-600" />
-                    </Button>
-                  )}
-                  
-                  <Button size="icon" variant="ghost" className="h-8 w-8" title="WhatsApp">
-                    <MessageSquareText className="h-4 w-4 text-emerald-600" />
-                  </Button>
-                  
-                  <Button size="icon" variant="ghost" className="h-8 w-8" title="AI Actions">
-                    <Sparkles className="h-4 w-4 text-purple-600" />
-                  </Button>
-                  
-                  <Button 
-                    size="icon" 
-                    variant="ghost" 
-                    className="h-8 w-8 ml-2" 
-                    onClick={() => onEditClick(contact)}
-                    disabled={isSaveMutationLoading || isDeleteMutationLoading}
-                    title="Edit Contact"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
-                      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                    </svg>
-                  </Button>
-                  
-                  <Button 
-                    size="icon" 
-                    variant="ghost" 
-                    className="h-8 w-8" 
-                    onClick={() => onDeleteClick(contact.id)}
-                    disabled={isSaveMutationLoading || isDeleteMutationLoading}
-                    title="Delete Contact"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-red-600" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                  </Button>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={visibleColumns.length + 1} className="px-6 py-10 text-center text-gray-500">
+                <div className="flex flex-col items-center justify-center space-y-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                  <p className="font-medium">No contacts found</p>
+                  <p className="text-sm">
+                    {selectedSourceFilters.length > 0 && 'Try adjusting your source filters.'}
+                    {dateFilterPeriod !== 'all' && ' Try a different date range.'}
+                    {searchQuery && ' Try a different search term.'}
+                    {!selectedSourceFilters.length && dateFilterPeriod === 'all' && !searchQuery && 'No contacts available in this view.'}
+                  </p>
                 </div>
               </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>
-  ) : (
-    <div className="bg-white shadow-md rounded-lg p-6 text-center">
-      <p className="text-gray-500">
-        {searchQuery ? 
-          `No contacts found matching "${searchQuery}".` :
-          selectedGroupId ?
-            `No contacts found in the selected group.` :
-            "No contacts found. Add your first contact to get started."}
-      </p>
-    </div>
   );
-}
+  }
