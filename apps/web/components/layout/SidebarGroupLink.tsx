@@ -7,9 +7,8 @@ interface Group {
   id: string;
   name: string;
   emoji?: string;
-  _count?: {
-    contacts: number;
-  };
+  color?: string; // Add color if you use it from groupRouter.list
+  contactCount?: number; // <<<< CHANGE THIS: Expect 'contactCount'
 }
 
 export function SidebarGroupLink({ group }: { group: Group }) {
@@ -21,22 +20,17 @@ export function SidebarGroupLink({ group }: { group: Group }) {
 
   return (
     <button
-      onClick={() => {
-        // Replace only the query-string so history back works nicely
-        const url = new URL(window.location.href);
-        url.searchParams.set("group", group.id);
-        router.push(url.pathname + url.search);
-      }}
-      className={cn(
-        "flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted w-full text-left",      
-        isActive && "bg-purple-100 text-purple-700 font-medium",
-      )}
+      // ... (button props) ...
     >
-      {group.emoji && <span className="mr-1">{group.emoji}</span>}
-      <span className="truncate">{group.name}</span>
-      {group._count && (
-        <span className="ml-auto text-xs opacity-70">{group._count.contacts}</span>
+      {group.emoji && <span className="text-sm">{group.emoji}</span>}
+      <span className="pl-2 py-1 text-sm text-teal-600 font-medium truncate">{group.name}</span>
+      {/* VVVV CHANGE THIS VVVV */}
+      {typeof group.contactCount === 'number' && (
+        <span className="ml-1 px-2 py-0.5 rounded-full-2 bg-teal-100 text-teal-600 text-xs font-medium">
+          {group.contactCount}
+        </span>
       )}
+      {/* ^^^^ CHANGE THIS ^^^^ */}
     </button>
   );
 }

@@ -40,8 +40,8 @@ interface Group {
 }
 
 
-// Client Groups Component
-export function ClientGroups() {
+// Contact Groups Page Component
+export function ContactGroupsPage() {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [isAddGroupOpen, setIsAddGroupOpen] = useState(false);
@@ -118,9 +118,9 @@ export function ClientGroups() {
         {/* Header with title, search and add button */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Client Groups</h1>
+            <h1 className="text-3xl font-bold tracking-tight">Contacts Groups</h1>
             <p className="text-muted-foreground mt-1">
-              Organize your clients into meaningful groups
+              Organize your contacts into meaningful groups
             </p>
           </div>
           
@@ -163,7 +163,7 @@ export function ClientGroups() {
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <Badge className={`${group.color || 'bg-blue-500'} hover:${group.color || 'bg-blue-500'}`}>
-                    {group.contactCount || 0} clients
+                    {group.contactCount || 0} contacts
                   </Badge>
                   <Button variant="ghost" size="icon" onClick={(e) => {
                     e.stopPropagation();
@@ -176,7 +176,7 @@ export function ClientGroups() {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground text-sm">
-                  Click to view all clients in this group
+                  Click to view all contacts in this group
                 </p>
               </CardContent>
             </Card>
@@ -192,7 +192,7 @@ export function ClientGroups() {
             </div>
             <h3 className="mt-3 font-medium">Add New Group</h3>
             <p className="text-sm text-muted-foreground text-center mt-1">
-              Create a new group to organize your clients
+              Create a new group to organize your contacts
             </p>
           </Card>
         </div>
@@ -219,7 +219,7 @@ export function ClientGroups() {
               <CardHeader>
                 <CardTitle>Add New Group</CardTitle>
                 <CardDescription>
-                  Create a new group to organize your clients
+                  Create a new group to organize your contacts
                 </CardDescription>
               </CardHeader>
               <CardContent>

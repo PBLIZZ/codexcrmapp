@@ -103,7 +103,7 @@ export function AppSidebar({
             </div>
           </CollapsibleTrigger>
           <CollapsibleContent>
-            <div className="mt-1 space-y-1">
+            <div className="mt-1 justify-betweenspace-y-1">
               <div
                 className={cn(
                   "flex items-center justify-between ml-2 px-3 py-2 rounded-md cursor-pointer text-sm",
@@ -138,7 +138,7 @@ export function AppSidebar({
                     />
                     <span>{group.name}</span>
                   </div>
-                  <div className="flex items-center">
+                  <div className="flex items-right">
                     <span className="text-xs font-medium text-muted-foreground mr-1">
                       {group.count || 0}
                     </span>
@@ -150,7 +150,7 @@ export function AppSidebar({
               {/* Add Group Link */}
               <Link href="/groups" className="block ml-2">
                 <Button variant="ghost" size="sm" className="w-full justify-start text-xs text-muted-foreground">
-                  <span className="ml-6">Manage Groups</span>
+                  <span className="ml-6 text-teal-600 font-medium">Manage Groups</span>
                 </Button>
               </Link>
             </div>
@@ -171,6 +171,7 @@ export function AppSidebar({
             </div>
           </CollapsibleTrigger>
           <CollapsibleContent>
+          <div className="text-muted-foreground px-3 py-2 text-xs">No favorites yet.</div>
             {/* Favorites content will go here */}
           </CollapsibleContent>
         </Collapsible>

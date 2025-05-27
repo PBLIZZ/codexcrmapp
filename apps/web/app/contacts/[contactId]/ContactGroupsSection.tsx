@@ -64,26 +64,26 @@ export function ContactGroupsSection({ contactId }: { contactId: string }) {
   const utils = api.useUtils();
 
   // Get all groups for this contact
-  const { 
+  const {
     data: contactGroups,
     isLoading: isLoadingContactGroups,
     error: contactGroupsError
-  } = api.groups.getContactGroups.useQuery<Group[]>(
+  } = api.groups.getGroupsForContact.useQuery(
     { contactId },
     { enabled: !!contactId }
   );
 
   // Get all available groups for the dropdown
-  const { 
+  const {
     data: allGroups,
     isLoading: isLoadingAllGroups,
     error: allGroupsError
-  } = api.groups.list.useQuery<Group[]>();
+  } = api.groups.list.useQuery();
 
   // Mutation to add contact to group
   const addToGroupMutation = api.groups.addContact.useMutation({
     onSuccess: () => {
-      utils.groups.getContactGroups.invalidate({ contactId });
+      utils.groups.getGroupsForContact.invalidate({ contactId });
       setIsAddGroupDialogOpen(false);
       setSelectedGroupId("");
       // Success message would go here if we had a toast component
@@ -101,7 +101,7 @@ export function ContactGroupsSection({ contactId }: { contactId: string }) {
       setRemovingGroupId(groupId);
     },
     onSuccess: () => {
-      utils.groups.getContactGroups.invalidate({ contactId });
+      utils.groups.getGroupsForContact.invalidate({ contactId });
       // Success message would go here if we had a toast component
     },
     onError: (error) => {
@@ -129,7 +129,7 @@ export function ContactGroupsSection({ contactId }: { contactId: string }) {
     if (!allGroups || !contactGroups) return [];
     
     return allGroups.filter(
-      (group) => !contactGroups.some((cg) => cg.id === group.id)
+      (group: Group) => !contactGroups.some((cg: Group) => cg.id === group.id)
     );
   }, [allGroups, contactGroups]);
 
@@ -179,7 +179,7 @@ export function ContactGroupsSection({ contactId }: { contactId: string }) {
         </div>
       ) : contactGroups && contactGroups.length > 0 ? (
         <div className="flex flex-wrap gap-2 py-2">
-          {contactGroups.map((group) => {
+          {contactGroups.map((group: Group) => {
             const colorClasses = getColorClasses(group.color);
             return (
               <Badge

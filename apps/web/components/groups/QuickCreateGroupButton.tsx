@@ -84,7 +84,7 @@ export function QuickCreateGroupButton() {
     <Button 
       onClick={handleCreateGroup} 
       disabled={isCreating}
-      className="bg-purple-400 hover:bg-purple-300 text-white"
+      className="bg-teal-400 hover:bg-teal-500 text-white"
       size="sm"
     >
       {isCreating ? (

@@ -2,7 +2,7 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
 // Define paths that require authentication
-const protectedPaths = ['/', '/dashboard', '/clients', '/contacts', '/groups'];
+const protectedPaths = ['/', '/dashboard', '/contacts', '/contacts', '/groups'];
 
 // Define paths that should be accessible only when logged out
 const publicOnlyPaths = ['/sign-in', '/sign-up'];
