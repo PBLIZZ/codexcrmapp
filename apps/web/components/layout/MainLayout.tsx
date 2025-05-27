@@ -402,13 +402,7 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
               /* Use the AppSidebar for Contacts section */
               <div className="h-full bg-gray-50 border-r">
                 <AppSidebar 
-                  groups={sidebarGroups || []}
-                  selectedGroupId="" /* This would need to be managed based on the current route */
                   totalContacts={contactsData?.length || 0}
-                  onGroupSelect={(groupId) => {
-                    /* Handle group selection - could redirect to filtered view */
-                    console.log("Group selected:", groupId);
-                  }}
                 />
               </div>
             ) : (

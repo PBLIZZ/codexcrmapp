@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { 
   ChevronRight, 
   Folder, 
@@ -14,35 +14,51 @@ import {
   MessagesSquare,
   Star,
   PlusCircle,
-  Upload
+  Upload,
+  X
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { SidebarGroupLink } from "./SidebarGroupLink";
+import { useRouter } from "next/navigation";
+import { QuickCreateGroupButton } from "@/components/groups/QuickCreateGroupButton";
+import { api } from "@/lib/trpc";
 
 interface Group {
   id: string;
   name: string;
-  contactCount?: number;
+  emoji?: string;
   color?: string;
+  contactCount?: number;
+  _count?: {
+    contacts: number;
+  };
 }
 
 interface AppSidebarProps {
-  groups: Group[];
-  selectedGroupId?: string;
   totalContacts?: number;
-  onGroupSelect?: (groupId: string) => void;
 }
 
 export function AppSidebar({ 
-  groups = [], 
-  selectedGroupId = "", 
-  totalContacts = 0,
-  onGroupSelect = () => {} 
+  totalContacts = 0
 }: AppSidebarProps) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [isGroupsOpen, setIsGroupsOpen] = useState(true);
+  
+  const selectedGroupId = searchParams.get("group") || "";
+  
+  // Fetch groups data with contact counts
+  const { data: groupsData = [], isLoading: isLoadingGroups } = api.groups.list.useQuery(undefined, {
+    staleTime: 30000, // Cache for 30 seconds
+    refetchOnWindowFocus: false,
+  });
+  
+  // Use loaded groups data
+  const groups = groupsData;
   
   // Helper function to check if a path is active
   const isActive = (path: string) => {
@@ -67,12 +83,14 @@ export function AppSidebar({
           </div>
         </div>
         <div className="mt-1 space-y-1">
-          <div
+          <button
             className={cn(
-              "flex items-center justify-between ml-2 px-3 py-2 rounded-md cursor-pointer text-sm",
-              selectedGroupId === "" ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted text-muted-foreground"
+              "flex items-center justify-between ml-2 px-3 py-2 rounded-md cursor-pointer text-sm w-full",
+              !selectedGroupId ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted text-muted-foreground"
             )}
-            onClick={() => onGroupSelect("")}
+            onClick={() => {
+              router.push("/contacts");
+            }}
           >
             <div className="flex items-center">
               <Users className="w-4 h-4 mr-2" />
@@ -81,7 +99,7 @@ export function AppSidebar({
             <Badge variant="secondary" className="ml-auto">
               {totalContacts}
             </Badge>
-          </div>
+          </button>
           
           {/* Add Contact Link */}
           <Link href="/contacts?new=true" className="block ml-2">
@@ -119,30 +137,8 @@ export function AppSidebar({
           <CollapsibleContent>
             <div className="mt-1 space-y-1">
               {groups.length > 0 ? (
-                groups.map((group) => (
-                  <div
-                    key={group.id}
-                    className={cn(
-                      "flex items-center justify-between ml-2 px-3 py-2 rounded-md cursor-pointer text-sm",
-                      selectedGroupId === group.id ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted text-muted-foreground"
-                    )}
-                    onClick={() => onGroupSelect(group.id)}
-                  >
-                    <div className="flex items-center">
-                      <div 
-                        className={cn(
-                          "w-3 h-3 rounded-full mr-2",
-                          group.color || "bg-gray-400"
-                        )} 
-                      />
-                      <span>{group.name}</span>
-                    </div>
-                    {typeof group.contactCount !== 'undefined' ? (
-                      <Badge variant="secondary" className="ml-auto">
-                        {group.contactCount}
-                      </Badge>
-                    ) : null}
-                  </div>
+                groups.map((group: Group) => (
+                  <SidebarGroupLink key={group.id} group={group} />
                 ))
               ) : (
                 <div className="ml-2 px-3 py-2 text-sm text-muted-foreground">
@@ -150,10 +146,15 @@ export function AppSidebar({
                 </div>
               )}
               
-              {/* Add/Manage Group Link */}
+              {/* Quick Create Group Button - Direct DB insertion */}
+              <div className="ml-2 mb-1">
+                <QuickCreateGroupButton />
+              </div>
+              
+              {/* Manage Groups Link */}
               <Link href="/groups" className="block ml-2">
                 <Button variant="ghost" size="sm" className="w-full justify-start text-xs text-muted-foreground">
-                  <span className="ml-2">{groups.length > 0 ? "Manage Groups" : "Create Group"}</span>
+                  <span className="ml-2">Manage Groups</span>
                 </Button>
               </Link>
             </div>
