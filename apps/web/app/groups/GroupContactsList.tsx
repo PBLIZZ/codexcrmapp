@@ -42,7 +42,7 @@ export function GroupContactsList({ groupId, groupName }: GroupContactsListProps
   const [error, setError] = useState<string | null>(null);
   const [showAllContacts, setShowAllContacts] = useState(false);
 
-  const utils = api.useContext();
+  const utils = api.useUtils();
 
   // Get contacts in this group
   const { data: groupContacts, isLoading: isLoadingGroupContacts } = 

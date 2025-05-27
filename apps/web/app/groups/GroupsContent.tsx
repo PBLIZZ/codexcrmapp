@@ -4,7 +4,8 @@ import type { AppRouter } from '@codexcrm/server/src/root';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TRPCClientError } from '@trpc/client';
 import { AlertCircle, Edit, Trash2, Plus, Users, Tag, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
 import * as z from 'zod';
 
@@ -47,6 +48,8 @@ interface Group {
   user_id: string;
   created_at?: string | Date | null;
   updated_at?: string | Date | null;
+  contactCount?: number;
+  _count?: { contacts: number };
 }
 
 export function GroupsContent() {
@@ -58,8 +61,33 @@ export function GroupsContent() {
   const [groupToDelete, setGroupToDelete] = useState<string | null>(null);
   const [emoji, setEmoji] = useState<string>("👍");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [formSubmitting, setFormSubmitting] = useState(false);
   
-  const utils = api.useContext(); // tRPC context for cache invalidation
+  // Check URL parameters for 'new=true' to automatically open the form
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  
+  // Effect to open form dialog when ?new=true is in URL
+  useEffect(() => {
+    const shouldOpenForm = searchParams.get('new') === 'true';
+    if (shouldOpenForm) {
+      setIsFormOpen(true);
+      setEditingGroupId(null);
+      reset();
+      
+      // Remove the 'new' parameter from URL to prevent reopening on refresh
+      // but only after the dialog is opened
+      const cleanupUrl = () => {
+        // Remove the 'new' parameter and navigate to the base groups page
+        router.replace('/groups');
+      };
+      
+      // Small delay to ensure the dialog is opened before changing URL
+      setTimeout(cleanupUrl, 100);
+    }
+  }, [searchParams, router]);
+  
+  const utils = api.useUtils(); // tRPC context for cache invalidation
 
   // --- Queries & Mutations ---
   const { data: groups = [], isLoading, error: queryError } = api.groups.list.useQuery(undefined, {
@@ -140,74 +168,65 @@ export function GroupsContent() {
   };
 
   const onSubmit: SubmitHandler<GroupFormData> = async (data) => {
-    setFormError(null);
-    
     try {
-      // Ensure emoji is included in the data and add detailed logging
-      console.warn('GroupsContent: Submitting form with data:', { ...data, emoji });
+      setFormError(null);
+      setFormSubmitting(true);
       
-      // Get auth status first to confirm we're authenticated
-      const { data: userData } = await supabase.auth.getUser();
-      console.warn('Authentication check - user:', userData?.user?.id);
+      // Get the current user
+      const { data: authData } = await supabase.auth.getUser();
+      const user = authData.user;
       
-      if (!userData?.user) {
-        setFormError("Authentication error. Please sign out and sign back in.");
+      if (!user) {
+        console.error('No authenticated user');
+        setFormError('Authentication error. Please sign in again.');
         return;
       }
       
-      // Prepare the data for saving - ensure all required fields have values
+      // Create the simplified group object - exactly like the working QuickCreateGroupButton
       const groupData = {
-        id: editingGroupId || undefined,
+        // Only include ID if we're editing
+        ...(editingGroupId ? { id: editingGroupId } : {}),
         name: data.name.trim(),
+        color: data.color || "#c084fc",
+        emoji: emoji || "👍",
         description: data.description?.trim() || null,
-        color: data.color || "#c084fc", // Default color if not provided
-        emoji: emoji || "👍", // Ensure emoji is never null/undefined
+        user_id: user.id,
+        updated_at: new Date().toISOString(),
+        ...(editingGroupId ? {} : { created_at: new Date().toISOString() })
       };
+
+      console.log('Inserting group with data:', JSON.stringify(groupData, null, 2));
       
-      console.warn('About to save group with data:', groupData);
+      // Simple direct insertion - just like in QuickCreateGroupButton
+      const { data: result, error } = await supabase
+        .from('groups')
+        .upsert(groupData)
+        .select()
+        .single();
+        
+      if (error) {
+        console.error('Supabase error:', error);
+        setFormError(`Error: ${error.message}`);
+        return;
+      }
       
-      // Proceed with saving the group
-      const result = await saveMutation.mutateAsync(groupData);
-      console.warn('Group saved successfully:', result);
+      console.log('Group saved successfully:', result);
       
-      // Invalidate queries to ensure data is refreshed
-      utils.groups.list.invalidate();
+      // Force refresh data
+      await utils.groups.list.invalidate();
+      const refreshResult = await utils.groups.list.refetch();
+      console.log('Refetch result:', refreshResult);
       
-      // Close the form and reset state after successful submission
+      // Reset UI state
       setIsFormOpen(false);
       reset();
       setEditingGroupId(null);
-      setEmoji("👍"); // Reset emoji back to default
-      
-      // Force refresh the groups data
-      utils.groups.list.refetch();
-      
+      setEmoji("👍");
     } catch (error) {
-      console.error('GroupsContent: Error in form submission:', error);
-      
-      // Enhanced error logging
-      if (error instanceof TRPCClientError) {
-        // More detailed error handling for TRPC errors
-        console.error('TRPC error details:', error.message);
-        console.error('TRPC error shape:', JSON.stringify(error.shape || {}));
-        setFormError(`Failed to save group: ${error.message}`);
-      } else if (error instanceof Error) {
-        console.error('Error stack:', error.stack);
-        setFormError(`Error: ${error.message}`);
-      } else {
-        setFormError("An unexpected error occurred");
-      }
-      
-      // Try to log any response data if available
-      try {
-        // Safely access response data if it exists (error is unknown type)
-        const errorObj = error as any;
-        if (errorObj.response?.data) {
-          console.error('Response data:', errorObj.response.data);
-        }
-      } catch (e) {
-        // Ignore errors in error handling
-      }
+      console.error('Unexpected error in form submission:', error);
+      setFormError(error instanceof Error ? error.message : 'An unexpected error occurred');
+    } finally {
+      setFormSubmitting(false);
     }
   };
 
@@ -392,10 +411,13 @@ export function GroupsContent() {
                     <Badge
                       variant="secondary"
                       className="h-6 px-2 text-xs font-normal truncate text-purple-50"
-                    style={{ backgroundColor: group.color || '#c084fc' }}
+                      style={{ backgroundColor: group.color || '#c084fc' }}
                     >
                       <span className="mr-1">{group.emoji || '👍'}</span>
                       {group.name}
+                    </Badge>
+                    <Badge variant="outline" className="ml-2 bg-white">
+                      {group.contactCount || 0} contacts
                     </Badge>
                   </div>
                   <div className="flex items-center space-x-2">

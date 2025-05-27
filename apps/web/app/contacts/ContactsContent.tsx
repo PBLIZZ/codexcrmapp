@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { api } from '@/lib/trpc';
 import { formatDateForInput, parseInputDateString } from '@/lib/dateUtils';
 import { ContactForm, ContactFormData } from './ContactForm';
@@ -33,16 +34,21 @@ import {
   Mail,
   Phone,
   MessageSquareText,
-  Sparkles
+  Sparkles,
+  X
 } from "lucide-react";
 
-export function ContactsContent({ initialGroupId = "" }: { initialGroupId?: string }) {
+export function ContactsContent() {
   // --- State Management ---
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const groupIdFromUrl = searchParams.get("group") ?? "";
+  
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [editingContactId, setEditingContactId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedGroupId, setSelectedGroupId] = useState<string>(initialGroupId);
+  const [selectedGroupId, setSelectedGroupId] = useState<string>(groupIdFromUrl);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [formData, setFormData] = useState<ContactFormData | undefined>(undefined);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -55,17 +61,22 @@ export function ContactsContent({ initialGroupId = "" }: { initialGroupId?: stri
   const [dateFilterPeriod, setDateFilterPeriod] = useState<DateFilterPeriod>('all');
   const [selectedSourceFilters, setSelectedSourceFilters] = useState<SourceOption[]>([]);
   
-  // Update filter if initialGroupId prop changes
+  // Keep state in sync with URL parameters
   useEffect(() => {
-    // Prevent unnecessary re-setting if initialGroupId is the same
-    if (selectedGroupId !== initialGroupId) {
-      setSelectedGroupId(initialGroupId);
+    // Prevent unnecessary re-setting if groupIdFromUrl is the same
+    if (selectedGroupId !== groupIdFromUrl) {
+      setSelectedGroupId(groupIdFromUrl);
     }
-  }, [initialGroupId, selectedGroupId]);
+  }, [groupIdFromUrl, selectedGroupId]);
 
-  const utils = api.useContext(); // Get tRPC context for cache invalidation
+  const utils = api.useUtils(); // Get tRPC context for cache invalidation
 
   // --- Queries & Mutations ---
+  // Fetch groups for filtering
+  const { data: groups = [] } = api.groups.list.useQuery(undefined, {
+    staleTime: 30000, // Cache for 30 seconds
+  });
+
   // Apply client-side sorting based on sort field and direction
   const { 
     data: contacts = [], // Provide default empty array to avoid undefined
@@ -116,8 +127,7 @@ export function ContactsContent({ initialGroupId = "" }: { initialGroupId?: stri
     return searchRegex.test(contact.first_name) || searchRegex.test(contact.last_name) || searchRegex.test(contact.email) || searchRegex.test(contact.phone);
   });
 
-  // Get all available groups for filtering
-  const { data: groups = [] } = api.groups.list.useQuery();
+  // Groups data is already fetched above
 
   // Mutations
   const saveMutation = api.contacts.save.useMutation({
@@ -304,7 +314,24 @@ export function ContactsContent({ initialGroupId = "" }: { initialGroupId?: stri
               />
             </div>
             
-            <div className="flex flex-wrap gap-2">
+            {/* Active Group Filter */}
+          {selectedGroupId && (
+            <div className="flex items-center">
+              <div className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-medium flex items-center mr-4">
+                {groups.find((g: { id: string; name: string }) => g.id === selectedGroupId)?.name || "Group"}
+                <button 
+                  onClick={() => {
+                    router.push("/contacts");
+                  }}
+                  className="ml-2 text-purple-700 hover:text-purple-900"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          )}
+          
+          <div className="flex flex-wrap gap-2">
               <Button variant="outline" size="sm" className="border-gray-300">
                 <Tag className="w-4 h-4 mr-2" />
                 Filters
