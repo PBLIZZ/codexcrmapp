@@ -6,7 +6,7 @@ This module manages all contact-related functionality within the CodexCRM applic
 
 ### Main Components
 - `page.tsx` - Server component that renders the contacts page
-- `ContactsContent.tsx` - Client component that provides the contacts list, search, filtering, and form for adding/editing contacts
+- `ContactsContent.tsx` - Contact component that provides the contacts list, search, filtering, and form for adding/editing contacts
 - `ContactList.tsx` - Component for displaying the list of contacts with sorting and filtering
 - `ContactForm.tsx` - Form component for adding and editing contacts
 
@@ -46,7 +46,7 @@ This module manages all contact-related functionality within the CodexCRM applic
 ## Data Model
 
 ### Contacts
-Contacts are stored in the `clients` database table (for backward compatibility) with the following fields:
+Contacts are stored in the `contacts` database table (for backward compatibility) with the following fields:
 
 - `id` - Unique identifier (UUID)
 - `user_id` - The owner of the contact (UUID)

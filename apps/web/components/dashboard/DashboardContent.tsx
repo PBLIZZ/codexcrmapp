@@ -1,4 +1,4 @@
-"use client";
+"use contact";
 
 import { 
   AlertCircle, 
@@ -42,7 +42,7 @@ export default function DashboardContent() {
   const [activeTab, setActiveTab] = useState("overview");
   
   // Fetch contacts data
-  const { data: contacts, isLoading, error } = api.clients.list.useQuery();
+  const { data: contacts, isLoading, error } = api.contacts.list.useQuery();
   
   // Loading state
   if (isLoading) {
@@ -80,7 +80,7 @@ export default function DashboardContent() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
           <p className="text-muted-foreground mt-1">
-            Welcome to your client management system
+            Welcome to your contact management system
           </p>
         </div>
         
@@ -217,7 +217,7 @@ export default function DashboardContent() {
             </Card>
           </TabsContent>
           
-          {/* Recent Clients Tab */}
+          {/* Recent Contacts Tab */}
           <TabsContent value="recent" className="space-y-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0">

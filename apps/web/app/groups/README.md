@@ -5,7 +5,7 @@ This module provides a flexible system for organizing contacts into customizable
 ## Purpose
 
 The Groups functionality allows users to:
-- Categorize contacts by various criteria (e.g., premium clients, leads, business contacts)
+- Categorize contacts by various criteria (e.g., premium contacts, leads, business contacts)
 - Organize contacts into multiple groups simultaneously
 - Filter and search contacts by group membership
 - Apply group-specific actions or automations (future enhancement)
@@ -13,7 +13,7 @@ The Groups functionality allows users to:
 ## Components
 
 - `page.tsx` - Server component that renders the groups management page
-- `GroupsContent.tsx` - Client component that handles the groups UI, including:
+- `GroupsContent.tsx` - Contact component that handles the groups UI, including:
   - Listing all groups
   - Creating new groups
   - Editing existing groups
