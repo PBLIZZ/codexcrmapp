@@ -81,7 +81,7 @@ export function ContactGroupManager({ contactId, contactName, preloadedGroups }:
   // Use the shared groups context if available
   const groupsContext = useGroups();
   
-  const utils = api.useContext();
+  const utils = api.useUtils();
 
   // Get all groups for this contact - but ONLY when the dialog is open to avoid excessive API calls
   const { data: contactGroups, isLoading: isLoadingContactGroups } = 

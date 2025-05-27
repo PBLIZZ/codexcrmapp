@@ -109,7 +109,7 @@ interface Contact {
   notes?: string | null;
   last_contacted_at?: string | Date | null;
   enrichment_status?: EnrichmentStatus;
-  enriched_data?: any | null;
+  enriched_data?: Record<string, unknown> | null;
   created_at?: string | Date | null;
   updated_at?: string | Date | null;
 }
@@ -133,7 +133,7 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<TabValue>(TABS.OVERVIEW);
 
-  const utils = api.useContext();
+  const utils = api.useUtils();
 
   // Fetch client data
   const { data: contact, isLoading, error } = api.contacts.getById.useQuery(

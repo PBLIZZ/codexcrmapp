@@ -61,7 +61,7 @@ export function ContactGroupsSection({ contactId }: { contactId: string }) {
   const [selectedGroupId, setSelectedGroupId] = useState<string>("");
   const [removingGroupId, setRemovingGroupId] = useState<string | null>(null);
 
-  const utils = api.useContext();
+  const utils = api.useUtils();
 
   // Get all groups for this contact
   const { 
