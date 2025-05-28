@@ -1,14 +1,14 @@
-// apps/web/lib/supabase/client.ts
+// apps/web/lib/supabase/contact.ts
 import { createBrowserClient } from '@supabase/ssr';
 
-// Enhanced Supabase client with debugging for authentication
-const supabaseClient = createBrowserClient(
+// Enhanced Supabase contact with debugging for authentication
+const supabaseContact = createBrowserClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
 // Add event listeners for auth state changes to help debug auth issues
-supabaseClient.auth.onAuthStateChange((event, session) => {
+supabaseContact.auth.onAuthStateChange((event, session) => {
   console.warn(`Supabase Auth State Change: ${event}`, { 
     sessionExists: !!session, 
     userId: session?.user?.id,
@@ -16,8 +16,8 @@ supabaseClient.auth.onAuthStateChange((event, session) => {
   });
 });
 
-// Export the enhanced client
-export const supabase = supabaseClient;
+// Export the enhanced contact
+export const supabase = supabaseContact;
 
 // Helper function to get the current user (useful for components)
 export async function getCurrentUser() {

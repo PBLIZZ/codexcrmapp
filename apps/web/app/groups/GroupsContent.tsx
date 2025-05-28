@@ -1,359 +1,391 @@
 "use client";
 
-import type { AppRouter } from '@codexcrm/server/src/root';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { TRPCClientError } from '@trpc/client';
-import { AlertCircle, Edit, Trash2, Plus, Users, Tag, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from 'zod';
+import { api } from '@/lib/trpc';
+import { useQueryClient } from '@tanstack/react-query'; // For cache invalidation directly
+import { useRouter } from 'next/navigation';
 
-import { GroupContactsList } from './GroupContactsList';
-
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-
-
-// UI Components
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  // DialogTrigger, // We will trigger dialog programmatically
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
-import { supabase } from '@/lib/supabase/client';
-import { api } from '@/lib/trpc';
+import { Textarea } from "@/components/ui/textarea"; // If using for description
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Plus, Edit, Trash2, Loader2, AlertCircle, Users, Folder, UserPlus } from "lucide-react";
+import { toast } from "sonner"; // For notifications
+import { BulkContactSelector } from "@/components/groups/BulkContactSelector";
 
+// Curated dark color palette for good contrast on light grey background
+const CURATED_COLORS = [
+  "#374151", // gray-700
+  "#1f2937", // gray-800
+  "#4b5563", // gray-600
+  "#6b7280", // gray-500
+  "#7c3aed", // violet-600
+  "#8b5cf6", // violet-500
+  "#6366f1", // indigo-500
+  "#3b82f6", // blue-500
+  "#0ea5e9", // sky-500
+  "#06b6d4", // cyan-500
+  "#10b981", // emerald-500
+  "#84cc16", // lime-500
+  "#f59e0b", // amber-500
+  "#ef4444", // red-500
+];
 
-// Zod schema for validation
-const groupSchema = z.object({
-  id: z.string().uuid().optional(),
-  name: z.string().min(1, "Group name is required"),
-  description: z.string().optional().nullable(),
-  color: z.string().optional().nullable(),
-  emoji: z.string().optional().nullable(),
+// --- Zod Schema for Form Validation (should match backend) ---
+const groupFormSchema = z.object({
+  name: z.string().min(1, "Group name is required").max(100, "Name too long"),
+  description: z.string().max(500, "Description too long").optional().nullable(),
+  color: z.string()
+    .regex(/^#[0-9A-Fa-f]{6}$/, "Must be a valid hex color (e.g., #FF0000)")
+    .or(z.literal(''))
+    .nullable()
+    .optional()
+    .transform(val => val === '' ? null : val),
+  emoji: z.string()
+    .max(2, "Emoji should be 1-2 characters")
+    .or(z.literal(''))
+    .nullable()
+    .optional()
+    .transform(val => val === '' ? null : val),
 });
+type GroupFormData = z.infer<typeof groupFormSchema>;
 
-type GroupFormData = z.infer<typeof groupSchema>;
-
-// Group interface
+// --- Interface for Group Data (matching what `api.groups.list` returns) ---
 interface Group {
   id: string;
   name: string;
   description?: string | null;
   color?: string | null;
   emoji?: string | null;
-  user_id: string;
-  created_at?: string | Date | null;
-  updated_at?: string | Date | null;
+  created_at?: string | null;
+  updated_at?: string | null;
   contactCount?: number;
-  _count?: { contacts: number };
 }
 
 export function GroupsContent() {
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [formError, setFormError] = useState<string | null>(null);
-  const [editingGroupId, setEditingGroupId] = useState<string | null>(null);
-  const [deleteError, setDeleteError] = useState<string | null>(null);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [groupToDelete, setGroupToDelete] = useState<string | null>(null);
-  const [emoji, setEmoji] = useState<string>("👍");
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [formSubmitting, setFormSubmitting] = useState(false);
+  const [isFormDialogOpen, setIsFormDialogOpen] = useState(false);
+  const [editingGroup, setEditingGroup] = useState<Group | null>(null); // Store full group object for editing
   
-  // Check URL parameters for 'new=true' to automatically open the form
-  const searchParams = useSearchParams();
+  const [isContactSelectorOpen, setIsContactSelectorOpen] = useState(false);
+  const [selectedGroupForContacts, setSelectedGroupForContacts] = useState<{ id: string; name: string } | null>(null);
+
+  const queryClient = useQueryClient(); // For direct cache invalidation
   const router = useRouter();
-  
-  // Effect to open form dialog when ?new=true is in URL
-  useEffect(() => {
-    const shouldOpenForm = searchParams.get('new') === 'true';
-    if (shouldOpenForm) {
-      setIsFormOpen(true);
-      setEditingGroupId(null);
-      reset();
-      
-      // Remove the 'new' parameter from URL to prevent reopening on refresh
-      // but only after the dialog is opened
-      const cleanupUrl = () => {
-        // Remove the 'new' parameter and navigate to the base groups page
-        router.replace('/groups');
-      };
-      
-      // Small delay to ensure the dialog is opened before changing URL
-      setTimeout(cleanupUrl, 100);
-    }
-  }, [searchParams, router]);
-  
-  const utils = api.useUtils(); // tRPC context for cache invalidation
 
-  // --- Queries & Mutations ---
-  const { data: groups = [], isLoading, error: queryError } = api.groups.list.useQuery(undefined, {
-    onSuccess: (data) => {
-      console.warn('Groups data loaded successfully:', data);
-    },
-    onError: (error) => {
-      console.error('Error loading groups:', error);
-      console.error('Error details:', JSON.stringify(error, null, 2));
-    }
-  });
-  
-  // Ensure groups is an array and add debugging
-  const groupsList = Array.isArray(groups) ? groups : [];
-  console.warn('Processed groups list:', groupsList);
-
-  const saveMutation = api.groups.save.useMutation({
-    onSuccess: (data) => {
-      console.warn('Group saved successfully:', data);
-      utils.groups.list.invalidate();
-      setIsFormOpen(false);
-      reset();
-      setEditingGroupId(null);
-    },
-    onError: (error) => {
-      setFormError(`Error saving group: ${error.message}`);
-    },
-  });
-
-  const deleteMutation = api.groups.delete.useMutation({
-    onSuccess: () => {
-      utils.groups.list.invalidate();
-      setIsDeleteDialogOpen(false);
-      setGroupToDelete(null);
-    },
-    onError: (error) => {
-      setDeleteError(`Failed to delete group: ${error.message}`);
-    },
-  });
-
-  // --- Form Handling ---
-  const { register, handleSubmit, formState: { errors, isSubmitting }, reset, setValue } = useForm<GroupFormData>({
-    resolver: zodResolver(groupSchema),
+  // --- React Hook Form ---
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    formState: { errors, isSubmitting: isFormSubmittingRHF }, // isSubmitting from RHF
+  } = useForm<GroupFormData>({
+    resolver: zodResolver(groupFormSchema),
     defaultValues: {
-      id: undefined,
       name: "",
       description: "",
-      color: "#c084fc", // Default purple-400 color
+      color: CURATED_COLORS[5], // A default purple
       emoji: "👍",
     },
   });
 
-  // Update form values when editingGroupId changes
-  const handleEditClick = (group: Group) => {
-    setEditingGroupId(group.id);
-    setValue("id", group.id);
-    setValue("name", group.name);
-    setValue("description", group.description || "");
-    setValue("color", group.color || "#c084fc");
-    setValue("emoji", group.emoji || "👍");
-    setEmoji(group.emoji || "👍");
-    setFormError(null);
-    setIsFormOpen(true);
-  };
-
-  const handleDeleteClick = (id: string) => {
-    setGroupToDelete(id);
-    setIsDeleteDialogOpen(true);
-    setDeleteError(null);
-  };
-
-  const handleDeleteConfirm = () => {
-    if (!groupToDelete) return;
-
-    deleteMutation.mutate({
-      groupId: groupToDelete,
+  // --- tRPC Queries and Mutations ---
+  const { data: groups = [], isLoading: isLoadingGroups, error: groupsQueryError, refetch: refetchGroups } =
+    api.groups.list.useQuery(undefined, {
+      // staleTime: 5 * 60 * 1000, // 5 minutes
     });
+
+  const saveGroupMutation = api.groups.save.useMutation({
+    onSuccess: (savedGroup) => {
+      toast.success(editingGroup ? "Group updated!" : "Group created!", {
+        description: `"${savedGroup.name}" has been saved.`,
+      });
+      queryClient.invalidateQueries({ queryKey: [["groups", "list"]] }); // Correct way to invalidate
+      // refetchGroups(); // Alternatively, directly refetch
+      setIsFormDialogOpen(false);
+    },
+    onError: (error) => {
+      toast.error("Failed to save group", {
+        description: error.message,
+      });
+    },
+  });
+  
+  const deleteGroupMutation = api.groups.delete.useMutation({
+    onSuccess: (data) => {
+        toast.success("Group deleted successfully!");
+        queryClient.invalidateQueries({ queryKey: [["groups", "list"]] });
+    },
+    onError: (error) => {
+        toast.error("Failed to delete group", { description: error.message });
+    }
+  });
+
+
+  // --- Event Handlers ---
+  const handleOpenNewGroupDialog = () => {
+    setEditingGroup(null);
+    reset({ // Reset form to defaults
+      name: "",
+      description: "",
+      color: CURATED_COLORS[5],
+      emoji: "👍",
+    });
+    setIsFormDialogOpen(true);
   };
 
-  const onSubmit: SubmitHandler<GroupFormData> = async (data) => {
-    try {
-      setFormError(null);
-      setFormSubmitting(true);
-      
-      // Get the current user
-      const { data: authData } = await supabase.auth.getUser();
-      const user = authData.user;
-      
-      if (!user) {
-        console.error('No authenticated user');
-        setFormError('Authentication error. Please sign in again.');
-        return;
-      }
-      
-      // Create the simplified group object - exactly like the working QuickCreateGroupButton
-      const groupData = {
-        // Only include ID if we're editing
-        ...(editingGroupId ? { id: editingGroupId } : {}),
-        name: data.name.trim(),
-        color: data.color || "#c084fc",
-        emoji: emoji || "👍",
-        description: data.description?.trim() || null,
-        user_id: user.id,
-        updated_at: new Date().toISOString(),
-        ...(editingGroupId ? {} : { created_at: new Date().toISOString() })
-      };
+  const handleOpenEditGroupDialog = (group: Group) => {
+    setEditingGroup(group);
+    reset({ // Populate form with existing group data
+      name: group.name,
+      description: group.description || "",
+      color: group.color || CURATED_COLORS[5],
+      emoji: group.emoji || "👍",
+    });
+    setIsFormDialogOpen(true);
+  };
 
-      console.log('Inserting group with data:', JSON.stringify(groupData, null, 2));
-      
-      // Simple direct insertion - just like in QuickCreateGroupButton
-      const { data: result, error } = await supabase
-        .from('groups')
-        .upsert(groupData)
-        .select()
-        .single();
-        
-      if (error) {
-        console.error('Supabase error:', error);
-        setFormError(`Error: ${error.message}`);
-        return;
-      }
-      
-      console.log('Group saved successfully:', result);
-      
-      // Force refresh data
-      await utils.groups.list.invalidate();
-      const refreshResult = await utils.groups.list.refetch();
-      console.log('Refetch result:', refreshResult);
-      
-      // Reset UI state
-      setIsFormOpen(false);
-      reset();
-      setEditingGroupId(null);
-      setEmoji("👍");
-    } catch (error) {
-      console.error('Unexpected error in form submission:', error);
-      setFormError(error instanceof Error ? error.message : 'An unexpected error occurred');
-    } finally {
-      setFormSubmitting(false);
+  const onFormSubmit: SubmitHandler<GroupFormData> = (formData) => {
+    const payload = {
+      ...formData,
+      id: editingGroup?.id, // Add id if we are editing
+    };
+    saveGroupMutation.mutate(payload);
+  };
+  
+  const handleDeleteGroup = (groupId: string, groupName: string) => {
+    if (window.confirm(`Are you sure you want to delete the group "${groupName}"? This action cannot be undone.`)) {
+        deleteGroupMutation.mutate({ groupId });
     }
   };
 
+  const handleOpenManageContactsDialog = (groupId: string, groupName: string) => {
+    setSelectedGroupForContacts({ id: groupId, name: groupName });
+    setIsContactSelectorOpen(true);
+  };
+
+  // --- Effect to reset form when dialog closes ---
+  useEffect(() => {
+    if (!isFormDialogOpen) {
+      setEditingGroup(null);
+      reset(); // Reset RHF state
+    }
+  }, [isFormDialogOpen, reset]);
+
+
+  // --- Render Logic ---
+  if (isLoadingGroups) {
+    return <div className="p-4 text-center"><Loader2 className="h-8 w-8 animate-spin mx-auto" /> Loading groups...</div>;
+  }
+
+  if (groupsQueryError) {
+    return (
+      <Alert variant="destructive" className="m-4">
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>Error Loading Groups</AlertTitle>
+        <AlertDescription>{groupsQueryError.message}</AlertDescription>
+      </Alert>
+    );
+  }
+
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-semibold text-purple-400">Groups</h1>
-        <Button 
-          onClick={() => {
-            setIsFormOpen(true);
-            setEditingGroupId(null);
-            reset();
-          }}
-          className="bg-purple-400 hover:bg-purple-300 text-white"
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          New Group
+    <div className="p-4 md:p-6 space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div className="flex items-center gap-2">
+          <Folder className="h-7 w-7 text-purple-500" />
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Manage Groups</h1>
+        </div>
+        <Button onClick={handleOpenNewGroupDialog} className="bg-purple-500 hover:bg-purple-600 text-white">
+          <Plus className="mr-2 h-5 w-5" /> Create New Group
         </Button>
       </div>
 
-      {/* Form Dialog */}
-      <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-        <DialogContent>
+      {/* Groups Grid */}
+      {groups.length === 0 ? (
+        <div className="text-center py-10 border-2 border-dashed border-gray-300 rounded-lg">
+          <Users className="h-16 w-16 mx-auto text-gray-400 mb-4" />
+          <h3 className="text-xl font-semibold text-gray-700">No groups yet!</h3>
+          <p className="text-gray-500 mb-6">Get started by creating your first group.</p>
+          <Button onClick={handleOpenNewGroupDialog} className="bg-purple-500 hover:bg-purple-600 text-white">
+            <Plus className="mr-2 h-4 w-4" /> Create Group
+          </Button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {groups.map((group: Group) => (
+            <Card 
+              key={group.id} 
+              className="flex flex-col hover:shadow-md transition-shadow cursor-pointer"
+              onClick={() => router.push(`/contacts?group=${group.id}`)}
+            >
+              <CardHeader>
+                <div className="flex justify-between items-start">
+                    <CardTitle className="flex items-center gap-2 text-lg">
+                    <span className="text-2xl">{group.emoji || "📁"}</span>
+                    <span style={{ color: group.color || 'inherit' }}>{group.name}</span>
+                    </CardTitle>
+                    <Badge variant="secondary">{group.contactCount ?? 0} Contacts</Badge>
+                </div>
+                {group.description && (
+                  <CardDescription className="mt-1 text-sm text-gray-600 h-10 overflow-hidden text-ellipsis">
+                    {group.description}
+                  </CardDescription>
+                )}
+              </CardHeader>
+              <CardContent className="flex-grow">
+                {/* Can add more details or a preview here if needed */}
+              </CardContent>
+              <CardFooter className="border-t pt-3 px-4 pb-4">
+                <div className="flex flex-col gap-2 w-full">
+                  {/* Add Contacts button - full width on mobile */}
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent card click
+                      handleOpenManageContactsDialog(group.id, group.name);
+                    }}
+                    className="w-full justify-center"
+                  >
+                    <UserPlus className="mr-1.5 h-3.5 w-3.5" /> Add Contacts
+                  </Button>
+                  
+                  {/* Edit and Delete buttons - side by side on all screens */}
+                  <div className="flex gap-2 w-full">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent card click
+                        handleOpenEditGroupDialog(group);
+                      }}
+                      className="flex-1 justify-center"
+                    >
+                      <Edit className="mr-1.5 h-3.5 w-3.5" /> Edit
+                    </Button>
+                    <Button 
+                      variant="destructive" 
+                      size="sm" 
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent card click
+                        handleDeleteGroup(group.id, group.name);
+                      }} 
+                      disabled={deleteGroupMutation.isLoading && deleteGroupMutation.variables?.groupId === group.id}
+                      className="flex-1 justify-center"
+                    >
+                      {deleteGroupMutation.isLoading && deleteGroupMutation.variables?.groupId === group.id ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <>
+                          <Trash2 className="mr-1.5 h-3.5 w-3.5" />
+                          Delete
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {/* Dialog for Create/Edit Group Form */}
+      <Dialog open={isFormDialogOpen} onOpenChange={setIsFormDialogOpen}>
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-          <DialogTitle className="text-purple-400">
-              {editingGroupId ? "Edit Group" : "Create Group"}
+            <DialogTitle className="text-xl font-semibold text-gray-800">
+              {editingGroup ? "Edit Group" : "Create New Group"}
             </DialogTitle>
+            {editingGroup && <DialogDescription>Update the details for the group: {editingGroup.name}</DialogDescription>}
           </DialogHeader>
 
-          {formError && (
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{formError}</AlertDescription>
-            </Alert>
-          )}
-
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <input type="hidden" {...register("id")} />
-
-            <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
-              <div className="flex items-center gap-2">
-                <div className="relative">
-                  <button 
-                    type="button"
-                    onClick={() => setShowEmojiPicker(!showEmojiPicker)} 
-                    className="p-2 rounded-md border border-purple-200 hover:bg-purple-50 transition-colors"
-                  >
-                    {emoji} <span className="ml-1 text-xs text-purple-600">Select</span>
-                  </button>
-                  {showEmojiPicker && (
-                    <div className="absolute z-50 mt-1 bg-white shadow-lg rounded-md p-2 border border-purple-100 grid grid-cols-8 gap-1 w-[320px]">
-                      {[
-                        "👍", "👋", "👏", "🙌", "👆", "👇", "👈", "👉",
-                        "🎯", "✅", "⭐", "🔥", "💯", "💪", "🚀", "💡",
-                        "📊", "📈", "📝", "📌", "🔍", "🔔", "🔒", "🔓",
-                        "📱", "💻", "📧", "📞", "🏢", "🏆", "💰", "💎",
-                        "❤️", "🧡", "💛", "💚", "💙", "💜", "🖤", "🤍",
-                        "😀", "😊", "🙂", "😎", "🤔", "😍", "🥳", "😇"
-                      ].map((em) => (
-                        <button
-                          key={em}
-                          type="button"
-                          onClick={() => {
-                            setEmoji(em);
-                            setValue("emoji", em);
-                            setShowEmojiPicker(false);
-                          }}
-                          className="text-2xl p-1 hover:bg-purple-50 rounded cursor-pointer"
-                        >
-                          {em}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
+          <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4 py-4">
+            {/* Top row: Emoji, Group Name, Color Picker */}
+            <div className="flex gap-3 items-end">
+              {/* Emoji Picker */}
+              <div className="flex-shrink-0">
+                <Label htmlFor="emoji" className="text-sm font-medium">Emoji</Label>
+                <Input
+                  id="emoji"
+                  {...register("emoji")}
+                  placeholder="📁"
+                  className="w-16 h-10 text-center text-lg mt-1"
+                  maxLength={2}
+                />
+              </div>
+              
+              {/* Group Name */}
+              <div className="flex-grow">
+                <Label htmlFor="name" className="text-sm font-medium">Group Name *</Label>
                 <Input
                   id="name"
                   {...register("name")}
-                  className="border-purple-200 focus:border-purple-400 flex-1"
+                  placeholder="Enter group name..."
+                  className={`mt-1 ${errors.name ? "border-red-500" : ""}`}
                 />
+                {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
               </div>
-              {errors.name && (
-                <p className="text-sm text-red-500">{errors.name.message}</p>
-              )}
+              
+              {/* Color Picker */}
+              <div className="flex-shrink-0">
+                <Label className="text-sm font-medium">Color</Label>
+                <div className="mt-1 grid grid-cols-7 gap-1 p-2 border rounded-md bg-gray-50 w-28">
+                  {CURATED_COLORS.map((color) => (
+                    <button
+                      key={color}
+                      type="button"
+                      onClick={() => setValue("color", color)}
+                      className={`w-4 h-4 rounded-full border-2 hover:scale-110 transition-transform ${
+                        watch("color") === color ? "border-gray-800 scale-110" : "border-gray-300"
+                      }`}
+                      style={{ backgroundColor: color }}
+                      title={color}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="description">Description (Optional)</Label>
+            {/* Description */}
+            <div>
+              <Label htmlFor="description" className="text-sm font-medium">Description (Optional)</Label>
               <Textarea
                 id="description"
                 {...register("description")}
-                className="border-purple-200 focus:border-purple-400"
+                placeholder="Add a description for this group..."
+                rows={3}
+                className="mt-1 resize-none"
+                maxLength={500}
               />
+              {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="color">Color</Label>
-              <Input
-                id="color"
-                type="color"
-                {...register("color")}
-                className="h-10 px-2"
-              />
-            </div>
-
-            <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setIsFormOpen(false)}
-                className="text-purple-600 hover:text-purple-700 border-purple-200 hover:bg-purple-50"
-              >
+            <DialogFooter className="pt-2">
+              <Button type="button" variant="outline" onClick={() => setIsFormDialogOpen(false)} disabled={saveGroupMutation.isLoading || isFormSubmittingRHF}>
                 Cancel
               </Button>
-              <Button 
-                type="submit"
-                disabled={isSubmitting}
-                className="bg-purple-400 hover:bg-purple-300 text-white"
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Saving...
-                  </>
+              <Button type="submit" disabled={saveGroupMutation.isLoading || isFormSubmittingRHF} className="bg-purple-500 hover:bg-purple-600 text-white">
+                {(saveGroupMutation.isLoading || isFormSubmittingRHF) ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 ) : (
-                  "Save"
+                  editingGroup ? "Save Changes" : "Create Group"
                 )}
               </Button>
             </DialogFooter>
@@ -361,142 +393,18 @@ export function GroupsContent() {
         </DialogContent>
       </Dialog>
 
-      {/* Groups List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {isLoading ? (
-          // Loading skeleton
-          <div className="space-y-4">
-            <div className="h-32 bg-purple-100 rounded-lg animate-pulse" />
-            <div className="h-32 bg-purple-100 rounded-lg animate-pulse" />
-            <div className="h-32 bg-purple-100 rounded-lg animate-pulse" />
-          </div>
-        ) : queryError ? (
-          // Error state
-          <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Error</AlertTitle>
-            <AlertDescription>
-              {"Failed to load groups"}
-            </AlertDescription>
-          </Alert>
-        ) : groupsList.length === 0 ? (
-          // Empty state
-          <div className="text-center py-8">
-            <Users className="h-12 w-12 mx-auto text-purple-400 mb-4" />
-          <h3 className="text-lg font-medium text-purple-400 mb-2">
-              No groups yet
-            </h3>
-            <p className="text-purple-600 mb-4">
-              Create your first group to start organizing contacts
-            </p>
-            <Button 
-              onClick={() => {
-                setIsFormOpen(true);
-                setEditingGroupId(null);
-                reset();
-              }}
-              className="bg-purple-400 hover:bg-purple-300 text-white"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Create Group
-            </Button>
-          </div>
-        ) : (
-          // Groups grid
-          groupsList.map((group: Group) => (
-            <Card key={group.id} className="relative overflow-hidden bg-purple-50 border-purple-100">
-              <CardHeader className="pb-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2 min-w-0">
-                    <Badge
-                      variant="secondary"
-                      className="h-6 px-2 text-xs font-normal truncate text-purple-50"
-                      style={{ backgroundColor: group.color || '#c084fc' }}
-                    >
-                      <span className="mr-1">{group.emoji || '👍'}</span>
-                      {group.name}
-                    </Badge>
-                    <Badge variant="outline" className="ml-2 bg-white">
-                      {group.contactCount || 0} contacts
-                    </Badge>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-purple-600 hover:text-purple-700 hover:bg-purple-100"
-                      onClick={() => handleEditClick(group)}
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-purple-600 hover:text-purple-700 hover:bg-purple-100"
-                      onClick={() => handleDeleteClick(group.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-                {group.description && (
-                  <p className="text-sm text-purple-600 mt-2">{group.description}</p>
-                )}
-              </CardHeader>
-              <CardContent>
-                <div className="border-t border-purple-100 pt-3 mt-2">
-                  <GroupContactsList groupId={group.id} groupName={group.name} />
-                </div>
-              </CardContent>
-            </Card>
-          ))
-        )}
-      </div>
-
-      {/* Delete Confirmation Dialog */}
-      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle className="text-purple-400">Delete Group</DialogTitle>
-            <DialogDescription className="text-purple-600">
-              Are you sure you want to delete this group? This action cannot be undone.
-            </DialogDescription>
-          </DialogHeader>
-
-          {deleteError && (
-            <Alert variant="destructive" className="mt-4">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{deleteError}</AlertDescription>
-            </Alert>
-          )}
-
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setIsDeleteDialogOpen(false)}
-              disabled={deleteMutation.isLoading}
-              className="text-purple-600 hover:text-purple-700 border-purple-200 hover:bg-purple-50"
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={handleDeleteConfirm}
-              disabled={deleteMutation.isLoading}
-              className="bg-purple-600 hover:bg-purple-700 text-white"
-            >
-              {deleteMutation.isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Deleting...
-                </>
-              ) : (
-                "Delete"
-              )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {/* Bulk Contact Selector Dialog */}
+      {selectedGroupForContacts && (
+        <BulkContactSelector
+          groupId={selectedGroupForContacts.id}
+          groupName={selectedGroupForContacts.name}
+          isOpen={isContactSelectorOpen}
+          onClose={() => {
+            setIsContactSelectorOpen(false);
+            setSelectedGroupForContacts(null);
+          }}
+        />
+      )}
     </div>
   );
 }

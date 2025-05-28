@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { supabase } from '@/lib/supabase/client';
+import { supabase } from '@/lib/supabase/contact';
 
 // Google Icon SVG Component
 const GoogleIcon = () => (
@@ -18,22 +18,19 @@ const GoogleIcon = () => (
   </svg>
 );
 
-// Apple Icon SVG Component
-const AppleIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <path d="M18.816 14.6179C18.816 14.6179 18.031 12.0519 19.805 10.5889C20.948 9.6889 21.299 8.0409 20.68 6.7179C19.63 4.4509 17.489 3.7919 16.621 3.7389C14.617 3.5809 12.858 4.7839 11.907 4.7839C10.956 4.7839 9.576 3.7379 7.91 3.7649C6.081 3.7949 4.242 4.8109 3.174 6.8319C1.034 10.7899 3.299 16.3029 5.311 19.0999C6.353 20.5269 7.691 22.0269 9.319 22.0009C10.861 21.9749 11.346 21.1129 13.238 21.0869C15.142 21.0599 15.577 21.9999 17.167 21.9749C18.798 21.9499 19.881 20.4499 20.832 19.0239C21.167 18.4929 21.466 17.9309 21.702 17.3439C21.769 17.1879 19.63 16.1409 18.816 14.6179ZM14.939 2.6179C15.744 1.7439 16.205 0.5969 16.091 0.0249C14.932 0.1009 13.676 0.7819 12.882 1.6549C12.206 2.3659 11.617 3.4659 11.817 4.3659C13.056 4.3989 14.225 3.4009 14.939 2.6179Z"/>
-  </svg>
-);
 
 export default function SignInPage() {
+  const [authMethod, setAuthMethod] = useState<'password' | 'magicLink'>('password');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isMagicLinkLoading, setIsMagicLinkLoading] = useState(false);
-  const [_searchParams, _setSearchParams] = useState<URLSearchParams | null>(null);
+  // Removed unused searchParams
+
   const [isOauthLoading, setIsOauthLoading] = useState<'google' | 'apple' | null>(null);
-  const [authMethod, setAuthMethod] = useState<'password' | 'magicLink'>('password');
+  // Removed magic link and Apple sign in per new branding
+
 
   const handlePasswordLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,7 +105,7 @@ export default function SignInPage() {
       
       console.warn(`OAuth redirect URL: ${redirectUrl}`);
       
-      const { data: _data, error } = await supabase.auth.signInWithOAuth({
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
           redirectTo: redirectUrl,
@@ -126,7 +123,7 @@ export default function SignInPage() {
         return;
       }
       
-      if (!data.url) {
+      if (!data || !data.url) {
         console.error(`${provider} OAuth flow didn't return a URL`);
         setMessage(`Error starting ${provider} sign in - no redirect URL returned`);
         setMessageType('error');
@@ -149,8 +146,9 @@ export default function SignInPage() {
     <div className="flex min-h-screen items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="text-center space-y-2">
-          <CardTitle className="text-3xl font-bold text-blue-600">CodexCRM</CardTitle>
-          <CardDescription>Welcome back! Sign in to your account.</CardDescription>
+          <img src="/images/logo.png" alt="OmniCRM" className="mx-auto h-12 w-12" />
+          <CardTitle className="text-3xl font-bold text-teal-800">CodexCRM</CardTitle>
+          <CardDescription className="text-sm text-teal-400">Welcome back! Sign in to your account.</CardDescription>
         </CardHeader>
 
         <CardContent className="space-y-6">
@@ -166,16 +164,7 @@ export default function SignInPage() {
               <GoogleIcon />
               {isOauthLoading === 'google' ? 'Redirecting...' : 'Continue with Google'}
             </Button>
-            <Button 
-              type="button" 
-              onClick={() => handleOAuthLogin('apple')}
-              variant="outline"
-              className="w-full flex items-center justify-center gap-2 disabled:opacity-50"
-              disabled={isLoading || !!isOauthLoading}
-            >
-              <AppleIcon />
-              {isOauthLoading === 'apple' ? 'Redirecting...' : 'Continue with Apple'}
-            </Button>
+            
           </div>
 
           {/* Separator */}

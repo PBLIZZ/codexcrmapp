@@ -38,12 +38,28 @@ import {
   X
 } from "lucide-react";
 
-export function ContactsContent() {
+import { AddContactModal } from '@/components/contacts/AddContactModal';
+
+export function ContactsContent({ initialGroupId }: { initialGroupId?: string } = {}) {
   // --- State Management ---
   const router = useRouter();
   const searchParams = useSearchParams();
-  const groupIdFromUrl = searchParams.get("group") ?? "";
-  
+  const groupIdFromUrl = searchParams.get("group") ?? initialGroupId ?? "";
+  // --- Modal state for quick add contact ---
+  const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
+  // Auto-open modal if ?new=true is present
+  useEffect(() => {
+    if (searchParams.get('new') === 'true') {
+      setIsQuickAddOpen(true);
+    }
+  }, [searchParams]);
+  // Remove ?new=true from URL after closing modal or successful add
+  const handleQuickAddClose = () => {
+    setIsQuickAddOpen(false);
+    const params = new URLSearchParams(Array.from(searchParams.entries()));
+    params.delete('new');
+    router.replace(`?${params.toString()}`, { scroll: false });
+  }
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [editingContactId, setEditingContactId] = useState<string | null>(null);
@@ -353,6 +369,16 @@ export function ContactsContent() {
                   />
                 </DropdownMenuContent>
               </DropdownMenu>
+              
+              {/* New Contact Button */}
+              <Button
+                onClick={handleAddNewClick}
+                className="bg-teal-500 hover:bg-teal-600 text-white"
+                size="sm"
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                New Contact
+              </Button>
             </div>
           </div>
           
@@ -385,6 +411,24 @@ export function ContactsContent() {
         </div>
       </div>
 
+        {/* Quick Add Contact Modal (auto-opens on ?new=true) */}
+        <AddContactModal
+                onContactAdded={handleQuickAddClose} // Or any other success handler
+                open={isQuickAddOpen}
+                onOpenChange={openState => { // Renamed 'open' to 'openState' to avoid conflict
+                  setIsQuickAddOpen(openState); // Sync state
+                  if (!openState) {
+                    handleQuickAddClose(); // Call your close logic which also handles URL
+                  }
+                }}
+                showTriggerButton={false} // <--- HIDE the modal's default trigger
+              />
+
+      {/*
+        NOTE: For quick add, modal should only have fields: name, last name, email.
+        There should be an option (future) to "Add full details" that opens a full client card page with all fields empty.
+        Fallback trigger for this modal will be added to the dashboard quicklinks page.
+      */}
       {/* Add/Edit Contact Form Modal */}
       {isFormOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">

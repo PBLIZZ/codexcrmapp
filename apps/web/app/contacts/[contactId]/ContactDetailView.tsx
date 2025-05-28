@@ -40,6 +40,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { ImageUpload } from "@/components/ui/image-upload";
 
 // Local Utilities
 import { formatDateTime, formatDateForInput, parseInputDateString } from '@/lib/dateUtils';
@@ -177,6 +178,8 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
+    watch,
+    setValue,
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
     defaultValues: {
@@ -687,13 +690,13 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
                 )}
               </div>
               
-              <div className="space-y-2">
-                <Label htmlFor="profile_image_url">Profile Image URL</Label>
-                <Input
-                  id="profile_image_url"
-                  {...register("profile_image_url")}
-                  className={errors.profile_image_url ? "border-destructive" : ""}
-                  placeholder="https://example.com/image.jpg"
+              <div className="space-y-2 md:col-span-2">
+                <Label>Profile Photo</Label>
+                <ImageUpload
+                  value={watch("profile_image_url") || null}
+                  onChange={(url) => setValue("profile_image_url", url, { shouldValidate: true })}
+                  disabled={isSubmitting}
+                  contactId={contact.id}
                 />
                 {errors.profile_image_url && (
                   <p className="text-sm text-destructive">{errors.profile_image_url.message}</p>

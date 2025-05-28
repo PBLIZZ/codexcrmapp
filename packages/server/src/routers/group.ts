@@ -15,10 +15,20 @@ interface Group {
 // Schema for group input validation
 const groupInputSchema = z.object({
   id: z.string().uuid().optional(), // Optional for creation
-  name: z.string().min(1, 'Group name is required'),
-  description: z.string().optional().nullable(),
-  color: z.string().optional().nullable(),
-  emoji: z.string().optional().nullable(),
+  name: z.string().min(1, 'Group name is required').max(100, 'Name too long'),
+  description: z.string().max(500, 'Description too long').optional().nullable(),
+  color: z.string()
+    .regex(/^#[0-9A-Fa-f]{6}$/, 'Must be a valid hex color (e.g., #FF0000)')
+    .or(z.literal(''))
+    .nullable()
+    .optional()
+    .transform(val => val === '' ? null : val),
+  emoji: z.string()
+    .max(2, 'Emoji should be 1-2 characters')
+    .or(z.literal(''))
+    .nullable()
+    .optional()
+    .transform(val => val === '' ? null : val),
 });
 
 // Group to contact relationship schema

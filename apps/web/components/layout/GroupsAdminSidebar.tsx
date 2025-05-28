@@ -12,13 +12,13 @@ interface Group {
   color?: string;
 }
 
-interface GroupsSidebarProps {
-  groups: Group[];
-  selectedGroupId: string;
-  onGroupSelect: (groupId: string) => void;
+interface GroupsAdminSidebarProps {
+  groups?: Group[];
+  selectedGroupId?: string;
+  onGroupSelect?: (groupId: string) => void;
 }
 
-export function GroupsSidebar({ groups, selectedGroupId, onGroupSelect }: GroupsSidebarProps) {
+export function GroupsAdminSidebar({ groups = [], selectedGroupId, onGroupSelect }: GroupsAdminSidebarProps) {
   return (
     <div className="h-full flex flex-col">
       <div className="p-4 border-b">
@@ -44,7 +44,7 @@ export function GroupsSidebar({ groups, selectedGroupId, onGroupSelect }: Groups
               "flex items-center justify-between px-3 py-2 rounded-md cursor-pointer",
               selectedGroupId === "" ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted"
             )}
-            onClick={() => onGroupSelect("")}
+            onClick={() => onGroupSelect?.("")}
           >
             <div className="flex items-center">
               <Users className="w-4 h-4 mr-2" />
@@ -65,7 +65,7 @@ export function GroupsSidebar({ groups, selectedGroupId, onGroupSelect }: Groups
                 "flex items-center justify-between px-3 py-2 rounded-md cursor-pointer",
                 selectedGroupId === group.id ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted"
               )}
-              onClick={() => onGroupSelect(group.id)}
+              onClick={() => onGroupSelect?.(group.id)}
             >
               <div className="flex items-center">
                 <div 

@@ -10,10 +10,11 @@ import {
   Search, 
   Tag, 
   Trash2, 
-  Users 
+  Users, 
+  Loader2 
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +22,7 @@ import { Button } from "@/components/ui/button";
 
 // UI Components
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
@@ -104,11 +106,10 @@ export function ContactGroupsPage() {
         description: null // Optional description field
       });
       
-      // Force refetch groups after mutation
-      await utils.groups.list.refetch();
+      // No need to force refetch as invalidate in onSuccess will trigger a refetch
     } catch (err) {
       console.error("Group creation failed:", err);
-      setError(`Failed to create group: ${err instanceof Error ? err.message : 'Unknown error'}`);  
+      setError(`Failed to create group: ${err instanceof Error ? err.message : 'Unknown error'}`);
     }
   };
 
@@ -143,13 +144,29 @@ export function ContactGroupsPage() {
           </div>
         </div>
         
-        {/* Error Alert */}
+        {/* Error Alerts */}
         {error && (
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>Error</AlertTitle>
             <AlertDescription>{error}</AlertDescription>
           </Alert>
+        )}
+        
+        {groupsError && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Error Loading Groups</AlertTitle>
+            <AlertDescription>{groupsError.message || 'Failed to fetch groups.'}</AlertDescription>
+          </Alert>
+        )}
+        
+        {/* Loading State */}
+        {isLoading && (
+          <div className="flex flex-col items-center justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground mb-4" />
+            <p className="text-muted-foreground">Loading groups...</p>
+          </div>
         )}
         
         {/* Groups Grid */}
@@ -162,7 +179,7 @@ export function ContactGroupsPage() {
             >
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
-                  <Badge className={`${group.color || 'bg-blue-500'} hover:${group.color || 'bg-blue-500'}`}>
+                  <Badge className={`${group.color || 'bg-blue-500'} hover:opacity-80`}>
                     {group.contactCount || 0} contacts
                   </Badge>
                   <Button variant="ghost" size="icon" onClick={(e) => {
@@ -197,7 +214,7 @@ export function ContactGroupsPage() {
           </Card>
         </div>
         
-        {/* Empty State */}
+        {/* Empty State - No Search Results */}
         {filteredGroups.length === 0 && searchTerm && (
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <Users className="h-12 w-12 text-muted-foreground mb-4" />
@@ -212,60 +229,75 @@ export function ContactGroupsPage() {
           </div>
         )}
         
-        {/* Add Group Dialog */}
-        {isAddGroupOpen && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <Card className="w-full max-w-md mx-4">
-              <CardHeader>
-                <CardTitle>Add New Group</CardTitle>
-                <CardDescription>
-                  Create a new group to organize your contacts
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="groupName">Group Name</Label>
-                    <Input
-                      id="groupName"
-                      placeholder="Enter group name"
-                      value={newGroupName}
-                      onChange={(e) => setNewGroupName(e.target.value)}
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label>Group Color</Label>
-                    <div className="flex flex-wrap gap-2">
-                      {['bg-blue-500', 'bg-green-500', 'bg-yellow-500', 'bg-purple-500', 'bg-pink-500', 'bg-red-500'].map(color => (
-                        <div 
-                          key={color}
-                          className={`w-8 h-8 rounded-full ${color} cursor-pointer hover:ring-2 hover:ring-offset-2 ${selectedColor === color ? 'ring-2 ring-offset-2 ring-gray-400' : ''}`}
-                          onClick={() => setSelectedColor(color)}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-              <CardFooter className="flex justify-between">
-                <Button variant="outline" onClick={() => {
-                  setIsAddGroupOpen(false);
-                  setNewGroupName('');
-                  setError(null);
-                }}>
-                  Cancel
-                </Button>
-                <Button 
-                  onClick={handleAddGroup}
-                  disabled={createGroupMutation.isLoading}
-                >
-                  {createGroupMutation.isLoading ? 'Creating...' : 'Create Group'}
-                </Button>
-              </CardFooter>
-            </Card>
+        {/* Empty State - No Groups Yet */}
+        {!isLoading && groupsData.length === 0 && !searchTerm && (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <Users className="h-12 w-12 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-medium">No groups yet</h3>
+            <p className="text-muted-foreground mt-1">
+              Get started by creating your first contact group.
+            </p>
+            <Button className="mt-4" onClick={() => setIsAddGroupOpen(true)}>
+              <Plus className="mr-2 h-4 w-4" />
+              Add Group
+            </Button>
           </div>
         )}
+        
+        {/* Add Group Dialog using Shadcn Dialog component */}
+        <Dialog open={isAddGroupOpen} onOpenChange={(isOpen) => {
+          setIsAddGroupOpen(isOpen);
+          // Reset form/error state when dialog closes
+          if (!isOpen) {
+            setNewGroupName('');
+            setSelectedColor('bg-blue-500');
+            setError(null);
+          }
+        }}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Add New Group</DialogTitle>
+              <DialogDescription>
+                Create a new group to organize your contacts
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="groupName">Group Name</Label>
+                <Input
+                  id="groupName"
+                  placeholder="Enter group name"
+                  value={newGroupName}
+                  onChange={(e) => setNewGroupName(e.target.value)}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Group Color</Label>
+                <div className="flex flex-wrap gap-2">
+                  {['bg-blue-500', 'bg-green-500', 'bg-yellow-500', 'bg-purple-500', 'bg-pink-500', 'bg-red-500'].map(color => (
+                    <div 
+                      key={color}
+                      className={`w-8 h-8 rounded-full ${color} cursor-pointer hover:ring-2 hover:ring-offset-2 ${selectedColor === color ? 'ring-2 ring-offset-2 ring-gray-400' : ''}`}
+                      onClick={() => setSelectedColor(color)}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsAddGroupOpen(false)}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleAddGroup}
+                disabled={createGroupMutation.isLoading || !newGroupName.trim()}
+              >
+                {createGroupMutation.isLoading ? 'Creating...' : 'Create Group'}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ContactGroupManager, GroupsProvider } from './ContactGroupManager';
 import { ArrowDown, ArrowUp, Mail, MessageSquareText, Phone, Sparkles, ChevronDown, Calendar, Clock, Check } from "lucide-react";
+import { AvatarImage } from "@/components/ui/avatar-image";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -410,28 +411,11 @@ export function ContactList({
               <tr key={contact.id} className="hover:bg-gray-50">
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
-                    <div className="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
-                      {contact.profile_image_url ? (
-                        <img 
-                          src={contact.profile_image_url} 
-                          alt={`${contact.first_name} ${contact.last_name}`} 
-                          className="h-full w-full object-cover" 
-                        />
-                      ) : (
-                        <img 
-                          src="/images/placeholder-avatar.jpg" 
-                          alt="Avatar" 
-                          className="h-full w-full object-cover" 
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.onerror = null;
-                            // Use a safer approach for SVG data URI
-                            const initials = `${contact.first_name?.[0] || ''}${contact.last_name?.[0] || ''}`;
-                            target.src = `data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect width='40' height='40' fill='%23f1f5f9'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='14' fill='%2394a3b8' dominant-baseline='middle' text-anchor='middle'%3E${initials}%3C/text%3E%3C/svg%3E`;
-                          }} 
-                        />
-                      )}
-                    </div>
+                    <AvatarImage
+                      src={contact.profile_image_url || null}
+                      alt={`${contact.first_name || ''} ${contact.last_name || ''}`.trim()}
+                      size="md"
+                    />
                     <div className="ml-4">
                       <Link href={`/contacts/${contact.id}`} className="text-sm font-medium text-gray-900 hover:text-blue-600">
                         {contact.first_name || contact.last_name ? `${contact.first_name ?? ''} ${contact.last_name ?? ''}`.trim() : 'Unnamed Contact'}

@@ -15,13 +15,13 @@ interface SupabaseProviderProps {
 }
 
 export default function SupabaseProvider({ children }: SupabaseProviderProps) {
-  const [supabaseClient] = useState(() => createBrowserClient(
+  const [supabaseContact] = useState(() => createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   ));
 
   return (
-    <SupabaseContext.Provider value={supabaseClient}>
+    <SupabaseContext.Provider value={supabaseContact}>
       {children}
     </SupabaseContext.Provider>
   );

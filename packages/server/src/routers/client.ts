@@ -39,12 +39,12 @@ const clientInputSchema = z.object({
   }, z.date().optional().nullable()),
 });
 
+// DEPRECATED: clientRouter has been fully removed. Use contactRouter from './contact'.
 export const clientRouter = router({
 
   // ===== Protected Procedures (require authentication) =====
 
-  // Protected procedure for listing authenticated user's clients
-  // Now uses supabaseUser to properly enforce RLS
+  // Protected procedure for listing authenticated user's contacts (DEPRECATED: use contacts.list in contactRouter)
   list: protectedProcedure.query(async ({ ctx }) => {
     if (!ctx.user) {
       throw new TRPCError({ code: 'UNAUTHORIZED' });
@@ -52,18 +52,18 @@ export const clientRouter = router({
     
     // Use the USER-SCOPED client from context for reads to respect RLS!
     const { data, error } = await ctx.supabaseUser
-      .from('clients')
+      .from('contacts')
       .select('*')
       // .eq('user_id', ctx.user.id) // Not needed with proper RLS, but can keep for defense-in-depth
       .order('created_at', { ascending: false });
       
     if (error) {
-      console.error("Error fetching clients (RLS scope):", error);
-      throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to fetch clients' });
+      console.error("Error fetching contacts (RLS scope):", error);
+      throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to fetch contacts' });
     }
     return data || [];
   }),
-  // Fetch a single client by ID
+  // Fetch a single contact by ID (DEPRECATED: use contacts.getById in contactRouter)
   getById: protectedProcedure
     .input(z.object({ clientId: z.string().uuid() }))
     .query(async ({ input, ctx }) => {
@@ -71,7 +71,7 @@ export const clientRouter = router({
         throw new TRPCError({ code: 'UNAUTHORIZED' });
       }
       const { data, error } = await ctx.supabaseUser
-        .from('clients')
+        .from('contacts')
         .select('*')
         .eq('id', input.clientId)
         .single();
@@ -86,7 +86,7 @@ export const clientRouter = router({
       return data;
     }),
 
-  // Protected procedure for creating/updating clients
+  // Protected procedure for creating/updating contacts
   save: protectedProcedure
     .input(clientInputSchema)
     .mutation(async ({ input, ctx }) => {
@@ -118,7 +118,7 @@ export const clientRouter = router({
           console.warn(`Attempting client update for id: ${clientId}`, attemptFields);
           do {
             ({ data, error: dbError } = await ctx.supabaseUser
-              .from('clients')
+              .from('contacts')
               .update(attemptFields)
               .match({ id: clientId, user_id: ctx.user.id })
               .select()
@@ -137,7 +137,7 @@ export const clientRouter = router({
           console.warn('Attempting client insert with user context', { ...attemptFields, user_id: ctx.user.id });
           do {
             ({ data, error: dbError } = await ctx.supabaseUser
-              .from('clients')
+              .from('contacts')
               .insert({ ...attemptFields, user_id: ctx.user.id })
               .select()
               .single());
@@ -160,7 +160,7 @@ export const clientRouter = router({
           console.error('Supabase save returned no data and no error.');
           throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to save client due to unexpected issue.' });
         }
-        console.warn('Client save successful:', data);
+        console.warn('Contact save successful:', data);
         return data;
       } catch (err) {
         console.error('Unexpected error in save procedure:', err);
@@ -172,7 +172,7 @@ export const clientRouter = router({
       }
     }),
 
-  // Procedure to delete a client
+  // Procedure to delete a contact
   delete: protectedProcedure
     .input(z.object({
       clientId: z.string().uuid(), // Expect UUID string ID
@@ -180,7 +180,7 @@ export const clientRouter = router({
     .mutation(async ({ input, ctx }) => {
       console.warn(`Attempting to delete client ID: ${input.clientId} by user ${ctx.user.id}`);
       const { error } = await ctx.supabaseUser
-        .from('clients')
+        .from('contacts')
         .delete()
         .match({ id: input.clientId, user_id: ctx.user.id }); // Match on UUID string ID and user_id
 
@@ -189,7 +189,7 @@ export const clientRouter = router({
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to delete client' });
       }
 
-      console.warn(`Client ${input.clientId} deleted successfully by user ${ctx.user.id}`);
-      return { success: true, deletedClientId: input.clientId };
+      console.warn(`Contact ${input.clientId} deleted successfully by user ${ctx.user.id}`);
+      return { success: true, deletedContactId: input.clientId };
     }),
 });

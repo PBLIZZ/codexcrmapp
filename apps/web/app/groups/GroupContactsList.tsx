@@ -22,14 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { api } from "@/lib/trpc";
-
-interface Contact {
-  id: string;
-  first_name: string;
-  last_name: string;
-  email?: string | null;
-  company_name?: string | null;
-}
+import { Contact } from '../contacts/ContactList';
 
 interface GroupContactsListProps {
   groupId: string;
@@ -234,7 +227,7 @@ export function GroupContactsList({ groupId, groupName }: GroupContactsListProps
                   } />
                 </SelectTrigger>
                 <SelectContent>
-                  {availableContacts?.map((contact) => (
+                  {availableContacts?.map((contact: Contact) => (
                     <SelectItem key={contact.id} value={contact.id}>
                       <div className="flex items-center gap-2">
                         <div className="h-6 w-6 bg-gray-100 rounded-full flex items-center justify-center">
