@@ -10,6 +10,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { SignOutButton } from '@/components/layout/SignOutButton';
 import { fetchCurrentUser, updateUserPassword, signOutUser, mapAuthErrorMessage } from '@/lib/auth/service';
 
 // Constants

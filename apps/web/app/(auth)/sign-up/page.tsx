@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input'; 
-import { supabase } from '@/lib/supabase/client'; 
+import { supabase } from '@/lib/supabase/contact'; 
  
 
 export default function SignUpPage() {

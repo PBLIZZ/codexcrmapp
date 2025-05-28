@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase/client';
+import { supabase } from '@/lib/supabase/contact';
 import type { User } from '@supabase/supabase-js';
 
 /**

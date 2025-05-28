@@ -1,4 +1,4 @@
-"use contact";
+"use client";
 
 import { 
   AlertCircle, 
@@ -21,6 +21,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { api } from '@/lib/trpc';
 
 // UI Components
+import { AddContactModal } from '@/components/contacts/AddContactModal';
 
 
 // Helper function to get initials from name
@@ -174,12 +175,7 @@ export default function DashboardContent() {
                     <span>View Contacts</span>
                   </Link>
                 </Button>
-                <Button variant="outline" className="h-auto flex flex-col items-center justify-center p-4 space-y-2" asChild>
-                  <Link href="/contacts?new=true">
-                    <Plus className="h-6 w-6 mb-2" />
-                    <span>Add Contact</span>
-                  </Link>
-                </Button>
+                <AddContactModal />
                 <Button variant="outline" className="h-auto flex flex-col items-center justify-center p-4 space-y-2" asChild>
                   <Link href="/groups">
                     <Users className="h-6 w-6 mb-2" />
@@ -238,32 +234,42 @@ export default function DashboardContent() {
                 {contacts && contacts.length > 0 ? (
                   <div className="rounded-md border">
                     <div className="grid grid-cols-1 divide-y">
-                      {contacts.slice(0, 5).map((contact: Record<string, unknown>) => (
-                        <Link 
-                          key={contact.id} 
-                          href={`/contacts/${contact.id}`}
-                          className="flex items-center p-4 hover:bg-muted/50 transition-colors"
-                        >
-                          <Avatar className="h-10 w-10 mr-4">
-                            {contact.avatar_url ? (
-                              <AvatarImage src={contact.avatar_url} alt={`${contact.first_name} ${contact.last_name}`} />
-                            ) : null}
-                            <AvatarFallback>{getInitials(contact.first_name, contact.last_name)}</AvatarFallback>
-                          </Avatar>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium truncate">
-                              {contact.first_name} {contact.last_name}
-                            </p>
-                            <p className="text-sm text-muted-foreground truncate">
-                              {contact.email}
-                            </p>
-                          </div>
-                          <div className="text-sm text-muted-foreground flex items-center">
-                            <Clock className="h-3 w-3 mr-1" />
-                            {formatDate(contact.created_at)}
-                          </div>
-                        </Link>
-                      ))}
+                      {contacts.slice(0, 5).map((contact: Record<string, unknown>) => {
+  // Type guards for strict safety
+  const id = typeof contact.id === 'string' || typeof contact.id === 'number' ? String(contact.id) : undefined;
+  const firstName = typeof contact.first_name === 'string' ? contact.first_name : '';
+  const lastName = typeof contact.last_name === 'string' ? contact.last_name : '';
+  const avatarUrl = typeof contact.avatar_url === 'string' ? contact.avatar_url : undefined;
+  const email = typeof contact.email === 'string' ? contact.email : '';
+  const createdAt = typeof contact.created_at === 'string' ? contact.created_at : undefined;
+  if (!id) return null;
+  return (
+    <Link 
+      key={id}
+      href={`/contacts/${id}`}
+      className="flex items-center p-4 hover:bg-muted/50 transition-colors"
+    >
+      <Avatar className="h-10 w-10 mr-4">
+        {avatarUrl ? (
+          <AvatarImage src={avatarUrl} alt={`${firstName} ${lastName}`} />
+        ) : null}
+        <AvatarFallback>{getInitials(firstName, lastName)}</AvatarFallback>
+      </Avatar>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium truncate">
+          {firstName} {lastName}
+        </p>
+        <p className="text-sm text-muted-foreground truncate">
+          {email}
+        </p>
+      </div>
+      <div className="text-sm text-muted-foreground flex items-center">
+        <Clock className="h-3 w-3 mr-1" />
+        {formatDate(createdAt)}
+      </div>
+    </Link>
+  );
+})}
                     </div>
                   </div>
                 ) : (

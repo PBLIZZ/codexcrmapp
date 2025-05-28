@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/lib/supabase/client";
+import { supabase } from "@/lib/supabase/contact";
 import { api } from "@/lib/trpc";
 
 export function QuickCreateGroupButton() {

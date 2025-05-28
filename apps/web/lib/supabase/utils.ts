@@ -1,7 +1,7 @@
 // apps/web/lib/supabase/utils.ts
 import { Database } from '@codexcrm/db';
 
-import { supabase } from './contact';
+import { supabase } from './client';
 import { createSupabaseServer } from './server';
 
 // Type aliases for better readability

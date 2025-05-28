@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { supabase } from '@/lib/supabase/client';
+import { supabase } from '@/lib/supabase/contact';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -36,12 +36,14 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-      <Card className="w-full max-w-md shadow-lg">
+    <div className="flex min-h-screen items-center justify-center bg-background">
+      <Card className="w-full max-w-md shadow-lg border border-gray-200">
         <CardHeader className="text-center space-y-2">
-          <CardTitle className="text-3xl font-bold text-blue-600">CodexCRM</CardTitle>
-          <CardDescription>Reset your password</CardDescription>
-        </CardHeader>
+  <img src="/images/logo.png" alt="OmniCRM" className="mx-auto h-12 w-12" />
+  <CardTitle className="text-3xl font-bold text-teal-800">OmniCRM</CardTitle>
+  <CardDescription className="text-sm text-teal-400">by Omnipotency AI</CardDescription>
+  <CardDescription className="text-base text-gray-700">Reset your password</CardDescription>
+</CardHeader>
 
         <CardContent className="space-y-6">
           <form onSubmit={handlePasswordReset} className="space-y-4">
@@ -70,15 +72,18 @@ export default function ForgotPasswordPage() {
 
             <div>
               <Button 
-                type="submit" 
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
-                disabled={isLoading}
-              >
-                {isLoading ? 'Sending...' : 'Send Password Reset Link'}
-              </Button>
+  type="submit"
+  className="w-full bg-teal-400 hover:bg-teal-400 text-teal-800 hover:text-orange-500 font-semibold disabled:opacity-50 transition-colors"
+  disabled={isLoading}
+>
+  {isLoading ? 'Sending...' : 'Send Password Reset Link'}
+</Button>
             </div>
           </form>
         </CardContent>
+        <CardFooter className="flex flex-col items-center gap-2">
+          <Link href="/sign-in" className="text-orange-500 hover:text-teal-800 font-semibold transition-colors text-sm">Sign In</Link>
+        </CardFooter>
 
         <CardFooter className="text-center text-sm text-gray-600 justify-center">
           Remembered your password?{' '}

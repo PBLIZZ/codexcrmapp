@@ -1,30 +1,31 @@
 "use client";
 
+import * as React from "react"; // Import React namespace
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams, useRouter } from "next/navigation"; // Combined useRouter
 import { 
   ChevronRight, 
   Folder, 
-  Home, 
+  // Home, // Home was unused
   Settings, 
   Users, 
-  Calendar,
-  BarChart,
-  MessagesSquare,
-  Star,
+  // Calendar, // Calendar was unused
+  // BarChart, // BarChart was unused
+  // MessagesSquare, // MessagesSquare was unused
+  // Star, // Star was unused
   PlusCircle,
   Upload,
-  X
+  // X // X was unused
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { SidebarGroupLink } from "./SidebarGroupLink";
-import { useRouter } from "next/navigation";
-import { QuickCreateGroupButton } from "@/components/groups/QuickCreateGroupButton";
+import { SidebarGroupLink } from "./SidebarGroupLink"; // Assuming this path is correct
+import { QuickCreateGroupButton } from "@/components/groups/QuickCreateGroupButton"; // Assuming this path
 import { api } from "@/lib/trpc";
+import { AddContactModal } from '@/components/contacts/AddContactModal';
 
 interface Group {
   id: string;
@@ -32,44 +33,86 @@ interface Group {
   emoji?: string;
   color?: string;
   contactCount?: number;
-  _count?: {
-    contacts: number;
-  };
+  // _count?: { // Keeping for reference if API still sends it, but prefer contactCount
+  //   contacts: number;
+  // };
 }
 
-interface AppSidebarProps {
+interface ContactsSidebarProps {
   totalContacts?: number;
 }
 
-export function AppSidebar({ 
+export function ContactsSidebar({ 
   totalContacts = 0
-}: AppSidebarProps) {
+}: ContactsSidebarProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
+  const utils = api.useUtils(); // Get tRPC utils
+
   const [isGroupsOpen, setIsGroupsOpen] = useState(true);
-  
   const selectedGroupId = searchParams.get("group") || "";
   
   // Fetch groups data with contact counts
-  const { data: groupsData = [], isLoading: isLoadingGroups } = api.groups.list.useQuery(undefined, {
-    staleTime: 30000, // Cache for 30 seconds
+  const { data: groupsData = [] } = api.groups.list.useQuery(undefined, { // isLoadingGroups removed as not used
+    staleTime: 30000,
     refetchOnWindowFocus: false,
   });
   
-  // Use loaded groups data
-  const groups = groupsData;
+  const groups: Group[] = groupsData as Group[]; // Assert type if API returns it correctly
   
-  // Helper function to check if a path is active
   const isActive = (path: string) => {
     if (path === "/") return pathname === "/";
     return pathname.startsWith(path);
   };
   
-  // Secondary navigation items
   const secondaryNavItems = [
     { href: "/settings", label: "Settings", icon: Settings },
   ];
+
+  // Internal component for the "Add Contact" button and its modal logic
+  function AddContactSidebarButton() {
+    const [open, setOpen] = React.useState(false);
+
+    const handleModalCloseAndRefresh = () => {
+      setOpen(false);
+      // Invalidate contacts list to show the new contact
+      utils.contacts.list.invalidate();
+      
+      // Optional: Clear ?new=true from URL if it was used to open this
+      const currentParams = new URLSearchParams(Array.from(searchParams.entries()));
+      if (currentParams.get('new') === 'true') {
+        currentParams.delete('new');
+        // Ensure pathname is defined, fallback if needed. router.pathname might not exist in app router directly
+        router.replace(`${pathname}?${currentParams.toString()}`, { scroll: false });
+      }
+    };
+
+    return (
+      <>
+        <Button
+          onClick={() => setOpen(true)}
+          className={cn(
+            'w-full flex items-center gap-2 ml-2 px-3 py-2 rounded-md text-sm font-semibold shadow-md',
+            'bg-gradient-to-r from-teal-400 to-orange-500 text-white border-0',
+            'hover:from-teal-500 hover:to-orange-600',
+            'focus:ring-2 focus:ring-orange-400 focus:outline-none',
+            'justify-start' // Tailwind class for justify-content: flex-start;
+          )}
+          // No inline style prop needed here for justify-content
+        >
+          <PlusCircle className="w-4 h-4 mr-2" />
+          Add Contact
+        </Button>
+        <AddContactModal
+          open={open}
+          onOpenChange={setOpen}
+          onContactAdded={handleModalCloseAndRefresh}
+          showTriggerButton={false} // IMPORTANT: Tell modal not to show its own button
+        />
+      </>
+    );
+  }
 
   return (
     <div className="h-full flex flex-col">
@@ -85,7 +128,7 @@ export function AppSidebar({
         <div className="mt-1 space-y-1">
           <button
             className={cn(
-              "flex items-center justify-between ml-2 px-3 py-2 rounded-md cursor-pointer text-sm w-full",
+              "flex items-center justify-between ml-2 px-3 py-2 rounded-md cursor-pointer text-sm w-full text-left", // Added text-left
               !selectedGroupId ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted text-muted-foreground"
             )}
             onClick={() => {
@@ -101,13 +144,8 @@ export function AppSidebar({
             </Badge>
           </button>
           
-          {/* Add Contact Link */}
-          <Link href="/contacts?new=true" className="block ml-2">
-            <div className="flex items-center px-3 py-2 rounded-md text-sm hover:bg-muted text-muted-foreground">
-              <PlusCircle className="w-4 h-4 mr-2" />
-              <span>Add Contact</span>
-            </div>
-          </Link>
+          {/* Add Contact Modal Button */}
+          <AddContactSidebarButton />
           
           {/* Import Contacts Link */}
           <Link href="/contacts/import" className="block ml-2">
@@ -123,7 +161,7 @@ export function AppSidebar({
       <div className="px-3 py-2 border-t mt-4">
         <Collapsible open={isGroupsOpen} onOpenChange={setIsGroupsOpen}>
           <CollapsibleTrigger asChild>
-            <div className="flex items-center justify-between px-3 py-2 text-sm cursor-pointer hover:bg-muted rounded-md">
+            <button className="flex items-center justify-between px-3 py-2 text-sm cursor-pointer hover:bg-muted rounded-md w-full text-left"> {/* Changed to button */}
               <div className="flex items-center">
                 <Folder className="w-4 h-4 mr-3" />
                 <span className="font-medium">Groups</span>
@@ -132,12 +170,12 @@ export function AppSidebar({
                 "w-4 h-4 transition-transform",
                 isGroupsOpen && "transform rotate-90"
               )} />
-            </div>
+            </button>
           </CollapsibleTrigger>
           <CollapsibleContent>
             <div className="mt-1 space-y-1">
               {groups.length > 0 ? (
-                groups.map((group: Group) => (
+                groups.map((group) => ( // Removed : Group type hint here as it's inferred
                   <SidebarGroupLink key={group.id} group={group} />
                 ))
               ) : (
@@ -146,14 +184,12 @@ export function AppSidebar({
                 </div>
               )}
               
-              {/* Quick Create Group Button - Direct DB insertion */}
-              <div className="ml-2 mb-1">
+              <div className="ml-2 mb-1 mt-2"> {/* Added mt-2 for spacing */}
                 <QuickCreateGroupButton />
               </div>
               
-              {/* Manage Groups Link */}
               <Link href="/groups" className="block ml-2">
-                <Button variant="ghost" size="sm" className="w-full justify-start text-xs text-muted-foreground">
+                <Button variant="ghost" size="sm" className="w-full justify-start text-xs text-muted-foreground pl-0"> {/* Adjusted padding */}
                   <span className="ml-2">Manage Groups</span>
                 </Button>
               </Link>
@@ -162,8 +198,8 @@ export function AppSidebar({
         </Collapsible>
       </div>
       
-      {/* Secondary Navigation */}
-      <div className="px-3 py-2 border-t mt-auto mb-4">
+      {/* Secondary Navigation (Settings) - Placed at the very bottom for common sidebar patterns */}
+      <div className="mt-auto px-3 py-2 border-t"> {/* mt-auto pushes it to the bottom */}
         <nav className="space-y-1">
           {secondaryNavItems.map((item) => (
             <Link key={item.href} href={item.href}>
@@ -175,49 +211,7 @@ export function AppSidebar({
                     : "text-muted-foreground hover:bg-muted"
                 )}
               >
-                <item.icon className="w-4 h-4 mr-3" />
-                {item.label}
-              </div>
-            </Link>
-          ))}
-        </nav>
-      </div>
-      
-      {/* Future sections can be added here */}
-      <div className="px-3 py-2 hidden">
-        <Collapsible defaultOpen={false}>
-          <CollapsibleTrigger asChild>
-            <div className="flex items-center justify-between px-3 py-2 text-sm cursor-pointer hover:bg-muted rounded-md">
-              <div className="flex items-center">
-                <Star className="w-4 h-4 mr-3" />
-                <span className="font-medium">Favorites</span>
-              </div>
-              <ChevronRight className="w-4 h-4" />
-            </div>
-          </CollapsibleTrigger>
-          <CollapsibleContent>
-            <div className="mt-1 pl-7 text-sm text-muted-foreground">
-              {/* Favorites content will go here */}
-              <div className="py-1">No favorites yet</div>
-            </div>
-          </CollapsibleContent>
-        </Collapsible>
-      </div>
-      
-      {/* Secondary Navigation - Bottom */}
-      <div className="mt-auto px-3 py-2 border-t">
-        <nav className="space-y-1">
-          {secondaryNavItems.map((item) => (
-            <Link key={item.href} href={item.href}>
-              <div
-                className={cn(
-                  "flex items-center px-3 py-2 rounded-md text-sm transition-colors",
-                  isActive(item.href)
-                    ? "bg-primary/10 text-primary font-medium"
-                    : "text-muted-foreground hover:bg-muted"
-                )}
-              >
-                <item.icon className="w-4 h-4 mr-3" />
+                {item.icon && <item.icon className="w-4 h-4 mr-3" />} {/* Ensure icon exists */}
                 {item.label}
               </div>
             </Link>

@@ -3,6 +3,7 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { ImageUpload } from '@/components/ui/image-upload';
 // Removed unused date utility imports
 // import { formatDateForInput, parseInputDateString } from '@/lib/dateUtils';
 
@@ -15,15 +16,7 @@ export const contactSchema = z.object({
   phone: z.string().optional().nullable(),
   company_name: z.string().optional().nullable(),
   job_title: z.string().optional().nullable(),
-  profile_image_url: z.string().refine(
-    (val) => {
-      // Accept empty string or valid URL
-      return val === "" || val === null || val === undefined || /^https?:\/\/[^\s]+$/.test(val);
-    },
-    {
-      message: "Invalid URL for profile image. Must be a valid http:// or https:// URL or left empty.",
-    }
-  ).optional().nullable(),
+  profile_image_url: z.string().optional().nullable(), // Now just a string for storing the Supabase path
   source: z.string().optional().nullable(),
   notes: z.string().optional().nullable(),
   last_contacted_at: z.string().refine(
@@ -61,7 +54,7 @@ export function ContactForm({
   error,
   editingContactId
 }: ContactFormProps) {
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<ContactFormData>({
+  const { register, handleSubmit, formState: { errors }, reset, setValue, watch } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
     defaultValues: initialData || {
       id: undefined,
@@ -119,6 +112,17 @@ export function ContactForm({
         )}
         
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
+          {/* Profile Image Upload */}
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Profile Photo</label>
+            <ImageUpload
+              value={watch("profile_image_url") || null}
+              onChange={(url) => setValue("profile_image_url", url, { shouldValidate: true })}
+              disabled={isSubmitting}
+              contactId={editingContactId || undefined}
+            />
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1">
               <label htmlFor="first_name" className="block text-sm font-medium text-gray-700">First Name</label>
@@ -186,16 +190,7 @@ export function ContactForm({
               {errors.job_title && <p className="text-sm text-red-600">{errors.job_title.message}</p>}
             </div>
 
-            <div className="space-y-1">
-              <label htmlFor="profile_image_url" className="block text-sm font-medium text-gray-700">Profile Image URL</label>
-              <input
-                id="profile_image_url"
-                type="url"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                {...register("profile_image_url")}
-              />
-              {errors.profile_image_url && <p className="text-sm text-red-600">{errors.profile_image_url.message}</p>}
-            </div>
+            {/* Removed URL input - using only file upload now */}
 
             <div className="space-y-1">
               <label htmlFor="source" className="block text-sm font-medium text-gray-700">Source</label>

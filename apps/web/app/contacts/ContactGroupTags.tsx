@@ -15,7 +15,7 @@ interface Group {
 export function ContactGroupTags({ contactId }: { contactId: string }) {
   // Get isLoading and data directly from the hook
   // No need for separate state management
-  const { data: contactGroups, isLoading } = api.groups.getContactGroups.useQuery(
+  const { data: contactGroups, isLoading } = api.groups.getGroupsForContact.useQuery(
     { contactId },
     { 
       enabled: !!contactId

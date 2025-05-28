@@ -5,7 +5,8 @@ import { NextResponse, type NextRequest } from 'next/server';
 const protectedPaths = ['/', '/dashboard', '/contacts', '/contacts', '/groups'];
 
 // Define paths that should be accessible only when logged out
-const publicOnlyPaths = ['/sign-in', '/sign-up'];
+// Auth-related pages that should only be accessible when NOT logged in
+const publicOnlyPaths = ['/sign-in', '/sign-up', '/forgot-password', '/reset-password', '/sign-up/confirmation'];
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
