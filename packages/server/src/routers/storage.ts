@@ -1,5 +1,5 @@
-import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
+import { TRPCError } from '@trpc/server';
 import { router, protectedProcedure } from '../trpc';
 
 export const storageRouter = router({
@@ -28,6 +28,7 @@ export const storageRouter = router({
           .createSignedUploadUrl(filePath);
 
         if (error) {
+          console.error('Supabase createSignedUploadUrl error:', error);
           throw new TRPCError({
             code: 'INTERNAL_SERVER_ERROR',
             message: `Failed to generate upload URL: ${error.message}`,
@@ -68,6 +69,7 @@ export const storageRouter = router({
           .createSignedUrl(input.filePath, 3600); // URL valid for 1 hour
 
         if (error) {
+          console.error('Supabase createSignedUrl error:', error);
           throw new TRPCError({
             code: 'INTERNAL_SERVER_ERROR',
             message: `Failed to generate signed URL: ${error.message}`,
