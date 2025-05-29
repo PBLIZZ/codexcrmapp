@@ -1,12 +1,14 @@
+'use client';
+
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React, { useEffect } from 'react';
-export default function ClientProviders({ children }: { children: React.ReactNode }) {
 import { httpBatchLink } from '@trpc/client';
 import superjson from 'superjson';
 import { api, API_VERSION } from '@/lib/trpc';
 import { logDebugInfo } from '@/lib/debug-helper';
+import type { AppRouter } from '@codexcrm/server/src/root';
 
-'use client';
+export default function ClientProviders({ children }: { children: React.ReactNode }) {
 
 
 // Import the tRPC client from the correct location
@@ -54,7 +56,7 @@ function getBaseUrl() {
         },
       },
     },
-  }) as Record<string, unknown>); // Type assertion to avoid version compatibility issues
+  }));
 
   // Create tRPC client with better error handling
   const [trpcClient] = React.useState(() => {
@@ -117,7 +119,7 @@ function getBaseUrl() {
   });
 
   return (
-    <api.Provider client={trpcClient} queryClient={queryClient}>
+    <api.Provider client={trpcClient} queryClient={queryClient as any}>
       <QueryClientProvider client={queryClient}>
         {children}
       </QueryClientProvider>

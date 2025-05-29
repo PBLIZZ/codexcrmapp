@@ -9,7 +9,7 @@ import { Navbar } from '@/components/layout/Navbar'; // The global Navbar for au
 import { Toaster } from '@/components/ui/sonner';
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase/contact"; // Your Supabase client
+import { supabase } from "@/lib/supabase/client"; // Your Supabase client
 import type { User } from '@supabase/supabase-js';
 
 // Font configuration

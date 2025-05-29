@@ -1,10 +1,10 @@
 // apps/web/components/layout/SignOutButton.tsx
 "use client";
 
-import { supabase } from "@/lib/supabase/contact"; // Adjust path if needed
+import { supabase } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu"; // If used in dropdown
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { LogOut } from "lucide-react";
 
 export function SignOutButton() {

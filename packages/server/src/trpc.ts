@@ -1,4 +1,4 @@
-import { initTRPC, TRPCError } from '@trpc/server';
+import { initTRPC, TRPCError, inferProcedureOutput } from '@trpc/server';
 import superjson from 'superjson';
 
 import type { createContext } from './context';

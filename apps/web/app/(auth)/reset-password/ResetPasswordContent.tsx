@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { supabase } from '@/lib/supabase/contact';
+import { supabase } from '@/lib/supabase/client';
 
 
 export function ResetPasswordContent() {
@@ -40,7 +40,7 @@ export function ResetPasswordContent() {
         const _accessToken = params.get('access_token');
         const type = params.get('type');
         
-        if (!accessToken) {
+        if (!_accessToken) {
           setMessage('Invalid or missing password reset token in URL.');
           setMessageType('error');
           setTokenFound(false);
@@ -56,7 +56,7 @@ export function ResetPasswordContent() {
         
         // Check token validity with Supabase
         const { error } = await supabase.auth.verifyOtp({
-          token_hash: accessToken,
+          token_hash: _accessToken,
           type: 'recovery',
         });
         
