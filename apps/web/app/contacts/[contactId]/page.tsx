@@ -61,10 +61,10 @@ function ContactDetailSkeleton() {
  * Contact detail page component
  * Uses Next.js App Router conventions for dynamic route parameters
  */
-export default function ContactDetailPage({ params }: ContactDetailPageProps) {
+export default async function ContactDetailPage({ params }: ContactDetailPageProps) {
 
-  // Extract contactId from params
-  const { contactId } = params;
+  // Extract contactId from params (await required in Next.js 15)
+  const { contactId } = await params;
   
   return (
     <Suspense fallback={<ContactDetailSkeleton />}>

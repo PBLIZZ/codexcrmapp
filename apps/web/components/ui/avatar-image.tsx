@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { UserCircle } from "lucide-react";
 import { api } from "@/lib/trpc";
@@ -8,8 +8,17 @@ import { api } from "@/lib/trpc";
 interface AvatarImageProps {
   src: string | null;
   alt: string;
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "xl";
   className?: string;
+}
+
+function getInitials(alt: string): string {
+  return alt
+    .split(' ')
+    .map(word => word.charAt(0))
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
 }
 
 export function AvatarImage({ 
@@ -26,44 +35,39 @@ export function AvatarImage({
     sm: { width: 32, height: 32 },
     md: { width: 40, height: 40 },
     lg: { width: 96, height: 96 },
-  }[size];
+    xl: { width: 128, height: 128 },
+  }[size] || { width: 40, height: 40 };
   
   // Generate signed URL for private images if needed
   const { data: fileUrlData } = api.storage.getFileUrl.useQuery(
     { filePath: src || "" },
     {
-      enabled: !!src && src.includes("contacts-avatars") && !src.includes("?token="),
+      enabled: !!src && (src.includes("contact-profile-photo") || src.includes("contacts/")) && !src.includes("?token="),
       staleTime: 55 * 60 * 1000, // 55 minutes (URLs valid for 1 hour)
     }
   );
 
-  // Update imageUrl when signed URL is fetched
-  useEffect(() => {
+  // Determine the actual URL to use
+  const actualImageUrl = useMemo(() => {
+    // If we have a signed URL, use it
     if (fileUrlData?.signedUrl) {
-      setImageUrl(fileUrlData.signedUrl);
-      setError(false);
+      return fileUrlData.signedUrl;
     }
-  }, [fileUrlData]);
-  
-  // Update imageUrl when src changes
-  useEffect(() => {
-    setImageUrl(src);
-    setError(false);
-  }, [src]);
+    
+    // If src is a storage path but we don't have signed URL yet, don't render
+    if (src && (src.includes("contact-profile-photo") || src.includes("contacts/")) && !src.includes("?token=")) {
+      return null;
+    }
+    
+    // Otherwise use the original src
+    return src;
+  }, [src, fileUrlData?.signedUrl]);
 
-  // Generate initials from name
-  const getInitials = () => {
-    if (!alt) return "?";
-    
-    const nameParts = alt.split(" ").filter(part => part.length > 0);
-    if (nameParts.length === 0) return "?";
-    
-    if (nameParts.length === 1) {
-      return nameParts[0].charAt(0).toUpperCase();
-    }
-    
-    return (nameParts[0].charAt(0) + nameParts[nameParts.length - 1].charAt(0)).toUpperCase();
-  };
+  // Update imageUrl when actualImageUrl changes
+  useEffect(() => {
+    setImageUrl(actualImageUrl);
+    setError(false);
+  }, [actualImageUrl]);
 
   const handleError = () => {
     setError(true);
@@ -78,13 +82,13 @@ export function AvatarImage({
         <div className="flex items-center justify-center h-full w-full">
           {alt ? (
             <span className="font-medium text-gray-600">
-              {getInitials()}
+              {getInitials(alt)}
             </span>
           ) : (
             <UserCircle className="text-gray-400" style={{ width: dimensions.width * 0.7, height: dimensions.height * 0.7 }} />
           )}
         </div>
-      ) : (
+      ) : imageUrl && (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) ? (
         <Image
           src={imageUrl}
           alt={alt}
@@ -93,6 +97,10 @@ export function AvatarImage({
           className="object-cover"
           onError={handleError}
         />
+      ) : (
+        <div className="flex items-center justify-center h-full bg-gray-200 text-gray-600 font-medium">
+          {getInitials(alt)}
+        </div>
       )}
     </div>
   );

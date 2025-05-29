@@ -72,9 +72,9 @@ export function ImageUpload({
 
         const file = acceptedFiles[0]; // Only use the first file
 
-        // Validate file size (max 5MB)
-        if (file.size > 5 * 1024 * 1024) {
-          throw new Error("File size must be less than 5MB");
+        // Validate file size (max 2MB for Supabase free tier)
+        if (file.size > 2 * 1024 * 1024) {
+          throw new Error("File size must be less than 2MB");
         }
 
         // Validate file type
@@ -101,9 +101,14 @@ export function ImageUpload({
           },
           body: file,
         });
-
         if (!uploadResponse.ok) {
-          throw new Error(`Upload failed: ${uploadResponse.statusText}`);
+          const errorText = await uploadResponse.text();
+          console.error('Upload failed:', {
+            status: uploadResponse.status,
+            statusText: uploadResponse.statusText,
+            errorText
+          });
+          throw new Error(`Upload failed: ${uploadResponse.status} ${uploadResponse.statusText} - ${errorText}`);
         }
 
         // Get the URL for the file
@@ -112,7 +117,6 @@ export function ImageUpload({
           .createSignedUrl(path, 3600); // URL valid for 1 hour
 
         if (urlError) {
-          console.error('Error creating signed URL:', { path, urlError });
           // If bucket doesn't exist, provide helpful error message
           if (urlError.message?.includes('bucket') || urlError.message?.includes('not found')) {
             throw new Error('Storage bucket not set up. Please contact administrator to set up contact photo storage.');
@@ -121,11 +125,8 @@ export function ImageUpload({
         }
 
         if (!fileData?.signedUrl) {
-          console.error('No signed URL returned:', { path, fileData });
           throw new Error('No signed URL returned from storage');
         }
-
-        console.log('Upload successful:', { path, signedUrl: fileData.signedUrl });
 
         // Update the preview and pass the path to parent component
         setPreviewUrl(fileData.signedUrl);
@@ -245,7 +246,7 @@ export function ImageUpload({
             </p>
             <p className="text-xs text-center text-gray-400">
               Drag & drop or click to select<br />
-              Supported formats: JPG, PNG, GIF, WEBP (max 5MB)
+              Supported formats: JPG, PNG, GIF, WEBP (max 2MB)
             </p>
           </div>
         )}

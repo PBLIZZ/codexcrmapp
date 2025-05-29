@@ -13,15 +13,7 @@ const clientInputSchema = z.object({
   phone: z.string().optional().nullable(),
   company_name: z.string().optional().nullable(),
   job_title: z.string().optional().nullable(),
-  profile_image_url: z.string().refine(
-    (val) => {
-      // Accept empty string, null, undefined, or valid URL
-      return !val || val === "" || /^https?:\/\/[^\s]+$/.test(val);
-    },
-    {
-      message: "Invalid URL for profile image. Must start with http:// or https://",
-    }
-  ).optional().nullable(),
+  profile_image_url: z.string().optional().nullable(),
   notes: z.string().optional().nullable(),
   source: z.string().optional().nullable(), // Added source
   last_contacted_at: z.preprocess((arg) => { // Added last_contacted_at

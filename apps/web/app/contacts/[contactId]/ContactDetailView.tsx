@@ -15,25 +15,21 @@ import {
   Calendar,
   Edit,
   Mail,
-  MapPin,
   Phone,
   Trash2,
   User,
   Briefcase,
   Clock,
-  Info,
   CheckCircle,
   XCircle,
   Tag,
   Plus
 } from "lucide-react";
-
-// UI Components
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { AvatarImage as CustomAvatarImage } from "@/components/ui/avatar-image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -41,14 +37,12 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { ImageUpload } from "@/components/ui/image-upload";
-
 // Local Utilities
 import { formatDateTime, formatDateForInput, parseInputDateString } from '@/lib/dateUtils';
 import { api } from "@/lib/trpc";
 
 // Local Components
 import { ContactGroupsSection } from "./ContactGroupsSection";
-
 
 // Define tab values as constants for maintainability
 const TABS = {
@@ -66,8 +60,6 @@ const ENRICHMENT_STATUS = {
   FAILED: "failed",
 } as const;
 
-type EnrichmentStatus = typeof ENRICHMENT_STATUS[keyof typeof ENRICHMENT_STATUS] | null | undefined;
-
 // Contact schema for validation - using API field names for consistency
 const contactSchema = z.object({
   id: z.string().uuid(),
@@ -77,7 +69,7 @@ const contactSchema = z.object({
   phone: z.string().optional().nullable(),
   company_name: z.string().optional().nullable(),
   job_title: z.string().optional().nullable(),
-  profile_image_url: z.string().url({ message: "Invalid URL for profile image" }).optional().nullable(),
+  profile_image_url: z.string().optional().nullable(),
   source: z.string().optional().nullable(),
   notes: z.string().optional().nullable(),
   last_contacted_at: z.string()
@@ -95,30 +87,6 @@ const contactSchema = z.object({
 });
 
 type ContactFormData = z.infer<typeof contactSchema>;
-
-// Contact interface representing the data structure returned from the API
-interface Contact {
-  id: string;
-  first_name: string;
-  last_name: string;
-  email?: string | null;
-  phone?: string | null;
-  company_name?: string | null;
-  job_title?: string | null;
-  profile_image_url?: string | null;
-  source?: string | null;
-  notes?: string | null;
-  last_contacted_at?: string | Date | null;
-  enrichment_status?: EnrichmentStatus;
-  enriched_data?: Record<string, unknown> | null;
-  created_at?: string | Date | null;
-  updated_at?: string | Date | null;
-}
-
-// Helper function to get initials from name
-const getInitials = (firstName: string, lastName: string) => {
-  return `${firstName?.[0] || ''}${lastName?.[0] || ''}`.toUpperCase();
-};
 
 /**
  * ContactDetailView Component
@@ -360,17 +328,12 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
           <div className="flex flex-col md:flex-row gap-6 -mt-16 mb-6">
             {/* Avatar Section */}
             <div className="flex flex-col items-center">
-              <Avatar className="h-32 w-32 border-4 border-white shadow-lg">
-                {contact.profile_image_url ? (
-                  <AvatarImage
-                    src={contact.profile_image_url}
-                    alt={`${contact.first_name} ${contact.last_name}`}
-                  />
-                ) : null}
-                <AvatarFallback className="text-3xl bg-gradient-to-br from-blue-400 to-blue-600 text-white">
-                  {getInitials(contact.first_name, contact.last_name)}
-                </AvatarFallback>
-              </Avatar>
+              <CustomAvatarImage
+                src={contact.profile_image_url}
+                alt={`${contact.first_name} ${contact.last_name}`}
+                size="xl"
+                className="h-32 w-32 border-4 border-white shadow-lg"
+              />
             </div>
 
             {/* Basic Info Section */}
