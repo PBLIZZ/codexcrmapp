@@ -2,10 +2,11 @@
 // This script creates the necessary Supabase Storage buckets and policies
 // Run with: node scripts/setup-storage.js
 
+import { dirname, resolve } from 'path';
+import { fileURLToPath } from 'url';
+
 import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
-import { dirname, resolve } from 'path';
 
 // Initialize dotenv
 dotenv.config();

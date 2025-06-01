@@ -45,9 +45,9 @@ function runCommand(command, silent = false) {
   } catch (_error) {
     if (!silent) {
       console.error(`${colors.red}Command failed: ${command}${colors.reset}`);
-      console.error(error.stdout || error.message);
+      console.error(_error.stdout || _error.message);
     }
-    return error.stdout || '';
+    return _error.stdout || '';
   }
 }
 
@@ -65,7 +65,7 @@ function takeStock() {
     const rules = {};
     
     let match;
-    while ((match = ruleRegex.exec(output)) !== null) {
+    while ((match = ruleRegex.exec(_output)) !== null) {
       const rule = match[0];
       rules[rule] = (rules[rule] || 0) + 1;
     }

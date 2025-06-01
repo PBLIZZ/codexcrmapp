@@ -1,0 +1,79 @@
+# Task ID: 178
+# Title: Implement Data Validation for CSV Fields
+# Status: pending
+# Dependencies: 169
+# Priority: high
+# Description: Create comprehensive validation for all CSV fields to ensure data integrity and provide clear error messages for invalid data.
+# Details:
+Implement field-specific validation for all CSV columns:
+
+1. **Email validation**:
+   - Required field check
+   - RFC-compliant email format validation
+   - Maximum length check (typically 255 characters)
+
+2. **Name fields validation**:
+   - Maximum length check
+   - Character set validation (allow letters, spaces, hyphens, apostrophes)
+   - Apply name derivation from email when both first_name and last_name are missing
+
+3. **Date field validation**:
+   - Validate birthday format (YYYY-MM-DD)
+   - Check for reasonable date ranges (e.g., not in the future, not too far in the past)
+
+4. **URL validation**:
+   - Validate website, linkedin_profile, and twitter_profile as proper URLs
+   - Add protocol (https://) if missing
+
+5. **Phone validation**:
+   - Basic format validation (allow digits, spaces, parentheses, hyphens, plus sign)
+   - Consider international format support
+
+6. **Tags validation**:
+   - Parse comma-separated values
+   - Trim whitespace from individual tags
+   - Remove empty tags
+   - Check maximum number of tags (e.g., 20)
+
+For each validation error, generate a specific, user-friendly error message explaining the issue and how to fix it. Group validation logic into a reusable service that can be called from both frontend and backend as needed.
+
+# Test Strategy:
+Create comprehensive unit tests for each field validation function. Test with valid data, edge cases, and clearly invalid data. Verify error messages are clear and helpful. Test the integration of validation with the CSV parsing process. Verify performance with large datasets.
+
+# Subtasks:
+## 1. Implement Email Field Validation [pending]
+### Dependencies: None
+### Description: Create validation logic for email fields in CSV data
+### Details:
+Implement email validation that checks for proper format (user@domain.tld), validates domain structure, handles international characters appropriately, and detects common typos. Include checks for maximum length and implement proper error messaging for different validation failures.
+
+## 2. Implement Name Field Validation [pending]
+### Dependencies: None
+### Description: Create validation logic for name fields in CSV data
+### Details:
+Develop validation for name fields that handles various formats including first/last names, full names with middle names, and names with prefixes/suffixes. Support international characters, apostrophes, hyphens, and spaces. Implement checks for minimum/maximum length and proper capitalization.
+
+## 3. Implement Date Field Validation [pending]
+### Dependencies: None
+### Description: Create validation logic for date fields in CSV data
+### Details:
+Build date validation that supports multiple date formats (MM/DD/YYYY, YYYY-MM-DD, etc.), validates logical date values (e.g., no February 30), handles leap years correctly, and supports date range validation. Include timezone considerations and proper error messaging for invalid dates.
+
+## 4. Implement URL Field Validation [pending]
+### Dependencies: None
+### Description: Create validation logic for URL fields in CSV data
+### Details:
+Implement URL validation that verifies proper format with protocol (http/https), validates domain structure, handles query parameters and fragments, supports international domains (IDNs), and checks for malformed URLs. Include maximum length validation and specific error messages.
+
+## 5. Implement Phone Number Validation [pending]
+### Dependencies: None
+### Description: Create validation logic for phone number fields in CSV data
+### Details:
+Develop phone number validation that handles multiple formats (international, local), supports various separators (spaces, dashes, parentheses), validates country codes, and normalizes input. Implement proper error messaging for different validation failures and handle extensions.
+
+## 6. Implement Tags Field Validation [pending]
+### Dependencies: 178.1, 178.2, 178.3, 178.4, 178.5
+### Description: Create validation logic for tag fields in CSV data
+### Details:
+Create validation for tag fields that handles comma-separated values, validates individual tag format, checks for duplicates, enforces minimum/maximum tag counts, and validates tag length. Implement proper error messaging and support for special characters within tags based on defined rules.
+

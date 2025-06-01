@@ -3,6 +3,8 @@
 import { Users, Plus, X, Loader2, UserCheck, UserPlus } from "lucide-react";
 import { useState } from "react";
 
+import { Contact } from '../contacts/ContactList';
+
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,7 +24,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { api } from "@/lib/trpc";
-import { Contact } from '../contacts/ContactList';
 
 interface GroupContactsListProps {
   groupId: string;

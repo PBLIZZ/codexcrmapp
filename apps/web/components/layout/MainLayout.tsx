@@ -1,30 +1,6 @@
 "use client";
 
-import React from "react"; // Import React
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import type { User as SupabaseUser } from '@supabase/supabase-js'; // Renamed to avoid conflict
-import { cn } from "@/lib/utils";
-import { api } from "@/lib/trpc";
-
-// Import UI Components used directly in MainLayout
-import { Button } from "@/components/ui/button";
-import { 
-  Sheet, 
-  SheetContent, 
-  SheetTrigger, 
-  SheetClose 
-} from "@/components/ui/sheet";
-
-// Import Custom Layout Components
-import { Navbar } from "./Navbar"; // Your consolidated Navbar
-import { ContactsSidebar } from "./ContactsSidebar";
-// Import other sidebar components as you create them
-import { DashboardSidebar } from "./DashboardSidebar";
-import { GroupsAdminSidebar } from "./GroupsAdminSidebar";
-import { TasksSidebar } from "./TasksSidebar";
-
-// Import Icons used directly in MainLayout (for mobile menu and nav items)
 import {
   Menu,
   Home,
@@ -36,6 +12,32 @@ import {
   // Icons below are used in the Navbar component, not directly here anymore
   // Settings, PlusCircle, UserPlus, FileText, Tag, Mail, Phone, Upload, User, LogOut
 } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import React from "react"; // Import React
+
+
+// Import UI Components used directly in MainLayout
+
+// Import Custom Layout Components
+import { ContactsSidebar } from "./ContactsSidebar";
+// Import other sidebar components as you create them
+import { DashboardSidebar } from "./DashboardSidebar";
+import { GroupsAdminSidebar } from "./GroupsAdminSidebar";
+import { Navbar } from "./Navbar"; // Your consolidated Navbar
+import { TasksSidebar } from "./TasksSidebar";
+
+import { Button } from "@/components/ui/button";
+import { 
+  Sheet, 
+  SheetContent, 
+  SheetTrigger, 
+  SheetClose 
+} from "@/components/ui/sheet";
+import { api } from "@/lib/trpc";
+import { cn } from "@/lib/utils";
+
+// Import Icons used directly in MainLayout (for mobile menu and nav items)
 
 
 // Define type for section paths (used for styling and logic)
@@ -97,7 +99,7 @@ export function MainLayout({ children, user }: MainLayoutProps) {
   // --- Logic to render the appropriate sidebar ---
   const renderSidebar = () => {
     if (pathname.startsWith('/contacts')) {
-      return <ContactsSidebar totalContacts={totalContacts} />;
+        return <ContactsSidebar totalContacts={totalContacts} />;
     }
     if (pathname.startsWith('/groups')) {
       return <GroupsAdminSidebar />;

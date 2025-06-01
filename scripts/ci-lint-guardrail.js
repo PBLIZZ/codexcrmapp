@@ -9,11 +9,11 @@
  * 3. Providing commands to add files to legacy-linted or remove them when fixed
  */
 
+import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import { execSync } from 'child_process';
-import { promisify } from 'util';
 import { fileURLToPath } from 'url';
+import { promisify } from 'util';
 
 // Get the current directory equivalent to __dirname in CommonJS
 const __filename = fileURLToPath(import.meta.url);

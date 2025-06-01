@@ -1,13 +1,7 @@
 "use client";
 
 // React/Next.js hooks
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-
-// Third-party libraries
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import {
   AlertCircle,
   ArrowLeft,
@@ -25,24 +19,32 @@ import {
   Tag,
   Plus
 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+
+// Third-party libraries
+import * as z from "zod";
+
+import { ContactGroupsSection } from "./ContactGroupsSection";
+
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AvatarImage as CustomAvatarImage } from "@/components/ui/avatar-image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ImageUpload } from "@/components/ui/image-upload";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { ImageUpload } from "@/components/ui/image-upload";
 // Local Utilities
 import { formatDateTime, formatDateForInput, parseInputDateString } from '@/lib/dateUtils';
 import { api } from "@/lib/trpc";
 
 // Local Components
-import { ContactGroupsSection } from "./ContactGroupsSection";
 
 // Define tab values as constants for maintainability
 const TABS = {
@@ -106,7 +108,7 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
 
   // Fetch client data
   const { data: contact, isLoading, error } = api.contacts.getById.useQuery(
-    { contactId },
+    { contactId }, // Use contactId consistently
     {
       enabled: !!contactId,
       retry: 1,
@@ -226,7 +228,7 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
   };
 
   const handleDeleteContact = () => {
-    deleteMutation.mutate({ contactId });
+    deleteMutation.mutate({ contactId: contact.id });
   };
 
   // Loading state

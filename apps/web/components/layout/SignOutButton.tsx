@@ -1,11 +1,12 @@
 // apps/web/components/layout/SignOutButton.tsx
 "use client";
 
-import { supabase } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { LogOut } from "lucide-react";
+import { useRouter } from "next/navigation";
+
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { supabase } from "@/lib/supabase/client";
 
 export function SignOutButton() {
   const router = useRouter();
@@ -18,7 +19,6 @@ export function SignOutButton() {
       console.error('SignOutButton: Error signing out:', error);
     } else {
       // console.warn('SignOutButton: Sign out successful.');
-      queryClient.clear(); // Clear react-query cache
       router.push('/sign-in'); // Redirect to sign-in
       // router.refresh(); // Could be added if hard refresh is absolutely needed
     }

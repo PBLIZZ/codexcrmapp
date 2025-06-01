@@ -1,0 +1,49 @@
+# Task ID: 39
+# Title: API Connection Manager & Direct Integrations
+# Status: pending
+# Dependencies: 5, 34, 54
+# Priority: medium
+# Description: Build pre-configured integrations for popular platforms (e.g., Mailchimp, Calendly, Social Media Lead Ads, Google Forms). Details: OAuth flows, tRPC for API interaction, UI for connection, data mapping, MCP server investigation.
+# Details:
+Create a modular system for connecting to and syncing data with third-party platforms commonly used by clients.
+
+# Test Strategy:
+
+
+# Subtasks:
+## 39.1. Design connection manager architecture [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 39.2. Implement OAuth flow for Mailchimp [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 39.3. Develop tRPC procedures for Mailchimp integration [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 39.4. Create UI for connection management [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 39.5. Implement data mapping from external formats [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 39.6. Investigate MCP server availability for integrations [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+

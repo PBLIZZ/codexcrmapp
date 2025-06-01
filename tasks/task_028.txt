@@ -1,0 +1,43 @@
+# Task ID: 28
+# Title: Feature: Implement Inline Add Row for Contacts Table
+# Status: pending
+# Dependencies: 56, 7
+# Priority: medium
+# Description: Create spreadsheet-like inline row addition for contacts list. Details: UI for empty row, inputs, save button, focus management, state management, validation, optimistic UI, performance for large datasets, accessibility, responsiveness. (Corresponds to original Task 28)
+# Details:
+
+
+# Test Strategy:
+
+
+# Subtasks:
+## 1. Design Empty Row UI Component [pending]
+### Dependencies: None
+### Description: Create the visual design and component structure for the empty row that will be used for inline data entry
+### Details:
+Design a responsive empty row component that visually integrates with the existing table design. Include states for hover, focus, and error conditions. Create mockups for desktop and mobile views. Define the component structure and props interface. Consider accessibility requirements including proper contrast and focus indicators.
+
+## 2. Implement Focus Management and Keyboard Navigation [pending]
+### Dependencies: 28.1
+### Description: Build the focus handling system and keyboard navigation for the inline add row feature
+### Details:
+Implement auto-focus on the first field when the empty row appears. Create keyboard navigation between fields using Tab/Shift+Tab. Add keyboard shortcuts for saving (Enter) and canceling (Escape). Ensure focus returns to a logical place after submission. Implement arrow key navigation within the row. Test with screen readers and keyboard-only navigation.
+
+## 3. Create State Management for Inline Form [pending]
+### Dependencies: 28.1, 28.2
+### Description: Develop the state management system to handle the inline form data and interactions
+### Details:
+Create a form state management system that tracks field values, dirty state, and validation status. Implement handlers for input changes, form submission, and cancellation. Design the state to work with potentially complex field types (dates, dropdowns, etc). Ensure the state management is performant with large datasets. Create clear interfaces for the state management system.
+
+## 4. Add Validation and Error Handling [pending]
+### Dependencies: 28.3
+### Description: Implement field validation, error display, and error recovery mechanisms
+### Details:
+Create a validation system for all field types. Implement real-time validation feedback. Design error message display within the inline row. Add support for both client-side and server-side validation errors. Implement recovery mechanisms that allow users to correct errors without losing other field data. Test edge cases like partial form completion.
+
+## 5. Implement Optimistic UI Updates and Performance Optimizations [pending]
+### Dependencies: 28.3, 28.4
+### Description: Add optimistic updates for better UX and optimize performance for large datasets
+### Details:
+Implement optimistic UI updates that show the new row immediately while saving in the background. Add loading states and rollback mechanisms for failed submissions. Optimize rendering performance using virtualization or windowing techniques for large datasets. Implement debouncing for real-time validation. Add performance monitoring. Test with large datasets (1000+ rows) to ensure smooth operation.
+

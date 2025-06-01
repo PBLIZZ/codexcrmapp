@@ -1,0 +1,11 @@
+# Task ID: 190
+# Title: Protect CsvUploadTestPage with authentication
+# Status: pending
+# Dependencies: None
+# Priority: medium
+# Description: The page at /apps/web/app/csv-upload-test/page.tsx is currently public but uses a tRPC mutation (contacts.importCsvData) that likely requires authentication. Add an authentication check to this page to redirect unauthenticated users to the sign-in page. This will prevent errors and ensure only logged-in users can attempt CSV imports.
+# Details:
+
+
+# Test Strategy:
+

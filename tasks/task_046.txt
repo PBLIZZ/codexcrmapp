@@ -1,0 +1,11 @@
+# Task ID: 46
+# Title: Epic 0: Project Setup & Foundational Infrastructure
+# Status: done
+# Dependencies: None
+# Priority: high
+# Description: Establishing the core monorepo, Next.js application, Supabase integration, tRPC, and base UI library.
+# Details:
+
+
+# Test Strategy:
+

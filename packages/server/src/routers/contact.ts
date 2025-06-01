@@ -31,78 +31,30 @@ const contactInputSchema = z.object({
   }, z.date().optional().nullable()),
 });
 
+// Defines tRPC procedures for contacts.
 export const contactRouter = router({
 
   // ===== Protected Procedures (require authentication) =====
 
-  // Protected procedure for listing authenticated user's contacts with filtering options
-  list: protectedProcedure
-    .input(
-      z.object({
-        search: z.string().optional(),
-        groupId: z.string().uuid().optional(),
-      }).optional()
-    )
-    .query(async ({ input, ctx }) => {
-      if (!ctx.user) {
-        throw new TRPCError({ code: 'UNAUTHORIZED' });
-      }
+  // Protected procedure for listing authenticated user's contacts
+  list: protectedProcedure.query(async ({ ctx }) => {
+    if (!ctx.user) {
+      throw new TRPCError({ code: 'UNAUTHORIZED' });
+    }
+    
+    // Use the USER-SCOPED client from context for reads to respect RLS!
+    const { data, error } = await ctx.supabaseUser
+      .from('contacts')
+      .select('*')
+      // .eq('user_id', ctx.user.id) // Not needed with proper RLS, but can keep for defense-in-depth
+      .order('created_at', { ascending: false });
       
-      // Use the USER-SCOPED client from context for reads to respect RLS
-      let query = ctx.supabaseUser
-        .from('clients')
-        .select('*')
-        .order('created_at', { ascending: false });
-      
-      // If groupId is provided, filter contacts by group membership
-      if (input?.groupId) {
-        // Get contact IDs in the specified group
-        const { data: groupMembers, error: groupMembersError } = await ctx.supabaseUser
-          .from('group_members')
-          .select('client_id')
-          .eq('group_id', input.groupId);
-        
-        if (groupMembersError) {
-          console.error("Error fetching group members:", groupMembersError);
-          throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to fetch group members' });
-        }
-        
-        // If there are contacts in the group, filter by their IDs
-        if (groupMembers && groupMembers.length > 0) {
-          const contactIds = groupMembers.map((member: { client_id: string }) => member.client_id);
-          query = query.in('id', contactIds);
-        } else {
-          // No contacts in this group, return empty array
-          return [];
-        }
-      }
-      
-      // If search query is provided, filter contacts by name, email, or company
-      if (input?.search) {
-        const searchTerms = input.search.toLowerCase().trim().split(/\s+/);
-        
-        // For each search term, create a filter condition
-        searchTerms.forEach(term => {
-          const searchPattern = `%${term}%`;
-          query = query.or(
-            `first_name.ilike.${searchPattern},` +
-            `last_name.ilike.${searchPattern},` +
-            `email.ilike.${searchPattern},` +
-            `company_name.ilike.${searchPattern}`
-          );
-        });
-      }
-      
-      // Execute the query
-      const { data, error } = await query;
-      
-      if (error) {
-        console.error("Error fetching contacts (RLS scope):", error);
-        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to fetch contacts' });
-      }
-      
-      return data || [];
-    }),
+    if (error) {
+      console.error("Error fetching contacts (RLS scope):", error);
+      throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to fetch contacts' });
+    }
+    return data || [];
+  }),
   // Fetch a single contact by ID
   getById: protectedProcedure
     .input(z.object({ contactId: z.string().uuid() }))
@@ -111,7 +63,7 @@ export const contactRouter = router({
         throw new TRPCError({ code: 'UNAUTHORIZED' });
       }
       const { data, error } = await ctx.supabaseUser
-        .from('clients')
+        .from('contacts')
         .select('*')
         .eq('id', input.contactId)
         .single();
@@ -135,7 +87,7 @@ export const contactRouter = router({
       }
       
       const contactId = input.id;
-      // Prepare fields to update/insert, mapping contact field names to DB columns
+      // Prepare fields to update/insert, mapping client field names to DB columns
       const fields = {
         first_name: input.first_name,
         last_name: input.last_name,
@@ -158,7 +110,7 @@ export const contactRouter = router({
           console.warn(`Attempting contact update for id: ${contactId}`, attemptFields);
           do {
             ({ data, error: dbError } = await ctx.supabaseUser
-              .from('clients')
+              .from('contacts')
               .update(attemptFields)
               .match({ id: contactId, user_id: ctx.user.id })
               .select()
@@ -177,7 +129,7 @@ export const contactRouter = router({
           console.warn('Attempting contact insert with user context', { ...attemptFields, user_id: ctx.user.id });
           do {
             ({ data, error: dbError } = await ctx.supabaseUser
-              .from('clients')
+              .from('contacts')
               .insert({ ...attemptFields, user_id: ctx.user.id })
               .select()
               .single());
@@ -220,7 +172,7 @@ export const contactRouter = router({
     .mutation(async ({ input, ctx }) => {
       console.warn(`Attempting to delete contact ID: ${input.contactId} by user ${ctx.user.id}`);
       const { error } = await ctx.supabaseUser
-        .from('clients')
+        .from('contacts')
         .delete()
         .match({ id: input.contactId, user_id: ctx.user.id }); // Match on UUID string ID and user_id
 

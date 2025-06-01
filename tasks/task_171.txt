@@ -1,0 +1,81 @@
+# Task ID: 171
+# Title: Build Import UI Workflow
+# Status: done
+# Dependencies: 167, 168, 169, 170
+# Priority: medium
+# Description: Create a multi-step UI workflow for the CSV import process, guiding users from file selection through duplicate resolution to import completion.
+# Details:
+Develop a step-by-step import wizard with the following screens:
+
+1. **Start Screen**:
+   - Import instructions
+   - Link to download CSV template
+   - File upload component
+   - Continue button (enabled only when valid file selected)
+
+2. **Validation Screen**:
+   - Display validation results
+   - Show count of valid rows and any validation errors
+   - Option to download error details if issues found
+   - Back and Continue buttons
+
+3. **Duplicate Resolution Screen** (shown only if duplicates found):
+   - Explanation of duplicate handling
+   - Radio buttons for handling all duplicates: Skip or Overwrite
+   - Summary count of duplicates found
+   - Back and Continue buttons
+
+4. **Confirmation Screen**:
+   - Summary of actions to be taken
+   - Number of new contacts to be created
+   - Number of contacts to be updated/skipped
+   - Back and Import buttons
+
+5. **Results Screen**:
+   - Success message
+   - Summary of imported, updated, and skipped contacts
+   - Option to download error report if any
+   - Done button returning to contacts list
+
+Implement as a modal flow or dedicated page with clear navigation. Use progress indicators to show current step. Ensure responsive design works on all device sizes.
+
+# Test Strategy:
+Create comprehensive UI tests for each screen in the workflow. Test navigation between steps, validation of inputs, and proper state management. Verify responsive design on different screen sizes. Test accessibility compliance. Conduct user testing to ensure the flow is intuitive.
+
+# Subtasks:
+## 1. Implement Start Screen with File Upload [done]
+### Dependencies: None
+### Description: Create the initial screen of the import workflow that allows users to upload files
+### Details:
+Design and implement the start screen with: file upload component supporting drag-and-drop and manual selection, file type validation, upload progress indicator, clear error messaging for invalid files, and responsive layout for all device sizes. Include help text explaining supported file formats and size limits.
+
+## 2. Build Validation Results Screen [done]
+### Dependencies: 171.1
+### Description: Implement the screen that displays validation results after file upload
+### Details:
+Create a screen showing validation results with: summary statistics (total records, valid/invalid counts), detailed error list with line numbers and error descriptions, ability to download error report, options to proceed or cancel import, and responsive design for all device sizes. Implement loading states while validation is processing.
+
+## 3. Develop Duplicate Resolution Screen [done]
+### Dependencies: 171.2
+### Description: Create the interface for resolving duplicate entries found during import
+### Details:
+Implement duplicate resolution screen with: tabular view of duplicate records, side-by-side comparison of existing vs new data, bulk action options (keep all existing, use all new, etc.), individual record resolution controls, pagination for large sets of duplicates, and responsive design with horizontal scrolling on small screens.
+
+## 4. Design Confirmation Screen [done]
+### Dependencies: 171.3
+### Description: Build the pre-import confirmation screen showing summary and requesting final approval
+### Details:
+Create confirmation screen with: import summary statistics, list of actions to be taken (creates, updates, skips), estimated processing time, confirmation button with clear labeling, back button to previous steps, and responsive layout. Include warning for irreversible actions.
+
+## 5. Implement Results Screen [done]
+### Dependencies: 171.4
+### Description: Develop the final screen showing import results and completion status
+### Details:
+Build results screen showing: success/failure status, detailed statistics of processed records, error information for failed imports, option to download detailed report, next action buttons (return to dashboard, start new import, etc.), and responsive design for all device sizes.
+
+## 6. Implement Navigation and State Management [done]
+### Dependencies: 171.1, 171.2, 171.3, 171.4, 171.5
+### Description: Create the navigation framework and state management system for the entire import workflow
+### Details:
+Develop navigation system with: progress indicator showing current step, back/forward navigation with state preservation, data persistence between steps, cancellation handling with confirmation dialogs, error state handling and recovery options, and browser history integration. Implement global state management using context API or Redux.
+

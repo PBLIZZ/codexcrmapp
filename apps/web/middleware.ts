@@ -1,4 +1,4 @@
-import { createServerClient } from '@supabase/ssr';
+import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
 // Define paths that require authentication
@@ -9,9 +9,9 @@ const protectedPaths = ['/', '/dashboard', '/contacts', '/contacts', '/groups'];
 const publicOnlyPaths = ['/sign-in', '/sign-up', '/forgot-password', '/reset-password', '/sign-up/confirmation'];
 
 export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({
+  const response = NextResponse.next({
     request: {
-      headers: new Headers(request.headers),
+      headers: request.headers,
     },
   });
 
@@ -20,35 +20,36 @@ export async function middleware(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() {
-          return request.cookies.getAll().map(cookie => ({ 
-            name: cookie.name, 
-            value: cookie.value 
-          }));
+        get(name: string) {
+          return request.cookies.get(name)?.value;
         },
-        setAll(cookies) {
-          cookies.forEach(({ name, value, ...options }) => {
-            request.cookies.set({
-              name,
-              value,
-              ...options,
-            });
-            response.cookies.set({
-              name,
-              value,
-              ...options,
-            });
-          });
-        }
+        set(name: string, value: string, options: CookieOptions) {
+          request.cookies.set({ name, value, ...options });
+          response.cookies.set({ name, value, ...options });
+        },
+        remove(name: string, options: CookieOptions) {
+          request.cookies.set({ name, value: '', ...options }); // To clear, set value to empty and expire
+          response.cookies.set({ name, value: '', ...options });
+        },
       },
     }
   );
 
-  // First get the user with getUser() for secure authentication verification
-  const { data: { user } } = await supabase.auth.getUser();
-  
-  // We can still use getSession() to get the session if needed
-  const { data: { session: _session } } = await supabase.auth.getSession();
+  // Refresh session if expired - This will also update the cookies in the response.
+  console.log('Middleware: Attempting to get session...');
+  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+  if (sessionError) {
+    console.error('Middleware: Error getting session:', sessionError.message);
+  }
+  console.log('Middleware: Session object:', JSON.stringify(session, null, 2));
+
+  // Now get the user based on the (potentially refreshed) session.
+  console.log('Middleware: Attempting to get user...');
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  if (userError) {
+    console.error('Middleware: Error getting user:', userError.message);
+  }
+  console.log('Middleware: User object:', JSON.stringify(user, null, 2));
 
   const { pathname } = request.nextUrl;
   const isProtectedPath = protectedPaths.some(path => pathname === path || (path !== '/' && pathname.startsWith(path + '/')));

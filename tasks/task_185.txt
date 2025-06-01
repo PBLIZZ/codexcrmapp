@@ -1,0 +1,97 @@
+# Task ID: 185
+# Title: Update Frontend Components and State Management
+# Status: done
+# Dependencies: 183, 184
+# Priority: high
+# Description: Refactor frontend components, state management, and UI logic in the apps/web directory to use 'contact' instead of 'client' terminology.
+# Details:
+1. Rename component files and directories:
+   - Rename files like `ClientForm.tsx` to `ContactForm.tsx`
+   - Rename directories like `components/clients` to `components/contacts`
+
+2. Update component implementations:
+   - Rename component classes/functions (e.g., `ClientList` to `ContactList`)
+   - Update props and state variable names
+   - Example:
+   ```tsx
+   // Before
+   function ClientForm({ client, onSubmit }: ClientFormProps) {
+     const [formData, setFormData] = useState(client);
+     // component logic
+   }
+
+   // After
+   function ContactForm({ contact, onSubmit }: ContactFormProps) {
+     const [formData, setFormData] = useState(contact);
+     // component logic
+   }
+   ```
+
+3. Update tRPC client calls:
+   ```typescript
+   // Before
+   const clients = api.clients.list.useQuery();
+   const createClient = api.clients.create.useMutation();
+
+   // After
+   const contacts = api.contacts.list.useQuery();
+   const createContact = api.contacts.create.useMutation();
+   ```
+
+4. Update state management (React context, Redux, Zustand, etc.):
+   - Rename state slices, actions, and selectors
+   - Update any context providers or consumers
+
+5. Update imports and references in all affected files
+
+6. Check for any hardcoded strings or variable names that need to be updated
+
+Use search functionality to find all occurrences of 'client' in the frontend codebase. Be methodical and ensure you're only changing entity references, not client-side/server-side distinctions.
+
+# Test Strategy:
+1. Run TypeScript compiler to check for type errors
+2. Verify that all components render correctly with the new naming
+3. Test all CRUD operations through the UI
+4. Test form submissions and data fetching
+5. Verify that state management works correctly with the renamed entities
+6. Test navigation between pages that use the renamed components
+7. Check for any console errors or warnings
+8. Verify that all features mentioned in the acceptance criteria (photo uploads, quick contact, etc.) work correctly
+
+# Subtasks:
+## 1. Component and File Renaming [done]
+### Dependencies: None
+### Description: Rename components and associated files to reflect updated naming conventions or architectural changes.
+### Details:
+Ensure all component and file names are updated consistently across the codebase, including test files and storybook entries.
+
+## 2. Props and State Updates [done]
+### Dependencies: 185.1
+### Description: Update component props and internal state to align with new data structures or usage patterns.
+### Details:
+Refactor props and state definitions, update usage in JSX, and ensure type safety with TypeScript if applicable.
+
+## 3. tRPC Client Refactoring [done]
+### Dependencies: 185.2
+### Description: Refactor tRPC client calls to match updated API contracts and improve maintainability.
+### Details:
+Update query and mutation hooks, handle new response shapes, and ensure error handling is consistent.
+
+## 4. State Management Layer Updates [done]
+### Dependencies: 185.2
+### Description: Update global or shared state management logic to reflect new data flow and component interactions.
+### Details:
+Modify Redux, Zustand, or other state management logic to support updated component requirements.
+
+## 5. Import Chain Updates [done]
+### Dependencies: 185.1
+### Description: Update import paths and module references to reflect renamed files and reorganized structure.
+### Details:
+Search and replace outdated import paths, verify module resolution, and fix any broken imports.
+
+## 6. UI String Verification [done]
+### Dependencies: 185.2, 185.3, 185.4
+### Description: Audit and verify all UI strings for correctness, consistency, and localization compliance.
+### Details:
+Check for outdated or hardcoded strings, validate against localization files, and ensure visual accuracy.
+

@@ -1,5 +1,7 @@
 import { Suspense } from 'react';
+
 import { ContactDetailView } from './ContactDetailView';
+
 import { Skeleton } from '@/components/ui/skeleton';
 
 /**

@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useEffect, FormEvent } from "react"; // Added FormEvent
-import { api } from '@/lib/trpc';
 import { useQueryClient } from '@tanstack/react-query';
 import { Check, AlertCircle, Loader2, Plus, User } from "lucide-react"; // Plus might be unused here
+import { useState, useEffect, FormEvent } from "react"; // Added FormEvent
+
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogTrigger,
@@ -14,10 +16,9 @@ import {
   DialogFooter,
   // DialogClose // DialogClose is usually for a manual close button inside content, not needed here
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { api } from '@/lib/trpc';
 import { cn } from '@/lib/utils';
 
 interface AddContactModalProps {

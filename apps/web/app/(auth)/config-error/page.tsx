@@ -1,7 +1,8 @@
+import { AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
-import { AlertTriangle } from 'lucide-react';
 
 // Define paths as constants for maintainability
 const PATHS = {

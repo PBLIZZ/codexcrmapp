@@ -1,5 +1,5 @@
-import type { Session, User } from '@supabase/supabase-js';
 import { createServerClient } from '@supabase/ssr';
+import type { Session, User } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 
 import { supabaseAdmin } from './supabaseAdmin';

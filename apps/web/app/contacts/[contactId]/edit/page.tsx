@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+
 import { createSupabaseServer } from "@/lib/supabase/server";
 
 // Define a more specific interface for the params prop

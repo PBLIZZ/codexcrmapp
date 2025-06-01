@@ -1,12 +1,13 @@
 'use client';
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import React, { useEffect } from 'react';
-import { httpBatchLink } from '@trpc/client';
-import superjson from 'superjson';
-import { api, API_VERSION } from '@/lib/trpc';
-import { logDebugInfo } from '@/lib/debug-helper';
 import type { AppRouter } from '@codexcrm/server/src/root';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { httpBatchLink } from '@trpc/client';
+import React, { useEffect } from 'react';
+import superjson from 'superjson';
+
+import { logDebugInfo } from '@/lib/debug-helper';
+import { api, API_VERSION } from '@/lib/trpc';
 
 export default function ClientProviders({ children }: { children: React.ReactNode }) {
 

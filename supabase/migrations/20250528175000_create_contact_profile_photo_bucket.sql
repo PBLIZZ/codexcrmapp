@@ -3,7 +3,7 @@ INSERT INTO storage.buckets (id, name, public)
 VALUES ('contact-profile-photo', 'contact-profile-photo', false);
 
 -- Enable RLS on the bucket
-ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
+-- -- ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
 
 -- Policy to allow authenticated users to upload their own files
 CREATE POLICY "Users can upload their own contact photos" ON storage.objects

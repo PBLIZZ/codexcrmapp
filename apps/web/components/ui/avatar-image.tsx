@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
-import Image from "next/image";
 import { UserCircle } from "lucide-react";
+import Image from "next/image";
+import { useState, useEffect, useMemo } from "react";
+
 import { api } from "@/lib/trpc";
 
 interface AvatarImageProps {
