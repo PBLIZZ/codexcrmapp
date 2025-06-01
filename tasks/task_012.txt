@@ -1,0 +1,43 @@
+# Task ID: 12
+# Title: Feature: Implement Interaction Tracking
+# Status: pending
+# Dependencies: 59, 7
+# Priority: medium
+# Description: System for tracking/recording interactions: date, type, summary, UI (form, list, card, timeline), update last_contacted_at. (Corresponds to original Task 12)
+# Details:
+
+
+# Test Strategy:
+
+
+# Subtasks:
+## 1. Design Database Schema for Interactions [pending]
+### Dependencies: None
+### Description: Create the database schema for storing interaction records with contacts
+### Details:
+Design and implement a database schema for interactions that includes: interaction_id (PK), contact_id (FK), interaction_type (enum: call, email, meeting, etc.), timestamp, summary/notes, duration (if applicable), and any other relevant metadata. Create the Prisma model and run migrations.
+
+## 2. Implement tRPC Procedures for Interaction CRUD [pending]
+### Dependencies: 12.1
+### Description: Create tRPC procedures for creating, reading, updating, and deleting interaction records
+### Details:
+Implement tRPC procedures for: createInteraction, getInteraction, updateInteraction, deleteInteraction, and listInteractionsByContact. Include input validation, error handling, and appropriate authorization checks. Ensure the procedures update the last_contacted_at field on the contact when appropriate.
+
+## 3. Develop UI Components for Recording Interactions [pending]
+### Dependencies: 12.2
+### Description: Create UI forms and components for users to record new interactions
+### Details:
+Build React components for recording new interactions, including: interaction type selector, date/time picker, duration input, notes/summary field, and submission controls. Implement form validation and error handling. Create a modal or dedicated page for the interaction form.
+
+## 4. Implement Interaction Listing and Timeline Views [pending]
+### Dependencies: 12.2, 12.3
+### Description: Create UI components to display interaction history in list and timeline formats
+### Details:
+Develop components for: 1) A tabular list view of interactions with sorting and filtering options, 2) A visual timeline view showing interactions chronologically with appropriate visual indicators for different interaction types, and 3) Detail view for individual interactions. Implement pagination for performance with large datasets.
+
+## 5. Update Contact Last Contacted Field Logic [pending]
+### Dependencies: 12.1, 12.2
+### Description: Implement logic to automatically update the last_contacted_at field on contacts
+### Details:
+Modify the interaction creation and update procedures to automatically update the last_contacted_at timestamp on the associated contact. Add logic to determine which interaction types should trigger this update. Include tests to verify this functionality works correctly across different scenarios.
+

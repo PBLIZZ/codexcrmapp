@@ -3,7 +3,7 @@ import { type Database, Tables, TablesInsert, TablesUpdate, Enums } from './data
 export { Database, Tables, TablesInsert, TablesUpdate, Enums };
 
 // Export convenience type helpers for easier access
-export type Client = Tables<'clients'>;
+export type Contact = Tables<'contacts'>;
 export type FollowUp = Tables<'follow_ups'>;
 export type Note = Tables<'notes'>;
 export type Payment = Tables<'payments'>;

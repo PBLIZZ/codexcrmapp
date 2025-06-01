@@ -2,14 +2,18 @@
 "use client";
 
 import { Geist, Geist_Mono } from "next/font/google"; // Your fonts
+
 import "./globals.css";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+
 import { Providers } from './providers';
+
 import { MainLayout } from '@/components/layout/MainLayout'; // Main app shell
 import { Navbar } from '@/components/layout/Navbar'; // The global Navbar for auth pages
 import { Toaster } from '@/components/ui/sonner';
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/client"; // Your Supabase client
+
 import type { User } from '@supabase/supabase-js';
 
 // Font configuration

@@ -1,29 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { api } from '@/lib/trpc';
-import { formatDateForInput, parseInputDateString } from '@/lib/dateUtils';
-import { ContactForm, ContactFormData } from './ContactForm';
-import { ContactList, Contact, NameSortField, DateFilterPeriod, SourceOption } from './ContactList';
-import { GroupsProvider } from './ContactGroupManager';
-
-import { ColumnSelector } from './ColumnSelector';
-
-// UI Components
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-
-// Icons
 import {
   Download,
   Plus,
@@ -37,8 +13,33 @@ import {
   Sparkles,
   X
 } from "lucide-react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
+
+import { ColumnSelector } from './ColumnSelector';
+import { ContactForm, ContactFormData } from './ContactForm';
+import { GroupsProvider } from './ContactGroupManager';
+import { ContactList, Contact, NameSortField, DateFilterPeriod, SourceOption } from './ContactList';
 
 import { AddContactModal } from '@/components/contacts/AddContactModal';
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { formatDateForInput, parseInputDateString } from '@/lib/dateUtils';
+import { api } from '@/lib/trpc';
+
+// UI Components
+
+// Icons
+
 
 export function ContactsContent({ initialGroupId }: { initialGroupId?: string } = {}) {
   // --- State Management ---

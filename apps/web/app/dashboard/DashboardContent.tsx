@@ -13,6 +13,7 @@ import {
 import Link from 'next/link';
 import { useState } from 'react';
 
+import { AddContactModal } from '@/components/contacts/AddContactModal';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -21,7 +22,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { api } from '@/lib/trpc';
 
 // UI Components
-import { AddContactModal } from '@/components/contacts/AddContactModal';
 
 
 // Helper function to get initials from name

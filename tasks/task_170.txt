@@ -1,0 +1,53 @@
+# Task ID: 170
+# Title: Implement Contact Duplicate Detection Logic
+# Status: pending
+# Dependencies: 169
+# Priority: high
+# Description: Create a service to detect duplicate contacts based on email address and provide options for handling these duplicates during import.
+# Details:
+Develop a service that:
+
+1. Takes an array of parsed contact objects from the CSV parser
+2. Queries the database to find existing contacts with matching email addresses
+3. Categorizes each contact as:
+   - New contact (no matching email)
+   - Duplicate contact (matching email)
+4. For duplicates, prepare data for both options:
+   - Skip: Keep existing data
+   - Overwrite: Replace with new data
+
+The service should return:
+- Array of new contacts ready for insertion
+- Array of duplicates with both current and new data for comparison
+- Counts of new and duplicate contacts
+
+Optimize database queries by batching email lookups rather than individual queries per contact. Consider using a Map or Set for efficient lookups when processing large datasets.
+
+# Test Strategy:
+Unit test with datasets containing both new and duplicate contacts. Mock database responses to simulate various scenarios. Verify correct categorization of contacts. Test edge cases like case-sensitive email matching. Measure performance with large datasets to ensure efficiency.
+
+# Subtasks:
+## 1. Optimize database queries for duplicate detection [pending]
+### Dependencies: None
+### Description: Design and implement optimized database queries to efficiently find potential duplicate contacts
+### Details:
+Create indexed queries that can quickly identify potential matches based on key fields like email, phone, name combinations. Implement pagination or cursor-based approaches for handling large datasets. Consider using database-specific features like PostgreSQL's similarity functions or MySQL's fulltext search capabilities.
+
+## 2. Implement contact comparison and categorization logic [pending]
+### Dependencies: 170.1
+### Description: Develop algorithms to compare contact records and categorize them as exact matches, potential matches, or new contacts
+### Details:
+Create a scoring system to evaluate similarity between contacts based on multiple fields. Implement fuzzy matching for names and addresses. Define thresholds for categorizing contacts as exact matches vs. potential matches. Handle edge cases like partial information or differently formatted data (e.g., phone numbers with/without country codes).
+
+## 3. Develop data preparation for skip/overwrite options [pending]
+### Dependencies: 170.2
+### Description: Create data structures and methods to prepare information for different duplicate resolution strategies
+### Details:
+Design a data structure that presents differences between existing and new records. Implement merge strategies for combining data from multiple records. Create visualization-ready data for UI presentation of differences. Develop methods to handle conflict resolution based on user preferences (keep newest, keep oldest, manual merge).
+
+## 4. Optimize performance for large datasets [pending]
+### Dependencies: 170.1, 170.2, 170.3
+### Description: Implement performance optimizations to ensure duplicate detection works efficiently with large contact databases
+### Details:
+Add caching mechanisms for frequently accessed data. Implement batch processing for large imports. Create background job processing for time-intensive operations. Add monitoring and logging to identify performance bottlenecks. Consider implementing progressive loading techniques for UI interactions with large result sets.
+

@@ -1,0 +1,43 @@
+# Task ID: 36
+# Title: Epic C: AI Action Approval & Scheduling System
+# Status: pending
+# Dependencies: 35
+# Priority: high
+# Description: Implementing a system for users to review, approve, and manage AI-generated actions, supported by a background job scheduling system.
+# Details:
+This epic builds upon Epic B (AI Action Generation) to create a comprehensive workflow for human review, approval, and scheduling of AI-generated actions. The system will provide interfaces for users to evaluate suggested actions, approve or reject them with feedback, and schedule approved actions for execution at appropriate times. This ensures human oversight in the AI decision-making process while enabling efficient action management.
+
+# Test Strategy:
+
+
+# Subtasks:
+## 1. Design User Interface for Action Review and Approval [pending]
+### Dependencies: None
+### Description: Create wireframes and UI components for users to review, approve, or reject AI-generated actions.
+### Details:
+Design a user-friendly interface that displays AI-generated actions with relevant metadata, and provides options for approval, rejection, and feedback submission.
+
+## 2. Implement Backend for Action Review Workflow [pending]
+### Dependencies: 36.1
+### Description: Develop backend services to support storing, retrieving, and updating the status of AI-generated actions.
+### Details:
+Create APIs and database schemas to manage the lifecycle of actions from generation to approval or rejection.
+
+## 3. Develop Scheduling Module for Approved Actions [pending]
+### Dependencies: 36.2
+### Description: Build a scheduling system that allows users to set execution times for approved actions.
+### Details:
+Implement a scheduler that queues approved actions for execution based on user-defined times and system constraints.
+
+## 4. Integrate Feedback Mechanism for Rejected Actions [pending]
+### Dependencies: 36.2
+### Description: Enable users to provide feedback on rejected actions to improve future AI suggestions.
+### Details:
+Add feedback input fields and backend support to store and analyze user feedback on rejected actions.
+
+## 5. Perform End-to-End Testing of Approval & Scheduling Workflow [pending]
+### Dependencies: 36.3, 36.4
+### Description: Validate the complete workflow from action generation to approval, feedback, and scheduling.
+### Details:
+Conduct comprehensive tests to ensure all components interact correctly and the system behaves as expected under normal and edge conditions.
+

@@ -70,10 +70,14 @@ export default function SignInPage() {
     try {
       // Use the official Supabase auth callback handler with the 'next' parameter
       // to specify where to redirect after authentication
+      // Ensure we're using the current port the app is running on, not hardcoded port
+      const currentPort = window.location.port || '3008'; // Default to 3008 if port is empty
+      const baseUrl = `${window.location.protocol}//${window.location.hostname}:${currentPort}`;
+      
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: `${window.location.origin}/api/auth/callback?next=/dashboard`,
+          emailRedirectTo: `${baseUrl}/api/auth/callback?next=/dashboard`,
         },
       });
       
@@ -101,7 +105,10 @@ export default function SignInPage() {
       
       // Use current URL to determine appropriate return path
       const returnPath = '/dashboard';
-      const redirectUrl = `${window.location.origin}/api/auth/callback?next=${returnPath}`;
+      // Ensure we're using the current port the app is running on, not hardcoded port
+      const currentPort = window.location.port || '3008'; // Default to 3008 if port is empty
+      const baseUrl = `${window.location.protocol}//${window.location.hostname}:${currentPort}`;
+      const redirectUrl = `${baseUrl}${returnPath}`; // Changed to redirect to final app path for standard Supabase OAuth flow
       
       console.warn(`OAuth redirect URL: ${redirectUrl}`);
       
@@ -109,9 +116,9 @@ export default function SignInPage() {
         provider,
         options: {
           redirectTo: redirectUrl,
-          // Force consent screen to ensure we get refresh tokens
+          // Allow account selection while still getting refresh tokens
           queryParams: provider === 'google' ? 
-            { access_type: 'offline', prompt: 'consent', hd: '*' } : undefined,
+            { access_type: 'offline', prompt: 'select_account', hd: '*' } : undefined,
         },
       });
       

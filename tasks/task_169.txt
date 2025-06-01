@@ -1,0 +1,64 @@
+# Task ID: 169
+# Title: Create CSV Parser Service
+# Status: in-progress
+# Dependencies: None
+# Priority: high
+# Description: Develop a service to parse uploaded CSV files, validate their structure against the expected format, and convert the data into a usable format for processing.
+# Details:
+Create a service with the following functionality:
+
+1. Parse CSV content using a reliable CSV parsing library (e.g., Papa Parse for frontend or a suitable backend library)
+2. Validate the CSV structure:
+   - Check for required headers (case-insensitive matching)
+   - Ensure email column exists
+3. For each row, create a structured object with validated data:
+   - Trim whitespace from all fields
+   - Validate email format
+   - Format birthday as YYYY-MM-DD if present
+   - Parse tags into an array if present
+4. Handle common CSV issues:
+   - Different line endings (\r\n, \n)
+   - Quoted fields with commas
+   - BOM characters
+
+The service should return:
+- An array of valid contact objects
+- An array of invalid rows with error messages
+- Overall validation status
+
+Implement proper error handling for malformed CSV files.
+
+# Test Strategy:
+Unit test with various CSV files including valid files, files with missing headers, malformed data, and edge cases. Test with different line endings and encoding types. Verify email validation logic works correctly. Test parsing of special fields like tags and dates.
+
+# Subtasks:
+## 1. Implement Core CSV Parsing Functionality [done]
+### Dependencies: None
+### Description: Create the foundation of the CSV parser that can read and parse CSV files into structured data
+### Details:
+Develop functions to: 1) Read CSV files from various sources (file, string, stream), 2) Handle different delimiters (comma, tab, etc.), 3) Support various line endings (\n, \r\n), 4) Process quoted fields correctly, 5) Handle character encoding issues (UTF-8, ASCII, etc.), 6) Create a basic data structure to represent rows and columns
+
+## 2. Implement Header Validation and Structure Verification [done]
+### Dependencies: 169.1
+### Description: Create functionality to validate CSV headers against expected schema and verify overall structure
+### Details:
+Develop functions to: 1) Extract and validate header row, 2) Compare headers against expected schema, 3) Detect missing required columns, 4) Handle case sensitivity options, 5) Support column order validation, 6) Provide detailed feedback on structural issues
+
+## 3. Implement Data Validation and Transformation [done]
+### Dependencies: 169.2
+### Description: Create field-level validation and type conversion for each column based on schema requirements
+### Details:
+Develop functions to: 1) Validate data types (string, number, date, etc.), 2) Transform string values to appropriate types, 3) Apply field-specific validation rules (min/max, regex patterns, etc.), 4) Handle empty/null values according to schema rules, 5) Support custom validation functions, 6) Track validation state for each field
+
+## 4. Implement Error Handling for Malformed Data [in-progress]
+### Dependencies: 169.1, 169.2, 169.3
+### Description: Create comprehensive error handling for all types of CSV parsing and validation failures
+### Details:
+Develop functions to: 1) Detect and report syntax errors in CSV format, 2) Track line and column numbers for errors, 3) Categorize errors by severity (warning vs. critical), 4) Provide context-aware error messages, 5) Support error recovery options (skip row, use default value, etc.), 6) Aggregate multiple errors into a structured report
+
+## 5. Implement Result Formatting and Reporting [pending]
+### Dependencies: 169.4
+### Description: Create output formatting and comprehensive reporting on parsing results
+### Details:
+Develop functions to: 1) Format successfully parsed data into requested output format (JSON, objects, etc.), 2) Generate summary statistics (rows processed, success rate, etc.), 3) Format error reports with appropriate detail levels, 4) Support different output modes (strict vs. lenient), 5) Provide performance metrics on parsing operation, 6) Include original line references for traceability
+

@@ -1,5 +1,6 @@
-import { supabase } from '@/lib/supabase/client';
 import type { User } from '@supabase/supabase-js';
+
+import { supabase } from '@/lib/supabase/client';
 
 /**
  * Fetches the current authenticated user

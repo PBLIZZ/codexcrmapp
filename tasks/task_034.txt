@@ -1,0 +1,55 @@
+# Task ID: 34
+# Title: Epic A: Multi-Channel Lead Ingestion & Onboarding
+# Status: pending
+# Dependencies: 46, 35
+# Priority: high
+# Description: Implement comprehensive lead ingestion from multiple sources (webhooks, email, direct integrations, website tracking, WordPress) and a smooth, AI-assisted onboarding experience. Incorporates original task 17 and new features.
+# Details:
+This epic focuses on creating a robust system for ingesting leads from various channels and providing a smooth onboarding experience for new users. It includes webhook receivers, email integration, direct platform integrations, website tracking capabilities, WordPress integration, and AI-assisted onboarding flows.
+
+# Test Strategy:
+
+
+# Subtasks:
+## 1. Develop Webhook Receiver Service [pending]
+### Dependencies: None
+### Description: Create a service to receive and process incoming webhooks from external lead sources.
+### Details:
+Design and implement a scalable webhook receiver that can authenticate, parse, and store lead data from third-party platforms.
+
+## 2. Implement Email Parsing Integration [pending]
+### Dependencies: None
+### Description: Build a system to ingest leads from structured and unstructured email content.
+### Details:
+Set up an email listener or parser that can extract lead information from incoming emails and normalize the data.
+
+## 3. Integrate Direct Platform APIs [pending]
+### Dependencies: None
+### Description: Connect directly with CRM and marketing platforms to pull lead data via APIs.
+### Details:
+Identify key platforms (e.g., Salesforce, HubSpot), authenticate via OAuth, and implement scheduled data pulls.
+
+## 4. Enable Website Tracking for Lead Capture [pending]
+### Dependencies: None
+### Description: Implement tracking scripts and forms on the website to capture visitor data as leads.
+### Details:
+Deploy JavaScript tracking code, configure form submissions to feed into the lead system, and ensure GDPR compliance.
+
+## 5. Design Unified Lead Onboarding Workflow [pending]
+### Dependencies: 34.1, 34.2, 34.3, 34.4, 34.6
+### Description: Create a consistent onboarding experience for leads regardless of their source.
+### Details:
+Develop a workflow that standardizes lead data, triggers onboarding emails, and assigns leads to appropriate teams.
+
+## 6. Develop WordPress Integration [pending]
+### Dependencies: None
+### Description: Create a WordPress plugin or integration to capture leads from WordPress sites.
+### Details:
+Build a WordPress plugin that can be installed on client sites to capture form submissions and visitor data, then transmit to our lead ingestion system.
+
+## 7. Implement AI-Assisted Onboarding [pending]
+### Dependencies: 34.5
+### Description: Enhance the onboarding experience with AI-powered recommendations and guidance.
+### Details:
+Integrate AI capabilities to analyze lead data, suggest personalized onboarding paths, and provide intelligent recommendations throughout the onboarding process.
+

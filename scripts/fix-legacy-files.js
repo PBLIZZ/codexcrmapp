@@ -11,9 +11,9 @@
  * 4. Type issues (replacing 'any' with more specific types)
  */
 
+import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
 
 // Get the current directory equivalent to __dirname in CommonJS

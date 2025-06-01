@@ -1,0 +1,64 @@
+# Task ID: 172
+# Title: Implement Backend CSV Import API Endpoint
+# Status: pending
+# Dependencies: 169, 170
+# Priority: high
+# Description: Create a backend API endpoint that receives CSV data, processes it according to user preferences, and imports valid contacts into the database.
+# Details:
+Develop a RESTful API endpoint at `/api/contacts/import` that:
+
+1. Accepts POST requests with:
+   - CSV file data (multipart/form-data)
+   - Duplicate handling preference (skip or overwrite)
+   - User authentication token
+
+2. Processes the request:
+   - Validates user authentication and permissions
+   - Parses and validates the CSV file
+   - Identifies duplicates based on email
+   - Handles duplicates according to user preference
+   - Creates new contacts and updates existing ones as appropriate
+   - Associates all contacts with the authenticated user's ID
+
+3. Returns a structured response with:
+   - Success/failure status
+   - Counts of created, updated, and skipped contacts
+   - Array of errors for failed rows
+   - Processing time
+
+Implement proper error handling for various scenarios (invalid file, database errors, etc.). Use transactions for database operations to ensure atomicity. Add rate limiting to prevent abuse. Consider implementing the actual import as a background job for large files.
+
+# Test Strategy:
+Write unit tests for the endpoint with various input scenarios. Test authentication validation. Test with valid and invalid CSV data. Verify duplicate handling logic works correctly for both skip and overwrite options. Test database transaction rollback on errors. Perform load testing with large CSV files to ensure performance.
+
+# Subtasks:
+## 1. Implement request handling and file processing [pending]
+### Dependencies: None
+### Description: Create the API endpoint structure to handle file uploads and process CSV files
+### Details:
+Set up the API route for CSV import, implement multipart form data handling, create file storage logic (temporary or permanent), handle file size limits and type validation, and implement basic request validation to ensure the uploaded file is a valid CSV.
+
+## 2. Implement authentication and permission validation [pending]
+### Dependencies: 172.1
+### Description: Add security layers to ensure only authorized users can access the import functionality
+### Details:
+Integrate authentication middleware, implement role-based access control for the import endpoint, validate user permissions for the specific data being imported, add rate limiting to prevent abuse, and log authentication attempts for security auditing.
+
+## 3. Implement CSV parsing and validation [pending]
+### Dependencies: 172.1, 172.2
+### Description: Create robust CSV parsing with data validation and transformation logic
+### Details:
+Select and integrate a CSV parsing library, implement header validation to ensure required columns exist, create data type validation for each field, implement business rule validation for the data, handle character encoding issues, and create data transformation functions to prepare data for database insertion.
+
+## 4. Implement database operations with transaction support [pending]
+### Dependencies: 172.3
+### Description: Create database interaction layer with transaction support for data integrity
+### Details:
+Design database operations for the import process, implement transaction management to ensure atomicity, create batch processing for performance optimization, implement conflict resolution strategies (update vs. insert), add data integrity checks, and create rollback mechanisms for failed imports.
+
+## 5. Implement response formatting and error handling [pending]
+### Dependencies: 172.4
+### Description: Create comprehensive response structure and error handling mechanisms
+### Details:
+Design response format for successful imports (including statistics), implement detailed error reporting for validation failures, create user-friendly error messages, add support for partial success scenarios, implement logging for debugging purposes, and add performance metrics tracking for the import process.
+

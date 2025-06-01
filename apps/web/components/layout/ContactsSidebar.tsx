@@ -1,9 +1,5 @@
 "use client";
 
-import * as React from "react"; // Import React namespace
-import { useState } from "react";
-import Link from "next/link";
-import { usePathname, useSearchParams, useRouter } from "next/navigation"; // Combined useRouter
 import { 
   ChevronRight, 
   Folder, 
@@ -18,14 +14,20 @@ import {
   Upload,
   // X // X was unused
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { usePathname, useSearchParams, useRouter } from "next/navigation"; // Combined useRouter
+import * as React from "react"; // Import React namespace
+import { useState } from "react";
+
+import { SidebarGroupLink } from "./SidebarGroupLink"; // Assuming this path is correct
+
+import { AddContactModal } from '@/components/contacts/AddContactModal';
+import { QuickCreateGroupButton } from "@/components/groups/QuickCreateGroupButton"; // Assuming this path
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { SidebarGroupLink } from "./SidebarGroupLink"; // Assuming this path is correct
-import { QuickCreateGroupButton } from "@/components/groups/QuickCreateGroupButton"; // Assuming this path
 import { api } from "@/lib/trpc";
-import { AddContactModal } from '@/components/contacts/AddContactModal';
+import { cn } from "@/lib/utils";
 
 interface Group {
   id: string;

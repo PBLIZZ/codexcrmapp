@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
-import Image from "next/image";
-import { useDropzone } from "react-dropzone";
 import { createBrowserClient } from "@supabase/ssr";
-import { v4 as uuidv4 } from "uuid";
 import { Loader2, Upload, X, UserCircle } from "lucide-react";
+import Image from "next/image";
+import { useState, useCallback, useEffect } from "react";
+import { useDropzone } from "react-dropzone";
+import { v4 as uuidv4 } from "uuid";
+
 import { api } from "@/lib/trpc";
 
 interface ImageUploadProps {

@@ -1,0 +1,11 @@
+# Task ID: 1
+# Title: Feature: Setup Monorepo Structure
+# Status: done
+# Dependencies: 53
+# Priority: critical
+# Description: Initialize the project monorepo structure with pnpm workspaces, including apps/web, packages directories, tsconfig, ESLint, Prettier, Git. (Corresponds to original Task 1)
+# Details:
+
+
+# Test Strategy:
+

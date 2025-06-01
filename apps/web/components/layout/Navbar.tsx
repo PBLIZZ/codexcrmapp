@@ -1,19 +1,6 @@
 "use client";
 
 import { AuthChangeEvent, Session, User } from '@supabase/supabase-js'; 
-import Link from "next/link";
-import { usePathname } from "next/navigation"; 
-
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
 import {
   Home,
   Users,
@@ -25,7 +12,20 @@ import {
   LogOut, // For user menu
   User as UserIcon // Renamed to avoid conflict with Supabase User type
 } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation"; 
+
 import { SignOutButton } from "@/components/layout/SignOutButton"; // Assuming SignOutButton is in the same directory
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 
 interface NavbarProps {
   user: User | null; // Passed from MainLayout (which gets it from RootLayout or its own state)

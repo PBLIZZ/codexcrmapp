@@ -1,9 +1,10 @@
+import { AlertCircle } from 'lucide-react';
 import Link from 'next/link';
-import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
-import { AlertCircle } from 'lucide-react';
 
 // Define paths as constants for maintainability
 const PATHS = {

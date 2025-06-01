@@ -9,7 +9,7 @@ interface Group {
   description?: string | null;
   color?: string | null;
   emoji?: string | null;
-  group_members?: Array<{ id: string; client_id: string; group_id: string }>;
+  group_members?: Array<{ id: string; contact_id: string; group_id: string }>;
 }
 
 // Schema for group input validation
@@ -51,7 +51,7 @@ export const groupRouter = router({
         const { data: memberData, error: memberError } = await ctx.supabaseUser
           .from('group_members')
           .select('group_id')
-          .eq('client_id', input.contactId);
+          .eq('contact_id', input.contactId);
 
         if (memberError) {
           console.error('Error fetching group members:', memberError);
@@ -245,18 +245,18 @@ export const groupRouter = router({
         throw new TRPCError({ code: 'UNAUTHORIZED' });
       }
 
-      // First verify the client exists
-      const { data: _client, error: clientError } = await ctx.supabaseUser
-        .from('clients')
+      // First verify the contact exists
+      const { data: _contact, error: contactError } = await ctx.supabaseUser
+        .from('contacts')
         .select('id')
         .eq('id', input.contactId)
         .single();
 
-      if (clientError) {
-        console.error('Error verifying client:', clientError);
+      if (contactError) {
+        console.error('Error verifying contact:', contactError);
         throw new TRPCError({
           code: 'BAD_REQUEST',
-          message: 'Invalid client ID'
+          message: 'Invalid contact ID'
         });
       }
 
@@ -279,7 +279,7 @@ export const groupRouter = router({
       const { data: existing, error: checkError } = await ctx.supabaseUser
         .from('group_members')
         .select('id')
-        .eq('client_id', input.contactId)
+        .eq('contact_id', input.contactId)
         .eq('group_id', input.groupId)
         .maybeSingle();
 
@@ -300,14 +300,14 @@ export const groupRouter = router({
       const { data, error } = await ctx.supabaseUser
         .from('group_members')
         .insert({
-          client_id: input.contactId,
+          contact_id: input.contactId,
           group_id: input.groupId,
         })
         .select();
 
       if (error) {
         console.error('Error adding contact to group:', error, '\nPayload:', {
-          client_id: input.contactId,
+          contact_id: input.contactId,
           group_id: input.groupId
         });
         throw new TRPCError({
@@ -330,7 +330,7 @@ export const groupRouter = router({
       const { error } = await ctx.supabaseUser
         .from('group_members')
         .delete()
-        .eq('client_id', input.contactId)
+        .eq('contact_id', input.contactId)
         .eq('group_id', input.groupId);
 
       if (error) {
@@ -371,8 +371,8 @@ export const groupRouter = router({
       const { data, error } = await ctx.supabaseUser
         .from('group_members')
         .select(`
-          client_id,
-          clients:client_id (*)
+          contact_id,
+          contacts:contact_id (*)
         `)
         .eq('group_id', input.groupId);
 
@@ -385,6 +385,6 @@ export const groupRouter = router({
       }
 
       // Extract the contact data from the joined query
-      return data?.map((item: { clients: Record<string, unknown> }) => item.clients) || [];
+      return data?.map((item: { contacts: Record<string, unknown> }) => item.contacts) || [];
     }),
 });

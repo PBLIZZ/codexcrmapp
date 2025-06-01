@@ -1,14 +1,19 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from '@tanstack/react-query'; // For cache invalidation directly
+import { Plus, Edit, Trash2, Loader2, AlertCircle, Users, Folder, UserPlus } from "lucide-react";
+import { useRouter } from 'next/navigation';
 import { useState, useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner"; // For notifications
 import * as z from 'zod';
-import { api } from '@/lib/trpc';
-import { useQueryClient } from '@tanstack/react-query'; // For cache invalidation directly
-import { useRouter } from 'next/navigation';
 
+import { BulkContactSelector } from "@/components/groups/BulkContactSelector";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -21,12 +26,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea"; // If using for description
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Plus, Edit, Trash2, Loader2, AlertCircle, Users, Folder, UserPlus } from "lucide-react";
-import { toast } from "sonner"; // For notifications
-import { BulkContactSelector } from "@/components/groups/BulkContactSelector";
+import { api } from '@/lib/trpc';
 
 // Curated dark color palette for good contrast on light grey background
 const CURATED_COLORS = [

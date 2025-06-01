@@ -5,12 +5,12 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, useReducer } from 'react';
 
+import { SignOutButton } from '@/components/layout/SignOutButton';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { SignOutButton } from '@/components/layout/SignOutButton';
 import { fetchCurrentUser, updateUserPassword, signOutUser, mapAuthErrorMessage } from '@/lib/auth/service';
 
 // Constants

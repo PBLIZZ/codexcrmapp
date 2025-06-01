@@ -1,0 +1,51 @@
+# Task ID: 176
+# Title: Implement Subscription Plan Limit Checking
+# Status: pending
+# Dependencies: 169, 172
+# Priority: medium
+# Description: Add functionality to check if a CSV import would exceed the user's subscription plan limits before proceeding with the import.
+# Details:
+Develop a system that:
+
+1. Retrieves the user's current subscription plan details:
+   - Maximum allowed contacts
+   - Current contact count
+
+2. Analyzes the CSV import:
+   - Count total valid contacts to be imported
+   - Count how many are new vs. updates to existing contacts
+
+3. Performs limit validation:
+   - Calculate if adding new contacts would exceed the plan limit
+   - If limit would be exceeded, prevent import and show appropriate message
+   - If within limits, allow import to proceed
+
+4. Implements UI components:
+   - Warning message when limit would be exceeded
+   - Information about current usage vs. limit
+   - Call-to-action for plan upgrade if applicable
+
+Make the limit checking configurable through environment variables or database settings to easily adjust as plan structures change. The implementation should be modular enough to work with different subscription management systems.
+
+# Test Strategy:
+Test with various combinations of current contact counts, plan limits, and import sizes. Verify correct detection of limit violations. Test the UI components for limit warnings and upgrade prompts. Mock different subscription plans to ensure the system works with various limit configurations.
+
+# Subtasks:
+## 1. Implement Subscription Data Retrieval and Validation [pending]
+### Dependencies: None
+### Description: Create a service to fetch and validate current subscription plan details from the backend
+### Details:
+Develop a service that retrieves the user's current subscription plan data, including limits for imports and other relevant constraints. Implement validation logic to ensure the subscription data is properly formatted and contains all required fields. Handle edge cases such as expired subscriptions or missing data. Include appropriate error handling and logging.
+
+## 2. Develop Import Size Analysis and Limit Calculation Logic [pending]
+### Dependencies: 176.1
+### Description: Create utilities to analyze import size and calculate remaining quota based on subscription limits
+### Details:
+Build utilities that can analyze the size of incoming imports (number of records, file size, etc.) and compare against the subscription limits retrieved in subtask 1. Implement functions to calculate remaining quota, percentage used, and determine if an import would exceed limits. Include optimization for performance with large imports and handle edge cases like zero limits or unlimited plans.
+
+## 3. Create UI Components for Limit Warnings and Upgrade Prompts [pending]
+### Dependencies: 176.2
+### Description: Design and implement UI elements to display limit status and prompt for upgrades when needed
+### Details:
+Develop reusable UI components that display the current usage status relative to subscription limits. Create warning messages that appear when imports approach limits (e.g., 80% used) and blocking messages when limits would be exceeded. Implement upgrade prompt modals or banners with clear CTAs directing users to subscription upgrade options. Ensure components are responsive and follow the application's design system.
+

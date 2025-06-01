@@ -1,0 +1,46 @@
+# Task ID: 173
+# Title: Implement Name Derivation from Email Logic
+# Status: pending
+# Dependencies: 169
+# Priority: medium
+# Description: Create a utility function to derive first and last names from email addresses when these fields are missing in the CSV import.
+# Details:
+Develop a utility function that:
+
+1. Takes an email address as input
+2. Extracts the username portion (before @)
+3. Attempts to split the username into first and last name components based on common separators:
+   - Periods: john.doe@example.com → first_name: "John", last_name: "Doe"
+   - Underscores: john_doe@example.com → first_name: "John", last_name: "Doe"
+   - Hyphens: john-doe@example.com → first_name: "John", last_name: "Doe"
+4. Properly handles edge cases:
+   - Single word usernames: john@example.com → first_name: "John", last_name: ""
+   - Multiple separators: john.a.doe@example.com → first_name: "John", last_name: "Doe"
+   - Numeric components: john2@example.com → first_name: "John", last_name: ""
+
+5. Properly capitalizes names (first letter uppercase, rest lowercase)
+
+The function should return an object with first_name and last_name properties, or null if derivation isn't possible. This utility should be integrated into the CSV parsing process to fill in missing name fields when both first_name and last_name are blank but email is present.
+
+# Test Strategy:
+Create comprehensive unit tests with various email formats including all supported separators. Test edge cases like emails with no clear name components, very short usernames, and unusual formats. Verify proper capitalization of derived names. Test integration with the CSV parsing process.
+
+# Subtasks:
+## 1. Email Parsing and Username Extraction [pending]
+### Dependencies: None
+### Description: Extract the username portion from a given email address by isolating the substring before the @ symbol and validating its structure.
+### Details:
+Implement logic to split the email at the @ symbol, validate the presence of a valid username, and handle malformed email formats.
+
+## 2. Name Component Splitting with Multiple Separators [pending]
+### Dependencies: 173.1
+### Description: Split the extracted username into name components using supported separators (e.g., '.', '_', '-').
+### Details:
+Define a set of valid separators, split the username into parts while preserving order, and handle consecutive/leading/trailing separators.
+
+## 3. Edge Case Handling and Name Formatting [pending]
+### Dependencies: 173.2
+### Description: Apply formatting rules and handle edge cases to produce a standardized full name output.
+### Details:
+Implement capitalization rules (e.g., title case), trim whitespace, handle single-component usernames, empty/missing components, and mixed-case inputs.
+
