@@ -1,0 +1,43 @@
+# Task ID: 11
+# Title: Feature: Implement Reminder System
+# Status: pending
+# Dependencies: 59, 7
+# Priority: medium
+# Description: Create reminder system: set reminders for contacts, recurrence, UI (form, list, card), date/time picker, filtering, display on contact detail. (Corresponds to original Task 11)
+# Details:
+
+
+# Test Strategy:
+
+
+# Subtasks:
+## 1. Design Database Schema for Reminders [pending]
+### Dependencies: None
+### Description: Create the database schema for storing reminders with appropriate fields and relationships
+### Details:
+Design and implement the database schema for reminders including fields for title, description, date/time, recurrence pattern, status, and relationship to contacts. Consider indexing for efficient querying by date and contact. Include migration files for the schema changes.
+
+## 2. Implement tRPC Procedures for Reminder CRUD Operations [pending]
+### Dependencies: 11.1
+### Description: Create the necessary tRPC procedures to handle all reminder operations
+### Details:
+Develop tRPC procedures for creating, reading, updating, and deleting reminders. Include validation logic for reminder data, error handling, and appropriate authorization checks. Implement filtering capabilities for retrieving reminders by date range, contact, or status.
+
+## 3. Create UI Components for Reminder Form [pending]
+### Dependencies: 11.2
+### Description: Build the form components for creating and editing reminders with date/time picker
+### Details:
+Develop reusable UI components for the reminder form including fields for title, description, date/time picker with timezone support, recurrence options, and contact selection. Ensure the form handles validation and provides appropriate feedback to users.
+
+## 4. Implement Reminder Listing with Filtering [pending]
+### Dependencies: 11.2, 11.3
+### Description: Create the UI for displaying and filtering reminders
+### Details:
+Build a reminder listing component that displays reminders in a clear format with sorting and filtering options. Include features for filtering by date range, contact, and status. Implement pagination for efficient loading of large reminder sets.
+
+## 5. Integrate Reminders with Contact Detail Views [pending]
+### Dependencies: 11.4
+### Description: Connect the reminder system with contact details to show relevant reminders
+### Details:
+Integrate the reminder system with contact detail views to display reminders associated with specific contacts. Add functionality to create reminders directly from contact views. Ensure consistent user experience between standalone reminder management and contact-specific reminder interactions.
+

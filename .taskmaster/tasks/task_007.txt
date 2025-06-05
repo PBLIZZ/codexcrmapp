@@ -1,0 +1,61 @@
+# Task ID: 7
+# Title: Feature: Implement Contact Management CRUD Operations
+# Status: pending
+# Dependencies: 56, 4, 5, 6
+# Priority: high
+# Description: Create tRPC procedures and UI for CRUD operations on contacts, including pagination, filtering, sorting, profile_image_url, tags. CRITICAL: Delete functionality with confirmation. (Corresponds to original Task 7)
+# Details:
+
+
+# Test Strategy:
+
+
+# Subtasks:
+## 1. Design Database Schema for Contacts [pending]
+### Dependencies: None
+### Description: Create the database schema for storing contact information
+### Details:
+Design and implement the database schema for contacts including fields for name, email, phone, address, notes, profile image URL, and any other relevant information. Create the Prisma model and run migrations to update the database.
+
+## 2. Implement tRPC Procedures for Creating Contacts [pending]
+### Dependencies: 7.1
+### Description: Develop the API endpoints for adding new contacts
+### Details:
+Create tRPC procedures for adding new contacts to the database. Include input validation, error handling, and proper response formatting. Ensure the procedure handles all required and optional fields defined in the schema.
+
+## 3. Implement tRPC Procedures for Reading Contacts [pending]
+### Dependencies: 7.1
+### Description: Develop API endpoints for retrieving contacts with pagination, filtering, and sorting
+### Details:
+Create tRPC procedures for fetching contacts with support for pagination (limit/offset), filtering by various fields (name, email, etc.), and sorting options. Include a procedure for fetching a single contact by ID.
+
+## 4. Implement tRPC Procedures for Updating Contacts [pending]
+### Dependencies: 7.1
+### Description: Develop API endpoints for modifying existing contacts
+### Details:
+Create tRPC procedures for updating contact information. Include validation to ensure only valid fields are updated and handle partial updates appropriately. Implement proper error handling for cases like contact not found.
+
+## 5. Implement tRPC Procedures for Deleting Contacts [pending]
+### Dependencies: 7.1
+### Description: Develop API endpoints for removing contacts with confirmation
+### Details:
+Create tRPC procedures for deleting contacts with a confirmation mechanism. Implement soft delete if appropriate for the application requirements. Handle error cases such as attempting to delete non-existent contacts.
+
+## 6. Create UI Components for Contact Management [pending]
+### Dependencies: 7.2, 7.3, 7.4, 7.5
+### Description: Develop frontend components for displaying and interacting with contacts
+### Details:
+Create UI components for contact forms (add/edit), contact listings with pagination controls, search/filter functionality, and sort options. Implement confirmation dialogs for delete operations and form validation for create/update operations.
+
+## 7. Implement Profile Image Upload and Management [pending]
+### Dependencies: 7.1, 7.2, 7.4
+### Description: Develop functionality for uploading and managing contact profile images
+### Details:
+Implement image upload functionality for contact profile pictures. Include image validation, resizing/optimization, storage solution integration, and UI components for image preview and selection. Update the relevant tRPC procedures to handle image URLs or references.
+
+## 8. Refactor client name: `first_name`/`last_name` to single `full_name` field [pending]
+### Dependencies: 7.1
+### Description: Modify the `clients` database table schema to replace `first_name` and `last_name` columns with a single `full_name` column. This will involve updating all related tRPC procedures, forms, UI components, and data handling logic throughout the application to use `full_name`. Consider data migration for existing records.
+### Details:
+
+

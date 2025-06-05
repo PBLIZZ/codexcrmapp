@@ -1,0 +1,31 @@
+# Task ID: 56
+# Title: Epic 2: CRM Core Functionality - Contacts & Groups
+# Status: in-progress
+# Dependencies: 54
+# Priority: high
+# Description: Implementing the fundamental CRM features for managing contacts and organizing them into groups. Incorporates original tasks 7, 8, 26, 28.
+# Details:
+
+
+# Test Strategy:
+
+
+# Subtasks:
+## 1. Design Contact Data Model [done]
+### Dependencies: None
+### Description: Create the data model for contacts including fields for personal information, communication details, and relationship management.
+### Details:
+Define required fields (name, email, phone, address, etc.), optional fields (social media, website, notes), contact categorization, and relationship tracking capabilities. Consider GDPR compliance requirements for data storage.
+
+## 2. Implement Contact Groups Functionality [done]
+### Dependencies: 56.1
+### Description: Develop the ability to create, edit, and manage contact groups for better organization and segmentation.
+### Details:
+Create functionality for group creation, contact assignment to multiple groups, group filtering and searching, and bulk operations on groups. Include permission settings for group access and sharing capabilities.
+
+## 3. Build Contact Import/Export Features [in-progress]
+### Dependencies: 56.1, 56.2
+### Description: Create functionality to import contacts from CSV/vCard files and export contacts in various formats.
+### Details:
+Implement CSV/vCard import with field mapping, duplicate detection, batch processing for large imports, export to CSV/vCard/PDF formats, and selective export based on groups or search criteria.
+

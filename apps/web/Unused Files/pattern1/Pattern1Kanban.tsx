@@ -1,7 +1,7 @@
-"use client";
-import { useState, DragEvent } from "react";
+'use client';
+import { useState, DragEvent } from 'react';
 
-import { api } from "@/lib/trpc";
+import { api } from '@/lib/trpc';
 
 interface Contact {
   id: string;
@@ -15,11 +15,11 @@ interface Contact {
  */
 export function Pattern1Kanban() {
   const stages = [
-    { id: "lead", name: "Lead" },
-    { id: "nurture", name: "Nurture" },
-    { id: "client", name: "Client" },
+    { id: 'lead', name: 'Lead' },
+    { id: 'nurture', name: 'Nurture' },
+    { id: 'client', name: 'Client' },
   ];
-  const { data: contacts, isLoading } = api.contacts.list.useQuery<Contact[]>();
+  const { data: contacts, isLoading } = api.contacts.list.useQuery<Contact[]>({});
   // localStageMap holds stage assignment per contact (client-side)
   const [localStages, setLocalStages] = useState<Record<string, string>>({});
 
@@ -28,12 +28,12 @@ export function Pattern1Kanban() {
   }
 
   const handleDragStart = (e: DragEvent<HTMLDivElement>, contactId: string) => {
-    e.dataTransfer.setData("contactId", contactId);
+    e.dataTransfer.setData('contactId', contactId);
   };
 
   const handleDrop = (e: DragEvent<HTMLDivElement>, stageId: string) => {
     e.preventDefault();
-    const contactId = e.dataTransfer.getData("contactId");
+    const contactId = e.dataTransfer.getData('contactId');
     if (!contactId) return;
     setLocalStages((prev) => ({ ...prev, [contactId]: stageId }));
     // TODO: Persist stage change via an API/mutation when 'stage' is available on Contact
@@ -50,7 +50,7 @@ export function Pattern1Kanban() {
         >
           <h3 className="font-semibold mb-2">{stage.name}</h3>
           <div className="space-y-2">
-            {contacts?.map((contact) => {
+            {contacts?.map((contact: Contact) => {
               // default to 'lead' if not moved yet
               const contactStage = localStages[contact.id] || 'lead';
               if (contactStage !== stage.id) return null;

@@ -1,0 +1,92 @@
+# Task ID: 187
+# Title: Comprehensive Testing and Bug Fixing
+# Status: pending
+# Dependencies: 182, 183, 184, 185, 186
+# Priority: high
+# Description: Perform thorough testing of the entire application to ensure all functionality related to the renamed 'contacts' entity works correctly, and fix any issues discovered.
+# Details:
+1. Create a comprehensive test plan covering all features that interact with the renamed entity:
+   - Login and logout functionality
+   - Photo uploads for contacts
+   - Creating new contacts
+   - Using the "quick contact" feature
+   - Creating new groups
+   - Using the "quick group" feature
+   - All tRPC routes that were modified
+
+2. Test database operations:
+   - Verify that all CRUD operations work with the new table name
+   - Test any complex queries or joins that involve the contacts table
+   - Verify that RLS policies are working correctly
+
+3. Test frontend functionality:
+   - Navigate through all pages that previously dealt with clients
+   - Test all forms and interactive elements
+   - Verify that data is displayed correctly
+   - Test error handling and edge cases
+
+4. Look for common issues:
+   - Missed references to 'client' in code or UI
+   - Type errors or runtime errors
+   - Broken links or navigation
+   - Issues with data fetching or mutations
+
+5. Fix any bugs discovered during testing:
+   - Document each issue found
+   - Implement fixes
+   - Verify that fixes don't introduce new problems
+
+6. Regression testing:
+   - Ensure that unrelated functionality still works correctly
+   - Verify that performance hasn't been negatively impacted
+
+Be methodical and thorough in testing. Use both automated tests and manual testing to ensure complete coverage.
+
+# Test Strategy:
+1. Execute all existing automated tests (unit, integration, e2e)
+2. Perform manual testing following the test plan
+3. Test all acceptance criteria listed in the PRD
+4. Use browser developer tools to check for console errors
+5. Test with different user roles if applicable
+6. Verify database integrity after operations
+7. Test performance to ensure the changes haven't introduced any slowdowns
+8. Document all issues found and their resolutions
+9. Create a final test report summarizing the testing process and results
+
+# Subtasks:
+## 1. Test Plan Creation [done]
+### Dependencies: None
+### Description: Define scope, objectives, and strategies for testing cross-system impact. Include risk assessment and coordination requirements.
+### Details:
+Document test scenarios, tools, roles, and timelines. Align with stakeholders on acceptance criteria.
+
+## 2. Backend Testing (CRUD, RLS) [in-progress]
+### Dependencies: 187.1
+### Description: Validate database operations, including Create/Read/Update/Delete functionality and Row-Level Security policies.
+### Details:
+Test API endpoints, query performance, and security rules. Verify data consistency across services.
+
+## 3. Frontend Testing (UI, Forms, Data) [pending]
+### Dependencies: 187.1
+### Description: Verify user interface behavior, form validations, and data rendering from backend systems.
+### Details:
+Check responsiveness, accessibility, and end-to-end data flow. Validate error messaging and edge cases.
+
+## 4. Error Case Testing & Bug Logging [in-progress]
+### Dependencies: 187.2, 187.3
+### Description: Simulate failure scenarios (e.g., invalid inputs, network errors) and log identified defects.
+### Details:
+Prioritize bugs by severity. Document reproduction steps and system states for each issue.
+
+## 5. Fix Implementation & Verification [pending]
+### Dependencies: 187.4
+### Description: Address logged bugs and validate resolutions across all affected layers.
+### Details:
+Coordinate fixes between frontend/backend teams. Re-test impacted functionalities.
+
+## 6. Regression Testing & Final Report [pending]
+### Dependencies: 187.5
+### Description: Ensure no regressions in existing features post-fixes. Compile test outcomes and risk assessment.
+### Details:
+Execute full regression suite. Summarize results, open risks, and deployment readiness in the report.
+

@@ -1,4 +1,4 @@
-import { ContactsContent } from "./ContactsContent"; // Import the extracted contact component
+import { ContactsContent } from './ContactsContent'; // Import the extracted contact component
 
 /**
  * Server component for the Contacts page.

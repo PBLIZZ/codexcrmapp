@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Download,
@@ -11,19 +11,25 @@ import {
   Phone,
   MessageSquareText,
   Sparkles,
-  X
-} from "lucide-react";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+  X,
+} from 'lucide-react';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
 import { ColumnSelector } from './ColumnSelector';
 import { ContactForm, ContactFormData } from './ContactForm';
 import { GroupsProvider } from './ContactGroupManager';
-import { ContactList, Contact, NameSortField, DateFilterPeriod, SourceOption } from './ContactList';
+import {
+  ContactList,
+  Contact,
+  NameSortField,
+  DateFilterPeriod,
+  SourceOption,
+} from './ContactList';
 
 import { AddContactModal } from '@/components/contacts/AddContactModal';
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,8 +37,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
 import { formatDateForInput, parseInputDateString } from '@/lib/dateUtils';
 import { api } from '@/lib/trpc';
 
@@ -40,12 +46,13 @@ import { api } from '@/lib/trpc';
 
 // Icons
 
-
-export function ContactsContent({ initialGroupId }: { initialGroupId?: string } = {}) {
+export function ContactsContent({
+  initialGroupId,
+}: { initialGroupId?: string } = {}) {
   // --- State Management ---
   const router = useRouter();
   const searchParams = useSearchParams();
-  const groupIdFromUrl = searchParams.get("group") ?? initialGroupId ?? "";
+  const groupIdFromUrl = searchParams.get('group') ?? initialGroupId ?? '';
   // --- Modal state for quick add contact ---
   const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
   // Auto-open modal if ?new=true is present
@@ -60,24 +67,34 @@ export function ContactsContent({ initialGroupId }: { initialGroupId?: string } 
     const params = new URLSearchParams(Array.from(searchParams.entries()));
     params.delete('new');
     router.replace(`?${params.toString()}`, { scroll: false });
-  }
+  };
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [editingContactId, setEditingContactId] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedGroupId, setSelectedGroupId] = useState<string>(groupIdFromUrl);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedGroupId, setSelectedGroupId] =
+    useState<string>(groupIdFromUrl);
   const [deleteError, setDeleteError] = useState<string | null>(null);
-  const [formData, setFormData] = useState<ContactFormData | undefined>(undefined);
+  const [formData, setFormData] = useState<ContactFormData | undefined>(
+    undefined
+  );
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [visibleColumns, setVisibleColumns] = useState<string[]>([
-    'name', 'last_contacted', 'notes', 'source'
+    'name',
+    'last_contacted',
+    'notes',
+    'source',
   ]);
   const [sortField, setSortField] = useState('name');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
-  const [nameSortField, setNameSortField] = useState<NameSortField>('first_name');
-  const [dateFilterPeriod, setDateFilterPeriod] = useState<DateFilterPeriod>('all');
-  const [selectedSourceFilters, setSelectedSourceFilters] = useState<SourceOption[]>([]);
-  
+  const [nameSortField, setNameSortField] =
+    useState<NameSortField>('first_name');
+  const [dateFilterPeriod, setDateFilterPeriod] =
+    useState<DateFilterPeriod>('all');
+  const [selectedSourceFilters, setSelectedSourceFilters] = useState<
+    SourceOption[]
+  >([]);
+
   // Keep state in sync with URL parameters
   useEffect(() => {
     // Prevent unnecessary re-setting if groupIdFromUrl is the same
@@ -95,53 +112,61 @@ export function ContactsContent({ initialGroupId }: { initialGroupId?: string } 
   });
 
   // Apply client-side sorting based on sort field and direction
-  const { 
+  const {
     data: contacts = [], // Provide default empty array to avoid undefined
-    isLoading, 
-    error: queryError 
-  } = api.contacts.list.useQuery({
-    search: searchQuery,
-    groupId: selectedGroupId || undefined // Convert empty string to undefined for tRPC query
-  }, {
-    // Keep previous data while loading new search/filter results
-    keepPreviousData: true,
-  });
-  
+    isLoading,
+    error: queryError,
+  } = api.contacts.list.useQuery(
+    {
+      search: searchQuery,
+      groupId: selectedGroupId || undefined, // Convert empty string to undefined for tRPC query
+    },
+    {
+      // Keep previous data while loading new search/filter results
+      keepPreviousData: true,
+    }
+  );
+
   const sortedContacts = [...contacts].sort((a, b) => {
     // Handle name sorting based on selected name sort field
     if (sortField === 'first_name') {
       const aValue = a.first_name || '';
       const bValue = b.first_name || '';
-      return sortDirection === 'asc' 
+      return sortDirection === 'asc'
         ? aValue.localeCompare(bValue)
         : bValue.localeCompare(aValue);
     }
-    
+
     if (sortField === 'last_name') {
       const aValue = a.last_name || '';
       const bValue = b.last_name || '';
-      return sortDirection === 'asc' 
+      return sortDirection === 'asc'
         ? aValue.localeCompare(bValue)
         : bValue.localeCompare(aValue);
     }
-    
+
     // For other fields, sort normally
-    const aValue = a[sortField as keyof Contact] as string || '';
-    const bValue = b[sortField as keyof Contact] as string || '';
-    
+    const aValue = (a[sortField as keyof Contact] as string) || '';
+    const bValue = (b[sortField as keyof Contact] as string) || '';
+
     if (typeof aValue === 'string' && typeof bValue === 'string') {
-      return sortDirection === 'asc' 
+      return sortDirection === 'asc'
         ? aValue.localeCompare(bValue)
         : bValue.localeCompare(aValue);
     }
-    
+
     return 0;
   });
-  
+
   // Filter contacts based on search query
   const filteredContacts = sortedContacts.filter((contact) => {
     const searchRegex = new RegExp(searchQuery, 'i');
-    return searchRegex.test(contact.first_name) || searchRegex.test(contact.last_name) || searchRegex.test(contact.email) || searchRegex.test(contact.phone);
+    return (
+      searchRegex.test(contact.first_name) ||
+      searchRegex.test(contact.last_name) ||
+      searchRegex.test(contact.email) ||
+      searchRegex.test(contact.phone)
+    );
   });
 
   // Groups data is already fetched above
@@ -155,8 +180,8 @@ export function ContactsContent({ initialGroupId }: { initialGroupId?: string } 
     onError: (error) => {
       setFormError(`Failed to save contact: ${error.message}`);
       // Log the full error object for debugging
-      console.error("Save Mutation Error:", error);
-    }
+      console.error('Save Mutation Error:', error);
+    },
   });
 
   // Mutation for deleting a contact
@@ -168,10 +193,10 @@ export function ContactsContent({ initialGroupId }: { initialGroupId?: string } 
     onError: (error) => {
       setDeleteError(`Failed to delete contact: ${error.message}`);
       // Log the full error object for debugging
-      console.error("Delete Mutation Error:", error);
+      console.error('Delete Mutation Error:', error);
     },
   });
-  
+
   // Helper function to reset form and error states
   const resetFormAndErrorStates = () => {
     setFormError(null);
@@ -208,7 +233,7 @@ export function ContactsContent({ initialGroupId }: { initialGroupId?: string } 
       enrichment_status: contact.enrichment_status ?? '',
       enriched_data: contact.enriched_data ?? null,
     };
-    
+
     setFormData(formData);
     setEditingContactId(contact.id);
     resetFormAndErrorStates(); // Reset errors before opening form
@@ -217,14 +242,18 @@ export function ContactsContent({ initialGroupId }: { initialGroupId?: string } 
 
   const handleDeleteClick = (contactId: string) => {
     setDeleteError(null); // Clear error before attempting delete
-    if (window.confirm('Are you sure you want to delete this contact? This action cannot be undone.')) {
+    if (
+      window.confirm(
+        'Are you sure you want to delete this contact? This action cannot be undone.'
+      )
+    ) {
       deleteMutation.mutate({ contactId });
     }
   };
 
   const handleSubmit = async (data: ContactFormData) => {
     // No need to set formError to null here, as onError handles failure and onSuccess closes form
-    
+
     // Ensure optional fields are null if empty string for the backend API
     const mutationData: ContactFormData = {
       ...data,
@@ -238,62 +267,71 @@ export function ContactsContent({ initialGroupId }: { initialGroupId?: string } 
       profile_image_url: data.profile_image_url?.trim() || null,
       source: data.source?.trim() || null,
       notes: data.notes?.trim() || null,
-      last_contacted_at: data.last_contacted_at ? parseInputDateString(data.last_contacted_at) : null,
+      last_contacted_at: data.last_contacted_at
+        ? parseInputDateString(data.last_contacted_at)
+        : null,
       enrichment_status: data.enrichment_status?.trim() || null,
       enriched_data: data.enriched_data, // Pass as is
     };
-    
+
     // No need for try-catch here as mutation.onError is the primary handler
     await saveMutation.mutateAsync(mutationData);
     // Success handling is done in the mutation's onSuccess callback
   };
 
   // --- Additional Handler Functions ---
-  
+
   // Toggle column visibility when a column is clicked
   const handleColumnToggle = (column: string) => {
-    setVisibleColumns(prev => 
-      prev.includes(column) 
-        ? prev.filter(col => col !== column) 
+    setVisibleColumns((prev) =>
+      prev.includes(column)
+        ? prev.filter((col) => col !== column)
         : [...prev, column]
     );
   };
-  
+
   // Handle date filter change for Last Contacted
   const handleDateFilterChange = (period: DateFilterPeriod) => {
     setDateFilterPeriod(period);
   };
-  
+
   // Handle source filter change
   const handleSourceFilterChange = (sources: SourceOption[]) => {
     setSelectedSourceFilters(sources);
   };
-  
+
   const handleSortChange = (field: string) => {
     if (sortField === field) {
       // Toggle direction if clicking the same field
-      setSortDirection(prev => prev === "asc" ? "desc" : "asc");
+      setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'));
     } else {
       // Set new field and default to ascending
       setSortField(field);
-      setSortDirection("asc");
+      setSortDirection('asc');
     }
   };
-  
+
   // Handle name-specific sorting with different options
-  const handleNameSortChange = (field: NameSortField, direction: 'asc' | 'desc') => {
+  const handleNameSortChange = (
+    field: NameSortField,
+    direction: 'asc' | 'desc'
+  ) => {
     setNameSortField(field);
     setSortField(field);
     setSortDirection(direction);
   };
-  
+
   // --- Rendering ---
-  
+
   // Show query error only if no data is loaded
   if (queryError && contacts.length === 0) {
-    return <p className="p-4 text-red-600">Error loading contacts: {queryError.message}</p>;
+    return (
+      <p className="p-4 text-red-600">
+        Error loading contacts: {queryError.message}
+      </p>
+    );
   }
-  
+
   // Show initial loading state only when no data is available yet
   if (isLoading && contacts.length === 0) {
     return (
@@ -316,158 +354,177 @@ export function ContactsContent({ initialGroupId }: { initialGroupId?: string } 
   return (
     <GroupsProvider>
       <div className="flex flex-col h-full">
-      {/* Main Content */}
-      <div className="flex-1 overflow-auto p-4">
-        <div className="mb-6">
-          {/* Search and filters toolbar */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
-            <div className="relative w-full md:w-64">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input
-                placeholder="Search contacts..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 border-gray-300"
-              />
-            </div>
-            
-            {/* Active Group Filter */}
-          {selectedGroupId && (
-            <div className="flex items-center">
-              <div className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-medium flex items-center mr-4">
-                {groups.find((g: { id: string; name: string }) => g.id === selectedGroupId)?.name || "Group"}
-                <button 
-                  onClick={() => {
-                    router.push("/contacts");
-                  }}
-                  className="ml-2 text-purple-700 hover:text-purple-900"
+        {/* Main Content */}
+        <div className="flex-1 overflow-auto p-4">
+          <div className="mb-6">
+            {/* Search and filters toolbar */}
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
+              <div className="relative w-full md:w-64">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  placeholder="Search contacts..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 border-gray-300"
+                />
+              </div>
+
+              {/* Active Group Filter */}
+              {selectedGroupId && (
+                <div className="flex items-center">
+                  <div className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-medium flex items-center mr-4">
+                    {groups.find(
+                      (g: { id: string; name: string }) =>
+                        g.id === selectedGroupId
+                    )?.name || 'Group'}
+                    <button
+                      onClick={() => {
+                        router.push('/contacts');
+                      }}
+                      className="ml-2 text-purple-700 hover:text-purple-900"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex flex-wrap gap-2">
+                <Button variant="outline" size="sm" className="border-gray-300">
+                  <Tag className="w-4 h-4 mr-2" />
+                  Filters
+                </Button>
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="border-gray-300"
+                    >
+                      <SlidersHorizontal className="w-4 h-4 mr-2" />
+                      Columns
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Visible Columns</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <ColumnSelector
+                      visibleColumns={visibleColumns}
+                      onToggle={handleColumnToggle}
+                    />
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* New Contact Button */}
+                <Button
+                  onClick={handleAddNewClick}
+                  className="bg-teal-500 hover:bg-teal-600 text-white"
+                  size="sm"
                 >
-                  <X className="h-4 w-4" />
-                </button>
+                  <Plus className="mr-2 h-4 w-4" />
+                  New Contact
+                </Button>
               </div>
             </div>
-          )}
-          
-          <div className="flex flex-wrap gap-2">
-              <Button variant="outline" size="sm" className="border-gray-300">
-                <Tag className="w-4 h-4 mr-2" />
-                Filters
-              </Button>
-              
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="border-gray-300">
-                    <SlidersHorizontal className="w-4 h-4 mr-2" />
-                    Columns
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Visible Columns</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <ColumnSelector 
-                    visibleColumns={visibleColumns}
-                    onToggle={handleColumnToggle}
-                  />
-                </DropdownMenuContent>
-              </DropdownMenu>
-              
-              {/* New Contact Button */}
-              <Button
-                onClick={handleAddNewClick}
-                className="bg-teal-500 hover:bg-teal-600 text-white"
-                size="sm"
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                New Contact
-              </Button>
-            </div>
+
+            {/* Alerts */}
+            {deleteError && (
+              <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6">
+                <p>{deleteError}</p>
+              </div>
+            )}
+
+            {/* Contact List */}
+            <ContactList
+              contacts={filteredContacts}
+              onEditClick={handleEditClick}
+              onDeleteClick={handleDeleteClick}
+              isDeleteMutationLoading={deleteMutation.isLoading}
+              isSaveMutationLoading={saveMutation.isLoading}
+              searchQuery={searchQuery}
+              selectedGroupId={selectedGroupId}
+              sortField={sortField}
+              sortDirection={sortDirection}
+              onSortChange={handleSortChange}
+              onNameSortChange={handleNameSortChange}
+              nameSortField={nameSortField}
+              dateFilterPeriod={dateFilterPeriod}
+              onDateFilterChange={handleDateFilterChange}
+              selectedSourceFilters={selectedSourceFilters}
+              onSourceFilterChange={handleSourceFilterChange}
+            />
           </div>
-          
-          {/* Alerts */}
-          {deleteError && (
-            <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6">
-              <p>{deleteError}</p>
-            </div>
-          )}
-          
-          {/* Contact List */}
-          <ContactList 
-            contacts={filteredContacts}
-            onEditClick={handleEditClick}
-            onDeleteClick={handleDeleteClick}
-            isDeleteMutationLoading={deleteMutation.isLoading}
-            isSaveMutationLoading={saveMutation.isLoading}
-            searchQuery={searchQuery}
-            selectedGroupId={selectedGroupId}
-            sortField={sortField}
-            sortDirection={sortDirection}
-            onSortChange={handleSortChange}
-            onNameSortChange={handleNameSortChange}
-            nameSortField={nameSortField}
-            dateFilterPeriod={dateFilterPeriod}
-            onDateFilterChange={handleDateFilterChange}
-            selectedSourceFilters={selectedSourceFilters}
-            onSourceFilterChange={handleSourceFilterChange}
-          />
         </div>
-      </div>
 
         {/* Quick Add Contact Modal (auto-opens on ?new=true) */}
         <AddContactModal
-                onContactAdded={handleQuickAddClose} // Or any other success handler
-                open={isQuickAddOpen}
-                onOpenChange={openState => { // Renamed 'open' to 'openState' to avoid conflict
-                  setIsQuickAddOpen(openState); // Sync state
-                  if (!openState) {
-                    handleQuickAddClose(); // Call your close logic which also handles URL
-                  }
-                }}
-                showTriggerButton={false} // <--- HIDE the modal's default trigger
-              />
+          onContactAdded={handleQuickAddClose} // Or any other success handler
+          open={isQuickAddOpen}
+          onOpenChange={(openState) => {
+            // Renamed 'open' to 'openState' to avoid conflict
+            setIsQuickAddOpen(openState); // Sync state
+            if (!openState) {
+              handleQuickAddClose(); // Call your close logic which also handles URL
+            }
+          }}
+          showTriggerButton={false} // <--- HIDE the modal's default trigger
+        />
 
-      {/*
+        {/*
         NOTE: For quick add, modal should only have fields: name, last name, email.
         There should be an option (future) to "Add full details" that opens a full client card page with all fields empty.
         Fallback trigger for this modal will be added to the dashboard quicklinks page.
       */}
-      {/* Add/Edit Contact Form Modal */}
-      {isFormOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">
-                  {editingContactId ? 'Edit Contact' : 'Add New Contact'}
-                </h2>
-                <button 
-                  onClick={handleCloseForm}
-                  className="text-gray-500 hover:text-gray-700 focus:outline-none"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-              
-              {formError && (
-                <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6">
-                  <p>{formError}</p>
+        {/* Add/Edit Contact Form Modal */}
+        {isFormOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-2xl font-bold text-gray-800">
+                    {editingContactId ? 'Edit Contact' : 'Add New Contact'}
+                  </h2>
+                  <button
+                    onClick={handleCloseForm}
+                    className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
                 </div>
-              )}
-              
-              <ContactForm 
-                onSubmit={handleSubmit} 
-                initialData={formData}
-                isOpen={true}
-                onClose={() => setIsFormOpen(false)}
-                isSubmitting={saveMutation.isLoading}
-                error={formError}
-                editingContactId={editingContactId}
-              />
+
+                {formError && (
+                  <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6">
+                    <p>{formError}</p>
+                  </div>
+                )}
+
+                <ContactForm
+                  onSubmit={handleSubmit}
+                  initialData={formData}
+                  isOpen={true}
+                  onClose={() => setIsFormOpen(false)}
+                  isSubmitting={saveMutation.isLoading}
+                  error={formError}
+                  editingContactId={editingContactId}
+                />
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
       </div>
     </GroupsProvider>
   );

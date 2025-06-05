@@ -2,7 +2,7 @@
 
 /**
  * ESLint Staged Fix Script
- * 
+ *
  * This script runs ESLint with the --fix flag on specific categories of issues
  * to gradually improve code quality without attempting to fix everything at once.
  */
@@ -32,23 +32,23 @@ const stages = [
   {
     name: 'Import Order',
     rules: ['import/order'],
-    description: 'Fixing import order issues'
+    description: 'Fixing import order issues',
   },
   {
     name: 'Unused Variables',
     rules: ['@typescript-eslint/no-unused-vars'],
-    description: 'Identifying unused variables (requires manual fixes)'
+    description: 'Identifying unused variables (requires manual fixes)',
   },
   {
     name: 'Console Statements',
     rules: ['no-console'],
-    description: 'Identifying console statements (requires manual fixes)'
+    description: 'Identifying console statements (requires manual fixes)',
   },
   {
     name: 'Any Types',
     rules: ['@typescript-eslint/no-explicit-any'],
-    description: 'Identifying any types (requires manual fixes)'
-  }
+    description: 'Identifying any types (requires manual fixes)',
+  },
 ];
 
 // Run ESLint for each stage
@@ -58,11 +58,11 @@ try {
   // First run: Fix import order issues (these can be auto-fixed)
   const importOrderStage = stages[0];
   console.warn(`\n🛠️  Stage 1: ${importOrderStage.description}...`);
-  
+
   for (const dir of directories) {
     const dirPath = resolve(rootDir, dir);
     const fixCommand = `${baseCommand} --fix --rule "${importOrderStage.rules[0]}:warn" "${dirPath}/**/*.{ts,tsx,js,jsx}"`;
-    
+
     try {
       console.warn(`   Fixing in ${dir}...`);
       execSync(fixCommand, { stdio: 'pipe' });
@@ -71,21 +71,21 @@ try {
       console.warn(`   Some issues in ${dir} could not be auto-fixed.`);
     }
   }
-  
+
   // Second run: Generate reports for issues that need manual fixes
   console.warn('\n📊 Generating reports for issues that need manual fixes:');
-  
+
   for (let i = 1; i < stages.length; i++) {
     const stage = stages[i];
-    console.warn(`\n📋 Stage ${i+1}: ${stage.description}...`);
-    
+    console.warn(`\n📋 Stage ${i + 1}: ${stage.description}...`);
+
     // Create a combined rule string
-    const ruleString = stage.rules.map(rule => `"${rule}:warn"`).join(',');
-    
+    const ruleString = stage.rules.map((rule) => `"${rule}:warn"`).join(',');
+
     for (const dir of directories) {
       const dirPath = resolve(rootDir, dir);
       const reportCommand = `${baseCommand} --rule ${ruleString} "${dirPath}/**/*.{ts,tsx,js,jsx}" --format stylish`;
-      
+
       try {
         console.warn(`\n   Issues in ${dir}:`);
         const output = execSync(reportCommand, { stdio: 'pipe' }).toString();
@@ -100,11 +100,13 @@ try {
       }
     }
   }
-  
+
   console.warn('\n✅ ESLint staged fixes completed!');
   console.warn('\nNext steps:');
   console.warn('1. Review the reports above for issues that need manual fixes');
-  console.warn('2. Fix the most critical issues first (any types, unused variables)');
+  console.warn(
+    '2. Fix the most critical issues first (any types, unused variables)'
+  );
   console.warn('3. Run the script again to see your progress');
   console.warn('\nTip: You can run ESLint on a single file with:');
   console.warn('pnpm eslint --fix path/to/file.tsx');

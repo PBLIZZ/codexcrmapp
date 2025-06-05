@@ -1,12 +1,12 @@
 // apps/web/components/layout/SignOutButton.tsx
-"use client";
+'use client';
 
-import { useQueryClient } from "@tanstack/react-query";
-import { LogOut } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useQueryClient } from '@tanstack/react-query';
+import { LogOut } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { supabase } from "@/lib/supabase/client";
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { supabase } from '@/lib/supabase/client';
 
 export function SignOutButton() {
   const router = useRouter();

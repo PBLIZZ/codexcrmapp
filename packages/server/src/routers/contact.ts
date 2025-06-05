@@ -4,7 +4,6 @@ import { z } from 'zod';
 import { supabaseAdmin as _supabaseAdmin } from '../supabaseAdmin';
 import { router, protectedProcedure } from '../trpc';
 
-
 const contactInputSchema = z.object({
   id: z.string().uuid().optional(), // ID is UUID string, optional for creation
   first_name: z.string().min(1, 'First name is required'),
@@ -16,7 +15,8 @@ const contactInputSchema = z.object({
   profile_image_url: z.string().optional().nullable(),
   notes: z.string().optional().nullable(),
   source: z.string().optional().nullable(), // Added source
-  last_contacted_at: z.preprocess((arg) => { // Added last_contacted_at
+  last_contacted_at: z.preprocess((arg) => {
+    // Added last_contacted_at
     // Empty string or null/undefined should become null
     if (arg === '' || arg === null || arg === undefined) {
       return null;
@@ -33,25 +33,51 @@ const contactInputSchema = z.object({
 
 // Defines tRPC procedures for contacts.
 export const contactRouter = router({
-
   // ===== Protected Procedures (require authentication) =====
 
   // Protected procedure for listing authenticated user's contacts
-  list: protectedProcedure.query(async ({ ctx }) => {
+  list: protectedProcedure
+    .input(
+      z.object({
+        search: z.string().optional(),
+        groupId: z.string().uuid().optional(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
     if (!ctx.user) {
       throw new TRPCError({ code: 'UNAUTHORIZED' });
     }
-    
+
     // Use the USER-SCOPED client from context for reads to respect RLS!
-    const { data, error } = await ctx.supabaseUser
-      .from('contacts')
-      .select('*')
-      // .eq('user_id', ctx.user.id) // Not needed with proper RLS, but can keep for defense-in-depth
-      .order('created_at', { ascending: false });
-      
+    let query = ctx.supabaseUser.from('contacts');
+
+    if (input.groupId) {
+      // If filtering by group, INNER JOIN and filter on group_id
+      query = query
+        .select('*, group_members!inner(group_id)')
+        .eq('group_members.group_id', input.groupId);
+    } else {
+      // If not filtering by group, LEFT JOIN to show all contacts and their group memberships
+      query = query.select('*, group_members!left(group_id)');
+    }
+
+    // Apply ordering after select and potential group filter
+    query = query.order('created_at', { ascending: false });
+
+    // Apply search filter if provided
+    // This will apply to all contacts (if no groupId) or group-filtered contacts
+    if (input.search) {
+      query = query.or(`first_name.ilike.%${input.search}%,last_name.ilike.%${input.search}%,email.ilike.%${input.search}%`);
+    }
+
+    const { data, error } = await query;
+
     if (error) {
-      console.error("Error fetching contacts (RLS scope):", error);
-      throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to fetch contacts' });
+      console.error('Error fetching contacts (RLS scope):', error);
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to fetch contacts',
+      });
     }
     return data || [];
   }),
@@ -85,7 +111,7 @@ export const contactRouter = router({
       if (!ctx.user) {
         throw new TRPCError({ code: 'UNAUTHORIZED' });
       }
-      
+
       const contactId = input.id;
       // Prepare fields to update/insert, mapping client field names to DB columns
       const fields = {
@@ -107,7 +133,10 @@ export const contactRouter = router({
         let data: Record<string, unknown> | null = null;
         let dbError: { message: string } | null = null;
         if (contactId) {
-          console.warn(`Attempting contact update for id: ${contactId}`, attemptFields);
+          console.warn(
+            `Attempting contact update for id: ${contactId}`,
+            attemptFields
+          );
           do {
             ({ data, error: dbError } = await ctx.supabaseUser
               .from('contacts')
@@ -116,7 +145,9 @@ export const contactRouter = router({
               .select()
               .single());
             if (dbError) {
-              const m = dbError.message.match(/Could not find the '(.+)' column/);
+              const m = dbError.message.match(
+                /Could not find the '(.+)' column/
+              );
               if (m && Object.hasOwn(attemptFields, m[1])) {
                 console.warn(`${m[1]} column missing, retrying without it`);
                 delete attemptFields[m[1]];
@@ -126,7 +157,10 @@ export const contactRouter = router({
             break;
           } while (dbError !== null);
         } else {
-          console.warn('Attempting contact insert with user context', { ...attemptFields, user_id: ctx.user.id });
+          console.warn('Attempting contact insert with user context', {
+            ...attemptFields,
+            user_id: ctx.user.id,
+          });
           do {
             ({ data, error: dbError } = await ctx.supabaseUser
               .from('contacts')
@@ -134,9 +168,13 @@ export const contactRouter = router({
               .select()
               .single());
             if (dbError) {
-              const m = dbError.message.match(/Could not find the '(.+)' column/);
+              const m = dbError.message.match(
+                /Could not find the '(.+)' column/
+              );
               if (m && Object.hasOwn(attemptFields, m[1])) {
-                console.warn(`${m[1]} column missing, retrying insert without it`);
+                console.warn(
+                  `${m[1]} column missing, retrying insert without it`
+                );
                 delete attemptFields[m[1]];
                 continue;
               }
@@ -145,12 +183,22 @@ export const contactRouter = router({
           } while (dbError !== null);
         }
         if (dbError) {
-          console.error('Supabase save error:', dbError, { input, userId: ctx.user.id });
-          throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: `Failed to save contact: ${dbError.message}`, cause: dbError });
+          console.error('Supabase save error:', dbError, {
+            input,
+            userId: ctx.user.id,
+          });
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: `Failed to save contact: ${dbError.message}`,
+            cause: dbError,
+          });
         }
         if (!data) {
           console.error('Supabase save returned no data and no error.');
-          throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to save contact due to unexpected issue.' });
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'Failed to save contact due to unexpected issue.',
+          });
         }
         console.warn('Contact save successful:', data);
         return data;
@@ -159,18 +207,25 @@ export const contactRouter = router({
         if (err instanceof TRPCError) throw err;
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
-          message: err instanceof Error ? err.message : 'An unknown error occurred while saving the contact.',
+          message:
+            err instanceof Error
+              ? err.message
+              : 'An unknown error occurred while saving the contact.',
         });
       }
     }),
 
   // Procedure to delete a contact
   delete: protectedProcedure
-    .input(z.object({
-      contactId: z.string().uuid(), // Expect UUID string ID
-    }))
+    .input(
+      z.object({
+        contactId: z.string().uuid(), // Expect UUID string ID
+      })
+    )
     .mutation(async ({ input, ctx }) => {
-      console.warn(`Attempting to delete contact ID: ${input.contactId} by user ${ctx.user.id}`);
+      console.warn(
+        `Attempting to delete contact ID: ${input.contactId} by user ${ctx.user.id}`
+      );
       const { error } = await ctx.supabaseUser
         .from('contacts')
         .delete()
@@ -178,10 +233,15 @@ export const contactRouter = router({
 
       if (error) {
         console.error('Error deleting contact:', error);
-        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to delete contact' });
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to delete contact',
+        });
       }
 
-      console.warn(`Contact ${input.contactId} deleted successfully by user ${ctx.user.id}`);
+      console.warn(
+        `Contact ${input.contactId} deleted successfully by user ${ctx.user.id}`
+      );
       return { success: true, deletedContactId: input.contactId };
     }),
 });

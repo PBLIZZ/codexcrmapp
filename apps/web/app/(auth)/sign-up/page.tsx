@@ -1,12 +1,11 @@
-"use client";
+'use client';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input'; 
-import { supabase } from '@/lib/supabase/client'; 
- 
+import { Input } from '@/components/ui/input';
+import { supabase } from '@/lib/supabase/client';
 
 export default function SignUpPage() {
   const [email, setEmail] = useState('');
@@ -42,7 +41,9 @@ export default function SignUpPage() {
         router.push('/sign-up/confirmation');
       }
     } catch (err) {
-      setMessage(err instanceof Error ? err.message : 'An error occurred during sign up');
+      setMessage(
+        err instanceof Error ? err.message : 'An error occurred during sign up'
+      );
     } finally {
       setIsLoading(false);
     }
@@ -51,10 +52,15 @@ export default function SignUpPage() {
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
       <h1 className="mb-6 text-2xl font-bold text-center">Create Account</h1>
-      
+
       <form onSubmit={handleSignUp} className="space-y-4 mb-6">
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Email
+          </label>
           <Input
             id="email"
             type="email"
@@ -66,9 +72,14 @@ export default function SignUpPage() {
             autoComplete="email"
           />
         </div>
-        
+
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Password
+          </label>
           <Input
             id="password"
             type="password"
@@ -82,7 +93,12 @@ export default function SignUpPage() {
         </div>
 
         <div>
-          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+          <label
+            htmlFor="confirmPassword"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Confirm Password
+          </label>
           <Input
             id="confirmPassword"
             type="password"
@@ -94,9 +110,9 @@ export default function SignUpPage() {
             autoComplete="new-password"
           />
         </div>
-        
-        <Button 
-          type="submit" 
+
+        <Button
+          type="submit"
           className="w-full bg-blue-600 hover:bg-blue-700"
           disabled={isLoading}
         >
@@ -105,14 +121,19 @@ export default function SignUpPage() {
       </form>
 
       {message && (
-        <div className={`mt-4 p-3 rounded ${message.includes('Check your email') ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}>
+        <div
+          className={`mt-4 p-3 rounded ${message.includes('Check your email') ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}
+        >
           {message}
         </div>
       )}
 
       <div className="text-center text-sm text-gray-600">
         Already have an account?{' '}
-        <Link href="/sign-in" className="font-medium text-blue-600 hover:underline">
+        <Link
+          href="/sign-in"
+          className="font-medium text-blue-600 hover:underline"
+        >
           Sign in
         </Link>
       </div>

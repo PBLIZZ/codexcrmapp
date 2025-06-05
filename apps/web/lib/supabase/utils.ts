@@ -15,7 +15,7 @@ export type TableName = keyof Tables;
  * const { data, error } = await queryTyped('contacts')
  *   .select('*')
  *   .eq('contact_id', contactId);
- * 
+ *
  * // Types are correctly inferred
  * const contacts: Tables['contacts']['Row'][] = data;
  */
@@ -31,7 +31,7 @@ export function queryTyped<T extends TableName>(table: T) {
  * const { data, error } = await queryServerTyped(supabase, 'contacts')
  *   .select('*')
  *   .eq('contact_id', contactId);
- * 
+ *
  * // Types are correctly inferred
  * const contacts: Tables['contacts']['Row'][] = data;
  */

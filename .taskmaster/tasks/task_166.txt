@@ -1,0 +1,37 @@
+# Task ID: 166
+# Title: Admin: Format Outstanding Tasks Document
+# Status: pending
+# Dependencies: None
+# Priority: medium
+# Description: Print out or format all outstanding tasks in a markdown document for review or distribution. (Corresponds to original Task 33)
+# Details:
+
+
+# Test Strategy:
+
+
+# Subtasks:
+## 1. Gather all outstanding tasks [pending]
+### Dependencies: None
+### Description: Collect and compile all outstanding tasks from various sources into a single list
+### Details:
+Review emails, project management tools, meeting notes, and other relevant sources to identify all outstanding tasks. Create a comprehensive list that includes task descriptions, deadlines, assignees, and current status.
+
+## 2. Design consistent formatting template [pending]
+### Dependencies: 166.1
+### Description: Create a standardized template for presenting the outstanding tasks
+### Details:
+Develop a clear, professional format for the document that includes appropriate headers, sections, priority indicators, and status markers. Ensure the template is easy to read and allows for quick identification of critical information.
+
+## 3. Format and finalize document [pending]
+### Dependencies: 166.2
+### Description: Apply the template to the task list and prepare the final document
+### Details:
+Format all gathered tasks according to the template. Review for consistency, accuracy, and completeness. Add any necessary supplementary information such as due dates, contact information, or resource links. Prepare the document for distribution in appropriate file formats.
+
+## 4. Add Birthday (Month/Day) Field to Contacts [pending]
+### Dependencies: None
+### Description: Create new `birthday_month` (integer) and `birthday_day` (integer) fields in the `contacts` (or `clients`) table in Supabase. Update the tRPC input/output schemas, and relevant forms/views to allow users to record and view contact birthdays (month and day only, year omitted for privacy/simplicity). Consider how this will be handled in CSV import/export in the future (though initial implementation might not include CSV for this field).
+### Details:
+
+

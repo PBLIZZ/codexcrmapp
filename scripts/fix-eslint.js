@@ -2,7 +2,7 @@
 
 /**
  * ESLint Auto-fix Script
- * 
+ *
  * This script runs ESLint with the --fix flag on all TypeScript and JavaScript files
  * to automatically fix issues that can be auto-fixed, such as import ordering.
  */
@@ -34,11 +34,11 @@ try {
   for (const dir of directories) {
     const dirPath = resolve(rootDir, dir);
     const fullCommand = `${command} "${dirPath}/**/*.{ts,tsx,js,jsx}"`;
-    
+
     console.warn(`\n🛠️  Fixing issues in ${dir}...`);
     execSync(fullCommand, { stdio: 'inherit' });
   }
-  
+
   console.warn('\n✅ ESLint auto-fix completed successfully!');
   console.warn('\nRemaining issues may require manual fixes:');
   console.warn('1. Replace "any" types with proper TypeScript types');

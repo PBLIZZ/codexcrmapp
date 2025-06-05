@@ -1,6 +1,8 @@
 import js from '@eslint/js';
 import nextPlugin from '@next/eslint-plugin-next';
+import prettierConfig from 'eslint-config-prettier';
 import importPlugin from 'eslint-plugin-import';
+import prettierPlugin from 'eslint-plugin-prettier';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import globals from 'globals';
@@ -10,18 +12,13 @@ import tseslint from 'typescript-eslint';
 export default [
   // Base ESLint recommended rules
   js.configs.recommended,
-  
+
   // TypeScript configuration
   ...tseslint.configs.recommended,
-  
+
   // Global settings
   {
-    ignores: [
-      'node_modules/**',
-      'dist/**',
-      '.next/**',
-      'legacy-linted/**',
-    ],
+    ignores: ['node_modules/**', 'dist/**', '.next/**', 'legacy-linted/**'],
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: 'module',
@@ -40,7 +37,7 @@ export default [
       reportUnusedDisableDirectives: 'warn',
     },
   },
-  
+
   // React configuration
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
@@ -61,7 +58,7 @@ export default [
       },
     },
   },
-  
+
   // Import plugin configuration
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
@@ -69,11 +66,21 @@ export default [
       import: importPlugin,
     },
     rules: {
-      'import/order': ['error', {
-        'groups': ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
-        'newlines-between': 'always',
-        'alphabetize': { 'order': 'asc', 'caseInsensitive': true }
-      }],
+      'import/order': [
+        'error',
+        {
+          groups: [
+            'builtin',
+            'external',
+            'internal',
+            'parent',
+            'sibling',
+            'index',
+          ],
+          'newlines-between': 'always',
+          alphabetize: { order: 'asc', caseInsensitive: true },
+        },
+      ],
       'import/first': 'error',
       'import/no-duplicates': 'error',
     },
@@ -90,7 +97,7 @@ export default [
       '@next/next/no-img-element': 'warn',
     },
   },
-  
+
   // Import plugin configuration
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
@@ -99,14 +106,24 @@ export default [
     },
     rules: {
       'import/no-unresolved': 'off', // TypeScript handles this
-      'import/order': ['warn', {
-        'groups': ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
-        'newlines-between': 'always',
-        'alphabetize': { order: 'asc', caseInsensitive: true }
-      }],
+      'import/order': [
+        'warn',
+        {
+          groups: [
+            'builtin',
+            'external',
+            'internal',
+            'parent',
+            'sibling',
+            'index',
+          ],
+          'newlines-between': 'always',
+          alphabetize: { order: 'asc', caseInsensitive: true },
+        },
+      ],
     },
   },
-  
+
   // Path alias rules
   {
     files: ['apps/web/**/*.{js,jsx,ts,tsx}'],
@@ -114,21 +131,28 @@ export default [
       'import/no-relative-parent-imports': 'warn', // Encourage using @/* aliases
     },
   },
-  
+
   // Specific rules for the monorepo
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
+    plugins: {
+      prettier: prettierPlugin,
+    },
     rules: {
+      'prettier/prettier': 'error',
       'no-console': ['warn', { allow: ['warn', 'error'] }],
       'no-unused-vars': 'off', // TypeScript handles this better
-      '@typescript-eslint/no-unused-vars': ['warn', { 
-        argsIgnorePattern: '^_',
-        varsIgnorePattern: '^_',
-      }],
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        },
+      ],
       'prefer-const': 'warn',
     },
   },
-  
+
   // Ignore patterns
   {
     ignores: [
@@ -139,4 +163,7 @@ export default [
       '**/coverage/**',
     ],
   },
+  // Add Prettier config last to override other formatting rules
+  // and turn off any ESLint rules that might conflict with Prettier.
+  prettierConfig,
 ];

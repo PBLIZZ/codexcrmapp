@@ -5,7 +5,9 @@
  * @param dateInput The date string or Date object.
  * @returns A Date object if parsing is successful, otherwise null.
  */
-function safeParseDate(dateInput: string | Date | null | undefined): Date | null {
+function safeParseDate(
+  dateInput: string | Date | null | undefined
+): Date | null {
   if (!dateInput) return null;
   const date = dateInput instanceof Date ? dateInput : new Date(dateInput);
   return isNaN(date.getTime()) ? null : date;
@@ -16,7 +18,9 @@ function safeParseDate(dateInput: string | Date | null | undefined): Date | null
  * @param dateInput The date string or Date object.
  * @returns Formatted date string or '—' if invalid.
  */
-export function formatDateForDisplay(dateInput: string | Date | null | undefined): string {
+export function formatDateForDisplay(
+  dateInput: string | Date | null | undefined
+): string {
   const date = safeParseDate(dateInput);
   if (!date) return '—';
 
@@ -35,7 +39,7 @@ export function formatDateForDisplay(dateInput: string | Date | null | undefined
   const year = date.getFullYear();
   const hours = String(date.getHours()).padStart(2, '0');
   const minutes = String(date.getMinutes()).padStart(2, '0');
-  
+
   return `${day}/${month}/${year}, ${hours}:${minutes}`;
 }
 
@@ -44,7 +48,9 @@ export function formatDateForDisplay(dateInput: string | Date | null | undefined
  * @param dateInput The date string or Date object.
  * @returns Formatted date string for input or empty string if invalid.
  */
-export function formatDateForInput(dateInput: string | Date | null | undefined): string {
+export function formatDateForInput(
+  dateInput: string | Date | null | undefined
+): string {
   const date = safeParseDate(dateInput);
   if (!date) return '';
 
@@ -62,7 +68,9 @@ export function formatDateForInput(dateInput: string | Date | null | undefined):
  * @param inputDateString The date string from datetime-local input.
  * @returns Full ISO string or null if input is invalid/empty.
  */
-export function parseInputDateString(inputDateString: string | null | undefined): string | null {
+export function parseInputDateString(
+  inputDateString: string | null | undefined
+): string | null {
   if (!inputDateString) return null;
   // Input is YYYY-MM-DDTHH:mm. Convert to Date object then to full ISO string.
   const date = new Date(inputDateString);
@@ -76,11 +84,14 @@ export function parseInputDateString(inputDateString: string | null | undefined)
  * @param dateInput The date string or Date object.
  * @returns Formatted date string or '—' if invalid.
  */
-export function formatDateTime(dateInput: string | Date | null | undefined): string {
+export function formatDateTime(
+  dateInput: string | Date | null | undefined
+): string {
   const date = safeParseDate(dateInput);
   if (!date) return '—';
 
-  return new Intl.DateTimeFormat(undefined, { // undefined locale uses browser's default
+  return new Intl.DateTimeFormat(undefined, {
+    // undefined locale uses browser's default
     year: 'numeric',
     month: 'long',
     day: 'numeric',

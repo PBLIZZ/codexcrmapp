@@ -1,0 +1,37 @@
+# Task ID: 38
+# Title: Email Integration Engine
+# Status: pending
+# Dependencies: 5, 34, 35
+# Priority: high
+# Description: Set up email parsing for clients to forward lead notifications. Details: Parsing service/library, unique client email addresses, tRPC/service for parsing, AI-assisted parsing (links to Epic 35).
+# Details:
+Create a system that can parse and process emails to extract lead information and create/update contacts.
+
+# Test Strategy:
+
+
+# Subtasks:
+## 38.1. Research and select email parsing service/library [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 38.2. Design system for unique client email addresses [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 38.3. Implement email processing tRPC procedure/service [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 38.4. Develop AI-assisted parsing for unstructured email data [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+

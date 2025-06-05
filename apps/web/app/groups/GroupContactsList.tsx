@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { Users, Plus, X, Loader2, UserCheck, UserPlus } from "lucide-react";
-import { useState } from "react";
+import { Users, Plus, X, Loader2, UserCheck, UserPlus } from 'lucide-react';
+import { useState } from 'react';
 
 import { Contact } from '../contacts/ContactList';
 
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -15,40 +15,40 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { api } from "@/lib/trpc";
+} from '@/components/ui/select';
+import { api } from '@/lib/trpc';
 
 interface GroupContactsListProps {
   groupId: string;
   groupName: string;
 }
 
-export function GroupContactsList({ groupId, groupName }: GroupContactsListProps) {
+export function GroupContactsList({
+  groupId,
+  groupName,
+}: GroupContactsListProps) {
   const [isAddContactDialogOpen, setIsAddContactDialogOpen] = useState(false);
-  const [selectedContactId, setSelectedContactId] = useState<string>("");
+  const [selectedContactId, setSelectedContactId] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [showAllContacts, setShowAllContacts] = useState(false);
 
   const utils = api.useUtils();
 
   // Get contacts in this group
-  const { data: groupContacts, isLoading: isLoadingGroupContacts } = 
-    api.groups.getContacts.useQuery(
-      { groupId },
-      { enabled: !!groupId }
-    );
+  const { data: groupContacts, isLoading: isLoadingGroupContacts } =
+    api.groups.getContacts.useQuery({ groupId }, { enabled: !!groupId });
 
   // Get all contacts for the add dialog
-  const { data: allContacts, isLoading: isLoadingAllContacts } = 
-    api.contacts.list.useQuery(undefined, {
-      enabled: isAddContactDialogOpen
+  const { data: allContacts, isLoading: isLoadingAllContacts } =
+    api.contacts.list.useQuery({}, {
+      enabled: isAddContactDialogOpen,
     });
 
   // Mutation to add contact to group
@@ -57,7 +57,7 @@ export function GroupContactsList({ groupId, groupName }: GroupContactsListProps
       utils.groups.getContacts.invalidate({ groupId });
       utils.groups.list.invalidate(); // Update contact counts
       setIsAddContactDialogOpen(false);
-      setSelectedContactId("");
+      setSelectedContactId('');
       setError(null);
     },
     onError: (error) => {
@@ -79,12 +79,13 @@ export function GroupContactsList({ groupId, groupName }: GroupContactsListProps
 
   // Filter out contacts already in group
   const availableContacts = allContacts?.filter(
-    (contact: Contact) => !groupContacts?.some((gc: Contact) => gc.id === contact.id)
+    (contact: Contact) =>
+      !groupContacts?.some((gc: Contact) => gc.id === contact.id)
   );
 
   const handleAddContact = () => {
     if (!selectedContactId) {
-      setError("Please select a contact");
+      setError('Please select a contact');
       return;
     }
 
@@ -101,7 +102,9 @@ export function GroupContactsList({ groupId, groupName }: GroupContactsListProps
     });
   };
 
-  const displayContacts = showAllContacts ? groupContacts : groupContacts?.slice(0, 3);
+  const displayContacts = showAllContacts
+    ? groupContacts
+    : groupContacts?.slice(0, 3);
   const hasMoreContacts = groupContacts && groupContacts.length > 3;
 
   if (isLoadingGroupContacts) {
@@ -120,7 +123,8 @@ export function GroupContactsList({ groupId, groupName }: GroupContactsListProps
         <div className="flex items-center space-x-2">
           <Users className="h-4 w-4 text-purple-500" />
           <span className="text-sm text-purple-700">
-            {groupContacts?.length || 0} contact{groupContacts?.length === 1 ? "" : "s"}
+            {groupContacts?.length || 0} contact
+            {groupContacts?.length === 1 ? '' : 's'}
           </span>
         </div>
         <Button
@@ -145,7 +149,8 @@ export function GroupContactsList({ groupId, groupName }: GroupContactsListProps
               <div className="flex items-center space-x-2 min-w-0 flex-1">
                 <div className="h-6 w-6 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
                   <span className="text-xs font-medium text-purple-600">
-                    {contact.first_name?.[0]}{contact.last_name?.[0]}
+                    {contact.first_name?.[0]}
+                    {contact.last_name?.[0]}
                   </span>
                 </div>
                 <div className="min-w-0 flex-1">
@@ -179,7 +184,9 @@ export function GroupContactsList({ groupId, groupName }: GroupContactsListProps
               onClick={() => setShowAllContacts(!showAllContacts)}
               className="text-xs text-purple-600 hover:text-purple-700 font-medium transition-colors"
             >
-              {showAllContacts ? 'Show less' : `Show ${groupContacts.length - 3} more`}
+              {showAllContacts
+                ? 'Show less'
+                : `Show ${groupContacts.length - 3} more`}
             </button>
           )}
         </div>
@@ -192,7 +199,10 @@ export function GroupContactsList({ groupId, groupName }: GroupContactsListProps
       )}
 
       {/* Add contact dialog */}
-      <Dialog open={isAddContactDialogOpen} onOpenChange={setIsAddContactDialogOpen}>
+      <Dialog
+        open={isAddContactDialogOpen}
+        onOpenChange={setIsAddContactDialogOpen}
+      >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
@@ -219,13 +229,15 @@ export function GroupContactsList({ groupId, groupName }: GroupContactsListProps
                 disabled={isLoadingAllContacts || !availableContacts?.length}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder={
-                    isLoadingAllContacts 
-                      ? "Loading contacts..." 
-                      : !availableContacts?.length 
-                        ? "No contacts available" 
-                        : "Select a contact"
-                  } />
+                  <SelectValue
+                    placeholder={
+                      isLoadingAllContacts
+                        ? 'Loading contacts...'
+                        : !availableContacts?.length
+                          ? 'No contacts available'
+                          : 'Select a contact'
+                    }
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   {availableContacts?.map((contact: Contact) => (
@@ -233,7 +245,8 @@ export function GroupContactsList({ groupId, groupName }: GroupContactsListProps
                       <div className="flex items-center gap-2">
                         <div className="h-6 w-6 bg-gray-100 rounded-full flex items-center justify-center">
                           <span className="text-xs text-gray-600">
-                            {contact.first_name?.[0]}{contact.last_name?.[0]}
+                            {contact.first_name?.[0]}
+                            {contact.last_name?.[0]}
                           </span>
                         </div>
                         <div>
@@ -241,7 +254,9 @@ export function GroupContactsList({ groupId, groupName }: GroupContactsListProps
                             {contact.first_name} {contact.last_name}
                           </div>
                           {contact.email && (
-                            <div className="text-xs text-gray-500">{contact.email}</div>
+                            <div className="text-xs text-gray-500">
+                              {contact.email}
+                            </div>
                           )}
                         </div>
                       </div>
@@ -257,7 +272,7 @@ export function GroupContactsList({ groupId, groupName }: GroupContactsListProps
               variant="outline"
               onClick={() => {
                 setIsAddContactDialogOpen(false);
-                setSelectedContactId("");
+                setSelectedContactId('');
                 setError(null);
               }}
             >
@@ -273,7 +288,7 @@ export function GroupContactsList({ groupId, groupName }: GroupContactsListProps
                   Adding...
                 </>
               ) : (
-                "Add Contact"
+                'Add Contact'
               )}
             </Button>
           </DialogFooter>

@@ -1,28 +1,36 @@
-"use client";
+'use client';
 
-import { 
-  AlertCircle, 
-  ArrowRight, 
-  Calendar, 
-  Clock, 
-  Plus, 
+import {
+  AlertCircle,
+  ArrowRight,
+  Calendar,
+  Clock,
+  Plus,
   Users,
   Activity,
-  CheckSquare
-} from "lucide-react";
+  CheckSquare,
+} from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
 import { AddContactModal } from '@/components/contacts/AddContactModal';
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { api } from '@/lib/trpc';
+import { TailwindTestCard } from '@/components/ui/TailwindTestCard';
+import { ShadcnCalendarTest } from '@/components/ui/ShadcnCalendarTest';
 
 // UI Components
-
 
 // Helper function to get initials from name
 const getInitials = (firstName: string, lastName: string) => {
@@ -35,16 +43,16 @@ const formatDate = (dateString: string | null | undefined) => {
   return new Date(dateString).toLocaleDateString(undefined, {
     year: 'numeric',
     month: 'short',
-    day: 'numeric'
+    day: 'numeric',
   });
 };
 
 export default function DashboardContent() {
-  const [activeTab, setActiveTab] = useState("overview");
-  
+  const [activeTab, setActiveTab] = useState('overview');
+
   // Fetch contacts data
-  const { data: contacts, isLoading, error } = api.contacts.list.useQuery();
-  
+  const { data: contacts, isLoading, error } = api.contacts.list.useQuery({});
+
   // Loading state
   if (isLoading) {
     return (
@@ -53,7 +61,7 @@ export default function DashboardContent() {
       </div>
     );
   }
-  
+
   // Error state
   if (error) {
     return (
@@ -68,12 +76,12 @@ export default function DashboardContent() {
       </div>
     );
   }
-  
+
   // Calculate stats
   const totalContacts = contacts?.length || 0;
   const recentActivity = 5; // Mock data - replace with actual count
   const upcomingTasks = 3; // Mock data - replace with actual count
-  
+
   return (
     <div className="py-6">
       <div className="flex flex-col space-y-8">
@@ -84,7 +92,7 @@ export default function DashboardContent() {
             Welcome to your contact management system
           </p>
         </div>
-        
+
         {/* Stats Overview */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <Card>
@@ -97,17 +105,23 @@ export default function DashboardContent() {
             <CardContent>
               <div className="text-2xl font-bold">{totalContacts}</div>
               <p className="text-xs text-muted-foreground">
-                {totalContacts === 1 ? '1 contact' : `${totalContacts} contacts`} in your CRM
+                {totalContacts === 1
+                  ? '1 contact'
+                  : `${totalContacts} contacts`}{' '}
+                in your CRM
               </p>
             </CardContent>
             <CardFooter>
-              <Link href="/contacts" className="text-xs text-blue-600 hover:underline flex items-center">
+              <Link
+                href="/contacts"
+                className="text-xs text-blue-600 hover:underline flex items-center"
+              >
                 View all contacts
                 <ArrowRight className="ml-1 h-3 w-3" />
               </Link>
             </CardFooter>
           </Card>
-          
+
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
@@ -122,13 +136,16 @@ export default function DashboardContent() {
               </p>
             </CardContent>
             <CardFooter>
-              <Link href="#" className="text-xs text-blue-600 hover:underline flex items-center">
+              <Link
+                href="#"
+                className="text-xs text-blue-600 hover:underline flex items-center"
+              >
                 View activity log
                 <ArrowRight className="ml-1 h-3 w-3" />
               </Link>
             </CardFooter>
           </Card>
-          
+
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
@@ -143,14 +160,23 @@ export default function DashboardContent() {
               </p>
             </CardContent>
             <CardFooter>
-              <Link href="#" className="text-xs text-blue-600 hover:underline flex items-center">
+              <Link
+                href="#"
+                className="text-xs text-blue-600 hover:underline flex items-center"
+              >
                 View all tasks
                 <ArrowRight className="ml-1 h-3 w-3" />
               </Link>
             </CardFooter>
           </Card>
         </div>
-        
+
+        {/* Tailwind CSS Test Card */}
+        <TailwindTestCard />
+
+        {/* Shadcn UI Calendar Test */}
+        <ShadcnCalendarTest />
+
         {/* Tabs for different dashboard sections */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-3">
@@ -158,43 +184,51 @@ export default function DashboardContent() {
             <TabsTrigger value="recent">Recent Contacts</TabsTrigger>
             <TabsTrigger value="activity">Activity</TabsTrigger>
           </TabsList>
-          
+
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-4">
             <Card>
               <CardHeader>
                 <CardTitle>Quick Actions</CardTitle>
-                <CardDescription>
-                  Common tasks and shortcuts
-                </CardDescription>
+                <CardDescription>Common tasks and shortcuts</CardDescription>
               </CardHeader>
               <CardContent className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <Button variant="outline" className="h-auto flex flex-col items-center justify-center p-4 space-y-2" asChild>
+                <Button
+                  variant="outline"
+                  className="h-auto flex flex-col items-center justify-center p-4 space-y-2"
+                  asChild
+                >
                   <Link href="/contacts">
                     <Users className="h-6 w-6 mb-2" />
                     <span>View Contacts</span>
                   </Link>
                 </Button>
                 <AddContactModal />
-                <Button variant="outline" className="h-auto flex flex-col items-center justify-center p-4 space-y-2" asChild>
+                <Button
+                  variant="outline"
+                  className="h-auto flex flex-col items-center justify-center p-4 space-y-2"
+                  asChild
+                >
                   <Link href="/groups">
                     <Users className="h-6 w-6 mb-2" />
                     <span>Manage Groups</span>
                   </Link>
                 </Button>
-                <Button variant="outline" className="h-auto flex flex-col items-center justify-center p-4 space-y-2" disabled>
+                <Button
+                  variant="outline"
+                  className="h-auto flex flex-col items-center justify-center p-4 space-y-2"
+                  disabled
+                >
                   <Calendar className="h-6 w-6 mb-2" />
                   <span>Schedule Task</span>
                 </Button>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardHeader>
                 <CardTitle>System Status</CardTitle>
-                <CardDescription>
-                  Current system information
-                </CardDescription>
+                <CardDescription>Current system information</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex justify-between items-center">
@@ -212,7 +246,7 @@ export default function DashboardContent() {
               </CardContent>
             </Card>
           </TabsContent>
-          
+
           {/* Recent Contacts Tab */}
           <TabsContent value="recent" className="space-y-4">
             <Card>
@@ -234,42 +268,68 @@ export default function DashboardContent() {
                 {contacts && contacts.length > 0 ? (
                   <div className="rounded-md border">
                     <div className="grid grid-cols-1 divide-y">
-                      {contacts.slice(0, 5).map((contact: Record<string, unknown>) => {
-  // Type guards for strict safety
-  const id = typeof contact.id === 'string' || typeof contact.id === 'number' ? String(contact.id) : undefined;
-  const firstName = typeof contact.first_name === 'string' ? contact.first_name : '';
-  const lastName = typeof contact.last_name === 'string' ? contact.last_name : '';
-  const avatarUrl = typeof contact.avatar_url === 'string' ? contact.avatar_url : undefined;
-  const email = typeof contact.email === 'string' ? contact.email : '';
-  const createdAt = typeof contact.created_at === 'string' ? contact.created_at : undefined;
-  if (!id) return null;
-  return (
-    <Link 
-      key={id}
-      href={`/contacts/${id}`}
-      className="flex items-center p-4 hover:bg-muted/50 transition-colors"
-    >
-      <Avatar className="h-10 w-10 mr-4">
-        {avatarUrl ? (
-          <AvatarImage src={avatarUrl} alt={`${firstName} ${lastName}`} />
-        ) : null}
-        <AvatarFallback>{getInitials(firstName, lastName)}</AvatarFallback>
-      </Avatar>
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium truncate">
-          {firstName} {lastName}
-        </p>
-        <p className="text-sm text-muted-foreground truncate">
-          {email}
-        </p>
-      </div>
-      <div className="text-sm text-muted-foreground flex items-center">
-        <Clock className="h-3 w-3 mr-1" />
-        {formatDate(createdAt)}
-      </div>
-    </Link>
-  );
-})}
+                      {contacts
+                        .slice(0, 5)
+                        .map((contact: Record<string, unknown>) => {
+                          // Type guards for strict safety
+                          const id =
+                            typeof contact.id === 'string' ||
+                            typeof contact.id === 'number'
+                              ? String(contact.id)
+                              : undefined;
+                          const firstName =
+                            typeof contact.first_name === 'string'
+                              ? contact.first_name
+                              : '';
+                          const lastName =
+                            typeof contact.last_name === 'string'
+                              ? contact.last_name
+                              : '';
+                          const avatarUrl =
+                            typeof contact.avatar_url === 'string'
+                              ? contact.avatar_url
+                              : undefined;
+                          const email =
+                            typeof contact.email === 'string'
+                              ? contact.email
+                              : '';
+                          const createdAt =
+                            typeof contact.created_at === 'string'
+                              ? contact.created_at
+                              : undefined;
+                          if (!id) return null;
+                          return (
+                            <Link
+                              key={id}
+                              href={`/contacts/${id}`}
+                              className="flex items-center p-4 hover:bg-muted/50 transition-colors"
+                            >
+                              <Avatar className="h-10 w-10 mr-4">
+                                {avatarUrl ? (
+                                  <AvatarImage
+                                    src={avatarUrl}
+                                    alt={`${firstName} ${lastName}`}
+                                  />
+                                ) : null}
+                                <AvatarFallback>
+                                  {getInitials(firstName, lastName)}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium truncate">
+                                  {firstName} {lastName}
+                                </p>
+                                <p className="text-sm text-muted-foreground truncate">
+                                  {email}
+                                </p>
+                              </div>
+                              <div className="text-sm text-muted-foreground flex items-center">
+                                <Clock className="h-3 w-3 mr-1" />
+                                {formatDate(createdAt)}
+                              </div>
+                            </Link>
+                          );
+                        })}
                     </div>
                   </div>
                 ) : (
@@ -298,7 +358,7 @@ export default function DashboardContent() {
               </CardFooter>
             </Card>
           </TabsContent>
-          
+
           {/* Activity Tab */}
           <TabsContent value="activity" className="space-y-4">
             <Card>

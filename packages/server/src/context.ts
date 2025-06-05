@@ -13,10 +13,14 @@ export interface Context {
 }
 
 /** Builds tRPC context for each request */
-export async function createContext({ req }: { req: Request }): Promise<Context> {
+export async function createContext({
+  req,
+}: {
+  req: Request;
+}): Promise<Context> {
   // Create a supabase client using Next.js cookies() for proper SSR support
   const cookieStore = await cookies();
-  
+
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -42,17 +46,26 @@ export async function createContext({ req }: { req: Request }): Promise<Context>
 
   try {
     // Use getUser() as the primary authentication method (recommended by Supabase)
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
     if (userError) {
       console.error('tRPC context error getting user:', userError.message);
     }
-    
+
     // Only get session if needed for specific session-related data
     let session = null;
     if (user) {
-      const { data: { session: sessionData }, error: sessionError } = await supabase.auth.getSession();
+      const {
+        data: { session: sessionData },
+        error: sessionError,
+      } = await supabase.auth.getSession();
       if (sessionError) {
-        console.error('tRPC context error getting session:', sessionError.message);
+        console.error(
+          'tRPC context error getting session:',
+          sessionError.message
+        );
       } else {
         session = sessionData;
       }
@@ -62,7 +75,7 @@ export async function createContext({ req }: { req: Request }): Promise<Context>
       authenticated: !!user,
       userId: user?.id,
       email: user?.email,
-      cookiesFound: !!user
+      cookiesFound: !!user,
     });
 
     return {
@@ -73,7 +86,7 @@ export async function createContext({ req }: { req: Request }): Promise<Context>
     };
   } catch (error) {
     console.error('tRPC context error:', error);
-    
+
     return {
       user: null,
       session: null,

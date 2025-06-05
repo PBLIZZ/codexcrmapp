@@ -1,4 +1,4 @@
-import { GroupsContent } from "./GroupsContent";
+import { GroupsContent } from './GroupsContent';
 
 /**
  * Server component for the Groups page.
