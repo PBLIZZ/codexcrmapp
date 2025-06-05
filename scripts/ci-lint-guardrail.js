@@ -2,7 +2,7 @@
 
 /**
  * CI Lint Guardrail Script
- * 
+ *
  * This script helps manage a gradual approach to fixing ESLint issues by:
  * 1. Tracking files with existing ESLint issues in the legacy-linted directory
  * 2. Ensuring new files and changes to non-legacy files pass ESLint
@@ -33,10 +33,12 @@ if (!fs.existsSync(LEGACY_DIR)) {
 // Helper to get all files in a directory recursively
 async function getFiles(dir) {
   const subdirs = await readdir(dir);
-  const files = await Promise.all(subdirs.map(async (subdir) => {
-    const res = path.resolve(dir, subdir);
-    return (await stat(res)).isDirectory() ? getFiles(res) : res;
-  }));
+  const files = await Promise.all(
+    subdirs.map(async (subdir) => {
+      const res = path.resolve(dir, subdir);
+      return (await stat(res)).isDirectory() ? getFiles(res) : res;
+    })
+  );
   return files.flat();
 }
 
@@ -49,10 +51,13 @@ function normalizePath(filePath) {
 async function getLegacyFiles() {
   try {
     const files = await readdir(LEGACY_DIR);
-    return files.filter(file => file.endsWith('.json'))
-      .map(file => {
+    return files
+      .filter((file) => file.endsWith('.json'))
+      .map((file) => {
         try {
-          return JSON.parse(fs.readFileSync(path.join(LEGACY_DIR, file), 'utf8'));
+          return JSON.parse(
+            fs.readFileSync(path.join(LEGACY_DIR, file), 'utf8')
+          );
         } catch (e) {
           console.error(`Error reading ${file}:`, e);
           return [];
@@ -70,7 +75,7 @@ async function addToLegacy(filePath) {
   const normalizedPath = normalizePath(filePath);
   const packageName = normalizedPath.split('/')[0];
   const legacyFile = path.join(LEGACY_DIR, `${packageName}.json`);
-  
+
   let existingFiles = [];
   try {
     if (fs.existsSync(legacyFile)) {
@@ -79,7 +84,7 @@ async function addToLegacy(filePath) {
   } catch (e) {
     console.error(`Error reading ${legacyFile}:`, e);
   }
-  
+
   if (!existingFiles.includes(normalizedPath)) {
     existingFiles.push(normalizedPath);
     await writeFile(legacyFile, JSON.stringify(existingFiles, null, 2));
@@ -94,12 +99,12 @@ async function removeFromLegacy(filePath) {
   const normalizedPath = normalizePath(filePath);
   const packageName = normalizedPath.split('/')[0];
   const legacyFile = path.join(LEGACY_DIR, `${packageName}.json`);
-  
+
   if (fs.existsSync(legacyFile)) {
     try {
       const existingFiles = JSON.parse(await readFile(legacyFile, 'utf8'));
-      const newFiles = existingFiles.filter(file => file !== normalizedPath);
-      
+      const newFiles = existingFiles.filter((file) => file !== normalizedPath);
+
       if (existingFiles.length !== newFiles.length) {
         await writeFile(legacyFile, JSON.stringify(newFiles, null, 2));
         console.log(`Removed ${normalizedPath} from legacy-linted`);
@@ -127,27 +132,27 @@ async function checkFile(filePath) {
 // Run ESLint on all files and add failing ones to legacy-linted
 async function scanAllFiles() {
   const legacyFiles = await getLegacyFiles();
-  
+
   // Get all TypeScript and JavaScript files
   const appFiles = await getFiles(path.join(process.cwd(), 'apps'));
   const packageFiles = await getFiles(path.join(process.cwd(), 'packages'));
-  
+
   const allFiles = [...appFiles, ...packageFiles]
-    .filter(file => /\.(ts|tsx|js|jsx)$/.test(file))
+    .filter((file) => /\.(ts|tsx|js|jsx)$/.test(file))
     .map(normalizePath);
-  
+
   console.log(`Found ${allFiles.length} files to scan`);
-  
+
   let failedCount = 0;
   let passedCount = 0;
-  
+
   for (const file of allFiles) {
     // Skip files already in legacy-linted
     if (legacyFiles.includes(file)) {
       console.log(`Skipping legacy file: ${file}`);
       continue;
     }
-    
+
     const passes = await checkFile(file);
     if (!passes) {
       await addToLegacy(file);
@@ -157,7 +162,7 @@ async function scanAllFiles() {
       passedCount++;
     }
   }
-  
+
   console.log(`\nScan complete:`);
   console.log(`- ${passedCount} files pass ESLint`);
   console.log(`- ${failedCount} files added to legacy-linted`);
@@ -168,12 +173,12 @@ async function scanAllFiles() {
 async function checkSingleFile(filePath) {
   const normalizedPath = normalizePath(filePath);
   const legacyFiles = await getLegacyFiles();
-  
+
   if (legacyFiles.includes(normalizedPath)) {
     console.log(`${normalizedPath} is in legacy-linted, skipping check`);
     return;
   }
-  
+
   const passes = await checkFile(filePath);
   if (passes) {
     console.log(`✅ ${normalizedPath} passes ESLint`);
@@ -187,7 +192,7 @@ async function checkSingleFile(filePath) {
 async function main() {
   const args = process.argv.slice(2);
   const command = args[0];
-  
+
   if (!command || command === '--help') {
     console.log(`
 CI Lint Guardrail Script
@@ -202,7 +207,7 @@ Commands:
     `);
     return;
   }
-  
+
   switch (command) {
     case '--scan':
       await scanAllFiles();
@@ -231,7 +236,7 @@ Commands:
     case '--list':
       const legacyFiles = await getLegacyFiles();
       console.log('Files in legacy-linted:');
-      legacyFiles.forEach(file => console.log(`- ${file}`));
+      legacyFiles.forEach((file) => console.log(`- ${file}`));
       console.log(`\nTotal: ${legacyFiles.length} files`);
       break;
     default:

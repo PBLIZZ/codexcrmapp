@@ -1,7 +1,7 @@
-"use client";
-import { useState } from "react";
+'use client';
+import { useState } from 'react';
 
-import { api } from "@/lib/trpc";
+import { api } from '@/lib/trpc';
 
 interface Contact {
   id: string;
@@ -15,7 +15,7 @@ interface Contact {
  * Pattern2TableView: A responsive table with a faceted filter sidebar (tags placeholder).
  */
 export function Pattern2TableView() {
-  const { data: contacts, isLoading } = api.contacts.list.useQuery<Contact[]>();
+  const { data: contacts, isLoading } = api.contacts.list.useQuery<Contact[]>({});
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
 
   if (isLoading) {
@@ -24,7 +24,9 @@ export function Pattern2TableView() {
 
   const toggleFilter = (filter: string) => {
     setActiveFilters((prev) =>
-      prev.includes(filter) ? prev.filter((f) => f !== filter) : [...prev, filter]
+      prev.includes(filter)
+        ? prev.filter((f) => f !== filter)
+        : [...prev, filter]
     );
   };
 
@@ -49,8 +51,11 @@ export function Pattern2TableView() {
       <main className="flex-1 p-4">
         {/* Active filter chips */}
         <div className="mb-4 flex flex-wrap gap-2">
-        {activeFilters.map((f) => (
-            <span key={f} className="bg-blue-100 text-blue-800 px-2 py-1 rounded flex items-center">
+          {activeFilters.map((f) => (
+            <span
+              key={f}
+              className="bg-blue-100 text-blue-800 px-2 py-1 rounded flex items-center"
+            >
               {f}
               <button
                 onClick={() => toggleFilter(f)}
@@ -73,7 +78,9 @@ export function Pattern2TableView() {
           <tbody>
             {contacts?.map((contact: Contact) => (
               <tr key={contact.id} className="hover:bg-gray-50">
-                <td className="border px-2 py-1">{contact.first_name} {contact.last_name}</td>
+                <td className="border px-2 py-1">
+                  {contact.first_name} {contact.last_name}
+                </td>
                 <td className="border px-2 py-1">{contact.email || '-'}</td>
                 <td className="border px-2 py-1">{contact.phone || '-'}</td>
               </tr>

@@ -1,4 +1,4 @@
-import { Pattern1Kanban } from "./Pattern1Kanban";
+import { Pattern1Kanban } from './Pattern1Kanban';
 
 /**
  * Server component for the /contacts/pattern1 route.

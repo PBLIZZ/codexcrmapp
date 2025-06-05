@@ -16,19 +16,25 @@ interface Group {
 const groupInputSchema = z.object({
   id: z.string().uuid().optional(), // Optional for creation
   name: z.string().min(1, 'Group name is required').max(100, 'Name too long'),
-  description: z.string().max(500, 'Description too long').optional().nullable(),
-  color: z.string()
+  description: z
+    .string()
+    .max(500, 'Description too long')
+    .optional()
+    .nullable(),
+  color: z
+    .string()
     .regex(/^#[0-9A-Fa-f]{6}$/, 'Must be a valid hex color (e.g., #FF0000)')
     .or(z.literal(''))
     .nullable()
     .optional()
-    .transform(val => val === '' ? null : val),
-  emoji: z.string()
+    .transform((val) => (val === '' ? null : val)),
+  emoji: z
+    .string()
     .max(2, 'Emoji should be 1-2 characters')
     .or(z.literal(''))
     .nullable()
     .optional()
-    .transform(val => val === '' ? null : val),
+    .transform((val) => (val === '' ? null : val)),
 });
 
 // Group to contact relationship schema
@@ -57,7 +63,7 @@ export const groupRouter = router({
           console.error('Error fetching group members:', memberError);
           throw new TRPCError({
             code: 'INTERNAL_SERVER_ERROR',
-            message: 'Failed to fetch group memberships'
+            message: 'Failed to fetch group memberships',
           });
         }
 
@@ -67,19 +73,23 @@ export const groupRouter = router({
         }
 
         // Extract just the group IDs into an array
-        const groupIds = memberData.map((item: { group_id: string }) => item.group_id);
+        const groupIds = memberData.map(
+          (item: { group_id: string }) => item.group_id
+        );
 
         // Then fetch the actual groups using those IDs
         const { data: groupsData, error: groupsError } = await ctx.supabaseUser
           .from('groups')
-          .select(`
+          .select(
+            `
             id,
             name,
             description,
             color,
             created_at,
             updated_at
-          `)
+          `
+          )
           .eq('user_id', ctx.user.id)
           .in('id', groupIds);
 
@@ -87,7 +97,7 @@ export const groupRouter = router({
           console.error('Error fetching groups for contact:', groupsError);
           throw new TRPCError({
             code: 'INTERNAL_SERVER_ERROR',
-            message: 'Failed to fetch groups for contact'
+            message: 'Failed to fetch groups for contact',
           });
         }
 
@@ -96,7 +106,8 @@ export const groupRouter = router({
         console.error('Unexpected error in getGroupsForContact:', err);
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
-          message: err instanceof Error ? err.message : 'An unknown error occurred'
+          message:
+            err instanceof Error ? err.message : 'An unknown error occurred',
         });
       }
     }),
@@ -105,7 +116,7 @@ export const groupRouter = router({
   list: protectedProcedure.query(async ({ ctx }) => {
     console.warn('Group router: list procedure called');
     console.warn('Group router: ctx.user:', ctx.user);
-    
+
     if (!ctx.user) {
       console.error('Group router: No authenticated user found');
       throw new TRPCError({ code: 'UNAUTHORIZED' });
@@ -119,9 +130,9 @@ export const groupRouter = router({
 
     if (error) {
       console.error('Error fetching groups with contact counts:', error);
-      throw new TRPCError({ 
-        code: 'INTERNAL_SERVER_ERROR', 
-        message: 'Failed to fetch groups' 
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to fetch groups',
       });
     }
 
@@ -159,7 +170,7 @@ export const groupRouter = router({
         console.error('Error fetching group by ID:', error);
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to fetch group'
+          message: 'Failed to fetch group',
         });
       }
 
@@ -197,7 +208,7 @@ export const groupRouter = router({
           console.error('Error saving group:', error);
           throw new TRPCError({
             code: 'INTERNAL_SERVER_ERROR',
-            message: `Failed to ${isUpdate ? 'update' : 'create'} group`
+            message: `Failed to ${isUpdate ? 'update' : 'create'} group`,
           });
         }
 
@@ -206,7 +217,8 @@ export const groupRouter = router({
         console.error('Unexpected error in save group procedure:', err);
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
-          message: err instanceof Error ? err.message : 'An unknown error occurred'
+          message:
+            err instanceof Error ? err.message : 'An unknown error occurred',
         });
       }
     }),
@@ -230,7 +242,7 @@ export const groupRouter = router({
         console.error('Error deleting group:', error);
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to delete group'
+          message: 'Failed to delete group',
         });
       }
 
@@ -256,7 +268,7 @@ export const groupRouter = router({
         console.error('Error verifying contact:', contactError);
         throw new TRPCError({
           code: 'BAD_REQUEST',
-          message: 'Invalid contact ID'
+          message: 'Invalid contact ID',
         });
       }
 
@@ -271,7 +283,7 @@ export const groupRouter = router({
         console.error('Error verifying group:', groupError);
         throw new TRPCError({
           code: 'BAD_REQUEST',
-          message: 'Invalid group ID'
+          message: 'Invalid group ID',
         });
       }
 
@@ -287,7 +299,7 @@ export const groupRouter = router({
         console.error('Error checking existing membership:', checkError);
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to check existing membership'
+          message: 'Failed to check existing membership',
         });
       }
 
@@ -308,11 +320,11 @@ export const groupRouter = router({
       if (error) {
         console.error('Error adding contact to group:', error, '\nPayload:', {
           contact_id: input.contactId,
-          group_id: input.groupId
+          group_id: input.groupId,
         });
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to add contact to group'
+          message: 'Failed to add contact to group',
         });
       }
 
@@ -337,7 +349,7 @@ export const groupRouter = router({
         console.error('Error removing contact from group:', error);
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to remove contact from group'
+          message: 'Failed to remove contact from group',
         });
       }
 
@@ -363,28 +375,34 @@ export const groupRouter = router({
         console.error('Error verifying group:', groupError);
         throw new TRPCError({
           code: 'NOT_FOUND',
-          message: 'Group not found'
+          message: 'Group not found',
         });
       }
 
       // Get all contacts in the group via the junction table
       const { data, error } = await ctx.supabaseUser
         .from('group_members')
-        .select(`
+        .select(
+          `
           contact_id,
           contacts:contact_id (*)
-        `)
+        `
+        )
         .eq('group_id', input.groupId);
 
       if (error) {
         console.error('Error fetching contacts in group:', error);
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to fetch contacts in group'
+          message: 'Failed to fetch contacts in group',
         });
       }
 
       // Extract the contact data from the joined query
-      return data?.map((item: { contacts: Record<string, unknown> }) => item.contacts) || [];
+      return (
+        data?.map(
+          (item: { contacts: Record<string, unknown> }) => item.contacts
+        ) || []
+      );
     }),
 });

@@ -1,0 +1,31 @@
+# Task ID: 48
+# Title: Epic 2: CRM Core Functionality - Contacts & Groups
+# Status: pending
+# Dependencies: 47
+# Priority: high
+# Description: Implementing the fundamental CRM features for managing contacts and organizing them into groups.
+# Details:
+
+
+# Test Strategy:
+
+
+# Subtasks:
+## 1. Design Contact Data Model [pending]
+### Dependencies: None
+### Description: Create the database schema and data model for contacts including fields for personal information, communication details, and relationship tracking.
+### Details:
+Define required fields (name, email, phone, address, etc.), optional fields (social media, website, etc.), and relationship attributes. Consider scalability and performance. Create database migrations and entity models.
+
+## 2. Implement Contact Groups Functionality [pending]
+### Dependencies: 48.1
+### Description: Develop the ability to create, edit, and manage contact groups for organizational purposes.
+### Details:
+Build functionality for creating named groups, adding/removing contacts from groups, and viewing contacts by group. Include group attributes like description and type. Ensure efficient querying for contacts within groups.
+
+## 3. Create Contact Management UI [pending]
+### Dependencies: 48.1, 48.2
+### Description: Design and implement the user interface for contact and group management within the CRM.
+### Details:
+Develop screens for contact list view, contact detail view, contact creation/editing, group management, and contact assignment to groups. Include search, filter, and sorting capabilities. Ensure responsive design for mobile and desktop use.
+

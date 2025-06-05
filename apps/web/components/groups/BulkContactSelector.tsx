@@ -1,16 +1,21 @@
-"use client";
+'use client';
 
-import { Check, Search, User, Mail } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
+import { Check, Search, User, Mail } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { api } from "@/lib/trpc";
-
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { api } from '@/lib/trpc';
 
 interface Contact {
   id: string;
@@ -28,26 +33,36 @@ interface BulkContactSelectorProps {
   onClose: () => void;
 }
 
-export function BulkContactSelector({ groupId, groupName, isOpen, onClose }: BulkContactSelectorProps) {
-  const [searchTerm, setSearchTerm] = useState("");
+export function BulkContactSelector({
+  groupId,
+  groupName,
+  isOpen,
+  onClose,
+}: BulkContactSelectorProps) {
+  const [searchTerm, setSearchTerm] = useState('');
   const [selectedContactIds, setSelectedContactIds] = useState<string[]>([]);
 
   // Fetch all contacts
-  const { data: allContacts = [], isLoading: contactsLoading } = api.contacts.list.useQuery();
+  const { data: allContacts = [], isLoading: contactsLoading } =
+    api.contacts.list.useQuery({});
 
   // Fetch contacts already in this group
-  const { data: groupContacts = [] } = api.groups.getContacts.useQuery({ groupId });
+  const { data: groupContacts = [] } = api.groups.getContacts.useQuery({
+    groupId,
+  });
 
   // Add contacts to group mutation
   const addContactsMutation = api.groups.addContact.useMutation({
     onSuccess: () => {
-      toast.success(`Added ${selectedContactIds.length} contact(s) to ${groupName}`);
+      toast.success(
+        `Added ${selectedContactIds.length} contact(s) to ${groupName}`
+      );
       setSelectedContactIds([]);
       onClose();
     },
     onError: (error) => {
       toast.error(`Failed to add contacts: ${error.message}`);
-    }
+    },
   });
 
   // Filter contacts not already in group and by search term
@@ -66,9 +81,9 @@ export function BulkContactSelector({ groupId, groupName, isOpen, onClose }: Bul
     }) as Contact[];
 
   const handleSelectContact = (contactId: string) => {
-    setSelectedContactIds(prev => 
-      prev.includes(contactId) 
-        ? prev.filter(id => id !== contactId)
+    setSelectedContactIds((prev) =>
+      prev.includes(contactId)
+        ? prev.filter((id) => id !== contactId)
         : [...prev, contactId]
     );
   };
@@ -77,7 +92,7 @@ export function BulkContactSelector({ groupId, groupName, isOpen, onClose }: Bul
     if (selectedContactIds.length === availableContacts.length) {
       setSelectedContactIds([]);
     } else {
-      setSelectedContactIds(availableContacts.map(c => c.id));
+      setSelectedContactIds(availableContacts.map((c) => c.id));
     }
   };
 
@@ -85,7 +100,7 @@ export function BulkContactSelector({ groupId, groupName, isOpen, onClose }: Bul
     for (const contactId of selectedContactIds) {
       await addContactsMutation.mutateAsync({
         contactId,
-        groupId
+        groupId,
       });
     }
   };
@@ -129,14 +144,18 @@ export function BulkContactSelector({ groupId, groupName, isOpen, onClose }: Bul
               <div className="text-center py-4">Loading contacts...</div>
             ) : availableContacts.length === 0 ? (
               <div className="text-center py-4 text-gray-500">
-                {searchTerm ? "No contacts found matching your search" : "All contacts are already in this group"}
+                {searchTerm
+                  ? 'No contacts found matching your search'
+                  : 'All contacts are already in this group'}
               </div>
             ) : (
               availableContacts.map((contact: Contact) => (
                 <div
                   key={contact.id}
                   className={`flex items-center space-x-3 p-3 rounded-lg border cursor-pointer hover:bg-gray-50 ${
-                    selectedContactIds.includes(contact.id) ? "bg-purple-50 border-purple-200" : ""
+                    selectedContactIds.includes(contact.id)
+                      ? 'bg-purple-50 border-purple-200'
+                      : ''
                   }`}
                   onClick={() => handleSelectContact(contact.id)}
                 >
@@ -147,7 +166,8 @@ export function BulkContactSelector({ groupId, groupName, isOpen, onClose }: Bul
                   <Avatar className="h-10 w-10">
                     <AvatarImage src={contact.profile_image_url || undefined} />
                     <AvatarFallback>
-                      {contact.first_name?.[0]}{contact.last_name?.[0]}
+                      {contact.first_name?.[0]}
+                      {contact.last_name?.[0]}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
@@ -178,10 +198,14 @@ export function BulkContactSelector({ groupId, groupName, isOpen, onClose }: Bul
           </Button>
           <Button
             onClick={handleAddContacts}
-            disabled={selectedContactIds.length === 0 || addContactsMutation.isLoading}
+            disabled={
+              selectedContactIds.length === 0 || addContactsMutation.isLoading
+            }
             className="bg-purple-500 hover:bg-purple-600"
           >
-            {addContactsMutation.isLoading ? "Adding..." : `Add ${selectedContactIds.length} Contact(s)`}
+            {addContactsMutation.isLoading
+              ? 'Adding...'
+              : `Add ${selectedContactIds.length} Contact(s)`}
           </Button>
         </DialogFooter>
       </DialogContent>

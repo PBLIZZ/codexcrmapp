@@ -1,0 +1,43 @@
+# Task ID: 37
+# Title: Universal Webhook Receiver
+# Status: pending
+# Dependencies: 34, 5
+# Priority: high
+# Description: Design and implement a universal webhook endpoint for clients to send contact data from various sources. Details: URL structure, tRPC processing, initial parsing, security, temporary storage for normalization.
+# Details:
+Create a flexible webhook system that can receive and process contact data from various third-party services and custom integrations.
+
+# Test Strategy:
+
+
+# Subtasks:
+## 37.1. Design webhook URL structure [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 37.2. Implement tRPC procedure for webhook processing [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 37.3. Implement initial data parsing logic for common formats [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 37.4. Develop security measures (authentication, rate limiting) [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 37.5. Store incoming webhook data temporarily for processing [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+

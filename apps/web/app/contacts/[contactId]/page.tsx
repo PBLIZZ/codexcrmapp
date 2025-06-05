@@ -25,7 +25,7 @@ function ContactDetailSkeleton() {
           <Skeleton className="h-10 w-64" />
           <Skeleton className="h-10 w-24" />
         </div>
-        
+
         <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
           <div className="p-6">
             <div className="flex flex-col md:flex-row gap-6">
@@ -38,14 +38,14 @@ function ContactDetailSkeleton() {
                 </div>
               </div>
             </div>
-            
+
             <div className="mt-8 space-y-6">
               <Skeleton className="h-6 w-40" />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Skeleton className="h-20 w-full" />
                 <Skeleton className="h-20 w-full" />
               </div>
-              
+
               <Skeleton className="h-6 w-40" />
               <div className="space-y-4">
                 <Skeleton className="h-24 w-full" />
@@ -63,11 +63,12 @@ function ContactDetailSkeleton() {
  * Contact detail page component
  * Uses Next.js App Router conventions for dynamic route parameters
  */
-export default async function ContactDetailPage({ params }: ContactDetailPageProps) {
-
+export default async function ContactDetailPage({
+  params,
+}: ContactDetailPageProps) {
   // Extract contactId from params (await required in Next.js 15)
   const { contactId } = await params;
-  
+
   return (
     <Suspense fallback={<ContactDetailSkeleton />}>
       <ContactDetailView contactId={contactId} />

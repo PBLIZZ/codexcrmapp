@@ -1,32 +1,32 @@
 // apps/web/app/layout.tsx
-"use client";
+'use client';
 
-import { Geist, Geist_Mono } from "next/font/google"; // Your fonts
+import { Geist, Geist_Mono } from 'next/font/google'; // Your fonts
 
-import "./globals.css";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import './globals.css';
+import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 import { Providers } from './providers';
 
 import { MainLayout } from '@/components/layout/MainLayout'; // Main app shell
 import { Navbar } from '@/components/layout/Navbar'; // The global Navbar for auth pages
 import { Toaster } from '@/components/ui/sonner';
-import { supabase } from "@/lib/supabase/client"; // Your Supabase client
+import { supabase } from '@/lib/supabase/client'; // Your Supabase client
 
 import type { User } from '@supabase/supabase-js';
 
 // Font configuration
 const geistSans = Geist({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-geist-sans",
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-geist-sans',
 });
 
 const geistMono = Geist_Mono({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-geist-mono",
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-geist-mono',
 });
 
 // If you need static metadata, it's often best to keep RootLayout as a Server Component
@@ -48,22 +48,26 @@ export default function RootLayout({
     '/sign-up',
     '/forgot-password',
     '/reset-password',
-    '/sign-up/confirmation'
+    '/sign-up/confirmation',
   ];
   const isAuthPage = authPages.includes(pathname);
 
   useEffect(() => {
     const getSessionAndSetUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       setUser(session?.user ?? null);
       setIsLoadingAuth(false);
     };
     getSessionAndSetUser();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-      setIsLoadingAuth(false);
-    });
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null);
+        setIsLoadingAuth(false);
+      }
+    );
 
     return () => {
       authListener?.subscription.unsubscribe();
@@ -73,8 +77,12 @@ export default function RootLayout({
   if (isLoadingAuth) {
     return (
       <html lang="en">
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-          <div className="flex items-center justify-center h-screen">Loading Application...</div>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          <div className="flex items-center justify-center h-screen">
+            Loading Application...
+          </div>
         </body>
       </html>
     );
@@ -82,12 +90,20 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Providers> {/* tRPC, React Query Providers */}
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <Providers>
+          {' '}
+          {/* tRPC, React Query Providers */}
           <Toaster />
           {user && !isAuthPage ? (
             // Authenticated user, not on an auth page: Render MainLayout which includes its own Navbar
-            <MainLayout user={user} /* Pass totalContacts if MainLayout needs it for Sidebar */>
+            <MainLayout
+              user={
+                user
+              } /* Pass totalContacts if MainLayout needs it for Sidebar */
+            >
               {children}
             </MainLayout>
           ) : isAuthPage ? (

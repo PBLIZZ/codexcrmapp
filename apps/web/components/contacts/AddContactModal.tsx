@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
 import { useQueryClient } from '@tanstack/react-query';
-import { Check, AlertCircle, Loader2, Plus, User } from "lucide-react"; // Plus might be unused here
-import { useState, useEffect, FormEvent } from "react"; // Added FormEvent
+import { Check, AlertCircle, Loader2, Plus, User } from 'lucide-react'; // Plus might be unused here
+import { useState, useEffect, FormEvent } from 'react'; // Added FormEvent
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogTrigger,
@@ -15,9 +15,9 @@ import {
   DialogDescription,
   DialogFooter,
   // DialogClose // DialogClose is usually for a manual close button inside content, not needed here
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { api } from '@/lib/trpc';
 import { cn } from '@/lib/utils';
 
@@ -34,11 +34,11 @@ export function AddContactModal({
   onOpenChange,
   onContactAdded,
   showTriggerButton = true, // Default to true
-  triggerButtonComponent // For custom trigger from parent
+  triggerButtonComponent, // For custom trigger from parent
 }: AddContactModalProps) {
   const queryClient = useQueryClient();
   const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
-  
+
   const open = controlledOpen !== undefined ? controlledOpen : uncontrolledOpen;
   const setOpen = (newOpenState: boolean) => {
     if (onOpenChange) {
@@ -48,10 +48,10 @@ export function AddContactModal({
     }
   };
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [source, setSource] = useState("");
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [source, setSource] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -77,10 +77,10 @@ export function AddContactModal({
   }, [open]);
 
   const resetForm = () => {
-    setFirstName("");
-    setLastName("");
-    setEmail("");
-    setSource("");
+    setFirstName('');
+    setLastName('');
+    setEmail('');
+    setSource('');
     setSuccess(false);
     setError(null);
     // setIsSubmitting(false); // Important: also reset submitting state
@@ -94,8 +94,9 @@ export function AddContactModal({
         onContactAdded();
       }
     },
-    onError: (err: any) => { // Catch error here
-      setError(err.message || "Failed to add contact");
+    onError: (err: any) => {
+      // Catch error here
+      setError(err.message || 'Failed to add contact');
       setIsSubmitting(false); // Reset submitting state on error
     },
     // onSettled: () => { // Also reset submitting state when mutation is settled
@@ -103,7 +104,8 @@ export function AddContactModal({
     // }
   });
 
-  async function handleAddContact(e: FormEvent) { // Changed to FormEvent
+  async function handleAddContact(e: FormEvent) {
+    // Changed to FormEvent
     e.preventDefault();
     if (success) return; // Prevent re-submission if already successful
 
@@ -113,9 +115,9 @@ export function AddContactModal({
 
     // Basic client-side validation (you can add more robust validation e.g. with Zod)
     if (!firstName.trim() || !lastName.trim()) {
-        setError("First name and last name are required.");
-        setIsSubmitting(false);
-        return;
+      setError('First name and last name are required.');
+      setIsSubmitting(false);
+      return;
     }
 
     try {
@@ -130,7 +132,9 @@ export function AddContactModal({
     } catch (err: any) {
       // This catch block might not be strictly necessary if useMutation's onError handles it,
       // but it's a safeguard.
-      setError(err.message || "An unexpected error occurred while adding contact.");
+      setError(
+        err.message || 'An unexpected error occurred while adding contact.'
+      );
       setIsSubmitting(false);
     }
     // No finally here, as isSubmitting is handled in onSuccess/onError
@@ -142,34 +146,40 @@ export function AddContactModal({
         <DialogTrigger asChild>{triggerButtonComponent}</DialogTrigger>
       ) : showTriggerButton ? ( // Otherwise, show default trigger if enabled
         <DialogTrigger asChild>
-          <Button variant="outline" className="h-auto flex flex-col items-center justify-center p-4 space-y-2">
+          <Button
+            variant="outline"
+            className="h-auto flex flex-col items-center justify-center p-4 space-y-2"
+          >
             <User className="h-6 w-6 mb-2" />
             <span>Add Contact</span>
           </Button>
         </DialogTrigger>
-      ) : null} 
+      ) : null}
       {/* If no trigger specified and showTriggerButton is false, no trigger is rendered by this component */}
-      
-      <DialogContent className="max-w-md w-full p-6"> {/* Removed flex items-center justify-center */}
+
+      <DialogContent className="max-w-md w-full p-6">
+        {' '}
+        {/* Removed flex items-center justify-center */}
         <DialogHeader className="w-full text-center mb-4">
-          <DialogTitle className="text-teal-800 text-2xl font-extrabold tracking-tight mb-2">Add New Contact</DialogTitle>
+          <DialogTitle className="text-teal-800 text-2xl font-extrabold tracking-tight mb-2">
+            Add New Contact
+          </DialogTitle>
           <DialogDescription>
             <span className="text-xs text-muted-foreground">
               Enter contact details below to add them to your CRM system
             </span>
           </DialogDescription>
         </DialogHeader>
-        
-        {success && !error && ( // Only show success if there's no error
-          <Alert className="mb-4 bg-green-50 border-green-200">
-            <Check className="h-4 w-4 text-green-600" />
-            <AlertTitle className="text-green-800">Success!</AlertTitle>
-            <AlertDescription className="text-green-700">
-              Contact has been added successfully. Closing soon...
-            </AlertDescription>
-          </Alert>
-        )}
-        
+        {success &&
+          !error && ( // Only show success if there's no error
+            <Alert className="mb-4 bg-green-50 border-green-200">
+              <Check className="h-4 w-4 text-green-600" />
+              <AlertTitle className="text-green-800">Success!</AlertTitle>
+              <AlertDescription className="text-green-700">
+                Contact has been added successfully. Closing soon...
+              </AlertDescription>
+            </Alert>
+          )}
         {error && (
           <Alert variant="destructive" className="mb-4">
             <AlertCircle className="h-4 w-4" />
@@ -177,18 +187,25 @@ export function AddContactModal({
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
-        
         {/* Hide form after success to prevent re-submission before modal closes */}
         {!success && (
-          <form onSubmit={handleAddContact} className="w-full flex flex-col gap-4"> {/* Removed items-center justify-center */}
+          <form
+            onSubmit={handleAddContact}
+            className="w-full flex flex-col gap-4"
+          >
+            {' '}
+            {/* Removed items-center justify-center */}
             <div className="grid grid-cols-2 gap-3 w-full">
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="firstNameModal" className="text-sm font-medium">First Name *</Label> {/* Changed id for uniqueness */}
+                <Label htmlFor="firstNameModal" className="text-sm font-medium">
+                  First Name *
+                </Label>{' '}
+                {/* Changed id for uniqueness */}
                 <Input
                   id="firstNameModal"
                   placeholder="First Name"
                   value={firstName}
-                  onChange={e => setFirstName(e.target.value)}
+                  onChange={(e) => setFirstName(e.target.value)}
                   required
                   autoFocus
                   disabled={isSubmitting}
@@ -196,46 +213,54 @@ export function AddContactModal({
                 />
               </div>
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="lastNameModal" className="text-sm font-medium">Last Name *</Label> {/* Changed id */}
+                <Label htmlFor="lastNameModal" className="text-sm font-medium">
+                  Last Name *
+                </Label>{' '}
+                {/* Changed id */}
                 <Input
                   id="lastNameModal"
                   placeholder="Last Name"
                   value={lastName}
-                  onChange={e => setLastName(e.target.value)}
+                  onChange={(e) => setLastName(e.target.value)}
                   required
                   disabled={isSubmitting}
                   className="w-full"
                 />
               </div>
             </div>
-            
             <div className="flex flex-col space-y-1.5 w-full">
-              <Label htmlFor="emailModal" className="text-sm font-medium">Email</Label> {/* Changed id */}
+              <Label htmlFor="emailModal" className="text-sm font-medium">
+                Email
+              </Label>{' '}
+              {/* Changed id */}
               <Input
                 id="emailModal"
                 type="email"
                 placeholder="Email Address"
                 value={email}
-                onChange={e => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value)}
                 disabled={isSubmitting}
                 className="w-full"
               />
             </div>
-            
             <div className="flex flex-col space-y-1.5 w-full">
-              <Label htmlFor="sourceModal" className="text-sm font-medium text-gray-700"> {/* Changed id */}
+              <Label
+                htmlFor="sourceModal"
+                className="text-sm font-medium text-gray-700"
+              >
+                {' '}
+                {/* Changed id */}
                 How do you know this person?
               </Label>
               <Input
                 id="sourceModal"
                 placeholder="e.g. Met at a conference"
                 value={source}
-                onChange={e => setSource(e.target.value)}
+                onChange={(e) => setSource(e.target.value)}
                 disabled={isSubmitting}
                 className="w-full"
               />
             </div>
-            
             <DialogFooter className="w-full mt-4">
               <Button
                 type="submit"
@@ -252,7 +277,7 @@ export function AddContactModal({
                     Adding Contact...
                   </>
                 ) : (
-                  "Add Contact"
+                  'Add Contact'
                 )}
               </Button>
             </DialogFooter>

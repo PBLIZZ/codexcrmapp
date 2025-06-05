@@ -1,0 +1,43 @@
+# Task ID: 41
+# Title: Website Tracking Script/Pixel
+# Status: pending
+# Dependencies: 34, 5
+# Priority: medium
+# Description: Create a tracking script/pixel for clients to embed on websites to capture form submissions/lead events
+# Details:
+Develop a lightweight JavaScript tracking script that can be embedded on client websites to capture visitor information and form submissions/lead events. The implementation should include JS script design, form capture logic, communication to backend, and GTM compatibility.
+
+# Test Strategy:
+
+
+# Subtasks:
+## 41.1. Design tracking script architecture [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 41.2. Implement form submission capture [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 41.3. Create GTM-compatible version [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 41.4. Develop backend endpoint for tracking data [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 41.5. Add documentation and implementation guides [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+

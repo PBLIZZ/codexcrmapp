@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { Check } from "lucide-react";
+import { Check } from 'lucide-react';
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
 interface ColumnSelectorProps {
   visibleColumns: string[];
@@ -14,7 +14,10 @@ interface ColumnOption {
   label: string;
 }
 
-export function ColumnSelector({ visibleColumns, onToggle }: ColumnSelectorProps) {
+export function ColumnSelector({
+  visibleColumns,
+  onToggle,
+}: ColumnSelectorProps) {
   // Available columns to display
   const availableColumns: ColumnOption[] = [
     { id: 'name', label: 'Name' },
@@ -25,7 +28,7 @@ export function ColumnSelector({ visibleColumns, onToggle }: ColumnSelectorProps
     { id: 'groups', label: 'Groups' },
     { id: 'tags', label: 'Tags' },
     { id: 'source', label: 'Source' },
-    { id: 'last_contacted', label: 'Last Contacted' }
+    { id: 'last_contacted', label: 'Last Contacted' },
   ];
 
   return (
@@ -34,8 +37,8 @@ export function ColumnSelector({ visibleColumns, onToggle }: ColumnSelectorProps
         <div
           key={column.id}
           className={cn(
-            "flex items-center justify-between px-2 py-1.5 rounded-sm text-sm cursor-pointer hover:bg-muted",
-            visibleColumns.includes(column.id) && "font-medium"
+            'flex items-center justify-between px-2 py-1.5 rounded-sm text-sm cursor-pointer hover:bg-muted',
+            visibleColumns.includes(column.id) && 'font-medium'
           )}
           onClick={() => onToggle(column.id)}
         >

@@ -7,138 +7,113 @@ export type Json =
   | Json[]
 
 export type Database = {
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          operationName?: string
-          query?: string
-          variables?: Json
-          extensions?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
   public: {
     Tables: {
-      clients: {
+      contacts: {
         Row: {
-          address_city: string | null
-          address_country: string | null
-          address_postal_code: string | null
-          address_state: string | null
-          address_street: string | null
+          birthday: string | null
           company_name: string | null
           created_at: string
-          date_of_birth: string | null
-          email: string | null
-          enrichment_data: Json | null
+          email: string
+          enriched_data: Json | null
+          enrichment_status: string | null
           first_name: string
           id: string
           job_title: string | null
+          last_contacted_at: string | null
           last_name: string
+          linkedin_profile: string | null
           notes: string | null
           phone: string | null
           profile_image_url: string | null
-          social_profiles: Json | null
-          tags: string[] | null
+          source: string | null
+          tags: string | null
+          twitter_profile: string | null
           updated_at: string
           user_id: string
+          website: string | null
         }
         Insert: {
-          address_city?: string | null
-          address_country?: string | null
-          address_postal_code?: string | null
-          address_state?: string | null
-          address_street?: string | null
+          birthday?: string | null
           company_name?: string | null
           created_at?: string
-          date_of_birth?: string | null
-          email?: string | null
-          enrichment_data?: Json | null
+          email: string
+          enriched_data?: Json | null
+          enrichment_status?: string | null
           first_name: string
           id?: string
           job_title?: string | null
+          last_contacted_at?: string | null
           last_name: string
+          linkedin_profile?: string | null
           notes?: string | null
           phone?: string | null
           profile_image_url?: string | null
-          social_profiles?: Json | null
-          tags?: string[] | null
+          source?: string | null
+          tags?: string | null
+          twitter_profile?: string | null
           updated_at?: string
           user_id: string
+          website?: string | null
         }
         Update: {
-          address_city?: string | null
-          address_country?: string | null
-          address_postal_code?: string | null
-          address_state?: string | null
-          address_street?: string | null
+          birthday?: string | null
           company_name?: string | null
           created_at?: string
-          date_of_birth?: string | null
-          email?: string | null
-          enrichment_data?: Json | null
+          email?: string
+          enriched_data?: Json | null
+          enrichment_status?: string | null
           first_name?: string
           id?: string
           job_title?: string | null
+          last_contacted_at?: string | null
           last_name?: string
+          linkedin_profile?: string | null
           notes?: string | null
           phone?: string | null
           profile_image_url?: string | null
-          social_profiles?: Json | null
-          tags?: string[] | null
+          source?: string | null
+          tags?: string | null
+          twitter_profile?: string | null
           updated_at?: string
           user_id?: string
+          website?: string | null
         }
         Relationships: []
       }
       follow_ups: {
         Row: {
           client_id: string
-          completed_at: string | null
+          completed: boolean
           created_at: string
-          due_date: string | null
-          id: number
+          due_date: string
+          id: string
           notes: string | null
-          session_id: number | null
+          session_id: string | null
           type: string
           updated_at: string
           user_id: string
         }
         Insert: {
           client_id: string
-          completed_at?: string | null
+          completed?: boolean
           created_at?: string
-          due_date?: string | null
-          id?: never
+          due_date: string
+          id?: string
           notes?: string | null
-          session_id?: number | null
+          session_id?: string | null
           type: string
           updated_at?: string
           user_id: string
         }
         Update: {
           client_id?: string
-          completed_at?: string | null
+          completed?: boolean
           created_at?: string
-          due_date?: string | null
-          id?: never
+          due_date?: string
+          id?: string
           notes?: string | null
-          session_id?: number | null
+          session_id?: string | null
           type?: string
           updated_at?: string
           user_id?: string
@@ -148,7 +123,7 @@ export type Database = {
             foreignKeyName: "follow_ups_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
-            referencedRelation: "clients"
+            referencedRelation: "contacts"
             referencedColumns: ["id"]
           },
           {
@@ -160,40 +135,100 @@ export type Database = {
           },
         ]
       }
-      notes: {
+      group_members: {
         Row: {
-          client_id: string | null
+          contact_id: string
           created_at: string
-          id: number
-          is_pinned: boolean
-          note_text: string
-          program_id: number | null
-          session_id: number | null
-          title: string | null
+          group_id: string
+          id: string
+        }
+        Insert: {
+          contact_id: string
+          created_at?: string
+          group_id: string
+          id?: string
+        }
+        Update: {
+          contact_id?: string
+          created_at?: string
+          group_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_members_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      groups: {
+        Row: {
+          color: string | null
+          created_at: string
+          description: string | null
+          emoji: string | null
+          id: string
+          name: string
           updated_at: string
           user_id: string
         }
         Insert: {
-          client_id?: string | null
+          color?: string | null
           created_at?: string
-          id?: never
-          is_pinned?: boolean
-          note_text: string
-          program_id?: number | null
-          session_id?: number | null
-          title?: string | null
+          description?: string | null
+          emoji?: string | null
+          id?: string
+          name: string
           updated_at?: string
           user_id: string
         }
         Update: {
-          client_id?: string | null
+          color?: string | null
           created_at?: string
-          id?: never
-          is_pinned?: boolean
-          note_text?: string
-          program_id?: number | null
-          session_id?: number | null
-          title?: string | null
+          description?: string | null
+          emoji?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notes: {
+        Row: {
+          client_id: string
+          content: string
+          created_at: string
+          id: string
+          session_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          client_id: string
+          content: string
+          created_at?: string
+          id?: string
+          session_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          client_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          session_id?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -202,14 +237,7 @@ export type Database = {
             foreignKeyName: "notes_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
-            referencedRelation: "clients"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "notes_program_id_fkey"
-            columns: ["program_id"]
-            isOneToOne: false
-            referencedRelation: "programs"
+            referencedRelation: "contacts"
             referencedColumns: ["id"]
           },
           {
@@ -226,15 +254,10 @@ export type Database = {
           amount: number
           client_id: string
           created_at: string
-          currency: string
-          external_payment_id: string | null
-          id: number
-          method: string | null
-          notes: string | null
-          paid_at: string | null
-          program_id: number | null
-          service_id: number | null
-          session_id: number | null
+          id: string
+          payment_date: string
+          payment_method: string | null
+          program_id: string | null
           status: string
           updated_at: string
           user_id: string
@@ -243,15 +266,10 @@ export type Database = {
           amount: number
           client_id: string
           created_at?: string
-          currency?: string
-          external_payment_id?: string | null
-          id?: never
-          method?: string | null
-          notes?: string | null
-          paid_at?: string | null
-          program_id?: number | null
-          service_id?: number | null
-          session_id?: number | null
+          id?: string
+          payment_date: string
+          payment_method?: string | null
+          program_id?: string | null
           status: string
           updated_at?: string
           user_id: string
@@ -260,15 +278,10 @@ export type Database = {
           amount?: number
           client_id?: string
           created_at?: string
-          currency?: string
-          external_payment_id?: string | null
-          id?: never
-          method?: string | null
-          notes?: string | null
-          paid_at?: string | null
-          program_id?: number | null
-          service_id?: number | null
-          session_id?: number | null
+          id?: string
+          payment_date?: string
+          payment_method?: string | null
+          program_id?: string | null
           status?: string
           updated_at?: string
           user_id?: string
@@ -278,7 +291,7 @@ export type Database = {
             foreignKeyName: "payments_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
-            referencedRelation: "clients"
+            referencedRelation: "contacts"
             referencedColumns: ["id"]
           },
           {
@@ -288,55 +301,38 @@ export type Database = {
             referencedRelation: "programs"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "payments_service_id_fkey"
-            columns: ["service_id"]
-            isOneToOne: false
-            referencedRelation: "services"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "payments_session_id_fkey"
-            columns: ["session_id"]
-            isOneToOne: false
-            referencedRelation: "sessions"
-            referencedColumns: ["id"]
-          },
         ]
       }
       program_enrollments: {
         Row: {
           client_id: string
-          completion_date: string | null
           created_at: string
-          enrolled_at: string
-          id: number
+          enrollment_date: string
+          id: string
           notes: string | null
-          program_id: number
+          program_id: string
           status: string
           updated_at: string
           user_id: string
         }
         Insert: {
           client_id: string
-          completion_date?: string | null
           created_at?: string
-          enrolled_at?: string
-          id?: never
+          enrollment_date?: string
+          id?: string
           notes?: string | null
-          program_id: number
-          status?: string
+          program_id: string
+          status: string
           updated_at?: string
           user_id: string
         }
         Update: {
           client_id?: string
-          completion_date?: string | null
           created_at?: string
-          enrolled_at?: string
-          id?: never
+          enrollment_date?: string
+          id?: string
           notes?: string | null
-          program_id?: number
+          program_id?: string
           status?: string
           updated_at?: string
           user_id?: string
@@ -346,7 +342,7 @@ export type Database = {
             foreignKeyName: "program_enrollments_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
-            referencedRelation: "clients"
+            referencedRelation: "contacts"
             referencedColumns: ["id"]
           },
           {
@@ -363,9 +359,9 @@ export type Database = {
           created_at: string
           description: string | null
           end_date: string | null
-          id: number
+          id: string
+          is_active: boolean | null
           name: string
-          price: number | null
           start_date: string | null
           updated_at: string
           user_id: string
@@ -374,20 +370,20 @@ export type Database = {
           created_at?: string
           description?: string | null
           end_date?: string | null
-          id?: never
+          id?: string
+          is_active?: boolean | null
           name: string
-          price?: number | null
           start_date?: string | null
           updated_at?: string
-          user_id: string
+          user_id?: string
         }
         Update: {
           created_at?: string
           description?: string | null
           end_date?: string | null
-          id?: never
+          id?: string
+          is_active?: boolean | null
           name?: string
-          price?: number | null
           start_date?: string | null
           updated_at?: string
           user_id?: string
@@ -398,9 +394,9 @@ export type Database = {
         Row: {
           created_at: string
           description: string | null
-          duration: number | null
-          id: number
-          is_active: boolean
+          duration_minutes: number | null
+          id: string
+          is_active: boolean | null
           name: string
           price: number | null
           updated_at: string
@@ -409,20 +405,20 @@ export type Database = {
         Insert: {
           created_at?: string
           description?: string | null
-          duration?: number | null
-          id?: never
-          is_active?: boolean
+          duration_minutes?: number | null
+          id?: string
+          is_active?: boolean | null
           name: string
           price?: number | null
           updated_at?: string
-          user_id: string
+          user_id?: string
         }
         Update: {
           created_at?: string
           description?: string | null
-          duration?: number | null
-          id?: never
-          is_active?: boolean
+          duration_minutes?: number | null
+          id?: string
+          is_active?: boolean | null
           name?: string
           price?: number | null
           updated_at?: string
@@ -432,35 +428,32 @@ export type Database = {
       }
       session_attendees: {
         Row: {
-          attendance_status: string
-          check_in_time: string | null
+          attended: boolean
           client_id: string
           created_at: string
-          id: number
+          id: string
           notes: string | null
-          session_id: number
+          session_id: string
           updated_at: string
           user_id: string
         }
         Insert: {
-          attendance_status?: string
-          check_in_time?: string | null
+          attended?: boolean
           client_id: string
           created_at?: string
-          id?: never
+          id?: string
           notes?: string | null
-          session_id: number
+          session_id: string
           updated_at?: string
           user_id: string
         }
         Update: {
-          attendance_status?: string
-          check_in_time?: string | null
+          attended?: boolean
           client_id?: string
           created_at?: string
-          id?: never
+          id?: string
           notes?: string | null
-          session_id?: number
+          session_id?: string
           updated_at?: string
           user_id?: string
         }
@@ -469,7 +462,7 @@ export type Database = {
             foreignKeyName: "session_attendees_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
-            referencedRelation: "clients"
+            referencedRelation: "contacts"
             referencedColumns: ["id"]
           },
           {
@@ -483,44 +476,38 @@ export type Database = {
       }
       sessions: {
         Row: {
-          client_id: string | null
+          client_id: string
           created_at: string
-          end_time: string | null
-          id: number
-          location: string | null
+          id: string
           notes: string | null
-          program_id: number | null
-          service_id: number | null
-          start_time: string
-          status: string
+          program_id: string | null
+          service_id: string | null
+          session_time: string
+          status: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
-          client_id?: string | null
+          client_id: string
           created_at?: string
-          end_time?: string | null
-          id?: never
-          location?: string | null
+          id?: string
           notes?: string | null
-          program_id?: number | null
-          service_id?: number | null
-          start_time: string
-          status: string
+          program_id?: string | null
+          service_id?: string | null
+          session_time: string
+          status?: string | null
           updated_at?: string
-          user_id: string
+          user_id?: string
         }
         Update: {
-          client_id?: string | null
+          client_id?: string
           created_at?: string
-          end_time?: string | null
-          id?: never
-          location?: string | null
+          id?: string
           notes?: string | null
-          program_id?: number | null
-          service_id?: number | null
-          start_time?: string
-          status?: string
+          program_id?: string | null
+          service_id?: string | null
+          session_time?: string
+          status?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -529,7 +516,7 @@ export type Database = {
             foreignKeyName: "sessions_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
-            referencedRelation: "clients"
+            referencedRelation: "contacts"
             referencedColumns: ["id"]
           },
           {
@@ -553,7 +540,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      can_manage_group: {
+        Args: { group_id: string }
+        Returns: boolean
+      }
+      get_current_user_id: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
@@ -670,11 +664,7 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {},
   },
 } as const
-

@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { Plus, Folder, Users, ChevronRight } from "lucide-react";
-import Link from "next/link";
+import { Plus, Folder, Users, ChevronRight } from 'lucide-react';
+import Link from 'next/link';
 
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface Group {
   id: string;
@@ -19,7 +19,11 @@ interface GroupsAdminSidebarProps {
   onGroupSelect?: (groupId: string) => void;
 }
 
-export function GroupsAdminSidebar({ groups = [], selectedGroupId, onGroupSelect }: GroupsAdminSidebarProps) {
+export function GroupsAdminSidebar({
+  groups = [],
+  selectedGroupId,
+  onGroupSelect,
+}: GroupsAdminSidebarProps) {
   return (
     <div className="h-full flex flex-col">
       <div className="p-4 border-b">
@@ -28,7 +32,7 @@ export function GroupsAdminSidebar({ groups = [], selectedGroupId, onGroupSelect
           Groups
         </h2>
       </div>
-      
+
       <div className="p-3">
         <Link href="/groups">
           <Button variant="outline" size="sm" className="w-full justify-start">
@@ -42,10 +46,12 @@ export function GroupsAdminSidebar({ groups = [], selectedGroupId, onGroupSelect
         <div className="px-3 mb-2">
           <div
             className={cn(
-              "flex items-center justify-between px-3 py-2 rounded-md cursor-pointer",
-              selectedGroupId === "" ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted"
+              'flex items-center justify-between px-3 py-2 rounded-md cursor-pointer',
+              selectedGroupId === ''
+                ? 'bg-primary/10 text-primary font-medium'
+                : 'hover:bg-muted'
             )}
-            onClick={() => onGroupSelect?.("")}
+            onClick={() => onGroupSelect?.('')}
           >
             <div className="flex items-center">
               <Users className="w-4 h-4 mr-2" />
@@ -56,24 +62,28 @@ export function GroupsAdminSidebar({ groups = [], selectedGroupId, onGroupSelect
             </span>
           </div>
         </div>
-        
+
         <div className="space-y-1 px-3">
-          <p className="text-xs font-medium text-muted-foreground px-3 py-1">Your Groups</p>
-          {groups.map(group => (
+          <p className="text-xs font-medium text-muted-foreground px-3 py-1">
+            Your Groups
+          </p>
+          {groups.map((group) => (
             <div
               key={group.id}
               className={cn(
-                "flex items-center justify-between px-3 py-2 rounded-md cursor-pointer",
-                selectedGroupId === group.id ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted"
+                'flex items-center justify-between px-3 py-2 rounded-md cursor-pointer',
+                selectedGroupId === group.id
+                  ? 'bg-primary/10 text-primary font-medium'
+                  : 'hover:bg-muted'
               )}
               onClick={() => onGroupSelect?.(group.id)}
             >
               <div className="flex items-center">
-                <div 
+                <div
                   className={cn(
-                    "w-3 h-3 rounded-full mr-2",
-                    group.color || "bg-gray-400"
-                  )} 
+                    'w-3 h-3 rounded-full mr-2',
+                    group.color || 'bg-gray-400'
+                  )}
                 />
                 <span>{group.name}</span>
               </div>
@@ -87,10 +97,11 @@ export function GroupsAdminSidebar({ groups = [], selectedGroupId, onGroupSelect
           ))}
         </div>
       </div>
-      
+
       <div className="p-3 border-t mt-auto">
         <p className="text-xs text-muted-foreground text-center">
-          {groups.length} groups • {groups.reduce((sum, group) => sum + (group.count || 0), 0)} contacts
+          {groups.length} groups •{' '}
+          {groups.reduce((sum, group) => sum + (group.count || 0), 0)} contacts
         </p>
       </div>
     </div>

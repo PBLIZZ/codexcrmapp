@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { Tag, Plus, X, Loader2 } from "lucide-react";
-import { useState, useContext, createContext, ReactNode } from "react";
+import { Tag, Plus, X, Loader2 } from 'lucide-react';
+import { useState, useContext, createContext, ReactNode } from 'react';
 
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -13,15 +13,15 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { api } from "@/lib/trpc";
+} from '@/components/ui/select';
+import { api } from '@/lib/trpc';
 
 // Define the Group type
 interface Group {
@@ -48,17 +48,21 @@ interface GroupsContextType {
 const GroupsContext = createContext<GroupsContextType>({
   allGroups: undefined,
   isLoading: false,
-  refetch: () => {}
+  refetch: () => {},
 });
 
 // Provider component for groups data
 export function GroupsProvider({ children }: { children: ReactNode }) {
   // Only fetch groups once for the entire contacts list
-  const { data: allGroups, isLoading, refetch } = api.groups.list.useQuery(undefined, {
+  const {
+    data: allGroups,
+    isLoading,
+    refetch,
+  } = api.groups.list.useQuery(undefined, {
     staleTime: 30000, // Cache for 30 seconds
     refetchOnWindowFocus: false, // Don't refetch on window focus for performance
   });
-  
+
   return (
     <GroupsContext.Provider value={{ allGroups, isLoading, refetch }}>
       {children}
@@ -71,37 +75,43 @@ export function useGroups() {
   return useContext(GroupsContext);
 }
 
-export function ContactGroupManager({ contactId, contactName, preloadedGroups }: ContactGroupManagerProps) {
+export function ContactGroupManager({
+  contactId,
+  contactName,
+  preloadedGroups,
+}: ContactGroupManagerProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedGroupId, setSelectedGroupId] = useState<string>("");
+  const [selectedGroupId, setSelectedGroupId] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [queryError, setQueryError] = useState<string | null>(null);
   const [removingGroupId, setRemovingGroupId] = useState<string | null>(null);
 
   // Use the shared groups context if available
   const groupsContext = useGroups();
-  
+
   const utils = api.useUtils();
 
   // Get all groups for this contact - but ONLY when the dialog is open to avoid excessive API calls
-  const { data: contactGroups, isLoading: isLoadingContactGroups } = 
+  const { data: contactGroups, isLoading: isLoadingContactGroups } =
     api.groups.getGroupsForContact.useQuery(
       { contactId },
-      { 
+      {
         enabled: !!contactId && isDialogOpen, // Only fetch when dialog is open
-        onError: (err) => setQueryError(`Failed to load contact groups: ${err.message}`),
+        onError: (err) =>
+          setQueryError(`Failed to load contact groups: ${err.message}`),
         staleTime: 30000, // Cache for 30 seconds
       }
     );
 
   // Use groups from context if available, otherwise fetch them (but only when dialog is open)
-  const { data: localGroups, isLoading: isLoadingLocalGroups } = 
+  const { data: localGroups, isLoading: isLoadingLocalGroups } =
     api.groups.list.useQuery(undefined, {
       enabled: isDialogOpen && !groupsContext.allGroups, // Only fetch when dialog is open and context doesn't have data
       staleTime: 30000, // Cache for 30 seconds
-      onError: (err) => setQueryError(`Failed to load all groups: ${err.message}`)
+      onError: (err) =>
+        setQueryError(`Failed to load all groups: ${err.message}`),
     });
-    
+
   // Use groups from context, or local query, or preloaded groups
   const allGroups = groupsContext.allGroups || localGroups || preloadedGroups;
   const isLoadingAllGroups = groupsContext.isLoading || isLoadingLocalGroups;
@@ -114,7 +124,7 @@ export function ContactGroupManager({ contactId, contactName, preloadedGroups }:
       utils.contacts.list.invalidate(); // Refresh contacts list to show updated groups
       utils.groups.list.invalidate(); // Refresh all groups data
       setIsDialogOpen(false);
-      setSelectedGroupId("");
+      setSelectedGroupId('');
       setError(null);
       setQueryError(null);
       // Refresh the context data
@@ -151,7 +161,7 @@ export function ContactGroupManager({ contactId, contactName, preloadedGroups }:
 
   const handleAddToGroup = () => {
     if (!selectedGroupId) {
-      setError("Please select a group");
+      setError('Please select a group');
       return;
     }
 
@@ -180,7 +190,7 @@ export function ContactGroupManager({ contactId, contactName, preloadedGroups }:
           <AlertDescription>{displayError}</AlertDescription>
         </Alert>
       )}
-      
+
       {/* Show current groups as badges */}
       {contactGroups?.map((group: Group) => (
         <Badge
@@ -217,7 +227,7 @@ export function ContactGroupManager({ contactId, contactName, preloadedGroups }:
         disabled={isLoadingAllGroups || !availableGroups?.length}
       >
         <Plus className="h-3 w-3 mr-1" />
-        {contactGroups?.length ? "Add" : "Assign Group"}
+        {contactGroups?.length ? 'Add' : 'Assign Group'}
       </Button>
 
       {/* Loading indicator for initial data load */}
@@ -229,13 +239,13 @@ export function ContactGroupManager({ contactId, contactName, preloadedGroups }:
       )}
 
       {/* Add to group dialog */}
-      <Dialog 
-        open={isDialogOpen} 
+      <Dialog
+        open={isDialogOpen}
         onOpenChange={(open) => {
           setIsDialogOpen(open);
           if (!open) {
             // Clear state when dialog closes
-            setSelectedGroupId("");
+            setSelectedGroupId('');
             setError(null);
           }
         }}
@@ -266,13 +276,15 @@ export function ContactGroupManager({ contactId, contactName, preloadedGroups }:
                 disabled={isLoadingAllGroups || !availableGroups?.length}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder={
-                    isLoadingAllGroups 
-                      ? "Loading groups..." 
-                      : !availableGroups?.length 
-                        ? "No groups available" 
-                        : "Select a group"
-                  } />
+                  <SelectValue
+                    placeholder={
+                      isLoadingAllGroups
+                        ? 'Loading groups...'
+                        : !availableGroups?.length
+                          ? 'No groups available'
+                          : 'Select a group'
+                    }
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   {availableGroups?.map((group: Group) => (
@@ -281,7 +293,11 @@ export function ContactGroupManager({ contactId, contactName, preloadedGroups }:
                         {/* Use Tailwind classes for background color when possible */}
                         <div
                           className={`w-3 h-3 rounded-full ${!group.color ? 'bg-gray-500' : ''}`}
-                          style={group.color ? { backgroundColor: group.color } : undefined}
+                          style={
+                            group.color
+                              ? { backgroundColor: group.color }
+                              : undefined
+                          }
                         />
                         {group.name}
                       </div>
@@ -297,7 +313,7 @@ export function ContactGroupManager({ contactId, contactName, preloadedGroups }:
               variant="outline"
               onClick={() => {
                 setIsDialogOpen(false);
-                setSelectedGroupId("");
+                setSelectedGroupId('');
                 setError(null);
               }}
             >
@@ -313,7 +329,7 @@ export function ContactGroupManager({ contactId, contactName, preloadedGroups }:
                   Adding...
                 </>
               ) : (
-                "Add to Group"
+                'Add to Group'
               )}
             </Button>
           </DialogFooter>
