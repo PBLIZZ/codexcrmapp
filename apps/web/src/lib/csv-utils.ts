@@ -5,8 +5,7 @@ export interface ParsedCsvRow {
 }
 
 export interface ValidatedContactData {
-  first_name: string;
-  last_name: string;
+  full_name: string;
   email: string | null;
   phone?: string | null;
   company?: string | null;
@@ -85,7 +84,7 @@ export interface CsvValidationError {
   type: 'header' | 'data' | 'email_format';
 }
 
-const REQUIRED_HEADERS: string[] = ['first_name', 'last_name', 'email'];
+const REQUIRED_HEADERS: string[] = ['full_name', 'email'];
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email format validation
 const URL_REGEX =
   /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
@@ -168,83 +167,42 @@ export function validateCsvData(parsedResult: ParseCsvFileResult): {
       emailIsValid = true;
     }
 
-    // Handle first_name
-    const firstName = row.first_name;
+    // Handle full_name
+    const fullNameValue = row.full_name;
     if (
-      firstName === null ||
-      firstName === undefined ||
-      String(firstName).trim() === ''
+      fullNameValue === null ||
+      fullNameValue === undefined ||
+      String(fullNameValue).trim() === ''
     ) {
       if (emailIsValid && typeof emailValue === 'string') {
-        const emailParts = emailValue.split('@')[0];
-        const nameParts = emailParts.split(/[._-]/); // Split by common separators
-        if (nameParts.length > 0 && nameParts[0]) {
-          row.first_name =
-            nameParts[0].charAt(0).toUpperCase() + nameParts[0].slice(1);
+        const emailLocalPart = emailValue.split('@')[0];
+        const nameParts = emailLocalPart
+          .split(/[._-]/) // Split by common separators like '.', '_', '-'
+          .map(part => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+          .filter(part => part !== ''); // Remove empty parts
+        
+        if (nameParts.length > 0) {
+          row.full_name = nameParts.join(' ');
         } else {
-          row.first_name = 'Contact'; // Fallback
+          row.full_name = 'Imported Contact'; // Fallback if email local part is unusual
         }
       } else {
-        row.first_name = 'Contact'; // Fallback if email is not valid for derivation
+        row.full_name = 'Imported Contact'; // Fallback if email is not valid for derivation
         // Only add an error if email was also missing/invalid, otherwise we've provided a fallback.
         if (!emailIsValid) {
           errors.push({
             row: csvRowNumber,
-            field: 'first_name',
+            field: 'full_name',
             message:
-              'First name is missing and cannot be derived (invalid email).',
+              'Full name is missing and cannot be derived (invalid or missing email).',
             type: 'data',
           });
         }
       }
     }
-
-    // Handle last_name
-    const lastName = row.last_name;
-    if (
-      lastName === null ||
-      lastName === undefined ||
-      String(lastName).trim() === ''
-    ) {
-      if (emailIsValid && typeof emailValue === 'string') {
-        const emailParts = emailValue.split('@')[0];
-        const nameParts = emailParts.split(/[._-]/);
-        if (nameParts.length > 1 && nameParts[1]) {
-          row.last_name =
-            nameParts[1].charAt(0).toUpperCase() + nameParts[1].slice(1);
-        } else if (
-          nameParts.length === 1 &&
-          nameParts[0].length > String(row.first_name || '').length
-        ) {
-          // If only one part in email name, and it's longer than the derived first name, assume the rest is last name
-          // This is a heuristic, e.g. "johnsmith@..." first_name="John", last_name="Smith"
-          const potentialLastName = nameParts[0].slice(
-            String(row.first_name || '').length
-          );
-          if (potentialLastName) {
-            row.last_name =
-              potentialLastName.charAt(0).toUpperCase() +
-              potentialLastName.slice(1);
-          } else {
-            row.last_name = '(Imported)'; // Fallback
-          }
-        } else {
-          row.last_name = '(Imported)'; // Fallback
-        }
-      } else {
-        row.last_name = '(Imported)'; // Fallback if email is not valid for derivation
-        // Only add an error if email was also missing/invalid.
-        if (!emailIsValid) {
-          errors.push({
-            row: csvRowNumber,
-            field: 'last_name',
-            message:
-              'Last name is missing and cannot be derived (invalid email).',
-            type: 'data',
-          });
-        }
-      }
-    }
+    // Ensure first_name and last_name are not present on the row object before casting
+    delete row.first_name;
+    delete row.last_name;
 
     // Validate website if present
     const websiteValue = row.website;

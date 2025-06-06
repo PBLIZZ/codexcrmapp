@@ -48,8 +48,7 @@ export function AddContactModal({
     }
   };
 
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [source, setSource] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -77,8 +76,7 @@ export function AddContactModal({
   }, [open]);
 
   const resetForm = () => {
-    setFirstName('');
-    setLastName('');
+    setFullName('');
     setEmail('');
     setSource('');
     setSuccess(false);
@@ -114,16 +112,15 @@ export function AddContactModal({
     setSuccess(false); // Clear previous success
 
     // Basic client-side validation (you can add more robust validation e.g. with Zod)
-    if (!firstName.trim() || !lastName.trim()) {
-      setError('First name and last name are required.');
+    if (!fullName.trim()) {
+      setError('Full name is required.');
       setIsSubmitting(false);
       return;
     }
 
     try {
       await addContactMutation.mutateAsync({
-        first_name: firstName.trim(),
-        last_name: lastName.trim(),
+        full_name: fullName.trim(),
         email: email.trim() || undefined, // Send undefined if empty
         source: source.trim() || undefined, // Send undefined if empty
         // id: undefined, // Ensure no ID is sent for new contact
@@ -195,38 +192,20 @@ export function AddContactModal({
           >
             {' '}
             {/* Removed items-center justify-center */}
-            <div className="grid grid-cols-2 gap-3 w-full">
-              <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="firstNameModal" className="text-sm font-medium">
-                  First Name *
-                </Label>{' '}
-                {/* Changed id for uniqueness */}
-                <Input
-                  id="firstNameModal"
-                  placeholder="First Name"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  required
-                  autoFocus
-                  disabled={isSubmitting}
-                  className="w-full"
-                />
-              </div>
-              <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="lastNameModal" className="text-sm font-medium">
-                  Last Name *
-                </Label>{' '}
-                {/* Changed id */}
-                <Input
-                  id="lastNameModal"
-                  placeholder="Last Name"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  required
-                  disabled={isSubmitting}
-                  className="w-full"
-                />
-              </div>
+            <div className="flex flex-col space-y-1.5 w-full">
+              <Label htmlFor="fullNameModal" className="text-sm font-medium">
+                Full Name *
+              </Label>
+              <Input
+                id="fullNameModal"
+                placeholder="Full Name"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                required
+                autoFocus
+                disabled={isSubmitting}
+                className="w-full"
+              />
             </div>
             <div className="flex flex-col space-y-1.5 w-full">
               <Label htmlFor="emailModal" className="text-sm font-medium">

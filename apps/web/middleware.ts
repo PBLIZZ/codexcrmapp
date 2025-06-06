@@ -7,7 +7,7 @@ const protectedPaths = ['/', '/dashboard', '/contacts', '/contacts', '/groups'];
 // Define paths that should be accessible only when logged out
 // Auth-related pages that should only be accessible when NOT logged in
 const publicOnlyPaths = [
-  '/sign-in',
+  '/log-in',
   '/sign-up',
   '/forgot-password',
   '/reset-password',
@@ -30,11 +30,9 @@ export async function middleware(request: NextRequest) {
           return request.cookies.get(name)?.value;
         },
         set(name: string, value: string, options: CookieOptions) {
-          request.cookies.set({ name, value, ...options });
           response.cookies.set({ name, value, ...options });
         },
         remove(name: string, options: CookieOptions) {
-          request.cookies.set({ name, value: '', ...options }); // To clear, set value to empty and expire
           response.cookies.set({ name, value: '', ...options });
         },
       },
@@ -73,9 +71,9 @@ export async function middleware(request: NextRequest) {
   // Use authenticated user object from getUser() for protection checks
   if (isProtectedPath && !user) {
     console.warn(
-      `Middleware: No authenticated user, redirecting from protected path ${pathname} to /sign-in`
+      `Middleware: No authenticated user, redirecting from protected path ${pathname} to /log-in`
     );
-    return NextResponse.redirect(new URL('/sign-in', request.url));
+    return NextResponse.redirect(new URL('/log-in', request.url));
   }
 
   if (isPublicOnlyPath && user) {

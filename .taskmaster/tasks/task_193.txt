@@ -1,0 +1,38 @@
+# Task ID: 193
+# Title: Update Log In page UI/UX
+# Status: in-progress
+# Dependencies: 191, 192
+# Priority: medium
+# Description: Redesign the Log In page (formerly Sign In) with new styling, layout, and UX improvements according to the PRD requirements.
+# Details:
+1. Update the page at `apps/web/app/(auth)/sign-in/page.tsx` (or create new page at `/log-in` if route path is changing)
+2. Implement new layout with:
+   - Company logo at the top (from `public/images/logo.png`)
+   - Title: "Log In" or "Log in to CodexCRM"
+   - Form elements within a Shadcn Card component
+   - Email and Password input fields with placeholder labels
+   - "Log In" button styled with `bg-teal-800 text-teal-200`
+   - "Forgot Password?" link
+   - "Continue with Google" button
+   - Magic Link option (if retained)
+   - Link to Sign Up page
+   - Terms acceptance text
+3. Apply styling theme:
+   - Page background: `bg-teal-50`
+   - Text color: `text-teal-800`
+   - Accent color: `text-orange-500`
+4. Implement UX best practices:
+   - Autofocus on first input field
+   - Inline validation
+   - Clear error messages
+   - Password visibility toggle
+
+# Test Strategy:
+1. Visual inspection against design requirements
+2. Test form submission with valid and invalid inputs
+3. Verify error handling and validation messages
+4. Test navigation to Sign Up page and Forgot Password
+5. Test OAuth (Google) login flow
+6. Test Magic Link functionality if implemented
+7. Verify responsive design on mobile, tablet, and desktop
+8. Test accessibility with keyboard navigation and screen readers

@@ -1,0 +1,50 @@
+# Task ID: 196
+# Title: Create or update Supabase trigger for profile creation
+# Status: pending
+# Dependencies: 195
+# Priority: high
+# Description: Ensure that a new record is automatically created in the profiles table when a new user signs up, copying the name from raw_user_meta_data.
+# Details:
+1. Check if a database trigger already exists for profile creation on new user signup
+2. If not, create a new PostgreSQL function and trigger in Supabase:
+   ```sql
+   -- Function to create a new profile
+   CREATE OR REPLACE FUNCTION public.handle_new_user()
+   RETURNS TRIGGER AS $$
+   BEGIN
+     INSERT INTO public.profiles (id, name, created_at, updated_at)
+     VALUES (
+       NEW.id,
+       NEW.raw_user_meta_data->>'full_name',
+       NOW(),
+       NOW()
+     );
+     RETURN NEW;
+   END;
+   $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+   -- Trigger to call the function on user creation
+   CREATE TRIGGER on_auth_user_created
+     AFTER INSERT ON auth.users
+     FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
+   ```
+3. If a trigger already exists, update it to include copying the name field:
+   ```sql
+   -- Update existing function to include name
+   CREATE OR REPLACE FUNCTION public.handle_new_user()
+   RETURNS TRIGGER AS $$
+   BEGIN
+     -- Update existing query to include name from raw_user_meta_data
+     -- Adjust field names as needed based on existing profiles table structure
+     ...
+   END;
+   $$ LANGUAGE plpgsql SECURITY DEFINER;
+   ```
+4. Test the trigger to ensure it works correctly
+
+# Test Strategy:
+1. Create a test user through the sign-up process
+2. Verify a corresponding record is created in the profiles table
+3. Confirm the name field is correctly copied from raw_user_meta_data
+4. Test with OAuth sign-up (Google) to ensure profiles are created
+5. Check edge cases (null name, special characters in name)

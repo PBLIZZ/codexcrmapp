@@ -6,12 +6,66 @@
       "description": "Initialize the project monorepo structure with pnpm workspaces, including apps/web, packages directories, tsconfig, ESLint, Prettier, Git. (Corresponds to original Task 1)",
       "details": "",
       "testStrategy": "",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         53
       ],
       "priority": "critical",
-      "subtasks": []
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Initialize pnpm workspace",
+          "description": "Set up the root pnpm workspace with a package.json and configure workspace settings.",
+          "dependencies": [],
+          "details": "Create a root-level package.json with 'workspaces' field pointing to 'apps/*' and 'packages/*'. Run 'pnpm init' and verify workspace recognition.",
+          "status": "done",
+          "testStrategy": "Run 'pnpm install' and verify that dependencies are hoisted and workspace packages are linked correctly."
+        },
+        {
+          "id": 2,
+          "title": "Create base directory structure",
+          "description": "Create 'apps/web' and 'packages' directories to organize the monorepo.",
+          "dependencies": [
+            1
+          ],
+          "details": "Manually or via script, create the folder structure: 'apps/web' for the frontend app and 'packages' for shared libraries or utilities.",
+          "status": "done",
+          "testStrategy": "Verify that the directories exist and are recognized by the pnpm workspace configuration."
+        },
+        {
+          "id": 3,
+          "title": "Configure TypeScript with base tsconfig",
+          "description": "Set up a base tsconfig.json at the root and extend it in each workspace package.",
+          "dependencies": [
+            2
+          ],
+          "details": "Create a root tsconfig.json with common compiler options and reference it in each subproject using 'extends'.",
+          "status": "done",
+          "testStrategy": "Run 'tsc --build' to ensure all projects compile without errors."
+        },
+        {
+          "id": 4,
+          "title": "Set up ESLint and Prettier configuration",
+          "description": "Add and configure ESLint and Prettier at the root level for consistent code style.",
+          "dependencies": [
+            3
+          ],
+          "details": "Install ESLint and Prettier with necessary plugins. Create .eslintrc and .prettierrc files at the root. Optionally add lint and format scripts.",
+          "status": "done",
+          "testStrategy": "Run lint and format scripts on sample files to verify correct behavior."
+        },
+        {
+          "id": 5,
+          "title": "Initialize Git repository and add .gitignore",
+          "description": "Initialize a Git repository and configure .gitignore to exclude node_modules and build artifacts.",
+          "dependencies": [
+            4
+          ],
+          "details": "Run 'git init' at the root. Create a .gitignore file with standard Node.js and workspace exclusions.",
+          "status": "done",
+          "testStrategy": "Verify that Git is initialized and 'git status' shows only relevant files."
+        }
+      ]
     },
     {
       "id": 2,
@@ -25,7 +79,62 @@
         1
       ],
       "priority": "critical",
-      "subtasks": []
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Initialize Next.js 14+ Project with TypeScript",
+          "description": "Create a new Next.js application using the create-next-app CLI and enable TypeScript support during setup.",
+          "dependencies": [],
+          "details": "Run `npx create-next-app@latest` and select TypeScript when prompted. Ensure the project is created with the latest Next.js version (14+).",
+          "status": "done",
+          "testStrategy": "Verify that the project directory contains a `tsconfig.json` file and that TypeScript files compile without errors."
+        },
+        {
+          "id": 2,
+          "title": "Configure App Router",
+          "description": "Set up the Next.js App Router to use the file-system based routing with React Server Components.",
+          "dependencies": [
+            1
+          ],
+          "details": "Ensure the `/app` directory exists and is structured according to Next.js App Router conventions. Add example routes and layouts as needed.",
+          "status": "done",
+          "testStrategy": "Check that navigation between routes works and that server/client components render as expected."
+        },
+        {
+          "id": 3,
+          "title": "Integrate Tailwind CSS",
+          "description": "Install and configure Tailwind CSS for styling the Next.js application.",
+          "dependencies": [
+            1
+          ],
+          "details": "Install Tailwind CSS and its peer dependencies, initialize the Tailwind config, and update the global CSS file to include Tailwind directives.",
+          "status": "done",
+          "testStrategy": "Add a sample component using Tailwind classes and verify styles are applied in the browser."
+        },
+        {
+          "id": 4,
+          "title": "Install and Configure Shadcn UI",
+          "description": "Set up Shadcn UI components for use in the Next.js project.",
+          "dependencies": [
+            3
+          ],
+          "details": "Follow Shadcn UI installation instructions, ensuring compatibility with Tailwind CSS and Next.js. Import and use a sample Shadcn UI component.",
+          "status": "done",
+          "testStrategy": "Render a Shadcn UI component in a page and confirm it displays and styles correctly."
+        },
+        {
+          "id": 5,
+          "title": "Verify TypeScript and Component Integration",
+          "description": "Ensure all components (including Tailwind and Shadcn UI) are typed correctly and the TypeScript configuration is optimal.",
+          "dependencies": [
+            2,
+            4
+          ],
+          "details": "Check for TypeScript errors, validate type safety in custom and third-party components, and update `tsconfig.json` as needed.",
+          "status": "done",
+          "testStrategy": "Run `tsc --noEmit` to confirm there are no type errors and manually test UI components for correct rendering and typing."
+        }
+      ]
     },
     {
       "id": 3,
@@ -39,12 +148,66 @@
         1
       ],
       "priority": "critical",
-      "subtasks": []
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Create a Supabase account and project",
+          "description": "Set up a Supabase account and create a new project with appropriate configuration settings",
+          "dependencies": [],
+          "details": "Register for a Supabase account, create a new project with a suitable name, note down the project URL and API keys, and configure basic project settings in the Supabase dashboard",
+          "status": "done",
+          "testStrategy": "Verify successful project creation by accessing the Supabase dashboard and confirming project availability"
+        },
+        {
+          "id": 2,
+          "title": "Install and configure Supabase CLI for local development",
+          "description": "Set up the local development environment with Supabase CLI and Docker for offline development and testing",
+          "dependencies": [
+            1
+          ],
+          "details": "Install Supabase CLI using npm, initialize the Supabase project in the repository, configure environment variables, and start the local Supabase stack with Docker",
+          "status": "done",
+          "testStrategy": "Confirm successful setup by accessing the local Supabase instance at http://localhost:54323"
+        },
+        {
+          "id": 3,
+          "title": "Design and create database tables and relationships",
+          "description": "Define the database schema including tables, columns, relationships, and constraints",
+          "dependencies": [
+            2
+          ],
+          "details": "Create necessary database tables with appropriate columns, data types, primary keys, foreign keys, and indexes based on application requirements using the Supabase dashboard or SQL editor",
+          "status": "done",
+          "testStrategy": "Verify table creation by querying the database and confirming the expected schema structure"
+        },
+        {
+          "id": 4,
+          "title": "Implement Row Level Security (RLS) policies",
+          "description": "Configure Row Level Security policies to control access to database tables",
+          "dependencies": [
+            3
+          ],
+          "details": "Enable RLS on tables and create policies that define read, insert, update, and delete permissions based on user roles and authentication status",
+          "status": "done",
+          "testStrategy": "Test RLS policies by attempting various operations with different user roles to ensure proper access control"
+        },
+        {
+          "id": 5,
+          "title": "Set up API endpoints and client connection",
+          "description": "Create necessary API endpoints and configure the client application to connect to Supabase",
+          "dependencies": [
+            4
+          ],
+          "details": "Implement supabaseClient configuration, set up environment variables for API keys, and create functions for database operations (GET, POST, DELETE) that will be used by the application",
+          "status": "done",
+          "testStrategy": "Test the connection and API endpoints by performing CRUD operations and verifying data is correctly manipulated in the database"
+        }
+      ]
     },
     {
       "id": 4,
       "title": "Feature: Implement Supabase Authentication (Email/Password)",
-      "description": "Set up Supabase authentication with email/password, secure session management, email confirmation, user profile creation. (Corresponds to core of original Task 4, excluding Google OAuth specific fix)",
+      "description": "Set up Supabase authentication with email/password, secure session management, email confirmation, automatic user profile creation.",
       "details": "",
       "testStrategy": "",
       "status": "pending",
@@ -57,72 +220,101 @@
       "subtasks": [
         {
           "id": 1,
-          "title": "Set up Supabase auth configuration",
-          "description": "Configure Supabase authentication settings in the project",
+          "title": "Set up Supabase project and configure authentication",
+          "description": "Create a new Supabase project, enable email/password authentication, and obtain API keys for client integration.",
           "dependencies": [],
-          "details": "Initialize Supabase client, configure auth providers (email/password), set up redirect URLs, configure security settings like JWT expiry times, and set up email templates for confirmation/reset emails",
-          "status": "pending"
+          "details": "Log into Supabase, create a new project, navigate to the Authentication settings, enable email/password auth, and copy the project URL and anon/public API key for use in the frontend.",
+          "status": "done",
+          "testStrategy": "Verify Supabase project URL and API keys are correctly configured in the application's environment settings and that the Supabase dashboard shows email/password authentication as enabled."
         },
         {
           "id": 2,
-          "title": "Implement sign-up flow with email confirmation",
-          "description": "Create the user registration process with email verification",
+          "title": "Integrate Supabase client into the application",
+          "description": "Install and configure the Supabase client library in the application to enable communication with the Supabase backend.",
           "dependencies": [
             1
           ],
-          "details": "Build registration form UI, implement form validation, integrate Supabase signUp method, handle confirmation email flow, create confirmation page for email links, and implement email verification status checks",
-          "status": "pending"
+          "details": "Install the @supabase/supabase-js package, initialize the client with the project URL and anon key, and make it available throughout the app.",
+          "status": "done",
+          "testStrategy": "Confirm the Supabase client initializes without errors and a basic, unauthenticated query (e.g., fetching a public table or a server status if available through Supabase client) can be made successfully."
         },
         {
           "id": 3,
-          "title": "Create sign-in functionality",
-          "description": "Implement user authentication login flow",
+          "title": "Implement user sign-up functionality",
+          "description": "Create a sign-up form and connect it to Supabase's sign-up API to register new users using email and password.",
           "dependencies": [
-            1
+            2
           ],
-          "details": "Build login form UI, implement form validation, integrate Supabase signIn method, handle 'remember me' functionality, implement password reset flow, and create appropriate success/error states",
-          "status": "pending"
+          "details": "Build a form that collects email and password, validate inputs, and call supabase.auth.signUp with the provided credentials.",
+          "status": "pending",
+          "testStrategy": "Attempt to register a new user with valid email and password. Verify the user is created in the Supabase auth.users table and, if email confirmation is enabled, that a confirmation email is sent. Check for appropriate error messages with invalid inputs (e.g., weak password, invalid email format). Summary of Supabase Authentication Issue: After a new user confirms their email, the application middleware fails to recognize the authenticated user on the first redirect to a protected route (e.g., /dashboard). The supabase.auth.getUser() call in the middleware throws a User from sub claim in JWT does not exist error, causing the user to be redirected to /sign-in instead of being automatically logged in. Key Observations: The Supabase auth.users table updates correctly and immediately upon email confirmation. The /api/auth/callback route successfully exchanges the auth code for a session and sets the necessary cookies. The issue appears specifically when the middleware tries to validate the user via getUser() immediately after the callback redirect."
         },
         {
           "id": 4,
-          "title": "Manage secure sessions",
-          "description": "Implement session management for authenticated users",
+          "title": "Implement user sign-in functionality",
+          "description": "Create a sign-in form and connect it to Supabase's sign-in API to authenticate existing users.",
           "dependencies": [
-            3
+            2
           ],
-          "details": "Set up auth state listeners, implement session persistence, create protected routes/middleware, handle token refresh, implement session timeout handling, and add logout functionality",
-          "status": "pending"
+          "details": "Build a form that collects email and password, validate inputs, and call supabase.auth.signInWithPassword to log in the user.",
+          "status": "done",
+          "testStrategy": "Attempt to log in with a registered and confirmed user's credentials. Verify successful authentication and session creation. Test with incorrect credentials to ensure appropriate error messages are displayed."
         },
         {
           "id": 5,
-          "title": "Build user profile creation",
-          "description": "Implement user profile setup after successful registration",
+          "title": "Set up session management and persistence",
+          "description": "Manage user sessions by storing and retrieving session data, and ensure users remain logged in across page reloads.",
           "dependencies": [
-            2,
             4
           ],
-          "details": "Create profile database schema, build profile creation form, implement profile data validation, handle profile image uploads, connect profile to auth user ID, and implement profile update functionality",
-          "status": "pending"
+          "details": "Use Supabase's onAuthStateChange listener to track session changes and store session data in local storage or context.",
+          "status": "done",
+          "testStrategy": "After logging in, refresh the page or close and reopen the browser to verify the session persists. Test logout functionality to ensure the session is properly terminated. Check if protected routes are inaccessible when logged out and accessible when logged in."
         },
         {
           "id": 6,
-          "title": "Add error handling for auth flows",
-          "description": "Implement comprehensive error handling for all authentication processes",
+          "title": "Create and manage user profiles in the database",
+          "description": "Create a user profile table and insert user metadata upon successful sign-up.",
           "dependencies": [
-            2,
+            3
+          ],
+          "details": "Create a 'profiles' table in Supabase with fields like id, email, and created_at. After sign-up, insert a new row using the user's UID.",
+          "status": "pending",
+          "testStrategy": "After a new user signs up successfully, verify that a corresponding record is created in the 'profiles' table (or equivalent user data table) linked to the auth.users entry via user_id. Test updating and retrieving profile information."
+        },
+        {
+          "id": 7,
+          "title": "Implement error handling for authentication flows",
+          "description": "Handle and display errors from Supabase during sign-up and sign-in processes.",
+          "dependencies": [
+            3,
+            4
+          ],
+          "details": "Capture errors returned by Supabase auth methods and display user-friendly messages in the UI.",
+          "status": "pending",
+          "testStrategy": "Intentionally trigger various authentication errors (e.g., user already exists during sign-up, incorrect password during sign-in, network issues) and verify that user-friendly and informative error messages are displayed to the user, and that the application handles these states gracefully."
+        },
+        {
+          "id": 8,
+          "title": "Test authentication flows and edge cases",
+          "description": "Thoroughly test the sign-up, sign-in, session persistence, and error handling to ensure reliability and security.",
+          "dependencies": [
             3,
             4,
-            5
+            5,
+            6,
+            7
           ],
-          "details": "Create error handling utilities, implement user-friendly error messages, handle network errors, implement retry mechanisms, log authentication errors securely, and create fallback authentication options",
-          "status": "pending"
+          "details": "Test valid and invalid inputs, session expiration, duplicate accounts, and error messages to ensure robust authentication.",
+          "status": "pending",
+          "testStrategy": "Perform comprehensive end-to-end testing: sign-up, email confirmation (if enabled), sign-in, access protected resources, password reset, sign-out. Test with multiple user accounts. Attempt concurrent logins or actions if relevant. Verify behavior with expired/invalid tokens."
         }
       ]
     },
     {
       "id": 5,
       "title": "Feature: Set Up tRPC with Zod Validation",
-      "description": "Implement tRPC v10 for type-safe API, Zod for validation, TanStack Query v4. (Corresponds to original Task 5)",
+      "description": "Implement tRPC v10 for type-safe API, Zod for validation, TanStack Query v4.",
       "details": "",
       "testStrategy": "",
       "status": "done",
@@ -137,7 +329,7 @@
     {
       "id": 6,
       "title": "Feature: Implement UI Component Library Base",
-      "description": "Create shared UI component library based on shadcn/ui and Radix. (Corresponds to original Task 6)",
+      "description": "Create shared UI component library based on shadcn/ui and Radix.",
       "details": "",
       "testStrategy": "",
       "status": "done",
@@ -4838,6 +5030,337 @@
       "status": "pending",
       "dependencies": [],
       "priority": "medium",
+      "subtasks": []
+    },
+    {
+      "id": 191,
+      "title": "Rename Sign In to Log In throughout the application",
+      "description": "Update all instances of 'Sign In' (and variations) to 'Log In' throughout the codebase, including page titles, component names, button texts, and links.",
+      "details": "1. Create a search pattern to find all instances of 'Sign In', 'SignIn', 'signin' in the codebase\n2. Update the following files and components:\n   - Page titles\n   - Component names (e.g., SignInForm to LogInForm)\n   - Button texts\n   - Navigation links\n   - Route paths (consider changing '/sign-in' to '/log-in')\n3. Ensure consistent casing (e.g., 'Log In' for display text, 'login' for variables/routes)\n4. Update any related documentation or comments\n5. Verify that functionality remains intact after renaming",
+      "testStrategy": "1. Create a checklist of all instances that need to be renamed\n2. Manually verify each instance has been updated\n3. Test navigation flows to ensure all links work correctly\n4. Verify that authentication functionality still works properly\n5. Check for any broken references or imports after renaming components",
+      "priority": "high",
+      "dependencies": [],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 192,
+      "title": "Integrate Shadcn UI components for authentication forms",
+      "description": "Research and implement Shadcn UI components for the authentication forms, including Card, Input, Button, and Label components.",
+      "details": "1. Install Shadcn UI if not already present in the project\n   ```bash\n   npm install shadcn-ui\n   # or\n   yarn add shadcn-ui\n   ```\n2. Research Shadcn UI authentication templates as a starting point\n3. Identify and implement the following components:\n   - Card component for form containers\n   - Input component for form fields\n   - Button component for actions\n   - Label component for input labels\n4. Configure components to support the required styling:\n   - Text color: `text-teal-800`\n   - Accent color: `text-orange-500`\n   - Form background: `bg-white` or `bg-gray-50`\n5. Ensure components support accessibility requirements",
+      "testStrategy": "1. Verify components render correctly in different browsers\n2. Test component styling against design requirements\n3. Verify accessibility features (keyboard navigation, screen reader support)\n4. Test responsive behavior on different screen sizes\n5. Ensure components integrate properly with form validation",
+      "priority": "high",
+      "dependencies": [],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 193,
+      "title": "Update Log In page UI/UX",
+      "description": "Redesign the Log In page (formerly Sign In) with new styling, layout, and UX improvements according to the PRD requirements.",
+      "details": "1. Update the page at `apps/web/app/(auth)/sign-in/page.tsx` (or create new page at `/log-in` if route path is changing)\n2. Implement new layout with:\n   - Company logo at the top (from `public/images/logo.png`)\n   - Title: \"Log In\" or \"Log in to CodexCRM\"\n   - Form elements within a Shadcn Card component\n   - Email and Password input fields with placeholder labels\n   - \"Log In\" button styled with `bg-teal-800 text-teal-200`\n   - \"Forgot Password?\" link\n   - \"Continue with Google\" button\n   - Magic Link option (if retained)\n   - Link to Sign Up page\n   - Terms acceptance text\n3. Apply styling theme:\n   - Page background: `bg-teal-50`\n   - Text color: `text-teal-800`\n   - Accent color: `text-orange-500`\n4. Implement UX best practices:\n   - Autofocus on first input field\n   - Inline validation\n   - Clear error messages\n   - Password visibility toggle",
+      "testStrategy": "1. Visual inspection against design requirements\n2. Test form submission with valid and invalid inputs\n3. Verify error handling and validation messages\n4. Test navigation to Sign Up page and Forgot Password\n5. Test OAuth (Google) login flow\n6. Test Magic Link functionality if implemented\n7. Verify responsive design on mobile, tablet, and desktop\n8. Test accessibility with keyboard navigation and screen readers",
+      "priority": "medium",
+      "dependencies": [
+        191,
+        192
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 194,
+      "title": "Update Sign Up page UI/UX",
+      "description": "Redesign the Sign Up page with new styling, layout, and UX improvements according to the PRD requirements, including the addition of a Name field.",
+      "details": "1. Update the page at `apps/web/app/(auth)/sign-up/page.tsx`\n2. Implement new layout with:\n   - Company logo at the top\n   - Title: \"Sign Up\" or \"Create your CodexCRM Account\"\n   - Form elements within a Shadcn Card component\n   - Input fields for Name (Full Name), Email, and Password with placeholder labels\n   - Password requirements indicator\n   - Password visibility toggle\n   - \"Sign Up\" button styled with `bg-teal-800 text-teal-200`\n   - \"Sign up with Google\" button\n   - Link to Log In page\n   - Terms acceptance text\n3. Apply styling theme consistent with Log In page:\n   - Page background: `bg-teal-50`\n   - Text color: `text-teal-800`\n   - Accent color: `text-orange-500`\n4. Implement UX best practices:\n   - Autofocus on first input field\n   - Inline validation\n   - Clear error messages\n   - Password visibility toggle",
+      "testStrategy": "1. Visual inspection against design requirements\n2. Test form submission with valid and invalid inputs\n3. Verify error handling and validation messages\n4. Test navigation to Log In page\n5. Test OAuth (Google) signup flow\n6. Verify responsive design on mobile, tablet, and desktop\n7. Test accessibility with keyboard navigation and screen readers\n8. Verify password requirements are clearly displayed",
+      "priority": "medium",
+      "dependencies": [
+        192
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 195,
+      "title": "Implement Name field data storage in Supabase",
+      "description": "Update the sign-up process to collect and store the user's name in Supabase auth.users.raw_user_meta_data.",
+      "details": "1. Modify the sign-up form submission handler to include the name field\n2. Update the Supabase `auth.signUp` call to include the name in the options.data field:\n   ```typescript\n   const { data, error } = await supabase.auth.signUp({\n     email: email,\n     password: password,\n     options: {\n       data: {\n         full_name: name // Store the name collected from the form\n       }\n     }\n   });\n   ```\n3. Verify that the name is correctly stored in `auth.users.raw_user_meta_data`\n4. Handle any error cases appropriately\n5. Ensure the form validation includes the name field as required",
+      "testStrategy": "1. Test sign-up with valid name, email, and password\n2. Verify the name is correctly stored in Supabase `auth.users.raw_user_meta_data`\n3. Test form validation for empty name field\n4. Test with various name formats (short, long, with special characters)\n5. Verify error handling for failed sign-ups",
+      "priority": "high",
+      "dependencies": [
+        194
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 196,
+      "title": "Create or update Supabase trigger for profile creation",
+      "description": "Ensure that a new record is automatically created in the profiles table when a new user signs up, copying the name from raw_user_meta_data.",
+      "details": "1. Check if a database trigger already exists for profile creation on new user signup\n2. If not, create a new PostgreSQL function and trigger in Supabase:\n   ```sql\n   -- Function to create a new profile\n   CREATE OR REPLACE FUNCTION public.handle_new_user()\n   RETURNS TRIGGER AS $$\n   BEGIN\n     INSERT INTO public.profiles (id, name, created_at, updated_at)\n     VALUES (\n       NEW.id,\n       NEW.raw_user_meta_data->>'full_name',\n       NOW(),\n       NOW()\n     );\n     RETURN NEW;\n   END;\n   $$ LANGUAGE plpgsql SECURITY DEFINER;\n\n   -- Trigger to call the function on user creation\n   CREATE TRIGGER on_auth_user_created\n     AFTER INSERT ON auth.users\n     FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();\n   ```\n3. If a trigger already exists, update it to include copying the name field:\n   ```sql\n   -- Update existing function to include name\n   CREATE OR REPLACE FUNCTION public.handle_new_user()\n   RETURNS TRIGGER AS $$\n   BEGIN\n     -- Update existing query to include name from raw_user_meta_data\n     -- Adjust field names as needed based on existing profiles table structure\n     ...\n   END;\n   $$ LANGUAGE plpgsql SECURITY DEFINER;\n   ```\n4. Test the trigger to ensure it works correctly",
+      "testStrategy": "1. Create a test user through the sign-up process\n2. Verify a corresponding record is created in the profiles table\n3. Confirm the name field is correctly copied from raw_user_meta_data\n4. Test with OAuth sign-up (Google) to ensure profiles are created\n5. Check edge cases (null name, special characters in name)",
+      "priority": "high",
+      "dependencies": [
+        195
+      ],
+      "status": "pending",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Trigger audit",
+          "description": "Review existing database triggers and schema to identify potential conflicts or gaps in the authorization flow.",
+          "dependencies": [],
+          "details": "Analyze current trigger logic, permissions, and event timing. Document dependencies between existing triggers and tables.",
+          "status": "pending"
+        },
+        {
+          "id": 2,
+          "title": "SQL function creation",
+          "description": "Develop SQL functions to enforce authorization rules and handle data validation before trigger execution.",
+          "dependencies": [
+            1
+          ],
+          "details": "Create stored procedures for role-based access control and error handling. Include parameter validation and transaction management.",
+          "status": "pending"
+        },
+        {
+          "id": 3,
+          "title": "Trigger deployment",
+          "description": "Implement new database triggers linked to the authorization functions, ensuring proper event sequencing.",
+          "dependencies": [
+            2
+          ],
+          "details": "Define trigger conditions (BEFORE/AFTER, INSERT/UPDATE/DELETE). Test activation order with existing triggers. Implement rollback mechanism.",
+          "status": "pending"
+        },
+        {
+          "id": 4,
+          "title": "Data integrity tests",
+          "description": "Validate trigger behavior through comprehensive test cases covering authorization scenarios and edge cases.",
+          "dependencies": [
+            3
+          ],
+          "details": "Execute parallel transactions, simulate permission changes, and verify constraint enforcement. Check for phantom reads or locking issues.",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": 197,
+      "title": "Implement password visibility toggle",
+      "description": "Add functionality to show/hide password in both Log In and Sign Up forms for improved user experience.",
+      "details": "1. Add a toggle button/icon within the password input field\n2. Implement state management for password visibility:\n   ```typescript\n   const [showPassword, setShowPassword] = useState(false);\n   ```\n3. Toggle input type between 'password' and 'text' based on state:\n   ```typescript\n   <Input\n     type={showPassword ? 'text' : 'password'}\n     // other props\n   />\n   ```\n4. Add toggle button with appropriate icon (eye/eye-slash):\n   ```typescript\n   <button\n     type=\"button\"\n     onClick={() => setShowPassword(!showPassword)}\n     className=\"absolute right-3 top-1/2 transform -translate-y-1/2\"\n   >\n     {showPassword ? <EyeSlashIcon /> : <EyeIcon />}\n   </button>\n   ```\n5. Ensure the toggle is accessible (proper aria-labels)\n6. Apply consistent styling across both forms",
+      "testStrategy": "1. Test toggling password visibility in both forms\n2. Verify the correct icon is displayed based on current state\n3. Test keyboard accessibility for the toggle button\n4. Verify screen reader compatibility\n5. Test on different browsers and devices",
+      "priority": "medium",
+      "dependencies": [
+        193,
+        194
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 198,
+      "title": "Implement password requirements indicator",
+      "description": "Add visual feedback for password requirements during sign-up to guide users in creating secure passwords.",
+      "details": "1. Define password requirements (e.g., minimum length, special characters, etc.)\n2. Create a component to display password requirements:\n   ```typescript\n   const PasswordRequirements = ({ password }) => {\n     const requirements = [\n       { text: 'At least 8 characters', met: password.length >= 8 },\n       { text: 'At least one uppercase letter', met: /[A-Z]/.test(password) },\n       { text: 'At least one lowercase letter', met: /[a-z]/.test(password) },\n       { text: 'At least one number', met: /[0-9]/.test(password) },\n       { text: 'At least one special character', met: /[^A-Za-z0-9]/.test(password) }\n     ];\n     \n     return (\n       <div className=\"mt-2\">\n         {requirements.map((req, index) => (\n           <div key={index} className=\"flex items-center\">\n             <span className={req.met ? 'text-green-500' : 'text-gray-400'}>\n               {req.met ? '✓' : '○'}\n             </span>\n             <span className=\"ml-2 text-sm\">{req.text}</span>\n           </div>\n         ))}\n       </div>\n     );\n   };\n   ```\n3. Display the component below the password field in the Sign Up form\n4. Update the component in real-time as the user types\n5. Style the component to match the overall design",
+      "testStrategy": "1. Test with various password inputs to verify requirements update correctly\n2. Verify visual feedback is clear and understandable\n3. Test form submission with passwords that don't meet requirements\n4. Verify accessibility of the password requirements indicator\n5. Test on different screen sizes to ensure proper display",
+      "priority": "medium",
+      "dependencies": [
+        194
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 199,
+      "title": "Implement responsive design for authentication pages",
+      "description": "Ensure both Log In and Sign Up pages are fully responsive and provide a good user experience across different device sizes.",
+      "details": "1. Add responsive styling to both authentication pages:\n   ```typescript\n   <div className=\"flex min-h-screen items-center justify-center p-4 bg-teal-50\">\n     <div className=\"w-full max-w-md\">\n       <Card className=\"p-6 sm:p-8\">\n         {/* Form content */}\n       </Card>\n     </div>\n   </div>\n   ```\n2. Adjust font sizes and spacing for different screen sizes:\n   ```css\n   .title {\n     @apply text-xl sm:text-2xl font-bold text-teal-800;\n   }\n   ```\n3. Ensure form inputs and buttons scale appropriately\n4. Test and adjust layout for mobile devices (320px width minimum)\n5. Ensure touch targets are appropriately sized for mobile\n6. Optimize logo size for different screen sizes",
+      "testStrategy": "1. Test on various device sizes (mobile, tablet, desktop)\n2. Use browser dev tools to test specific breakpoints\n3. Verify forms are usable on touch devices\n4. Check for any overflow issues or horizontal scrolling\n5. Test with different orientations (portrait/landscape)\n6. Verify that all interactive elements are easily tappable on mobile",
+      "priority": "medium",
+      "dependencies": [
+        193,
+        194
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 200,
+      "title": "Implement error handling and validation",
+      "description": "Add comprehensive error handling and form validation for both Log In and Sign Up forms to provide clear feedback to users.",
+      "details": "1. Implement client-side validation for all form fields:\n   ```typescript\n   // Example using React Hook Form\n   const { register, handleSubmit, formState: { errors } } = useForm();\n   ```\n2. Add validation rules for each field:\n   - Email: Required, valid email format\n   - Password: Required, meets password requirements\n   - Name (Sign Up only): Required, minimum length\n3. Display inline validation errors:\n   ```typescript\n   {errors.email && <p className=\"text-red-500 text-sm mt-1\">{errors.email.message}</p>}\n   ```\n4. Handle API errors from Supabase authentication:\n   ```typescript\n   try {\n     const { error } = await supabase.auth.signIn({ email, password });\n     if (error) throw error;\n     // Success handling\n   } catch (error) {\n     setApiError(error.message);\n   }\n   ```\n5. Display API errors prominently at the top of the form\n6. Add visual indicators for form field status (valid/invalid)\n7. Implement real-time validation as user types",
+      "testStrategy": "1. Test form submission with valid and invalid inputs\n2. Verify appropriate error messages are displayed for each validation rule\n3. Test API error handling with invalid credentials\n4. Verify real-time validation provides immediate feedback\n5. Test form submission with empty required fields\n6. Verify error messages are clear and actionable\n7. Test accessibility of error messages with screen readers",
+      "priority": "high",
+      "dependencies": [
+        193,
+        194
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 201,
+      "title": "Update Terminology from 'Sign In' to 'Log In'",
+      "description": "Rename all instances of 'Sign In' to 'Log In' across the application, including page titles, component names, button texts, and links.",
+      "details": "1. Identify all occurrences of 'Sign In' terminology in the codebase:\n   - Page titles\n   - Component names (e.g., SignInForm → LoginForm)\n   - Button texts\n   - Navigation links\n   - Route paths (consider changing '/sign-in' to '/log-in')\n\n2. Update the terminology consistently across all identified locations\n\n3. If route paths are changed, ensure proper redirects are in place to maintain backward compatibility\n\n4. Update any related documentation or comments\n\nExample changes:\n- `apps/web/app/(auth)/sign-in/page.tsx` → `apps/web/app/(auth)/log-in/page.tsx`\n- Update any imports or references to these components\n- Update any text content containing 'Sign In' to 'Log In'",
+      "testStrategy": "1. Manual verification of all UI elements to ensure consistent terminology\n2. Check that navigation still works if routes are changed\n3. Verify that all functionality remains intact after renaming\n4. Test with different browsers to ensure consistent display",
+      "priority": "high",
+      "dependencies": [],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 202,
+      "title": "Integrate Shadcn UI Component Library",
+      "description": "Investigate and integrate Shadcn UI components for form elements, adapting them to match the required styling theme.",
+      "details": "1. Install Shadcn UI in the project:\n   ```bash\n   npm install shadcn-ui\n   # or follow the official installation guide\n   ```\n\n2. Import and configure the necessary components:\n   - Card (for form containers)\n   - Input (for form fields)\n   - Button (for actions)\n   - Label (for form field labels)\n   - Checkbox (for 'remember me' or similar)\n\n3. Look for existing Shadcn templates for login/signup forms to use as a base\n\n4. Configure the components to use the specified theme colors:\n   - Text color: `text-teal-800`\n   - Accent color: `text-orange-500`\n   - Page background: `bg-teal-50`\n   - Form container background: `bg-white` or `bg-gray-50`\n   - Button styling: `bg-teal-800 text-teal-200`\n\n5. Create reusable styled components that can be shared between the Log In and Sign Up pages",
+      "testStrategy": "1. Visual inspection of components to ensure they match the design requirements\n2. Test component rendering across different browsers and screen sizes\n3. Verify accessibility of the components using tools like Lighthouse or axe\n4. Check that the components maintain their styling when integrated into the pages",
+      "priority": "high",
+      "dependencies": [],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 203,
+      "title": "Add Company Logo to Authentication Pages",
+      "description": "Display the company logo prominently on both Log In and Sign Up pages to reinforce brand identity and trust.",
+      "details": "1. Locate the company logo file (e.g., from `public/images/logo.png` or similar path)\n\n2. Create a reusable Logo component if one doesn't already exist:\n   ```tsx\n   const Logo = () => (\n     <div className=\"flex justify-center mb-6\">\n       <Image \n         src=\"/images/logo.png\" \n         alt=\"CodexCRM Logo\" \n         width={150} \n         height={50} \n         priority \n       />\n     </div>\n   );\n   ```\n\n3. Add the Logo component to both the Log In and Sign Up pages, positioned at the top of the form card\n\n4. Ensure the logo is appropriately sized and responsive for different screen sizes\n\n5. Add appropriate alt text for accessibility",
+      "testStrategy": "1. Visual verification that the logo appears correctly on both pages\n2. Test on different screen sizes to ensure responsive display\n3. Verify that the logo loads correctly and quickly\n4. Check accessibility by ensuring proper alt text is present",
+      "priority": "medium",
+      "dependencies": [
+        202
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 204,
+      "title": "Redesign Log In Page",
+      "description": "Redesign the Log In page (formerly Sign In) with improved UI/UX, incorporating the company logo, styled form elements, and enhanced user experience.",
+      "details": "1. Update or create the Log In page at `apps/web/app/(auth)/log-in/page.tsx` (or keep at original location with updated content)\n\n2. Implement the page layout with the following components:\n   - Company Logo (from task 203)\n   - Title: \"Log In\" or \"Log in to CodexCRM\"\n   - Form elements within a Shadcn Card component\n   - Email input field with placeholder label\n   - Password input field with placeholder label and show/hide toggle\n   - \"Log In\" button styled as `bg-teal-800 text-teal-200`\n   - \"Forgot Password?\" link styled as `text-orange-500`\n   - \"Continue with Google\" button using existing Google button component\n   - Magic Link option (if retained from current design)\n   - Link to Sign Up page: \"Don't have an account? Sign Up\"\n   - Terms acceptance text\n\n3. Implement autofocus on the email input field\n\n4. Add inline validation for form fields\n\n5. Ensure the form is responsive and accessible\n\nExample implementation:\n```tsx\nexport default function LoginPage() {\n  return (\n    <div className=\"min-h-screen flex items-center justify-center bg-teal-50 p-4\">\n      <Card className=\"w-full max-w-md bg-white p-6\">\n        <Logo />\n        <h1 className=\"text-2xl font-bold text-center text-teal-800 mb-6\">Log in to CodexCRM</h1>\n        <form onSubmit={handleSubmit}>\n          {/* Form fields */}\n          <div className=\"text-center mt-4\">\n            <Link href=\"/sign-up\" className=\"text-orange-500 hover:underline\">\n              Don't have an account? Sign Up\n            </Link>\n          </div>\n        </form>\n      </Card>\n    </div>\n  );\n}\n```",
+      "testStrategy": "1. Visual verification against design requirements\n2. Test form submission with valid and invalid inputs\n3. Test error handling and validation messages\n4. Verify that the \"Forgot Password\" functionality works\n5. Test Google authentication flow\n6. Test Magic Link functionality if implemented\n7. Verify navigation to Sign Up page\n8. Test responsiveness on different screen sizes\n9. Verify accessibility using WCAG guidelines",
+      "priority": "high",
+      "dependencies": [
+        201,
+        202,
+        203
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 205,
+      "title": "Redesign Sign Up Page",
+      "description": "Redesign the Sign Up page with improved UI/UX, incorporating the company logo, styled form elements, and enhanced user experience, including the addition of a Name field.",
+      "details": "1. Update the Sign Up page at `apps/web/app/(auth)/sign-up/page.tsx`\n\n2. Implement the page layout with the following components:\n   - Company Logo (from task 203)\n   - Title: \"Sign Up\" or \"Create your CodexCRM Account\"\n   - Form elements within a Shadcn Card component\n   - Name input field (new addition)\n   - Email input field\n   - Password input field with show/hide toggle\n   - Password requirements indicator\n   - \"Sign Up\" button styled as `bg-teal-800 text-teal-200`\n   - \"Sign up with Google\" button\n   - Link to Log In page: \"Already have an account? Log In\"\n   - Terms acceptance text\n\n3. Implement autofocus on the name input field\n\n4. Add inline validation for form fields\n\n5. Display password requirements clearly\n\n6. Ensure the form is responsive and accessible\n\nExample implementation:\n```tsx\nexport default function SignUpPage() {\n  return (\n    <div className=\"min-h-screen flex items-center justify-center bg-teal-50 p-4\">\n      <Card className=\"w-full max-w-md bg-white p-6\">\n        <Logo />\n        <h1 className=\"text-2xl font-bold text-center text-teal-800 mb-6\">Create your CodexCRM Account</h1>\n        <form onSubmit={handleSubmit}>\n          {/* Form fields including Name field */}\n          <div className=\"text-center mt-4\">\n            <Link href=\"/log-in\" className=\"text-orange-500 hover:underline\">\n              Already have an account? Log In\n            </Link>\n          </div>\n        </form>\n      </Card>\n    </div>\n  );\n}\n```",
+      "testStrategy": "1. Visual verification against design requirements\n2. Test form submission with valid and invalid inputs\n3. Test error handling and validation messages\n4. Verify that password requirements are clearly displayed\n5. Test Google authentication flow\n6. Verify navigation to Log In page\n7. Test responsiveness on different screen sizes\n8. Verify accessibility using WCAG guidelines",
+      "priority": "high",
+      "dependencies": [
+        201,
+        202,
+        203
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 206,
+      "title": "Implement Password Requirements Indicator",
+      "description": "Create a password requirements indicator component that clearly shows users the password criteria during sign-up.",
+      "details": "1. Create a reusable PasswordRequirements component:\n```tsx\nconst PasswordRequirements = ({ password }) => {\n  const requirements = [\n    { text: 'At least 8 characters', met: password.length >= 8 },\n    { text: 'Contains uppercase letter', met: /[A-Z]/.test(password) },\n    { text: 'Contains lowercase letter', met: /[a-z]/.test(password) },\n    { text: 'Contains a number', met: /[0-9]/.test(password) },\n    { text: 'Contains special character', met: /[^A-Za-z0-9]/.test(password) }\n  ];\n\n  return (\n    <div className=\"mt-2 text-sm\">\n      <p className=\"text-teal-800 font-medium mb-1\">Password must:</p>\n      <ul className=\"space-y-1\">\n        {requirements.map((req, index) => (\n          <li key={index} className={`flex items-center ${req.met ? 'text-green-600' : 'text-gray-500'}`}>\n            {req.met ? <CheckIcon className=\"w-4 h-4 mr-1\" /> : <CircleIcon className=\"w-4 h-4 mr-1\" />}\n            {req.text}\n          </li>\n        ))}\n      </ul>\n    </div>\n  );\n};\n```\n\n2. Integrate this component with the password field on the Sign Up page\n\n3. Show the requirements when the password field is focused or has content\n\n4. Update the requirements in real-time as the user types\n\n5. Ensure the component is accessible and properly styled to match the theme",
+      "testStrategy": "1. Test that requirements update correctly as user types\n2. Verify that all password requirements are correctly validated\n3. Test with screen readers to ensure accessibility\n4. Verify that the component displays and hides appropriately based on focus/content\n5. Test on different browsers and screen sizes",
+      "priority": "medium",
+      "dependencies": [
+        202
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 207,
+      "title": "Implement Show/Hide Password Toggle",
+      "description": "Add functionality to toggle password visibility in password input fields on both Log In and Sign Up pages.",
+      "details": "1. Create a reusable PasswordInput component that includes a show/hide toggle:\n```tsx\nconst PasswordInput = ({ value, onChange, placeholder, ...props }) => {\n  const [showPassword, setShowPassword] = useState(false);\n  \n  return (\n    <div className=\"relative\">\n      <Input\n        type={showPassword ? 'text' : 'password'}\n        value={value}\n        onChange={onChange}\n        placeholder={placeholder}\n        className=\"pr-10\"\n        {...props}\n      />\n      <button\n        type=\"button\"\n        className=\"absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700\"\n        onClick={() => setShowPassword(!showPassword)}\n        aria-label={showPassword ? 'Hide password' : 'Show password'}\n      >\n        {showPassword ? <EyeOffIcon className=\"w-5 h-5\" /> : <EyeIcon className=\"w-5 h-5\" />}\n      </button>\n    </div>\n  );\n};\n```\n\n2. Use this component in place of standard password inputs on both the Log In and Sign Up pages\n\n3. Ensure the toggle button is accessible and has appropriate aria labels\n\n4. Style the component to match the overall design theme",
+      "testStrategy": "1. Test toggling password visibility on both pages\n2. Verify that the password state is preserved when toggling visibility\n3. Test keyboard accessibility of the toggle button\n4. Verify that the component works correctly across different browsers\n5. Test with screen readers to ensure accessibility",
+      "priority": "medium",
+      "dependencies": [
+        202
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 208,
+      "title": "Implement Form Validation and Error Handling",
+      "description": "Add client-side validation and error handling for both Log In and Sign Up forms, with clear, user-friendly error messages.",
+      "details": "1. Implement form validation using a library like Zod or Yup:\n```tsx\nconst signUpSchema = z.object({\n  name: z.string().min(1, 'Name is required'),\n  email: z.string().email('Please enter a valid email'),\n  password: z.string().min(8, 'Password must be at least 8 characters')\n    .regex(/[A-Z]/, 'Password must contain an uppercase letter')\n    .regex(/[a-z]/, 'Password must contain a lowercase letter')\n    .regex(/[0-9]/, 'Password must contain a number')\n    .regex(/[^A-Za-z0-9]/, 'Password must contain a special character')\n});\n```\n\n2. Add real-time validation as users type:\n```tsx\nconst [errors, setErrors] = useState({});\n\nconst validateField = (name, value) => {\n  try {\n    signUpSchema.shape[name].parse(value);\n    setErrors(prev => ({ ...prev, [name]: null }));\n  } catch (error) {\n    setErrors(prev => ({ ...prev, [name]: error.message }));\n  }\n};\n```\n\n3. Display error messages below each form field:\n```tsx\n<div>\n  <Input\n    value={email}\n    onChange={(e) => {\n      setEmail(e.target.value);\n      validateField('email', e.target.value);\n    }}\n    placeholder=\"Email\"\n    className={errors.email ? 'border-red-500' : ''}\n  />\n  {errors.email && <p className=\"text-red-500 text-sm mt-1\">{errors.email}</p>}\n</div>\n```\n\n4. Add form-level validation on submission\n\n5. Handle and display server-side errors (e.g., \"Email already in use\", \"Invalid credentials\")\n\n6. Ensure error messages are accessible (using aria-invalid and aria-describedby)",
+      "testStrategy": "1. Test validation with various valid and invalid inputs\n2. Verify that appropriate error messages are displayed\n3. Test form submission with invalid data to ensure it's blocked\n4. Test form submission with valid data to ensure it proceeds\n5. Test handling of server-side errors\n6. Verify that error states are cleared when issues are fixed\n7. Test accessibility of error messages with screen readers",
+      "priority": "high",
+      "dependencies": [
+        204,
+        205
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 209,
+      "title": "Update Supabase Auth Integration for Name Collection",
+      "description": "Modify the Supabase authentication integration to collect and store the user's name during sign-up.",
+      "details": "1. Update the sign-up function to include the name field in the metadata:\n```tsx\nconst handleSignUp = async (e) => {\n  e.preventDefault();\n  setLoading(true);\n  \n  try {\n    const { data, error } = await supabase.auth.signUp({\n      email,\n      password,\n      options: {\n        data: {\n          full_name: name // Store name in user metadata\n        }\n      }\n    });\n    \n    if (error) throw error;\n    // Handle successful sign-up\n  } catch (error) {\n    // Handle error\n  } finally {\n    setLoading(false);\n  }\n};\n```\n\n2. Verify that the name is being stored in `auth.users.raw_user_meta_data`\n\n3. If using a separate profiles table, ensure that the database trigger is properly set up to copy the name from `raw_user_meta_data` to the profiles table\n\n4. Test the flow to ensure the name is properly stored and accessible in the user's profile",
+      "testStrategy": "1. Test the sign-up process with a name provided\n2. Verify in the Supabase dashboard that the name is stored in user metadata\n3. Check that any database triggers correctly copy the name to the profiles table if applicable\n4. Test retrieving and displaying the user's name after sign-up\n5. Test with various name formats (short, long, with special characters, etc.)",
+      "priority": "high",
+      "dependencies": [
+        205
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 210,
+      "title": "Implement Google Authentication Integration",
+      "description": "Ensure Google authentication is properly integrated and styled consistently with the new design on both Log In and Sign Up pages.",
+      "details": "1. Verify the existing Google authentication setup with Supabase:\n```tsx\nconst handleGoogleSignIn = async () => {\n  const { error } = await supabase.auth.signInWithOAuth({\n    provider: 'google',\n    options: {\n      redirectTo: `${window.location.origin}/auth/callback`\n    }\n  });\n  \n  if (error) {\n    // Handle error\n  }\n};\n```\n\n2. Create a styled Google button component that matches the design theme:\n```tsx\nconst GoogleButton = ({ onClick, text }) => (\n  <button\n    type=\"button\"\n    onClick={onClick}\n    className=\"w-full flex items-center justify-center gap-2 border border-gray-300 rounded-md py-2 px-4 text-teal-800 hover:bg-gray-50 transition-colors\"\n  >\n    <GoogleIcon className=\"w-5 h-5\" />\n    {text}\n  </button>\n);\n```\n\n3. Add the Google button to both Log In and Sign Up pages with appropriate text:\n   - \"Continue with Google\" on Log In page\n   - \"Sign up with Google\" on Sign Up page\n\n4. Ensure proper error handling for Google authentication\n\n5. Add a divider between form and Google button with \"or\" text",
+      "testStrategy": "1. Test the Google authentication flow on both Log In and Sign Up pages\n2. Verify that the Google button is styled consistently with the design\n3. Test error handling for Google authentication\n4. Verify that user profiles are correctly created when signing up with Google\n5. Test the flow on different browsers and devices",
+      "priority": "medium",
+      "dependencies": [
+        204,
+        205
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 211,
+      "title": "Implement Magic Link Authentication",
+      "description": "Ensure Magic Link authentication is properly integrated and styled consistently with the new design on the Log In page.",
+      "details": "1. Verify the existing Magic Link authentication setup with Supabase:\n```tsx\nconst handleMagicLink = async (e) => {\n  e.preventDefault();\n  setLoading(true);\n  \n  try {\n    const { error } = await supabase.auth.signInWithOtp({\n      email,\n      options: {\n        emailRedirectTo: `${window.location.origin}/auth/callback`\n      }\n    });\n    \n    if (error) throw error;\n    // Show success message\n  } catch (error) {\n    // Handle error\n  } finally {\n    setLoading(false);\n  }\n};\n```\n\n2. Create a styled Magic Link section on the Log In page:\n```tsx\n<div className=\"mt-4\">\n  <div className=\"relative\">\n    <div className=\"absolute inset-0 flex items-center\">\n      <div className=\"w-full border-t border-gray-300\"></div>\n    </div>\n    <div className=\"relative flex justify-center text-sm\">\n      <span className=\"px-2 bg-white text-gray-500\">Or continue with</span>\n    </div>\n  </div>\n  \n  <form onSubmit={handleMagicLink} className=\"mt-4\">\n    <Input\n      type=\"email\"\n      value={email}\n      onChange={(e) => setEmail(e.target.value)}\n      placeholder=\"Email\"\n      required\n    />\n    <Button \n      type=\"submit\"\n      className=\"w-full mt-2 bg-teal-800 text-teal-200 hover:bg-teal-700\"\n      disabled={loading}\n    >\n      {loading ? 'Sending...' : 'Send Magic Link'}\n    </Button>\n  </form>\n</div>\n```\n\n3. Add appropriate success and error messages\n\n4. Consider whether to keep the Magic Link option or make it less prominent based on usage patterns",
+      "testStrategy": "1. Test the Magic Link authentication flow\n2. Verify that the Magic Link section is styled consistently with the design\n3. Test error handling for Magic Link authentication\n4. Verify that the success message is displayed after sending a Magic Link\n5. Test the actual link received in email to ensure it works correctly\n6. Test the flow on different browsers and devices",
+      "priority": "low",
+      "dependencies": [
+        204
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 212,
+      "title": "Ensure Responsive Design and Accessibility",
+      "description": "Verify and enhance the responsive design and accessibility of the authentication pages to ensure they work well across all devices and meet WCAG AA guidelines.",
+      "details": "1. Test and adjust responsive design:\n   - Ensure forms display correctly on mobile devices\n   - Adjust padding, margins, and font sizes for different screen sizes\n   - Use media queries as needed for specific breakpoints\n\n2. Implement accessibility enhancements:\n   - Add proper aria attributes to all interactive elements\n   - Ensure sufficient color contrast (especially for text-teal-800 on backgrounds)\n   - Add focus styles for keyboard navigation\n   - Ensure all form fields have associated labels\n   - Add error announcements for screen readers\n\n3. Add keyboard navigation support:\n```tsx\n// Example focus trap for modal forms\nimport { useEffect } from 'react';\n\nfunction useFocusTrap(ref) {\n  useEffect(() => {\n    const focusableElements = ref.current?.querySelectorAll(\n      'button, [href], input, select, textarea, [tabindex]:not([tabindex=\"-1\"])'\n    );\n    \n    if (focusableElements?.length) {\n      const firstElement = focusableElements[0];\n      const lastElement = focusableElements[focusableElements.length - 1];\n      \n      const handleTabKey = (e) => {\n        if (e.key === 'Tab') {\n          if (e.shiftKey && document.activeElement === firstElement) {\n            e.preventDefault();\n            lastElement.focus();\n          } else if (!e.shiftKey && document.activeElement === lastElement) {\n            e.preventDefault();\n            firstElement.focus();\n          }\n        }\n      };\n      \n      ref.current.addEventListener('keydown', handleTabKey);\n      firstElement.focus();\n      \n      return () => {\n        ref.current?.removeEventListener('keydown', handleTabKey);\n      };\n    }\n  }, [ref]);\n}\n```\n\n4. Test with screen readers and keyboard navigation\n\n5. Run accessibility audits using tools like Lighthouse or axe",
+      "testStrategy": "1. Test pages on various devices and screen sizes (mobile, tablet, desktop)\n2. Verify that all elements are properly sized and positioned on all screen sizes\n3. Test with keyboard navigation to ensure all elements are accessible\n4. Test with screen readers (NVDA, VoiceOver) to verify proper announcements\n5. Run automated accessibility tests using Lighthouse or axe\n6. Verify color contrast meets WCAG AA standards\n7. Test form submission using only keyboard\n8. Verify that error messages are properly announced by screen readers",
+      "priority": "medium",
+      "dependencies": [
+        204,
+        205,
+        206,
+        207,
+        208
+      ],
+      "status": "pending",
       "subtasks": []
     }
   ]

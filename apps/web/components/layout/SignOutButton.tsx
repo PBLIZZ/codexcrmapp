@@ -19,7 +19,7 @@ export function SignOutButton() {
       console.error('SignOutButton: Error signing out:', error);
     } else {
       // console.warn('SignOutButton: Sign out successful.');
-      router.push('/sign-in'); // Redirect to sign-in
+      router.push('/log-in'); // Redirect to sign-in
       // router.refresh(); // Could be added if hard refresh is absolutely needed
     }
   };

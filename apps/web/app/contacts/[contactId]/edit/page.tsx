@@ -38,7 +38,7 @@ export default async function EditContactPage({
 
   if (!session) {
     // Redirect to sign-in if not authenticated
-    redirect('/sign-in');
+    return redirect('/log-in');
   }
 
   // Redirect to contacts page, the client-side component will handle the edit mode

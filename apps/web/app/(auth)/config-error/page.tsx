@@ -13,7 +13,7 @@ import {
 
 // Define paths as constants for maintainability
 const PATHS = {
-  signIn: '/sign-in',
+  signIn: '/log-in',
   home: '/',
 };
 
@@ -115,7 +115,7 @@ export default function ConfigErrorPage({
 
         <CardFooter className="flex justify-center space-x-4">
           <Button asChild variant="default">
-            <Link href={PATHS.signIn}>Return to Sign In</Link>
+            <Link href={PATHS.signIn}>Return to Log In</Link>
           </Button>
           <Button asChild variant="outline">
             <Link href={PATHS.home}>Go to Homepage</Link>

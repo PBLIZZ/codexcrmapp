@@ -45,44 +45,41 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <Card className="w-full max-w-md shadow-lg border border-gray-200">
-        <CardHeader className="text-center space-y-2">
-          <img
-            src="/images/logo.png"
-            alt="OmniCRM"
-            className="mx-auto h-12 w-12"
-          />
-          <CardTitle className="text-3xl font-bold text-teal-800">
-            OmniCRM
-          </CardTitle>
-          <CardDescription className="text-sm text-teal-400">
-            by Omnipotency AI
-          </CardDescription>
-          <CardDescription className="text-base text-gray-700">
-            Reset your password
-          </CardDescription>
+    <div className="flex min-h-screen items-center justify-center bg-teal-50 py-12 px-4 sm:px-6 lg:px-8">
+      <Card className="w-full max-w-md shadow-lg">
+        <CardHeader className="space-y-4 pt-6 pb-4 px-6">
+          <div className="flex items-center space-x-3 self-start">
+            <img
+              src="/images/logo.png"
+              alt="OmniCRM Logo"
+              className="h-10 w-10"
+            />
+            <div>
+              <p className="text-xl font-semibold text-teal-700">OmniCRM</p>
+              <p className="text-xs text-gray-500">by Omnipotency AI</p>
+            </div>
+          </div>
+          <div className="text-center">
+            <CardTitle className="text-3xl font-bold text-teal-800">Reset Password</CardTitle>
+            <CardDescription className="text-sm text-teal-800">
+              Enter your email to receive a password reset link.
+            </CardDescription>
+          </div>
         </CardHeader>
 
         <CardContent className="space-y-6">
           <form onSubmit={handlePasswordReset} className="space-y-4">
             <div>
-              <Label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Email Address
-              </Label>
               <Input
                 id="email"
                 name="email"
                 type="email"
                 autoComplete="email"
                 required
-                placeholder="you@example.com"
+                placeholder="Email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full"
+                className="w-full border-gray-300 focus:border-teal-500 focus:ring-teal-500"
               />
             </div>
 
@@ -97,31 +94,24 @@ export default function ForgotPasswordPage() {
             <div>
               <Button
                 type="submit"
-                className="w-full bg-teal-400 hover:bg-teal-400 text-teal-800 hover:text-orange-500 font-semibold disabled:opacity-50 transition-colors"
+                className="w-full bg-teal-800 hover:bg-teal-700 text-teal-200 font-semibold disabled:opacity-50 transition-colors"
                 disabled={isLoading}
               >
-                {isLoading ? 'Sending...' : 'Send Password Reset Link'}
+                {isLoading ? 'Sending...' : 'Send Reset Link'}
               </Button>
             </div>
           </form>
         </CardContent>
-        <CardFooter className="flex flex-col items-center gap-2">
-          <Link
-            href="/sign-in"
-            className="text-orange-500 hover:text-teal-800 font-semibold transition-colors text-sm"
-          >
-            Sign In
-          </Link>
-        </CardFooter>
-
-        <CardFooter className="text-center text-sm text-gray-600 justify-center">
-          Remembered your password?{' '}
-          <Link
-            href="/sign-in"
-            className="font-medium text-blue-600 hover:underline ml-1"
-          >
-            Sign In
-          </Link>
+        <CardFooter className="text-center text-sm text-gray-600 pt-6">
+          <p>
+            Remember your password?{' '}
+            <Link
+              href="/log-in"
+              className="font-medium text-teal-600 hover:text-teal-500"
+            >
+              Back to Log In
+            </Link>
+          </p>
         </CardFooter>
       </Card>
     </div>

@@ -11,8 +11,7 @@ import { ImageUpload } from '@/components/ui/image-upload';
 // Zod schema for contact validation
 export const contactSchema = z.object({
   id: z.string().uuid().optional(),
-  first_name: z.string().min(1, 'First name is required'),
-  last_name: z.string().min(1, 'Last name is required'),
+  full_name: z.string().min(1, 'Full name is required'),
   email: z.string().email('Invalid email format').min(1, 'Email is required'),
   phone: z.string().optional().nullable(),
   company_name: z.string().optional().nullable(),
@@ -75,8 +74,7 @@ export function ContactForm({
     resolver: zodResolver(contactSchema),
     defaultValues: initialData || {
       id: undefined,
-      first_name: '',
-      last_name: '',
+      full_name: '',
       email: '',
       phone: '',
       company_name: '',
@@ -170,45 +168,31 @@ export function ContactForm({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-1">
+            {/* Full Name Input - Spans two columns if it's the only one in this row, or adjust grid as needed */}
+            <div className="space-y-1 md:col-span-2">
               <label
-                htmlFor="first_name"
+                htmlFor="full_name"
                 className="block text-sm font-medium text-gray-700"
               >
-                First Name
+                Full Name
               </label>
               <input
-                id="first_name"
+                id="full_name"
                 type="text"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                {...register('first_name')}
+                {...register('full_name')}
               />
-              {errors.first_name && (
+              {errors.full_name && (
                 <p className="text-sm text-red-600">
-                  {errors.first_name.message}
+                  {errors.full_name.message}
                 </p>
               )}
             </div>
 
-            <div className="space-y-1">
-              <label
-                htmlFor="last_name"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Last Name
-              </label>
-              <input
-                id="last_name"
-                type="text"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                {...register('last_name')}
-              />
-              {errors.last_name && (
-                <p className="text-sm text-red-600">
-                  {errors.last_name.message}
-                </p>
-              )}
-            </div>
+            {/* Email input will now be on its own or start a new row depending on layout preference */}
+            {/* Example: Keep email on its own line or adjust grid for other fields */}
+            {/* <div className="space-y-1"> ... email input ... </div> */}
+            {/* The original last_name input's closing div and the start of the email input div are implicitly handled by replacing the whole block */}
 
             <div className="space-y-1">
               <label

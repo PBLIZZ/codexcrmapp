@@ -44,7 +44,7 @@ export default function RootLayout({
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
 
   const authPages = [
-    '/sign-in',
+    '/log-in',
     '/sign-up',
     '/forgot-password',
     '/reset-password',

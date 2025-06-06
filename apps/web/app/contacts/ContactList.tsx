@@ -45,8 +45,7 @@ import { cn } from '@/lib/utils';
 
 export interface Contact {
   id: string;
-  first_name: string;
-  last_name: string;
+  full_name: string;
   email?: string | null;
   phone?: string | null;
   company_name?: string | null;
@@ -62,8 +61,7 @@ export interface Contact {
   tags?: Array<{ id: string; name: string }> | null;
 }
 
-// Define name sort options
-export type NameSortField = 'first_name' | 'last_name';
+// NameSortField is no longer needed as full_name is used.
 
 // Define date filter options
 export type DateFilterPeriod =
@@ -97,8 +95,6 @@ interface ContactListProps {
   sortField?: string;
   sortDirection?: 'asc' | 'desc';
   onSortChange?: (field: string) => void;
-  onNameSortChange?: (field: NameSortField, direction: 'asc' | 'desc') => void;
-  nameSortField?: NameSortField;
   dateFilterPeriod?: DateFilterPeriod;
   onDateFilterChange?: (period: DateFilterPeriod) => void;
   selectedSourceFilters?: SourceOption[];
@@ -117,8 +113,6 @@ export function ContactList({
   sortField = 'name',
   sortDirection = 'asc',
   onSortChange = () => {},
-  onNameSortChange = () => {},
-  nameSortField = 'first_name',
   dateFilterPeriod = 'all',
   onDateFilterChange = () => {},
   selectedSourceFilters = [],
@@ -234,8 +228,7 @@ export function ContactList({
     if (searchQuery.trim() === '') return true;
 
     const searchLower = searchQuery.toLowerCase();
-    const fullName =
-      `${contact.first_name || ''} ${contact.last_name || ''}`.toLowerCase();
+    const fullName = (contact.full_name || '').toLowerCase();
     const email = (contact.email || '').toLowerCase();
     const phone = (contact.phone || '').toLowerCase();
     const company = (contact.company_name || '').toLowerCase();
@@ -264,72 +257,21 @@ export function ContactList({
               scope="col"
               className="px-6 py-3 text-left text-xs font-semibold bg-gradient-to-r from-teal-50 to-teal-100 text-teal-800 uppercase tracking-wider"
             >
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <div className="flex items-center cursor-pointer">
-                    <span>Name</span>
-                    <span className="ml-1 flex items-center">
-                      {sortField.includes('name') ||
-                      sortField === 'first_name' ||
-                      sortField === 'last_name' ? (
-                        sortDirection === 'asc' ? (
-                          <ArrowUp className="h-3 w-3" />
-                        ) : (
-                          <ArrowDown className="h-3 w-3" />
-                        )
-                      ) : (
-                        <ChevronDown className="h-3 w-3 ml-1" />
-                      )}
-                    </span>
-                  </div>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-48">
-                  <DropdownMenuItem
-                    onClick={() => onNameSortChange('first_name', 'asc')}
-                  >
-                    <div className="flex items-center justify-between w-full">
-                      <span>First Name (A-Z)</span>
-                      {nameSortField === 'first_name' &&
-                        sortDirection === 'asc' && (
-                          <ArrowUp className="h-3 w-3" />
-                        )}
-                    </div>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => onNameSortChange('first_name', 'desc')}
-                  >
-                    <div className="flex items-center justify-between w-full">
-                      <span>First Name (Z-A)</span>
-                      {nameSortField === 'first_name' &&
-                        sortDirection === 'desc' && (
-                          <ArrowDown className="h-3 w-3" />
-                        )}
-                    </div>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => onNameSortChange('last_name', 'asc')}
-                  >
-                    <div className="flex items-center justify-between w-full">
-                      <span>Last Name (A-Z)</span>
-                      {nameSortField === 'last_name' &&
-                        sortDirection === 'asc' && (
-                          <ArrowUp className="h-3 w-3" />
-                        )}
-                    </div>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => onNameSortChange('last_name', 'desc')}
-                  >
-                    <div className="flex items-center justify-between w-full">
-                      <span>Last Name (Z-A)</span>
-                      {nameSortField === 'last_name' &&
-                        sortDirection === 'desc' && (
-                          <ArrowDown className="h-3 w-3" />
-                        )}
-                    </div>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <div className="flex items-center cursor-pointer" onClick={() => onSortChange && onSortChange('name')}>
+                Name
+                {sortField === 'name' && (
+                  <span className="ml-1 flex items-center">
+                    {sortDirection === 'asc' ? (
+                      <ArrowUp className="h-3 w-3" />
+                    ) : (
+                      <ArrowDown className="h-3 w-3" />
+                    )}
+                  </span>
+                )}
+                {sortField !== 'name' && (
+                  <ChevronDown className="h-3 w-3 ml-1 text-gray-400" />
+                )}
+              </div>
             </th>
 
             {/* Last Contact Column */}
@@ -557,17 +499,15 @@ export function ContactList({
                   <div className="flex items-center">
                     <AvatarImage
                       src={contact.profile_image_url || null}
-                      alt={`${contact.first_name || ''} ${contact.last_name || ''}`.trim()}
+                      alt={contact.full_name}
                       size="md"
                     />
                     <div className="ml-4">
                       <Link
                         href={`/contacts/${contact.id}`}
-                        className="text-sm font-medium text-gray-900 hover:text-blue-600"
+                        className="font-medium text-teal-600 hover:underline"
                       >
-                        {contact.first_name || contact.last_name
-                          ? `${contact.first_name ?? ''} ${contact.last_name ?? ''}`.trim()
-                          : 'Unnamed Contact'}
+                        {contact.full_name}
                       </Link>
                     </div>
                   </div>

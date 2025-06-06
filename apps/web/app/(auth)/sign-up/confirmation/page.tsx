@@ -10,10 +10,10 @@ export default function SignUpConfirmationPage() {
       </p>
       <div className="text-center">
         <Link
-          href="/sign-in"
-          className="font-medium text-blue-600 hover:underline"
+          href="/log-in"
+          className="font-medium text-teal-600 hover:text-teal-500"
         >
-          Back to Sign In
+          Back to Log In
         </Link>
       </div>
     </div>

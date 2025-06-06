@@ -6,8 +6,7 @@ import { router, protectedProcedure } from '../trpc';
 
 const contactInputSchema = z.object({
   id: z.string().uuid().optional(), // ID is UUID string, optional for creation
-  first_name: z.string().min(1, 'First name is required'),
-  last_name: z.string().min(1, 'Last name is required'),
+  full_name: z.string().min(1, 'Full name is required'),
   email: z.string().email('Invalid email address').optional().nullable(),
   phone: z.string().optional().nullable(),
   company_name: z.string().optional().nullable(),
@@ -67,7 +66,7 @@ export const contactRouter = router({
     // Apply search filter if provided
     // This will apply to all contacts (if no groupId) or group-filtered contacts
     if (input.search) {
-      query = query.or(`first_name.ilike.%${input.search}%,last_name.ilike.%${input.search}%,email.ilike.%${input.search}%`);
+      query = query.or(`full_name.ilike.%${input.search}%,email.ilike.%${input.search}%`);
     }
 
     const { data, error } = await query;
@@ -115,8 +114,7 @@ export const contactRouter = router({
       const contactId = input.id;
       // Prepare fields to update/insert, mapping client field names to DB columns
       const fields = {
-        first_name: input.first_name,
-        last_name: input.last_name,
+        full_name: input.full_name,
         email: input.email || null,
         phone: input.phone || null,
         company_name: input.company_name || null,

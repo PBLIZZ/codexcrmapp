@@ -82,8 +82,7 @@ const ENRICHMENT_STATUS = {
 // Contact schema for validation - using API field names for consistency
 const contactSchema = z.object({
   id: z.string().uuid(),
-  first_name: z.string().min(1, 'First name is required'),
-  last_name: z.string().min(1, 'Last name is required'),
+  full_name: z.string().min(1, 'Full name is required'),
   email: z.string().email('Invalid email format').optional().nullable(),
   phone: z.string().optional().nullable(),
   company_name: z.string().optional().nullable(),
@@ -179,8 +178,7 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
     resolver: zodResolver(contactSchema),
     defaultValues: {
       id: contactId,
-      first_name: '',
-      last_name: '',
+      full_name: '',
       email: '',
       phone: '',
       company_name: '',
@@ -199,8 +197,7 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
     if (contact) {
       reset({
         id: contact.id,
-        first_name: contact.first_name,
-        last_name: contact.last_name,
+        full_name: contact.full_name || '',
         email: contact.email ?? '',
         phone: contact.phone ?? '',
         company_name: contact.company_name ?? '',
@@ -360,7 +357,7 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
             <div className="flex flex-col items-center">
               <CustomAvatarImage
                 src={contact.profile_image_url}
-                alt={`${contact.first_name} ${contact.last_name}`}
+                alt={contact.full_name || 'Contact'}
                 size="xl"
                 className="h-32 w-32 border-4 border-white shadow-lg"
               />
@@ -369,7 +366,7 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
             {/* Basic Info Section */}
             <div className="flex-1 pt-4 md:pt-8">
               <h1 className="text-3xl font-bold mb-2">
-                {contact.first_name} {contact.last_name}
+                {contact.full_name}
               </h1>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-4 mt-4">
@@ -453,8 +450,7 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
             <CardHeader>
               <CardTitle>Contact Information</CardTitle>
               <CardDescription>
-                Complete profile information for {contact.first_name}{' '}
-                {contact.last_name}
+                Complete profile information for {contact.full_name}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -467,15 +463,9 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
                 <dl className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <dt className="text-sm font-medium text-muted-foreground">
-                      First Name
+                      Full Name
                     </dt>
-                    <dd className="mt-1">{contact.first_name}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-sm font-medium text-muted-foreground">
-                      Last Name
-                    </dt>
-                    <dd className="mt-1">{contact.last_name}</dd>
+                    <dd className="mt-1">{contact.full_name}</dd>
                   </div>
                   <div>
                     <dt className="text-sm font-medium text-muted-foreground">
@@ -492,7 +482,7 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
                 </dl>
               </div>
 
-              {/* Professional Information */}
+              {/* Professional Information */} 
               <div>
                 <h3 className="text-lg font-medium mb-2">
                   Professional Information
@@ -662,7 +652,7 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
           <DialogHeader>
             <DialogTitle>Edit Contact</DialogTitle>
             <DialogDescription>
-              Update information for {contact.first_name} {contact.last_name}
+              Update information for {contact.full_name}
             </DialogDescription>
           </DialogHeader>
 
@@ -682,30 +672,16 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
                 <Separator />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="first_name">First Name</Label>
+              <div className="space-y-2 md:col-span-2">
+                <Label htmlFor="full_name">Full Name</Label>
                 <Input
-                  id="first_name"
-                  {...register('first_name')}
-                  className={errors.first_name ? 'border-destructive' : ''}
+                  id="full_name"
+                  {...register('full_name')}
+                  className={errors.full_name ? 'border-destructive' : ''}
                 />
-                {errors.first_name && (
+                {errors.full_name && (
                   <p className="text-sm text-destructive">
-                    {errors.first_name.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="last_name">Last Name</Label>
-                <Input
-                  id="last_name"
-                  {...register('last_name')}
-                  className={errors.last_name ? 'border-destructive' : ''}
-                />
-                {errors.last_name && (
-                  <p className="text-sm text-destructive">
-                    {errors.last_name.message}
+                    {errors.full_name.message}
                   </p>
                 )}
               </div>
@@ -882,7 +858,7 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
             <p className="text-sm text-muted-foreground">
               This will permanently delete{' '}
               <span className="font-semibold">
-                {contact.first_name} {contact.last_name}
+                {contact.full_name}
               </span>{' '}
               and all associated data.
             </p>

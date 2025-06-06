@@ -23,17 +23,11 @@ Design the overall dashboard layout including grid structure, responsive behavio
 ### Details:
 Develop a scrollable feed component that shows timestamped user activities. Implement real-time updates using appropriate data fetching strategies. Design activity cards with appropriate icons for different activity types. Include pagination or infinite scroll for viewing older activities.
 
-## 3. Create Upcoming Reminders Widget [pending]
+## 3. Create Upcoming Reminders Widget [done]
 ### Dependencies: 10.1
 ### Description: Develop a widget that shows scheduled reminders and upcoming events
 ### Details:
 Build a component that displays time-sorted reminders and events. Implement date filtering options. Add visual indicators for urgency/priority. Include quick actions to mark as complete or snooze. Ensure the widget updates in real-time when new reminders are created.
-
-## 4. Build Frequent Contacts Display [pending]
-### Dependencies: 10.1
-### Description: Create a component showing the user's most frequently contacted people
-### Details:
-Develop an algorithm to determine frequently contacted individuals based on interaction history. Design a visually appealing grid or list of contact avatars with names. Implement quick action buttons for initiating common communication methods. Add a way to manually pin/unpin contacts to the frequent list.
 
 ## 5. Develop Key Metrics Visualization [pending]
 ### Dependencies: 10.1
@@ -42,7 +36,7 @@ Develop an algorithm to determine frequently contacted individuals based on inte
 Select and implement appropriate chart types (bar charts, line graphs, etc.) for different metrics. Create responsive visualizations that adapt to different screen sizes. Add interactive elements like tooltips and filtering options. Ensure accessibility of all data visualizations with proper ARIA attributes and keyboard navigation.
 
 ## 6. Implement Quick Add Functionality [pending]
-### Dependencies: 10.1, 10.2, 10.3, 10.4, 10.5
+### Dependencies: 10.1, 10.2, 10.3, 10.5
 ### Description: Create a universal 'quick add' feature for rapidly creating new items from the dashboard
 ### Details:
 Design and implement a floating action button or persistent UI element for quick creation of new items. Build a context-aware form that adapts based on the type of item being created. Implement keyboard shortcuts for power users. Ensure new items immediately appear in relevant dashboard components after creation.

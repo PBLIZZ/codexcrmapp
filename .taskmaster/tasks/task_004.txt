@@ -1,9 +1,9 @@
 # Task ID: 4
 # Title: Feature: Implement Supabase Authentication (Email/Password)
-# Status: done
+# Status: pending
 # Dependencies: 54, 2, 3
 # Priority: high
-# Description: Set up Supabase authentication with email/password, secure session management, email confirmation, user profile creation. (Corresponds to core of original Task 4, excluding Google OAuth specific fix)
+# Description: Set up Supabase authentication with email/password, secure session management, email confirmation, automatic user profile creation.
 # Details:
 
 
@@ -11,39 +11,51 @@
 
 
 # Subtasks:
-## 1. Set up Supabase auth configuration [done]
+## 1. Set up Supabase project and configure authentication [done]
 ### Dependencies: None
-### Description: Configure Supabase authentication settings in the project
+### Description: Create a new Supabase project, enable email/password authentication, and obtain API keys for client integration.
 ### Details:
-Initialize Supabase client, configure auth providers (email/password), set up redirect URLs, configure security settings like JWT expiry times, and set up email templates for confirmation/reset emails
+Log into Supabase, create a new project, navigate to the Authentication settings, enable email/password auth, and copy the project URL and anon/public API key for use in the frontend.
 
-## 2. Implement sign-up flow with email confirmation [done]
+## 2. Integrate Supabase client into the application [done]
 ### Dependencies: 4.1
-### Description: Create the user registration process with email verification
+### Description: Install and configure the Supabase client library in the application to enable communication with the Supabase backend.
 ### Details:
-Build registration form UI, implement form validation, integrate Supabase signUp method, handle confirmation email flow, create confirmation page for email links, and implement email verification status checks
+Install the @supabase/supabase-js package, initialize the client with the project URL and anon key, and make it available throughout the app.
 
-## 3. Create sign-in functionality [done]
-### Dependencies: 4.1
-### Description: Implement user authentication login flow
+## 3. Implement user sign-up functionality [pending]
+### Dependencies: 4.2
+### Description: Create a sign-up form and connect it to Supabase's sign-up API to register new users using email and password.
 ### Details:
-Build login form UI, implement form validation, integrate Supabase signIn method, handle 'remember me' functionality, implement password reset flow, and create appropriate success/error states
+Build a form that collects email and password, validate inputs, and call supabase.auth.signUp with the provided credentials.
 
-## 4. Manage secure sessions [done]
+## 4. Implement user sign-in functionality [done]
+### Dependencies: 4.2
+### Description: Create a sign-in form and connect it to Supabase's sign-in API to authenticate existing users.
+### Details:
+Build a form that collects email and password, validate inputs, and call supabase.auth.signInWithPassword to log in the user.
+
+## 5. Set up session management and persistence [done]
+### Dependencies: 4.4
+### Description: Manage user sessions by storing and retrieving session data, and ensure users remain logged in across page reloads.
+### Details:
+Use Supabase's onAuthStateChange listener to track session changes and store session data in local storage or context.
+
+## 6. Create and manage user profiles in the database [pending]
 ### Dependencies: 4.3
-### Description: Implement session management for authenticated users
+### Description: Create a user profile table and insert user metadata upon successful sign-up.
 ### Details:
-Set up auth state listeners, implement session persistence, create protected routes/middleware, handle token refresh, implement session timeout handling, and add logout functionality
+Create a 'profiles' table in Supabase with fields like id, email, and created_at. After sign-up, insert a new row using the user's UID.
 
-## 5. Build user profile creation [done]
-### Dependencies: 4.2, 4.4
-### Description: Implement user profile setup after successful registration
+## 7. Implement error handling for authentication flows [pending]
+### Dependencies: 4.3, 4.4
+### Description: Handle and display errors from Supabase during sign-up and sign-in processes.
 ### Details:
-Create profile database schema, build profile creation form, implement profile data validation, handle profile image uploads, connect profile to auth user ID, and implement profile update functionality
+Capture errors returned by Supabase auth methods and display user-friendly messages in the UI.
 
-## 6. Add error handling for auth flows [done]
-### Dependencies: 4.2, 4.3, 4.4, 4.5
-### Description: Implement comprehensive error handling for all authentication processes
+## 8. Test authentication flows and edge cases [pending]
+### Dependencies: 4.3, 4.4, 4.5, 4.6, 4.7
+### Description: Thoroughly test the sign-up, sign-in, session persistence, and error handling to ensure reliability and security.
 ### Details:
-Create error handling utilities, implement user-friendly error messages, handle network errors, implement retry mechanisms, log authentication errors securely, and create fallback authentication options
+Test valid and invalid inputs, session expiration, duplicate accounts, and error messages to ensure robust authentication.
 
