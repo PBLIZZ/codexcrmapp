@@ -1,0 +1,30 @@
+# Task ID: 195
+# Title: Implement Name field data storage in Supabase
+# Status: done
+# Dependencies: 194
+# Priority: high
+# Description: Update the sign-up process to collect and store the user's name in Supabase auth.users.raw_user_meta_data.
+# Details:
+1. Modify the sign-up form submission handler to include the name field
+2. Update the Supabase `auth.signUp` call to include the name in the options.data field:
+   ```typescript
+   const { data, error } = await supabase.auth.signUp({
+     email: email,
+     password: password,
+     options: {
+       data: {
+         full_name: name // Store the name collected from the form
+       }
+     }
+   });
+   ```
+3. Verify that the name is correctly stored in `auth.users.raw_user_meta_data`
+4. Handle any error cases appropriately
+5. Ensure the form validation includes the name field as required
+
+# Test Strategy:
+1. Test sign-up with valid name, email, and password
+2. Verify the name is correctly stored in Supabase `auth.users.raw_user_meta_data`
+3. Test form validation for empty name field
+4. Test with various name formats (short, long, with special characters)
+5. Verify error handling for failed sign-ups

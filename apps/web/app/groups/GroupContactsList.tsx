@@ -25,6 +25,15 @@ import {
 } from '@/components/ui/select';
 import { api } from '@/lib/trpc';
 
+// Helper function to get initials from name
+const getInitials = (fullName: string | null | undefined) => {
+  if (!fullName) return '??';
+  const nameParts = fullName.split(' ');
+  const firstInitial = nameParts[0]?.[0] || '';
+  const lastInitial = nameParts.length > 1 ? nameParts[nameParts.length - 1]?.[0] || '' : '';
+  return `${firstInitial}${lastInitial}`.toUpperCase();
+};
+
 interface GroupContactsListProps {
   groupId: string;
   groupName: string;
@@ -149,13 +158,12 @@ export function GroupContactsList({
               <div className="flex items-center space-x-2 min-w-0 flex-1">
                 <div className="h-6 w-6 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
                   <span className="text-xs font-medium text-purple-600">
-                    {contact.first_name?.[0]}
-                    {contact.last_name?.[0]}
+                    {getInitials(contact.full_name)}
                   </span>
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="text-sm font-medium text-purple-900 truncate">
-                    {contact.first_name} {contact.last_name}
+                    {contact.full_name}
                   </div>
                   {contact.email && (
                     <div className="text-xs text-purple-600 truncate">
@@ -245,13 +253,12 @@ export function GroupContactsList({
                       <div className="flex items-center gap-2">
                         <div className="h-6 w-6 bg-gray-100 rounded-full flex items-center justify-center">
                           <span className="text-xs text-gray-600">
-                            {contact.first_name?.[0]}
-                            {contact.last_name?.[0]}
+                            {getInitials(contact.full_name)}
                           </span>
                         </div>
                         <div>
                           <div className="font-medium">
-                            {contact.first_name} {contact.last_name}
+                            {contact.full_name}
                           </div>
                           {contact.email && (
                             <div className="text-xs text-gray-500">

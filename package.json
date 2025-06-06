@@ -56,6 +56,8 @@
     "@eslint/js": "^9.27.0",
     "@next/eslint-plugin-next": "^15.3.2",
     "@tailwindcss/postcss": "^4",
+    "@types/google-one-tap": "^1.2.6",
+    "@types/google.accounts": "^0.0.16",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

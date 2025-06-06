@@ -1,9 +1,9 @@
 {
   "meta": {
-    "generatedAt": "2025-06-01T14:00:17.188Z",
-    "tasksAnalyzed": 7,
-    "totalTasks": 91,
-    "analysisCount": 84,
+    "generatedAt": "2025-06-06T06:12:56.564Z",
+    "tasksAnalyzed": 22,
+    "totalTasks": 115,
+    "analysisCount": 106,
     "thresholdScore": 5,
     "projectName": "Taskmaster",
     "usedResearch": true
@@ -680,6 +680,182 @@
       "recommendedSubtasks": 5,
       "expansionPrompt": "Split into: 1) Inline comment updates 2) README/docs refresh 3) Diagram updates 4) Code example validation 5) Onboarding material review",
       "reasoning": "Low technical complexity but important for maintainability. Requires thorough documentation archaeology and consistency checks."
+    },
+    {
+      "taskId": 191,
+      "taskTitle": "Rename Sign In to Log In throughout the application",
+      "complexityScore": 6,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Break down into: 1) Codebase search strategy 2) Component renaming 3) Route updates 4) Documentation updates 5) Regression testing",
+      "reasoning": "Requires systematic search/replace across multiple layers but no complex logic. Risk of missing edge cases justifies multiple verification steps."
+    },
+    {
+      "taskId": 192,
+      "taskTitle": "Integrate Shadcn UI components for authentication forms",
+      "complexityScore": 7,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Split into: 1) Package installation 2) Template research 3) Core component implementation 4) Theme configuration 5) Accessibility audit",
+      "reasoning": "Integration with third-party library requires configuration and styling adaptation. Component customization and accessibility add complexity."
+    },
+    {
+      "taskId": 193,
+      "taskTitle": "Update Log In page UI/UX",
+      "complexityScore": 8,
+      "recommendedSubtasks": 6,
+      "expansionPrompt": "Divide into: 1) Layout restructuring 2) Component integration 3) Styling implementation 4) Validation logic 5) Third-party auth flows 6) Responsive testing",
+      "reasoning": "Complex UI overhaul with multiple interactive elements and dependency management. Requires coordination of visual and functional changes."
+    },
+    {
+      "taskId": 194,
+      "taskTitle": "Update Sign Up page UI/UX",
+      "complexityScore": 7,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Break into: 1) Form field additions 2) Component updates 3) Style consistency 4) Password requirements 5) Cross-page navigation",
+      "reasoning": "Similar complexity to login page but with additional data collection requirements. Name field integration adds validation needs."
+    },
+    {
+      "taskId": 195,
+      "taskTitle": "Implement Name field data storage in Supabase",
+      "complexityScore": 5,
+      "recommendedSubtasks": 3,
+      "expansionPrompt": "Split into: 1) Form handler modification 2) Supabase API update 3) Data validation tests",
+      "reasoning": "Straightforward data pipeline update but requires careful testing of metadata storage and error handling."
+    },
+    {
+      "taskId": 196,
+      "taskTitle": "Create or update Supabase trigger for profile creation",
+      "complexityScore": 8,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Divide into: 1) Trigger audit 2) SQL function creation 3) Trigger deployment 4) Data integrity tests",
+      "reasoning": "Database-level changes require precise SQL and understanding of auth flow. Potential for data inconsistency raises complexity."
+    },
+    {
+      "taskId": 197,
+      "taskTitle": "Implement password visibility toggle",
+      "complexityScore": 4,
+      "recommendedSubtasks": 2,
+      "expansionPrompt": "Split into: 1) State management implementation 2) Accessible UI components",
+      "reasoning": "Discrete feature with clear implementation pattern, but requires cross-browser and accessibility validation."
+    },
+    {
+      "taskId": 198,
+      "taskTitle": "Implement password requirements indicator",
+      "complexityScore": 6,
+      "recommendedSubtasks": 3,
+      "expansionPrompt": "Break into: 1) Validation rules setup 2) Real-time feedback UI 3) Accessibility testing",
+      "reasoning": "Dynamic UI updates and comprehensive validation logic increase complexity beyond basic form elements."
+    },
+    {
+      "taskId": 199,
+      "taskTitle": "Implement responsive design for authentication pages",
+      "complexityScore": 5,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Divide into: 1) Breakpoint definitions 2) Component responsiveness 3) Touch optimization 4) Cross-device testing",
+      "reasoning": "Systematic but requires attention to multiple viewports and interaction modes. Existing component structure reduces complexity."
+    },
+    {
+      "taskId": 200,
+      "taskTitle": "Implement error handling and validation",
+      "complexityScore": 7,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Split into: 1) Client-side validation 2) Server error handling 3) UI feedback system 4) Accessibility compliance 5) Edge case testing",
+      "reasoning": "Comprehensive validation requires coordination between frontend and backend. Error state management increases test surface."
+    },
+    {
+      "taskId": 201,
+      "taskTitle": "Update Terminology from 'Sign In' to 'Log In'",
+      "complexityScore": 6,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Break into: 1) Terminology audit 2) Codebase updates 3) Route redirects 4) Documentation sync",
+      "reasoning": "Similar to task 191 but with explicit route handling. Requires legacy path maintenance strategy."
+    },
+    {
+      "taskId": 202,
+      "taskTitle": "Integrate Shadcn UI Component Library",
+      "complexityScore": 7,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Divide into: 1) Library installation 2) Core component setup 3) Theme configuration 4) Template adaptation 5) Cross-component testing",
+      "reasoning": "Foundational UI work with wide-reaching impact. Theming and consistency requirements justify multiple subtasks."
+    },
+    {
+      "taskId": 203,
+      "taskTitle": "Add Company Logo to Authentication Pages",
+      "complexityScore": 3,
+      "recommendedSubtasks": 2,
+      "expansionPrompt": "Split into: 1) Asset implementation 2) Responsive sizing tests",
+      "reasoning": "Straightforward component addition but requires image optimization and layout adjustments."
+    },
+    {
+      "taskId": 204,
+      "taskTitle": "Redesign Log In Page",
+      "complexityScore": 8,
+      "recommendedSubtasks": 6,
+      "expansionPrompt": "Break into: 1) Layout implementation 2) Form component integration 3) Auth flow connections 4) Style application 5) Third-party services 6) Cross-browser tests",
+      "reasoning": "Complex page architecture with multiple interactive systems and dependency management needs."
+    },
+    {
+      "taskId": 205,
+      "taskTitle": "Redesign Sign Up Page",
+      "complexityScore": 8,
+      "recommendedSubtasks": 6,
+      "expansionPrompt": "Divide into: 1) Name field integration 2) Form layout 3) Password requirements 4) Third-party auth 5) Validation system 6) Profile creation flow",
+      "reasoning": "Similar complexity to login redesign with additional data collection and storage requirements."
+    },
+    {
+      "taskId": 206,
+      "taskTitle": "Implement Password Requirements Indicator",
+      "complexityScore": 6,
+      "recommendedSubtasks": 3,
+      "expansionPrompt": "Split into: 1) Validation logic 2) Dynamic UI component 3) Real-time updates",
+      "reasoning": "State-driven UI component with complex validation rules requires careful user feedback implementation."
+    },
+    {
+      "taskId": 207,
+      "taskTitle": "Implement Show/Hide Password Toggle",
+      "complexityScore": 4,
+      "recommendedSubtasks": 2,
+      "expansionPrompt": "Break into: 1) Reusable component creation 2) Cross-form integration",
+      "reasoning": "Reusable pattern implementation reduces per-instance work but requires accessibility focus."
+    },
+    {
+      "taskId": 208,
+      "taskTitle": "Implement Form Validation and Error Handling",
+      "complexityScore": 8,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Divide into: 1) Schema definition 2) Real-time validation 3) Error display system 4) Server error integration 5) Accessibility compliance",
+      "reasoning": "Complex due to dual client-server validation needs and user feedback requirements across multiple forms."
+    },
+    {
+      "taskId": 209,
+      "taskTitle": "Update Supabase Auth Integration for Name Collection",
+      "complexityScore": 5,
+      "recommendedSubtasks": 3,
+      "expansionPrompt": "Split into: 1) API modification 2) Metadata storage tests 3) Profile sync verification",
+      "reasoning": "Straightforward API update but requires data flow verification between auth and profile systems."
+    },
+    {
+      "taskId": 210,
+      "taskTitle": "Implement Google Authentication Integration",
+      "complexityScore": 6,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Break into: 1) OAuth configuration 2) Styled component 3) Error handling 4) Profile creation tests",
+      "reasoning": "Third-party integration requires both technical implementation and UI consistency efforts."
+    },
+    {
+      "taskId": 211,
+      "taskTitle": "Implement Magic Link Authentication",
+      "complexityScore": 5,
+      "recommendedSubtasks": 3,
+      "expansionPrompt": "Divide into: 1) Email flow setup 2) UI component 3) Success/error states",
+      "reasoning": "Similar complexity to password login but with additional email service dependencies."
+    },
+    {
+      "taskId": 212,
+      "taskTitle": "Ensure Responsive Design and Accessibility",
+      "complexityScore": 9,
+      "recommendedSubtasks": 6,
+      "expansionPrompt": "Split into: 1) Breakpoint audits 2) Accessibility scans 3) Keyboard nav tests 4) Screen reader tests 5) Color contrast checks 6) Performance optimizations",
+      "reasoning": "Comprehensive cross-cutting concerns requiring multiple testing methodologies and potential refactoring."
     }
   ]
 }

@@ -78,3 +78,6 @@ node_modules/
 # Task files
 # tasks.json
 # tasks/ 
+
+# Codeium Windsurf specific config
+.codeium/windsurf/mcp_config.json

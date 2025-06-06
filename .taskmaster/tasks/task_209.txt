@@ -1,0 +1,46 @@
+# Task ID: 209
+# Title: Update Supabase Auth Integration for Name Collection
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: Modify the Supabase authentication integration to collect and store the user's name during sign-up.
+# Details:
+1. Update the sign-up function to include the name field in the metadata:
+```tsx
+const handleSignUp = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: name // Store name in user metadata
+        }
+      }
+    });
+    
+    if (error) throw error;
+    // Handle successful sign-up
+  } catch (error) {
+    // Handle error
+  } finally {
+    setLoading(false);
+  }
+};
+```
+
+2. Verify that the name is being stored in `auth.users.raw_user_meta_data`
+
+3. If using a separate profiles table, ensure that the database trigger is properly set up to copy the name from `raw_user_meta_data` to the profiles table
+
+4. Test the flow to ensure the name is properly stored and accessible in the user's profile
+
+# Test Strategy:
+1. Test the sign-up process with a name provided
+2. Verify in the Supabase dashboard that the name is stored in user metadata
+3. Check that any database triggers correctly copy the name to the profiles table if applicable
+4. Test retrieving and displaying the user's name after sign-up
+5. Test with various name formats (short, long, with special characters, etc.)

@@ -28,7 +28,7 @@ import {
 // Constants
 const MIN_PASSWORD_LENGTH = 6;
 const ROUTES = {
-  signIn: '/sign-in',
+  signIn: '/log-in',
   dashboard: '/dashboard',
 };
 
@@ -247,8 +247,8 @@ export default function AccountPage() {
             </p>
             {user.last_sign_in_at && (
               <p>
-                <span className="font-medium">Last Sign In:</span>{' '}
-                {new Date(user.last_sign_in_at).toLocaleString()}
+                <span className="font-medium">Last Log In:</span>{' '}
+                {new Date(user.last_sign_in_at!).toLocaleString()}
               </p>
             )}
           </div>

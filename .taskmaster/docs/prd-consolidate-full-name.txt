@@ -1,0 +1,84 @@
+**Mini-PRD: Consolidate to `full_name` for User and Contact Names**
+
+**1. Goals:**
+    *   Standardize user and contact name handling to use a single `full_name` field.
+    *   Store the user's `full_name` in `auth.users.raw_user_meta_data` upon sign-up.
+    *   Refactor the `contacts` table in Supabase to use a `full_name` column, replacing the existing `first_name` and `last_name` columns.
+    *   Ensure consistency across the application stack (UI, backend API, database schemas, and type definitions).
+
+**2. Background:**
+    *   The current `contacts` table schema includes separate `first_name` (text, not null) and `last_name` (text, not null) columns.
+    *   The `contactRouter` (`packages/server/src/routers/contact.ts`) actively uses these separate fields for input validation, data persistence, and search functionality.
+    *   The initial Task ID 195 focused on collecting and storing the user's name (presumably `full_name`) during the sign-up process into `auth.users.raw_user_meta_data`.
+    *   This PRD expands that scope to refactor the entire `contacts` entity and related application logic to use a single `full_name` field, deprecating `first_name` and `last_name`.
+
+**3. User Stories:**
+    *   As a new user, when I sign up, I want to provide my full name in a single field, and have this name associated with my user account.
+    *   As an application user, when I create or edit a contact, I want to enter their full name into a single, clearly labeled field.
+    *   As an application user, when I view a contact's details or a list of contacts, I want to see their full name displayed.
+    *   As an application user, when I search for contacts, I want the search functionality to query against their full name.
+
+**4. Proposed Changes:**
+
+    **4.1. Database Schema (`contacts` table):**
+        *   **Migration Script (SQL):**
+            1.  Add a new column: `full_name TEXT NOT NULL`.
+            2.  Data Population: `UPDATE public.contacts SET full_name = first_name || ' ' || last_name;` (This assumes `first_name` and `last_name` are never empty, as per current `NOT NULL` constraints. If they could be empty, concatenation logic might need adjustment, but the schema says `NOT NULL`).
+            3.  Drop the old column: `ALTER TABLE public.contacts DROP COLUMN first_name;`
+            4.  Drop the old column: `ALTER TABLE public.contacts DROP COLUMN last_name;`
+        *   **Indexes:** Review if existing indexes on `first_name` or `last_name` need to be removed and if an index on `full_name` would be beneficial for search performance.
+        *   **RLS Policies:** Verify that RLS policies on the `contacts` table are not adversely affected. (Unlikely, as they typically key off `user_id` or `id`).
+
+    **4.2. Supabase Auth (`auth.users.raw_user_meta_data`):**
+        *   The sign-up process (Task ID 195) should store the collected name under the key `full_name` (or a similar consistent key) within `options.data` during the `supabase.auth.signUp` call.
+
+    **4.3. Backend - tRPC Router (`packages/server/src/routers/contact.ts`):**
+        *   **`contactInputSchema` (Zod validation):**
+            *   Remove `first_name: z.string().min(1, 'First name is required')`.
+            *   Remove `last_name: z.string().min(1, 'Last name is required')`.
+            *   Add `full_name: z.string().min(1, 'Full name is required')`. Consider appropriate max length if necessary.
+        *   **`list` procedure:**
+            *   Update search logic: Modify the `.or()` clause from `first_name.ilike.%${input.search}%,last_name.ilike.%${input.search}%...` to `full_name.ilike.%${input.search}%...`.
+        *   **`getById` procedure:** No change to the procedure's direct logic, but the returned `contact` object will now contain `full_name` instead of `first_name` and `last_name`.
+        *   **`save` procedure (Create/Update):**
+            *   Adapt the input to expect `full_name`.
+            *   Modify the `fields` object to map `full_name: input.full_name`.
+            *   Remove all references and logic related to `first_name` and `last_name`.
+        *   **Other Procedures:** Review any other procedures within this router or others that might interact with contact name fields.
+
+    **4.4. Database Type Definitions (`packages/db/src/database.types.ts`):**
+        *   After applying the database schema migration, re-generate the Supabase TypeScript types using the CLI: `npx supabase gen types typescript --project-id ppzaajcutzyluffvbnrg > packages/db/src/database.types.ts`. This will update the `Database['public']['Tables']['contacts']['Row' | 'Insert' | 'Update']` types.
+
+    **4.5. Frontend Application (`apps/web/...`):**
+        *   **Sign-Up Page (`apps/web/app/(auth)/sign-up/page.tsx`):**
+            *   Ensure there's a single input field for "Full Name".
+            *   Update any local Zod schema for form validation to require `fullName`.
+            *   Modify the `handleSignUp` function to pass the `fullName` to `supabase.auth.signUp` via `options.data = { full_name: name }`.
+        *   **Contact Forms (e.g., create, edit modals/pages):**
+            *   Replace separate input fields for `First Name` and `Last Name` with a single `Full Name` input field.
+            *   Update associated form state management (e.g., `useState` hooks).
+            *   Update client-side validation (Zod schemas or other logic) to use `full_name`.
+            *   Ensure data submission logic sends `full_name` to the backend.
+        *   **Contact Display Components (e.g., lists, tables, detail views):**
+            *   Update to display `contact.full_name` directly, instead of potentially concatenating `contact.first_name` and `contact.last_name`.
+        *   **tRPC Client-Side Calls:**
+            *   Review all client-side invocations of `contactRouter` procedures (e.g., `api.contacts.list.useQuery()`, `api.contacts.save.useMutation()`).
+            *   Ensure input objects provide `full_name` where required and expect `full_name` in responses.
+        *   **Local Frontend Types/Interfaces:** Update any custom TypeScript types or interfaces that model a `Contact` to reflect the change from `first_name`/`last_name` to `full_name`.
+
+**5. Data Migration & Deployment Strategy:**
+    1.  Develop and test the SQL migration script in a development environment.
+    2.  Apply the SQL migration to the production database during a maintenance window if applicable.
+    3.  Re-generate and commit the updated `database.types.ts`.
+    4.  Update and deploy backend code (tRPC router changes).
+    5.  Update and deploy frontend code (UI components, forms, tRPC client calls).
+    *   *Consideration*: If zero-downtime is critical, a multi-stage approach might be needed (e.g., add `full_name`, sync data, update code to read `full_name` but write to both/all three, then phase out old fields). However, for many applications, a brief maintenance window for schema change + deployment is acceptable.
+
+**6. Non-Functional Requirements:**
+    *   **Data Integrity:** Ensure accurate migration of existing `first_name` and `last_name` data into the new `full_name` field.
+    *   **Search Performance:** The search functionality on the `full_name` column should remain performant.
+
+**7. Open Questions/Considerations:**
+    *   **Name Parsing for Display:** If there's a future requirement to display parts of the name separately (e.g., "Welcome, [First Name]!"), the application would need to implement logic to parse the `full_name` string. This is out of scope for this PRD.
+    *   **Impact on `auth.users.raw_user_meta_data` for Existing Users:** Task 195 implies adding name collection at sign-up. If users already exist and have name data stored differently (or not at all) in `raw_user_meta_data`, this change primarily affects new sign-ups and how that data is structured going forward.
+    *   **Cultural Name Variations:** A single `full_name` field is a common simplification but is less flexible for diverse global name structures compared to dedicated fields for given name, family name, middle names, etc. This is a known trade-off for simplicity.

@@ -23,7 +23,6 @@ import { GroupsProvider } from './ContactGroupManager';
 import {
   ContactList,
   Contact,
-  NameSortField,
   DateFilterPeriod,
   SourceOption,
 } from './ContactList';
@@ -85,10 +84,9 @@ export function ContactsContent({
     'notes',
     'source',
   ]);
-  const [sortField, setSortField] = useState('name');
+  const [sortField, setSortField] = useState('name'); // 'name' will refer to full_name
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
-  const [nameSortField, setNameSortField] =
-    useState<NameSortField>('first_name');
+  // nameSortField is no longer needed
   const [dateFilterPeriod, setDateFilterPeriod] =
     useState<DateFilterPeriod>('all');
   const [selectedSourceFilters, setSelectedSourceFilters] = useState<
@@ -128,18 +126,9 @@ export function ContactsContent({
   );
 
   const sortedContacts = [...contacts].sort((a, b) => {
-    // Handle name sorting based on selected name sort field
-    if (sortField === 'first_name') {
-      const aValue = a.first_name || '';
-      const bValue = b.first_name || '';
-      return sortDirection === 'asc'
-        ? aValue.localeCompare(bValue)
-        : bValue.localeCompare(aValue);
-    }
-
-    if (sortField === 'last_name') {
-      const aValue = a.last_name || '';
-      const bValue = b.last_name || '';
+    if (sortField === 'name') { // 'name' now refers to full_name
+      const aValue = a.full_name || '';
+      const bValue = b.full_name || '';
       return sortDirection === 'asc'
         ? aValue.localeCompare(bValue)
         : bValue.localeCompare(aValue);
@@ -160,12 +149,15 @@ export function ContactsContent({
 
   // Filter contacts based on search query
   const filteredContacts = sortedContacts.filter((contact) => {
+    // Backend search via tRPC's contacts.list already handles full_name and email.
+    // This client-side filter might be redundant or could be removed if backend search is sufficient.
+    // For now, keeping it simple and aligning with full_name for consistency if searchQuery is used for further client-side refinement.
+    if (!searchQuery) return true; // If no search query, don't filter out anything here
     const searchRegex = new RegExp(searchQuery, 'i');
     return (
-      searchRegex.test(contact.first_name) ||
-      searchRegex.test(contact.last_name) ||
-      searchRegex.test(contact.email) ||
-      searchRegex.test(contact.phone)
+      searchRegex.test(contact.full_name) ||
+      (contact.email && searchRegex.test(contact.email)) || // Check if email exists
+      (contact.phone && searchRegex.test(contact.phone)) // Check if phone exists
     );
   });
 
@@ -220,8 +212,7 @@ export function ContactsContent({
     // Map Contact API data to ContactFormData
     const formData: ContactFormData = {
       id: contact.id,
-      first_name: contact.first_name,
-      last_name: contact.last_name,
+      full_name: contact.full_name,
       email: contact.email ?? '',
       phone: contact.phone ?? '',
       company_name: contact.company_name ?? '',
@@ -258,8 +249,7 @@ export function ContactsContent({
     const mutationData: ContactFormData = {
       ...data,
       id: editingContactId || undefined, // Use undefined for create, id for update
-      first_name: data.first_name.trim(),
-      last_name: data.last_name.trim(),
+      full_name: data.full_name.trim(),
       email: data.email.trim(),
       phone: data.phone?.trim() || null,
       company_name: data.company_name?.trim() || null,
@@ -309,16 +299,6 @@ export function ContactsContent({
       setSortField(field);
       setSortDirection('asc');
     }
-  };
-
-  // Handle name-specific sorting with different options
-  const handleNameSortChange = (
-    field: NameSortField,
-    direction: 'asc' | 'desc'
-  ) => {
-    setNameSortField(field);
-    setSortField(field);
-    setSortDirection(direction);
   };
 
   // --- Rendering ---
@@ -447,8 +427,6 @@ export function ContactsContent({
               sortField={sortField}
               sortDirection={sortDirection}
               onSortChange={handleSortChange}
-              onNameSortChange={handleNameSortChange}
-              nameSortField={nameSortField}
               dateFilterPeriod={dateFilterPeriod}
               onDateFilterChange={handleDateFilterChange}
               selectedSourceFilters={selectedSourceFilters}

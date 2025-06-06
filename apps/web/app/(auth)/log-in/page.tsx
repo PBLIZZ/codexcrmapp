@@ -18,7 +18,7 @@ import { Input } from '@/components/ui/input';
 import { supabase } from '@/lib/supabase/client';
 import OneTapComponent from '@/components/auth/OneTapComponent'; // Ensure this path is correct and component exists
 
-// Google Icon SVG Component (copied from log-in/page.tsx for now)
+// Google Icon SVG Component
 const EyeIcon = ({ className }: { className?: string }) => (
   <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
@@ -37,7 +37,7 @@ const EyeOffIcon = ({ className }: { className?: string }) => (
 
 const CheckIcon = ({ className }: { className?: string }) => (
   <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="20 6 9 17 4 12"/>
+    <polyline points="20 6 9 17 4 12"></polyline>
   </svg>
 );
 
@@ -68,31 +68,7 @@ const GoogleIcon = () => (
   </svg>
 );
 
-const PasswordRequirements = ({ password }: { password: string }) => {
-  const requirements = [
-    { text: 'At least 8 characters', met: password.length >= 8, id: 'length' },
-    { text: 'At least one uppercase letter', met: /[A-Z]/.test(password), id: 'uppercase' },
-    { text: 'At least one lowercase letter', met: /[a-z]/.test(password), id: 'lowercase' },
-    { text: 'At least one number', met: /[0-9]/.test(password), id: 'number' },
-    { text: 'At least one special character', met: /[^A-Za-z0-9]/.test(password), id: 'special' }
-  ];
-
-  return (
-    <div className="mt-2 space-y-1 flex flex-col items-end">
-      {requirements.map((req) => (
-        <div key={req.id} className="flex items-center">
-          <span className={`mr-2 ${req.met ? 'text-green-500' : 'text-gray-400'}`}>
-            {req.met ? '✓' : '○'}
-          </span>
-          <span className={`text-xs ${req.met ? 'text-gray-700' : 'text-gray-500'}`}>{req.text}</span>
-        </div>
-      ))}
-    </div>
-  );
-};
-
-export default function SignUpPage() {
-  const [fullName, setFullName] = useState('');
+export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
@@ -101,79 +77,60 @@ export default function SignUpPage() {
   const [isLoading, setIsLoading] = useState(false);
   // const [isOauthLoading, setIsOauthLoading] = useState<'google' | null>(null); // Replaced by OneTapComponent
   const [showPassword, setShowPassword] = useState(false);
-  const [fullNameBlurred, setFullNameBlurred] = useState(false);
   const [emailBlurred, setEmailBlurred] = useState(false);
   const [passwordBlurred, setPasswordBlurred] = useState(false);
 
-  const signUpSchema = z.object({
-    fullName: z.string().min(1, { message: 'Full name is required' }),
+  // Zod schema for login form
+  const loginSchema = z.object({
     email: z.string().email({ message: 'Invalid email address' }),
-    password: z.string()
-      .min(8, { message: 'Password must be at least 8 characters.' })
-      .regex(/[A-Z]/, { message: 'Password must contain at least one uppercase letter.' })
-      .regex(/[a-z]/, { message: 'Password must contain at least one lowercase letter.' })
-      .regex(/[0-9]/, { message: 'Password must contain at least one number.' })
-      .regex(/[^A-Za-z0-9]/, { message: 'Password must contain at least one special character.' }),
+    password: z.string().min(1, { message: 'Password is required' }), // Or a more specific minLength, e.g., .min(6, 'Password must be at least 6 characters')
   });
 
-  type SignUpFormInputs = z.infer<typeof signUpSchema>;
+  type LoginFormInputs = z.infer<typeof loginSchema>;
 
   const [emailError, setEmailError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
-  const [fullNameError, setFullNameError] = useState<string | null>(null);
 
-  const handleSignUp = async (e: React.FormEvent) => {
+  const handlePasswordLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     setMessage('');
-    setMessageType('error'); // Reset message type
-    setFullNameError(null); // Clear previous errors
     setEmailError(null); // Clear previous errors
     setPasswordError(null);
 
     // Validate form data
-    const validationResult = signUpSchema.safeParse({ fullName, email, password });
+    const validationResult = loginSchema.safeParse({ email, password });
 
     if (!validationResult.success) {
       const fieldErrors = validationResult.error.flatten().fieldErrors;
-      if (fieldErrors.fullName) setFullNameError(fieldErrors.fullName[0]);
       if (fieldErrors.email) setEmailError(fieldErrors.email[0]);
       if (fieldErrors.password) setPasswordError(fieldErrors.password[0]);
       setIsLoading(false);
       return;
     }
 
-    // Removed password confirmation check
-
-    setIsLoading(true);
     try {
-      // Attempt sign up with email confirmation redirect
-      const { data: _data, error } = await supabase.auth.signUp({
-        email: validationResult.data.email, // Use validated email
-        password: validationResult.data.password, // Use validated password
-        options: {
-          data: {
-            full_name: validationResult.data.fullName, // Add full_name to user_meta_data
-          },
-          emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL || window.location.origin}/api/auth/callback?next=/dashboard`,
-        },
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
+
       if (error) {
-        if (error.message.toLowerCase().includes('user already registered') || error.message.toLowerCase().includes('email address already in use')) {
-          setMessage('USER_ALREADY_REGISTERED');
-          setMessageType('error'); // Keep as error type for styling
-        } else {
-          setMessage(error.message);
-          setMessageType('error');
-        }
+        setMessage(error.message);
+        setMessageType('error');
       } else {
-        setMessage('Check your email to confirm your account!'); // Updated message
-        setMessageType('success');
-        // router.push('/sign-up/confirmation'); // Keep user on page to see message
+        // Successful login - redirect to dashboard explicitly
+        // This ensures the login screen disappears
+        window.location.href = '/dashboard';
       }
-    } catch (err) {
+      // Middleware will handle redirect, but we force it here too for better UX
+    } catch (error) {
       setMessage(
-        err instanceof Error ? err.message : 'An error occurred during sign up'
+        error instanceof Error
+          ? error.message
+          : 'An error occurred during log in'
       );
+      setMessageType('error');
     } finally {
       setIsLoading(false);
     }
@@ -183,7 +140,7 @@ export default function SignUpPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-teal-50 p-4 sm:p-6 md:p-8">
       <Card className="w-full max-w-md shadow-lg">
-        <CardHeader className="space-y-1 pt-6 pb-4 px-4 sm:px-6">
+        <CardHeader className="space-y-4 pt-6 pb-4 px-4 sm:px-6">
           <div className="flex items-center space-x-3 self-start">
             <img
               src="/images/logo.png"
@@ -196,28 +153,22 @@ export default function SignUpPage() {
             </div>
           </div>
           <div className="text-center">
-            <CardTitle className="text-xl sm:text-2xl font-bold text-teal-800 text-center"> Account</CardTitle>
-            <CardDescription className="text-xs sm:text-sm text-gray-600 text-center">
-              Enter your details to create a new account.
+            <CardTitle className="text-xl sm:text-2xl font-bold text-teal-800">Log In</CardTitle>
+            <CardDescription className="text-xs sm:text-sm text-gray-600">
+              Welcome back! Log in to your account.
             </CardDescription>
           </div>
         </CardHeader>
 
         <CardContent className="space-y-6 px-4 sm:px-6 pb-4 sm:pb-6 pt-4">
-          {/* General Message Display */}
-          {message === 'USER_ALREADY_REGISTERED' ? (
-            <p className="text-sm text-center text-red-600 mb-4">
-              This email is already registered. Please{' '}
-              <Link href="/log-in" className="font-medium text-teal-600 hover:text-teal-500 underline">
-                log in
-              </Link>
-              .
-            </p>
-          ) : message ? (
-            <p className={`text-sm text-center mb-4 ${messageType === 'error' ? 'text-red-600' : 'text-green-600'}`}>
+          {/* Message Display */}
+          {message && (
+            <p
+              className={`text-sm text-center mb-4 ${messageType === 'error' ? 'text-red-600' : 'text-green-600'}`}
+            >
               {message}
             </p>
-          ) : null}
+          )}
           {/* OneTapComponent will render Google Sign-In Button or Prompt */}
           <OneTapComponent />
 
@@ -232,75 +183,34 @@ export default function SignUpPage() {
               </span>
             </div>
           </div>
-
-          <form onSubmit={handleSignUp} className="space-y-6"> {/* Increased space-y for better visual separation with placeholders */}
-            {/* Full Name Input */}
+          {/* Form */}
+          <form onSubmit={handlePasswordLogin} className="space-y-6">
             <div className="relative">
-              <Input
-                id="fullName"
-                name="fullName"
-                type="text"
-                autoComplete="name"
-                required
-                placeholder="Full Name"
-                value={fullName}
-                onChange={(e) => {
-                  setFullName(e.target.value);
-                  if (fullNameError) {
-                    setFullNameError(null);
-                  }
-                  if (fullNameBlurred) {
-                    const result = signUpSchema.shape.fullName.safeParse(e.target.value);
-                    if (!result.success) {
-                      setFullNameError(result.error.flatten().formErrors[0]);
-                    } else {
-                      setFullNameError(null);
-                    }
-                  }
-                }}
-                onBlur={() => {
-                  setFullNameBlurred(true);
-                  const result = signUpSchema.shape.fullName.safeParse(fullName);
-                  if (!result.success) {
-                    setFullNameError(result.error.flatten().formErrors[0]);
-                  } else {
-                    setFullNameError(null);
-                  }
-                }}
-                className={`block w-full appearance-none rounded-md border px-3 py-2 placeholder-gray-400 shadow-sm focus:border-teal-500 focus:outline-none focus:ring-teal-500 sm:text-sm pr-10 ${fullNameBlurred ? (fullNameError ? 'border-red-500' : 'border-green-500') : 'border-gray-300'}`}
-              />
-              {fullNameBlurred && !fullNameError && fullName.length > 0 && (
-                <CheckIcon className="absolute inset-y-0 right-0 pr-3 flex items-center text-green-500 pointer-events-none h-5 w-5" />
-              )}
-              {fullNameError && <p className="mt-1 text-xs text-red-600">{fullNameError}</p>}
-            </div>
-            <div className="relative">
-              {/* Email Input - Label removed */}
               <Input
                 id="email"
                 name="email"
                 type="email"
                 autoComplete="email"
                 required
-                placeholder="Email" // Label as placeholder
+                placeholder="Email"
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
                   if (emailError) {
-                    setEmailError(null);
+                    setEmailError(null); // Clear error if user starts typing
                   }
-                  if (emailBlurred) {
-                    const result = signUpSchema.shape.email.safeParse(e.target.value);
+                  if (emailBlurred) { // If already blurred once, validate on change
+                    const result = loginSchema.shape.email.safeParse(e.target.value);
                     if (!result.success) {
                       setEmailError(result.error.flatten().formErrors[0]);
                     } else {
-                      setEmailError(null);
+                      setEmailError(null); // Clear error if now valid
                     }
                   }
                 }}
                 onBlur={() => {
-                  setEmailBlurred(true);
-                  const result = signUpSchema.shape.email.safeParse(email);
+                  setEmailBlurred(true); // Mark as blurred
+                  const result = loginSchema.shape.email.safeParse(email);
                   if (!result.success) {
                     setEmailError(result.error.flatten().formErrors[0]);
                   } else {
@@ -318,14 +228,13 @@ export default function SignUpPage() {
             </div>
 
             <div className="relative">
-              {/* Password Input - Label removed */}
               <Input
                 id="password"
                 name="password"
                 type={showPassword ? 'text' : 'password'}
-                autoComplete="new-password"
+                autoComplete="current-password"
                 required
-                placeholder="Password" // Label as placeholder
+                placeholder="Password"
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
@@ -333,7 +242,7 @@ export default function SignUpPage() {
                     setPasswordError(null);
                   }
                   if (passwordBlurred) {
-                    const result = signUpSchema.shape.password.safeParse(e.target.value);
+                    const result = loginSchema.shape.password.safeParse(e.target.value);
                     if (!result.success) {
                       setPasswordError(result.error.flatten().formErrors[0]);
                     } else {
@@ -343,7 +252,7 @@ export default function SignUpPage() {
                 }}
                 onBlur={() => {
                   setPasswordBlurred(true);
-                  const result = signUpSchema.shape.password.safeParse(password);
+                  const result = loginSchema.shape.password.safeParse(password);
                   if (!result.success) {
                     setPasswordError(result.error.flatten().formErrors[0]);
                   } else {
@@ -352,7 +261,7 @@ export default function SignUpPage() {
                 }}
                 className={`block w-full appearance-none rounded-md border px-3 py-2 placeholder-gray-400 shadow-sm focus:border-teal-500 focus:outline-none focus:ring-teal-500 sm:text-sm pr-10 ${passwordBlurred ? (passwordError ? 'border-red-500' : 'border-green-500') : 'border-gray-300'}`}
               />
-              {passwordBlurred && !passwordError && password.length > 0 && signUpSchema.shape.password.safeParse(password).success && (
+              {passwordBlurred && !passwordError && password.length > 0 && (
                 <CheckIcon className="absolute inset-y-0 right-0 pr-10 flex items-center text-green-500 pointer-events-none h-5 w-5" />
               )}
               <button
@@ -360,34 +269,45 @@ export default function SignUpPage() {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 text-gray-500 hover:text-orange-500"
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
-                >
-                  {showPassword ? <EyeOffIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
-                </button>
-              </div> {/* Closes <div className="relative"> for password input */}
-              {passwordError && <p className="mt-1 text-xs text-red-600">{passwordError}</p>}
-              <PasswordRequirements password={password} />
+              >
+                {showPassword ? <EyeOffIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
+              </button>
+            </div>
+            {passwordError && <p className="mt-1 text-xs text-red-600">{passwordError}</p>}
 
-            <div>
+            {/* Submit Button and Forgot Password Link Container */}
+            <div className="flex justify-between items-end mt-2">
               <Button
                 type="submit"
-                className="w-full flex justify-center disabled:opacity-50 bg-teal-800 hover:bg-teal-700 text-teal-200" // Orange button
+                className="flex justify-center disabled:opacity-50 bg-teal-800 hover:bg-teal-700 text-teal-200 px-8 py-2 text-sm font-semibold shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600"
                 disabled={isLoading}
               >
-                {isLoading ? 'Creating account...' : 'Sign Up with Email'}
+                {isLoading ? 'Logging in...' : 'Log In with Email'}
               </Button>
+              <Link
+                href="/forgot-password" // Assuming this is the route
+                className="text-xs font-medium text-teal-600 hover:text-teal-500"
+              >
+                Forgot your password?
+              </Link>
             </div>
           </form>
+          {/* Closing the form tag here */}
         </CardContent>
 
-        <CardFooter className="flex flex-col items-center space-y-3 pt-4 sm:pt-6 px-4 sm:px-6 pb-4 sm:pb-6 text-sm text-gray-600">
-          <p>
-            Already have an account?{' '}
-            <Link href="/log-in" className="font-medium text-teal-600 hover:text-teal-500">
-              Log In
+        {/* Optional Footer for Sign Up link etc. */}
+        <CardFooter className="flex flex-col items-center space-y-4 px-4 sm:px-6 pb-4 sm:pb-6 text-sm text-gray-600">
+          <p className="text-center">
+            Don't have an account?{' '}
+            <Link
+              href="/sign-up"
+              className="font-medium text-teal-600 hover:text-teal-500"
+            >
+              Sign Up
             </Link>
           </p>
-          <p className="px-2 text-center text-xs text-gray-500">
-            By creating an account, you agree to our{' '}
+          <p className="mt-4 px-2 text-center text-xs text-gray-500">
+            By logging in, you agree to our{' '}
             <Link href="/terms" className="underline hover:text-teal-700">
               Terms of Service
             </Link>{' '}

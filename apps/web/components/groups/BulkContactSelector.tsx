@@ -19,8 +19,7 @@ import { api } from '@/lib/trpc';
 
 interface Contact {
   id: string;
-  first_name: string;
-  last_name: string;
+  full_name: string;
   email?: string | null;
   company_name?: string | null;
   profile_image_url?: string | null;
@@ -73,8 +72,7 @@ export function BulkContactSelector({
       if (!searchTerm) return true;
       const searchLower = searchTerm.toLowerCase();
       return (
-        contact.first_name?.toLowerCase().includes(searchLower) ||
-        contact.last_name?.toLowerCase().includes(searchLower) ||
+        contact.full_name?.toLowerCase().includes(searchLower) ||
         contact.email?.toLowerCase().includes(searchLower) ||
         contact.company_name?.toLowerCase().includes(searchLower)
       );
@@ -166,13 +164,12 @@ export function BulkContactSelector({
                   <Avatar className="h-10 w-10">
                     <AvatarImage src={contact.profile_image_url || undefined} />
                     <AvatarFallback>
-                      {contact.first_name?.[0]}
-                      {contact.last_name?.[0]}
+                      {contact.full_name?.split(' ').map(namePart => namePart[0]).join('').substring(0,2).toUpperCase() || '??'}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
                     <div className="font-medium">
-                      {contact.first_name} {contact.last_name}
+                      {contact.full_name}
                     </div>
                     <div className="text-sm text-gray-500 flex items-center gap-2">
                       {contact.email && (

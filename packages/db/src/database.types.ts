@@ -17,11 +17,10 @@ export type Database = {
           email: string
           enriched_data: Json | null
           enrichment_status: string | null
-          first_name: string
+          full_name: string
           id: string
           job_title: string | null
           last_contacted_at: string | null
-          last_name: string
           linkedin_profile: string | null
           notes: string | null
           phone: string | null
@@ -40,11 +39,10 @@ export type Database = {
           email: string
           enriched_data?: Json | null
           enrichment_status?: string | null
-          first_name: string
+          full_name: string
           id?: string
           job_title?: string | null
           last_contacted_at?: string | null
-          last_name: string
           linkedin_profile?: string | null
           notes?: string | null
           phone?: string | null
@@ -63,11 +61,10 @@ export type Database = {
           email?: string
           enriched_data?: Json | null
           enrichment_status?: string | null
-          first_name?: string
+          full_name?: string
           id?: string
           job_title?: string | null
           last_contacted_at?: string | null
-          last_name?: string
           linkedin_profile?: string | null
           notes?: string | null
           phone?: string | null

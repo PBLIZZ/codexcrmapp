@@ -1,0 +1,38 @@
+# Task ID: 194
+# Title: Update Sign Up page UI/UX
+# Status: done
+# Dependencies: 192
+# Priority: medium
+# Description: Redesign the Sign Up page with new styling, layout, and UX improvements according to the PRD requirements, including the addition of a Name field.
+# Details:
+1. Update the page at `apps/web/app/(auth)/sign-up/page.tsx`
+2. Implement new layout with:
+   - Company logo at the top
+   - Title: "Sign Up" or "Create your CodexCRM Account"
+   - Form elements within a Shadcn Card component
+   - Input fields for Name (Full Name), Email, and Password with placeholder labels
+   - Password requirements indicator
+   - Password visibility toggle
+   - "Sign Up" button styled with `bg-teal-800 text-teal-200`
+   - "Sign up with Google" button
+   - Link to Log In page
+   - Terms acceptance text
+3. Apply styling theme consistent with Log In page:
+   - Page background: `bg-teal-50`
+   - Text color: `text-teal-800`
+   - Accent color: `text-orange-500`
+4. Implement UX best practices:
+   - Autofocus on first input field
+   - Inline validation
+   - Clear error messages
+   - Password visibility toggle
+
+# Test Strategy:
+1. Visual inspection against design requirements
+2. Test form submission with valid and invalid inputs
+3. Verify error handling and validation messages
+4. Test navigation to Log In page
+5. Test OAuth (Google) signup flow
+6. Verify responsive design on mobile, tablet, and desktop
+7. Test accessibility with keyboard navigation and screen readers
+8. Verify password requirements are clearly displayed

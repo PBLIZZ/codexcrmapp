@@ -58,9 +58,17 @@ export async function GET(req: NextRequest) {
     }
 
     // Exchange the code for a session
-    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+    console.log(`Auth Callback: Attempting to exchange code. Code present: ${!!code}, Next param: ${nextParam}`);
+    const { error, data } = await supabase.auth.exchangeCodeForSession(code)
 
     if (error) {
+      console.error(`Auth Callback: Error exchanging code for session: ${error.message}`, error);
+      // Log the redirect URL in case of error as well
+      const errorRedirectUrl = req.nextUrl.clone();
+      errorRedirectUrl.pathname = '/sign-in';
+      errorRedirectUrl.searchParams.set('error', 'auth_callback_error');
+      errorRedirectUrl.searchParams.set('error_description', error.message);
+      console.log(`Auth Callback: Redirecting to error page: ${errorRedirectUrl.toString()}`);
       console.error('Error exchanging code for session:', error);
       return NextResponse.redirect(
         new URL('/sign-in?error=auth_callback_error', req.url)
@@ -81,7 +89,14 @@ export async function GET(req: NextRequest) {
     // Add auth_success parameter with timestamp to prevent caching
     redirectUrl.searchParams.set('auth_success', Date.now().toString());
 
-    console.log(`Redirecting to: ${redirectUrl.toString()}`);
+    if (data && data.session) {
+      console.log(`Auth Callback: Successfully exchanged code. User ID: ${data.session.user.id}. Session Exists: ${!!data.session}.`);
+      console.log(`Auth Callback: Cookies should have been set by Supabase client.`);
+    } else if (!error) {
+      console.warn(`Auth Callback: No error from exchangeCodeForSession, but no session data returned.`);
+    }
+
+    console.log(`Auth Callback: Redirecting to final target: ${redirectUrl.toString()}`);
     return NextResponse.redirect(redirectUrl);
   } catch (error) {
     console.error('Unexpected error in auth callback:', error);

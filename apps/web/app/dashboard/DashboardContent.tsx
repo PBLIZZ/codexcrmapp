@@ -33,8 +33,12 @@ import { ShadcnCalendarTest } from '@/components/ui/ShadcnCalendarTest';
 // UI Components
 
 // Helper function to get initials from name
-const getInitials = (firstName: string, lastName: string) => {
-  return `${firstName?.[0] || ''}${lastName?.[0] || ''}`.toUpperCase();
+const getInitials = (fullName: string | null | undefined) => {
+  if (!fullName) return '??';
+  const nameParts = fullName.split(' ');
+  const firstInitial = nameParts[0]?.[0] || '';
+  const lastInitial = nameParts.length > 1 ? nameParts[nameParts.length - 1]?.[0] || '' : '';
+  return `${firstInitial}${lastInitial}`.toUpperCase();
 };
 
 // Format date helper
@@ -277,13 +281,9 @@ export default function DashboardContent() {
                             typeof contact.id === 'number'
                               ? String(contact.id)
                               : undefined;
-                          const firstName =
-                            typeof contact.first_name === 'string'
-                              ? contact.first_name
-                              : '';
-                          const lastName =
-                            typeof contact.last_name === 'string'
-                              ? contact.last_name
+                          const fullName =
+                            typeof contact.full_name === 'string'
+                              ? contact.full_name
                               : '';
                           const avatarUrl =
                             typeof contact.avatar_url === 'string'
@@ -308,16 +308,16 @@ export default function DashboardContent() {
                                 {avatarUrl ? (
                                   <AvatarImage
                                     src={avatarUrl}
-                                    alt={`${firstName} ${lastName}`}
+                                    alt={fullName || 'Contact'}
                                   />
                                 ) : null}
                                 <AvatarFallback>
-                                  {getInitials(firstName, lastName)}
+                                  {getInitials(fullName)}
                                 </AvatarFallback>
                               </Avatar>
                               <div className="flex-1 min-w-0">
                                 <p className="text-sm font-medium truncate">
-                                  {firstName} {lastName}
+                                  {fullName}
                                 </p>
                                 <p className="text-sm text-muted-foreground truncate">
                                   {email}
