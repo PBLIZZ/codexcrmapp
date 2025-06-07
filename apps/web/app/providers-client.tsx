@@ -1,13 +1,13 @@
 'use client';
 
 import type { AppRouter } from '@codexcrm/server/src/root';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider, QueryCache, MutationCache } from '@tanstack/react-query';
 import { httpBatchLink } from '@trpc/client';
 import React, { useEffect } from 'react';
 import superjson from 'superjson';
 
 import { logDebugInfo } from '@/lib/debug-helper';
-import { api, API_VERSION } from '@/lib/trpc';
+import { api, API_VERSION } from '@/lib/trpc/client';
 
 export default function ClientProviders({
   children,
@@ -44,21 +44,23 @@ export default function ClientProviders({
   }, []);
 
   // Create React Query client with better error handling
-  const [queryClient] = React.useState(
+  const [queryClient] = React.useState<QueryClient>(
     () =>
       new QueryClient({
+        queryCache: new QueryCache({
+          onError: (error: Error) => {
+            console.error('React Query error:', error);
+          },
+        }),
+        mutationCache: new MutationCache({
+          onError: (error: Error) => {
+            console.error('Mutation error:', error);
+          },
+        }),
         defaultOptions: {
           queries: {
             refetchOnWindowFocus: false,
-            retry: 1, // Only retry once
-            onError: (error) => {
-              console.error('React Query error:', error);
-            },
-          },
-          mutations: {
-            onError: (error) => {
-              console.error('Mutation error:', error);
-            },
+            retry: 1,
           },
         },
       })
@@ -72,9 +74,9 @@ export default function ClientProviders({
     );
 
     return api.createClient({
-      transformer: superjson,
       links: [
         httpBatchLink({
+          transformer: superjson,
           // Ensure we have a proper absolute URL
           url: `${baseUrl}/api/trpc`,
 
@@ -136,7 +138,7 @@ export default function ClientProviders({
   });
 
   return (
-    <api.Provider client={trpcClient} queryClient={queryClient as any}>
+    <api.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </api.Provider>
   );

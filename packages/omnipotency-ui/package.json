@@ -1,0 +1,46 @@
+{
+  "name": "@omnipotency/ui",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --external react --tsconfig ./tsconfig.json && pnpm build:types",
+    "dev": "tsup src/index.ts --format esm,cjs --external react --watch --tsconfig ./tsconfig.json",
+    "lint": "echo 'Lint script to be implemented, e.g., eslint . --ext .ts,.tsx'",
+    "build:types": "tsc --project tsconfig.json --emitDeclarationOnly --outDir dist",
+    "clean": "rm -rf dist .turbo node_modules"
+  },
+  "dependencies": {
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.0",
+    "lucide-react": "^0.300.0", 
+    "tailwind-merge": "^2.2.0",
+    "@radix-ui/react-slot": "^1.0.2"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0"
+  },
+  "devDependencies": {
+    "react": "^18.2.0",
+    "typescript": "^5.3.3",
+    "tailwindcss": "^3.4.1",
+    "postcss": "^8.4.33",
+    "tsup": "^8.0.0",
+    "tailwindcss-animate": "^1.0.7"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "react",
+    "typescript",
+    "ui-components",
+    "omnipotency",
+    "codexcrm"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

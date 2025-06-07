@@ -7,18 +7,27 @@ declare global {
       accounts: {
         id: {
           initialize: (config: google.accounts.id.IdConfiguration) => void;
-          prompt: (momentNotification?: (notification: google.accounts.id.PromptMomentNotification) => void) => void;
+          prompt: (
+            momentNotification?: (
+              notification: google.accounts.id.PromptMomentNotification
+            ) => void
+          ) => void;
           renderButton: (
             parent: HTMLElement,
             options: google.accounts.id.GsiButtonConfiguration,
-            clickListener?: (response: google.accounts.id.CredentialResponse) => void,
+            clickListener?: (
+              response: google.accounts.id.CredentialResponse
+            ) => void
           ) => void;
           disableAutoSelect: () => void;
-          storeCredential: (credential: google.accounts.id.CredentialResponse, callback?: () => void) => void;
+          storeCredential: (
+            credential: google.accounts.id.CredentialResponse,
+            callback?: () => void
+          ) => void;
           cancel: () => void;
           revoke: (id: string, callback?: () => void) => void;
         };
-        oauth2?: any; // Placeholder for OAuth2 specific parts if needed in the future
+        oauth2?: unknown; // Placeholder for OAuth2 specific parts if needed in the future
       };
     };
   }

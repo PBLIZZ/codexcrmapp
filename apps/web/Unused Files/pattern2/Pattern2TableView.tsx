@@ -15,7 +15,9 @@ interface Contact {
  * Pattern2TableView: A responsive table with a faceted filter sidebar (tags placeholder).
  */
 export function Pattern2TableView() {
-  const { data: contacts, isLoading } = api.contacts.list.useQuery<Contact[]>({});
+  const { data: contacts, isLoading } = api.contacts.list.useQuery<Contact[]>(
+    {}
+  );
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
 
   if (isLoading) {

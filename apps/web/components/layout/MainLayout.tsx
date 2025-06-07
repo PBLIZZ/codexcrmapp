@@ -32,7 +32,10 @@ import {
   SheetContent,
   SheetTrigger,
   SheetClose,
+  SheetHeader,
+  SheetTitle,
 } from '@/components/ui/sheet';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { api } from '@/lib/trpc';
 import { cn } from '@/lib/utils';
 
@@ -83,9 +86,12 @@ export function MainLayout({ children, user }: MainLayoutProps) {
 
   // --- Data Fetching for Sidebars (Consider moving to individual sidebars if specific) ---
   // Fetch total contacts count, only if on contacts page and sidebar needs it
-  const { data: contactsData } = api.contacts.list.useQuery({}, {
-    enabled: pathname.startsWith('/contacts'), // Only fetch if relevant
-  });
+  const { data: contactsData } = api.contacts.list.useQuery(
+    {},
+    {
+      enabled: pathname.startsWith('/contacts'), // Only fetch if relevant
+    }
+  );
   const totalContacts = contactsData?.length || 0;
 
   // --- Helper functions to determine current section ---
@@ -132,18 +138,22 @@ export function MainLayout({ children, user }: MainLayoutProps) {
       {' '}
       {/* Added a light bg to body */}
       <Navbar user={user} /> {/* Use the consolidated Navbar component */}
-      <div className="container mx-auto flex-1 items-start md:grid md:grid-cols-[240px_minmax(0,1fr)] md:gap-x-6 lg:gap-x-8 py-4 md:py-6">
+      <div className="container mx-auto flex-1 items-start md:grid md:grid-cols-[240px_minmax(0,1fr)] md:gap-x-6 lg:gap-x-8 py-4 md:py-6 pt-16">
         {/* Mobile Menu Sheet Trigger (part of the header logic but placed here for layout) */}
         {/* This Sheet is for the main navigation on mobile, distinct from contextual sidebar */}
-        <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-          <SheetTrigger asChild className="md:hidden fixed top-3 left-3 z-50">
+        <div className="md:hidden fixed top-3 left-3 z-50">
+          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+            <SheetTrigger asChild>
             {/* Positioned fixed for mobile */}
             <Button variant="outline" size="icon">
               <Menu className="h-5 w-5" />
               <span className="sr-only">Toggle main menu</span>
             </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-[260px] p-0">
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[260px] p-0">
+            <SheetHeader className="sr-only">
+              <SheetTitle>Main Navigation Menu</SheetTitle>
+            </SheetHeader>
             {/* Content for the Mobile Main Navigation Sheet */}
             <div className="flex flex-col h-full">
               <div className="p-4 border-b">
@@ -186,7 +196,8 @@ export function MainLayout({ children, user }: MainLayoutProps) {
               {/* You can add settings or account link at the bottom of sheet too */}
             </div>
           </SheetContent>
-        </Sheet>
+          </Sheet>
+        </div>
 
         {/* Contextual Sidebar (Desktop) */}
         <aside className="hidden h-[calc(100vh-6rem)] md:sticky md:block top-20 bg-white rounded-lg shadow-sm border">

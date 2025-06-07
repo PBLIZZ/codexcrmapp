@@ -18,7 +18,9 @@ export function TailwindTestCard() {
         </svg>
       </div>
       <div>
-        <div className="text-xl font-medium text-teal-800">Tailwind CSS Test</div>
+        <div className="text-xl font-medium text-teal-800">
+          Tailwind CSS Test
+        </div>
         <p className="text-teal-700">This card is styled with Tailwind CSS!</p>
       </div>
     </div>

@@ -4,12 +4,13 @@
 import { ContactsContent } from '../../contacts/ContactsContent';
 
 interface GroupDetailPageProps {
-  params: { groupId: string };
+  params: Promise<{ groupId: string }>;
 }
 
-export default async function GroupDetailPage({
-  params,
-}: GroupDetailPageProps) {
+export default async function GroupDetailPage(
+  props: GroupDetailPageProps,
+) {
+  const params = await props.params;
   // Render the contacts view pre-filtered to the given group
   return <ContactsContent initialGroupId={params.groupId} />;
 }

@@ -3,7 +3,7 @@
 # Status: done
 # Dependencies: 53, 2, 3
 # Priority: critical
-# Description: Implement tRPC v10 for type-safe API, Zod for validation, TanStack Query v5.
+# Description: Implement tRPC v10 for type-safe API, Zod for validation, TanStack Query v4.
 # Details:
 
 
@@ -13,7 +13,7 @@
 # Subtasks:
 ## 1. Install Required Packages [pending]
 ### Dependencies: None
-### Description: Install tRPC v10, Zod, and TanStack Query v5 along with their TypeScript types and any necessary peer dependencies.
+### Description: Install tRPC v10, Zod, and TanStack Query v4 along with their TypeScript types and any necessary peer dependencies.
 ### Details:
 Use your package manager (npm, yarn, pnpm) to add @trpc/server, @trpc/client, zod, @tanstack/react-query, and their types.
 

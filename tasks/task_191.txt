@@ -1,0 +1,11 @@
+# Task ID: 191
+# Title: Upgrade TanStack Query from v4 to v5
+# Status: pending
+# Dependencies: None
+# Priority: medium
+# Description: Upgrade @tanstack/react-query and @tanstack/react-query-devtools to their latest v5 compatible versions (e.g., ~5.80.x), and update application code as necessary to ensure compatibility.
+# Details:
+
+
+# Test Strategy:
+

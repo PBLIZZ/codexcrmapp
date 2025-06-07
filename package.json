@@ -11,7 +11,7 @@
   },
   "scripts": {
     "dev": "cd apps/web && next dev",
-    "build": "cd apps/web && next build",
+    "build": "pnpm --filter @codexcrm/web run build",
     "start": "cd apps/web && next start",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
     "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",

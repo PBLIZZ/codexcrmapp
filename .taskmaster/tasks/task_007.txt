@@ -17,13 +17,13 @@
 ### Details:
 Design and implement the database schema for contacts including fields for name, email, phone, address, notes, profile image URL, and any other relevant information. Create the Prisma model and run migrations to update the database.
 
-## 2. Implement tRPC Procedures for Creating Contacts [pending]
+## 2. Implement tRPC Procedures for Creating Contacts [done]
 ### Dependencies: 7.1
 ### Description: Develop the API endpoints for adding new contacts
 ### Details:
 Create tRPC procedures for adding new contacts to the database. Include input validation, error handling, and proper response formatting. Ensure the procedure handles all required and optional fields defined in the schema.
 
-## 3. Implement tRPC Procedures for Reading Contacts [pending]
+## 3. Implement tRPC Procedures for Reading Contacts [done]
 ### Dependencies: 7.1
 ### Description: Develop API endpoints for retrieving contacts with pagination, filtering, and sorting
 ### Details:

@@ -234,11 +234,11 @@ export function ContactGroupsSection({ contactId }: { contactId: string }) {
                   className="h-4 w-4 ml-1 p-0 hover:bg-transparent"
                   onClick={() => handleRemoveFromGroup(group.id)}
                   disabled={
-                    removeFromGroupMutation.isLoading &&
+                    removeFromGroupMutation.isPending &&
                     removingGroupId === group.id
                   }
                 >
-                  {removeFromGroupMutation.isLoading &&
+                  {removeFromGroupMutation.isPending &&
                   removingGroupId === group.id ? (
                     <div className="h-3 w-3 animate-spin rounded-full border border-gray-300 border-t-transparent"></div>
                   ) : (
@@ -283,7 +283,7 @@ export function ContactGroupsSection({ contactId }: { contactId: string }) {
             <Select
               value={selectedGroupId}
               onValueChange={setSelectedGroupId}
-              disabled={isLoadingAllGroups || addToGroupMutation.isLoading}
+              disabled={isLoadingAllGroups || addToGroupMutation.isPending}
             >
               <SelectTrigger>
                 {isLoadingAllGroups ? (
@@ -336,10 +336,10 @@ export function ContactGroupsSection({ contactId }: { contactId: string }) {
               disabled={
                 isLoadingAllGroups ||
                 !selectedGroupId ||
-                addToGroupMutation.isLoading
+                addToGroupMutation.isPending
               }
             >
-              {addToGroupMutation.isLoading ? 'Adding...' : 'Add to Group'}
+              {addToGroupMutation.isPending ? 'Adding...' : 'Add to Group'}
             </Button>
           </DialogFooter>
         </DialogContent>

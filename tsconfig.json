@@ -13,11 +13,20 @@
       "@codexcrm/db/*":     ["packages/db/src/*"],
       "@codexcrm/jobs/*":   ["packages/jobs/*"],
       "@codexcrm/ui/*":     ["packages/ui/src/*"],
+      "@omnipotency/ui/*":  ["packages/omnipotency-ui/src/*"],
       "@codexcrm/web/*":    ["apps/web/*"]
     }
   },
+  "references": [
+    { "path": "./packages/db" },
+    { "path": "./packages/server" },
+    { "path": "./packages/jobs" },
+    { "path": "./packages/ui" },
+    { "path": "./packages/omnipotency-ui" },
+    { "path": "./apps/web" }
+  ],
   "exclude": [
-    "node_modules",
-    "apps/web"
-  ]
+    "node_modules"
+  ],
+  "files": []
 }

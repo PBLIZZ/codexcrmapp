@@ -4,9 +4,9 @@ import { createSupabaseServer } from '@/lib/supabase/server';
 
 // Define a more specific interface for the params prop
 interface EditContactPageProps {
-  params: {
+  params: Promise<{
     contactId: string;
-  };
+  }>;
 }
 
 /**
@@ -18,9 +18,10 @@ interface EditContactPageProps {
  *
  * @param props.params - Route parameters containing the contactId
  */
-export default async function EditContactPage({
-  params,
-}: EditContactPageProps) {
+export default async function EditContactPage(
+  props: EditContactPageProps,
+) {
+  const params = await props.params;
   // Get contact ID from params
   const contactId = params.contactId;
 

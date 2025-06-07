@@ -10,6 +10,15 @@ import { ImageUpload } from '@/components/ui/image-upload';
 
 // Zod schema for contact validation
 export const contactSchema = z.object({
+  // Existing fields from backend schema
+  address_street: z.string().optional().nullable(),
+  address_city: z.string().optional().nullable(),
+  address_postal_code: z.string().optional().nullable(),
+  address_country: z.string().optional().nullable(),
+  phone_country_code: z.string().optional().nullable(),
+  website: z.string().url({ message: "Invalid URL format" }).optional().nullable().or(z.literal('')), // Allow empty string
+  social_handles: z.array(z.string()).optional().nullable(),
+  tags: z.array(z.string()).optional().nullable(),
   id: z.string().uuid().optional(),
   full_name: z.string().min(1, 'Full name is required'),
   email: z.string().email('Invalid email format').min(1, 'Email is required'),
@@ -40,6 +49,7 @@ export const contactSchema = z.object({
     .nullable(),
   enrichment_status: z.string().optional().nullable(),
   enriched_data: z.any().optional().nullable(), // For JSONB fields
+  // Keep existing fields below
 });
 
 export type ContactFormData = z.infer<typeof contactSchema>;
@@ -66,13 +76,24 @@ export function ContactForm({
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty, isValid }, // Make sure isDirty and isValid are here
     reset,
     setValue,
     watch,
+    control, // Keep control if you are using it elsewhere
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
     defaultValues: initialData || {
+      // New fields
+      address_street: '',
+      address_city: '',
+      address_postal_code: '',
+      address_country: '',
+      phone_country_code: '',
+      website: '',
+      social_handles: [],
+      tags: [],
+      // Existing fields
       id: undefined,
       full_name: '',
       email: '',
@@ -85,6 +106,7 @@ export function ContactForm({
       last_contacted_at: '',
       enrichment_status: '',
       enriched_data: null,
+      // Keep existing fields below
     },
   });
 
@@ -151,209 +173,359 @@ export function ContactForm({
           </div>
         )}
 
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
+<form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
           {/* Profile Image Upload */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">
               Profile Photo
             </label>
             <ImageUpload
               value={watch('profile_image_url') || null}
               onChange={(url) =>
-                setValue('profile_image_url', url, { shouldValidate: true })
+                setValue('profile_image_url', url, { shouldValidate: true, shouldDirty: true })
               }
               disabled={isSubmitting}
               contactId={editingContactId || undefined}
             />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Full Name Input - Spans two columns if it's the only one in this row, or adjust grid as needed */}
-            <div className="space-y-1 md:col-span-2">
-              <label
-                htmlFor="full_name"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Full Name
-              </label>
-              <input
-                id="full_name"
-                type="text"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                {...register('full_name')}
-              />
-              {errors.full_name && (
-                <p className="text-sm text-red-600">
-                  {errors.full_name.message}
-                </p>
-              )}
-            </div>
-
-            {/* Email input will now be on its own or start a new row depending on layout preference */}
-            {/* Example: Keep email on its own line or adjust grid for other fields */}
-            {/* <div className="space-y-1"> ... email input ... </div> */}
-            {/* The original last_name input's closing div and the start of the email input div are implicitly handled by replacing the whole block */}
-
-            <div className="space-y-1">
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                {...register('email')}
-              />
-              {errors.email && (
-                <p className="text-sm text-red-600">{errors.email.message}</p>
-              )}
-            </div>
-
-            <div className="space-y-1">
-              <label
-                htmlFor="last_contacted_at"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Last Contacted At
-              </label>
-              <input
-                id="last_contacted_at"
-                type="datetime-local"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                {...register('last_contacted_at')}
-              />
-              {errors.last_contacted_at && (
-                <p className="text-sm text-red-600">
-                  {errors.last_contacted_at.message}
-                </p>
-              )}
-            </div>
-
-            <div className="space-y-1">
-              <label
-                htmlFor="company_name"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Company
-              </label>
-              <input
-                id="company_name"
-                type="text"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                {...register('company_name')}
-              />
-              {errors.company_name && (
-                <p className="text-sm text-red-600">
-                  {errors.company_name.message}
-                </p>
-              )}
-            </div>
-
-            <div className="space-y-1">
-              <label
-                htmlFor="job_title"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Job Title
-              </label>
-              <input
-                id="job_title"
-                type="text"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                {...register('job_title')}
-              />
-              {errors.job_title && (
-                <p className="text-sm text-red-600">
-                  {errors.job_title.message}
-                </p>
-              )}
-            </div>
-
-            {/* Removed URL input - using only file upload now */}
-
-            <div className="space-y-1">
-              <label
-                htmlFor="source"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Source
-              </label>
-              <input
-                id="source"
-                type="text"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                {...register('source')}
-              />
-              {errors.source && (
-                <p className="text-sm text-red-600">{errors.source.message}</p>
-              )}
-            </div>
-          </div>
-
-          <div className="space-y-1 mt-4">
-            <label
-              htmlFor="notes"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Notes
-            </label>
-            <textarea
-              id="notes"
-              rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              {...register('notes')}
-            />
-            {errors.notes && (
-              <p className="text-sm text-red-600">{errors.notes.message}</p>
+            {errors.profile_image_url && (
+              <p className="text-sm text-red-600">{errors.profile_image_url.message}</p>
             )}
           </div>
 
-          <div className="flex space-x-2 justify-end pt-4 border-t border-gray-200 mt-6">
+          {/* Contact Information Section */}
+          <div className="pt-6 border-t border-gray-200">
+            <h3 className="text-lg font-semibold leading-7 text-gray-900">Contact Information</h3>
+            <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
+              <div className="sm:col-span-6">
+                <label htmlFor="full_name" className="block text-sm font-medium leading-6 text-gray-900">
+                  Full Name
+                </label>
+                <div className="mt-2">
+                  <input
+                    id="full_name"
+                    type="text"
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    {...register('full_name')}
+                  />
+                </div>
+                {errors.full_name && (
+                  <p className="mt-2 text-sm text-red-600">{errors.full_name.message}</p>
+                )}
+              </div>
+
+              <div className="sm:col-span-3">
+                <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+                  Email
+                </label>
+                <div className="mt-2">
+                  <input
+                    id="email"
+                    type="email"
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    {...register('email')}
+                  />
+                </div>
+                {errors.email && (
+                  <p className="mt-2 text-sm text-red-600">{errors.email.message}</p>
+                )}
+              </div>
+
+              <div className="sm:col-span-3">
+                <label htmlFor="phone" className="block text-sm font-medium leading-6 text-gray-900">
+                  Phone
+                </label>
+                <div className="mt-2">
+                  <input
+                    id="phone"
+                    type="text"
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    {...register('phone')}
+                  />
+                </div>
+                {errors.phone && (
+                  <p className="mt-2 text-sm text-red-600">{errors.phone.message}</p>
+                )}
+              </div>
+              
+              <div className="sm:col-span-3">
+                <label htmlFor="phone_country_code" className="block text-sm font-medium leading-6 text-gray-900">
+                  Phone Country Code
+                </label>
+                <div className="mt-2">
+                  <input
+                    id="phone_country_code"
+                    type="text"
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    {...register('phone_country_code')}
+                  />
+                </div>
+                {errors.phone_country_code && (
+                  <p className="mt-2 text-sm text-red-600">{errors.phone_country_code.message}</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Professional Details Section */}
+          <div className="pt-6 border-t border-gray-200">
+            <h3 className="text-lg font-semibold leading-7 text-gray-900">Professional Details</h3>
+            <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
+              <div className="sm:col-span-3">
+                <label htmlFor="company_name" className="block text-sm font-medium leading-6 text-gray-900">
+                  Company
+                </label>
+                <div className="mt-2">
+                  <input
+                    id="company_name"
+                    type="text"
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    {...register('company_name')}
+                  />
+                </div>
+                {errors.company_name && (
+                  <p className="mt-2 text-sm text-red-600">{errors.company_name.message}</p>
+                )}
+              </div>
+
+              <div className="sm:col-span-3">
+                <label htmlFor="job_title" className="block text-sm font-medium leading-6 text-gray-900">
+                  Job Title
+                </label>
+                <div className="mt-2">
+                  <input
+                    id="job_title"
+                    type="text"
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    {...register('job_title')}
+                  />
+                </div>
+                {errors.job_title && (
+                  <p className="mt-2 text-sm text-red-600">{errors.job_title.message}</p>
+                )}
+              </div>
+
+              <div className="sm:col-span-full">
+                <label htmlFor="website" className="block text-sm font-medium leading-6 text-gray-900">
+                  Website
+                </label>
+                <div className="mt-2">
+                  <input
+                    id="website"
+                    type="text"
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    {...register('website')}
+                  />
+                </div>
+                {errors.website && (
+                  <p className="mt-2 text-sm text-red-600">{errors.website.message}</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Address Section */}
+          <div className="pt-6 border-t border-gray-200">
+            <h3 className="text-lg font-semibold leading-7 text-gray-900">Address</h3>
+            <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
+              <div className="col-span-full">
+                <label htmlFor="address_street" className="block text-sm font-medium leading-6 text-gray-900">
+                  Street address
+                </label>
+                <div className="mt-2">
+                  <input
+                    type="text"
+                    id="address_street"
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    {...register('address_street')}
+                  />
+                </div>
+                {errors.address_street && (
+                  <p className="mt-2 text-sm text-red-600">{errors.address_street.message}</p>
+                )}
+              </div>
+
+              <div className="sm:col-span-2 sm:col-start-1">
+                <label htmlFor="address_city" className="block text-sm font-medium leading-6 text-gray-900">
+                  City
+                </label>
+                <div className="mt-2">
+                  <input
+                    type="text"
+                    id="address_city"
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    {...register('address_city')}
+                  />
+                </div>
+                {errors.address_city && (
+                  <p className="mt-2 text-sm text-red-600">{errors.address_city.message}</p>
+                )}
+              </div>
+
+              <div className="sm:col-span-2">
+                <label htmlFor="address_postal_code" className="block text-sm font-medium leading-6 text-gray-900">
+                  ZIP / Postal code
+                </label>
+                <div className="mt-2">
+                  <input
+                    type="text"
+                    id="address_postal_code"
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    {...register('address_postal_code')}
+                  />
+                </div>
+                {errors.address_postal_code && (
+                  <p className="mt-2 text-sm text-red-600">{errors.address_postal_code.message}</p>
+                )}
+              </div>
+              <div className="sm:col-span-2">
+                <label htmlFor="address_country" className="block text-sm font-medium leading-6 text-gray-900">
+                  Country
+                </label>
+                <div className="mt-2">
+                  <input
+                    type="text"
+                    id="address_country"
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    {...register('address_country')}
+                  />
+                </div>
+                {errors.address_country && (
+                  <p className="mt-2 text-sm text-red-600">{errors.address_country.message}</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Categorization Section */}
+          <div className="pt-6 border-t border-gray-200">
+            <h3 className="text-lg font-semibold leading-7 text-gray-900">Categorization</h3>
+            <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
+              <div className="sm:col-span-3">
+                <label htmlFor="social_handles" className="block text-sm font-medium leading-6 text-gray-900">
+                  Social Handles (comma-separated)
+                </label>
+                <div className="mt-2">
+                  <input
+                    id="social_handles"
+                    type="text"
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    defaultValue={watch('social_handles')?.join(', ') || ''}
+                    onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+                      const value = e.target.value;
+                      setValue('social_handles', value.split(',').map((handle: string) => handle.trim()).filter(handle => handle !== ''), { shouldValidate: true, shouldDirty: true });
+                    }}
+                  />
+                </div>
+                {errors.social_handles && (
+                  // @ts-ignore
+                  <p className="mt-2 text-sm text-red-600">{errors.social_handles.message || errors.social_handles.root?.message}</p>
+                )}
+              </div>
+
+              <div className="sm:col-span-3">
+                <label htmlFor="tags" className="block text-sm font-medium leading-6 text-gray-900">
+                  Tags (comma-separated)
+                </label>
+                <div className="mt-2">
+                  <input
+                    id="tags"
+                    type="text"
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    defaultValue={watch('tags')?.join(', ') || ''}
+                    onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+                      const value = e.target.value;
+                      setValue('tags', value.split(',').map((tag: string) => tag.trim()).filter(tag => tag !== ''), { shouldValidate: true, shouldDirty: true });
+                    }}
+                  />
+                </div>
+                {errors.tags && (
+                  // @ts-ignore
+                  <p className="mt-2 text-sm text-red-600">{errors.tags.message || errors.tags.root?.message}</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Other Information Section */}
+          <div className="pt-6 border-t border-gray-200">
+            <h3 className="text-lg font-semibold leading-7 text-gray-900">Other Information</h3>
+            <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
+              <div className="sm:col-span-3">
+                <label htmlFor="source" className="block text-sm font-medium leading-6 text-gray-900">
+                  Source
+                </label>
+                <div className="mt-2">
+                  <input
+                    id="source"
+                    type="text"
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    {...register('source')}
+                  />
+                </div>
+                {errors.source && (
+                  <p className="mt-2 text-sm text-red-600">{errors.source.message}</p>
+                )}
+              </div>
+
+              <div className="sm:col-span-3">
+                <label htmlFor="last_contacted_at" className="block text-sm font-medium leading-6 text-gray-900">
+                  Last Contacted At
+                </label>
+                <div className="mt-2">
+                  <input
+                    id="last_contacted_at"
+                    type="datetime-local"
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    {...register('last_contacted_at')}
+                  />
+                </div>
+                {errors.last_contacted_at && (
+                  <p className="mt-2 text-sm text-red-600">{errors.last_contacted_at.message}</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Notes Section */}
+          <div className="pt-6 border-t border-gray-200">
+            <h3 className="text-lg font-semibold leading-7 text-gray-900">Notes</h3>
+            <div className="mt-2">
+              <textarea
+                id="notes"
+                rows={4}
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                {...register('notes')}
+              />
+            </div>
+            {errors.notes && (
+              <p className="mt-2 text-sm text-red-600">{errors.notes.message}</p>
+            )}
+          </div>
+
+          {/* Action Buttons */}
+          <div className="pt-6 flex items-center justify-end gap-x-6 border-t border-gray-200">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
               disabled={isSubmitting}
+              className="text-sm font-semibold leading-6 text-gray-900"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 flex items-center"
-              disabled={isSubmitting}
+              disabled={isSubmitting || (typeof window !== 'undefined' && (!isDirty || !isValid))}
+              className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50"
             >
               {isSubmitting ? (
-                <>
-                  <svg
-                    className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
+                <div className="flex items-center">
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Saving...
-                </>
-              ) : editingContactId ? (
-                'Update Contact'
-              ) : (
-                'Save Contact'
-              )}
+                  Processing...
+                </div>
+              ) : editingContactId ? 'Save Changes' : 'Create Contact'}
             </button>
           </div>
         </form>

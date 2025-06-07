@@ -19,7 +19,9 @@ export function Pattern1Kanban() {
     { id: 'nurture', name: 'Nurture' },
     { id: 'client', name: 'Client' },
   ];
-  const { data: contacts, isLoading } = api.contacts.list.useQuery<Contact[]>({});
+  const { data: contacts, isLoading } = api.contacts.list.useQuery<Contact[]>(
+    {}
+  );
   // localStageMap holds stage assignment per contact (client-side)
   const [localStages, setLocalStages] = useState<Record<string, string>>({});
 

@@ -25,7 +25,6 @@ import { useForm } from 'react-hook-form';
 
 // Third-party libraries
 import * as z from 'zod';
-
 import { ContactGroupsSection } from './ContactGroupsSection';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -130,17 +129,20 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
   const {
     data: contact,
     isLoading,
-    error,
+    error: queryError, // Renamed to avoid conflict with other error states if any
   } = api.contacts.getById.useQuery(
     { contactId }, // Use contactId consistently
     {
       enabled: !!contactId,
       retry: 1,
-      onError: (err) => {
-        console.error('Error fetching contact:', err);
-      },
     }
   );
+
+  useEffect(() => {
+    if (queryError) {
+      console.error('Error fetching contact:', queryError);
+    }
+  }, [queryError]);
 
   // Save mutation
   const saveContact = api.contacts.save.useMutation({
@@ -265,14 +267,14 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
   }
 
   // Error state
-  if (error || !contact) {
+  if (queryError || !contact) {
     return (
       <div className="container mx-auto py-8 px-4">
         <Alert variant="destructive" className="max-w-4xl mx-auto">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>
-            {error ? error.message : 'Contact not found'}
+            {queryError ? queryError.message : 'Contact not found'}
           </AlertDescription>
         </Alert>
         <div className="flex justify-center mt-8">
@@ -365,9 +367,7 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
 
             {/* Basic Info Section */}
             <div className="flex-1 pt-4 md:pt-8">
-              <h1 className="text-3xl font-bold mb-2">
-                {contact.full_name}
-              </h1>
+              <h1 className="text-3xl font-bold mb-2">{contact.full_name}</h1>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-4 mt-4">
                 {contact.email && (
@@ -482,7 +482,7 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
                 </dl>
               </div>
 
-              {/* Professional Information */} 
+              {/* Professional Information */}
               <div>
                 <h3 className="text-lg font-medium mb-2">
                   Professional Information
@@ -623,7 +623,7 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
               <div>
                 <CardTitle>Tasks</CardTitle>
                 <CardDescription>
-                  Upcoming and completed tasks related to this client
+                  Upcoming and completed tasks related to this contact
                 </CardDescription>
               </div>
               <Button variant="outline" size="sm" disabled>
@@ -664,7 +664,7 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
             </Alert>
           )}
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 py-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 py-4" id="contact-edit-form">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Basic Information Section */}
               <div className="space-y-2 md:col-span-2">
@@ -780,7 +780,7 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
                   id="source"
                   {...register('source')}
                   className={errors.source ? 'border-destructive' : ''}
-                  placeholder="How did you meet this client?"
+                  placeholder="How did you meet this contact?"
                 />
                 {errors.source && (
                   <p className="text-sm text-destructive">
@@ -829,14 +829,14 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isSubmitting}>
+              <Button type="submit" disabled={isSubmitting} form="contact-edit-form">
                 {isSubmitting ? (
                   <>
                     <div className="animate-spin mr-2 h-4 w-4 border-2 border-current border-t-transparent rounded-full"></div>
                     Updating...
                   </>
                 ) : (
-                  <>Update Client</>
+                  <>Save Changes</>
                 )}
               </Button>
             </DialogFooter>
@@ -857,10 +857,8 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
           <div className="py-4">
             <p className="text-sm text-muted-foreground">
               This will permanently delete{' '}
-              <span className="font-semibold">
-                {contact.full_name}
-              </span>{' '}
-              and all associated data.
+              <span className="font-semibold">{contact.full_name}</span> and all
+              associated data.
             </p>
           </div>
           <DialogFooter>
@@ -868,16 +866,16 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
               type="button"
               variant="outline"
               onClick={() => setIsDeleteDialogOpen(false)}
-              disabled={deleteMutation.isLoading}
+              disabled={deleteMutation.isPending}
             >
               Cancel
             </Button>
             <Button
               variant="destructive"
               onClick={handleDeleteContact}
-              disabled={deleteMutation.isLoading}
+              disabled={deleteMutation.isPending}
             >
-              {deleteMutation.isLoading ? (
+              {deleteMutation.isPending ? (
                 <>
                   <div className="animate-spin mr-2 h-4 w-4 border-2 border-current border-t-transparent rounded-full"></div>
                   Deleting...

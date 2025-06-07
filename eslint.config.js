@@ -98,32 +98,6 @@ export default [
     },
   },
 
-  // Import plugin configuration
-  {
-    files: ['**/*.{js,jsx,ts,tsx}'],
-    plugins: {
-      import: importPlugin,
-    },
-    rules: {
-      'import/no-unresolved': 'off', // TypeScript handles this
-      'import/order': [
-        'warn',
-        {
-          groups: [
-            'builtin',
-            'external',
-            'internal',
-            'parent',
-            'sibling',
-            'index',
-          ],
-          'newlines-between': 'always',
-          alphabetize: { order: 'asc', caseInsensitive: true },
-        },
-      ],
-    },
-  },
-
   // Path alias rules
   {
     files: ['apps/web/**/*.{js,jsx,ts,tsx}'],
@@ -149,6 +123,7 @@ export default [
           varsIgnorePattern: '^_',
         },
       ],
+      '@typescript-eslint/no-explicit-any': 'error',
       'prefer-const': 'warn',
     },
   },

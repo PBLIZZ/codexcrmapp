@@ -1,6 +1,6 @@
 # Task ID: 6
 # Title: Feature: Implement UI Component Library Base
-# Status: done
+# Status: pending
 # Dependencies: 53, 2
 # Priority: medium
 # Description: Create shared UI component library based on shadcn/ui and Radix.
@@ -8,4 +8,39 @@
 
 
 # Test Strategy:
+
+
+# Subtasks:
+## 1. Set up project structure for UI component library [done]
+### Dependencies: None
+### Description: Initialize the project structure for the UI component library with proper configuration for shadcn/ui and Radix integration. [Updated: 6/6/2025]
+### Details:
+Create a new project directory, initialize package.json, install necessary dependencies (shadcn/ui, Radix UI, TypeScript, etc.), set up build tools (like Vite or Next.js), configure TypeScript, and establish folder structure for components, styles, and utilities.
+<info added on 2025-06-06T13:10:01.603Z>
+Update all package.json configurations to reflect the library name "@omnipotency/ui" including setting the "name" field and ensuring proper npm scope configuration. Add documentation placeholder in README.md introducing the library as omnipotency/ui. Create base folder structure with 'src/components/core' directory to establish namespace hierarchy aligned with the library naming convention.
+</info added on 2025-06-06T13:10:01.603Z>
+
+## 2. Implement core primitive components [in-progress]
+### Dependencies: 6.1
+### Description: Develop the foundational primitive components that will serve as building blocks for more complex components.
+### Details:
+Implement basic UI primitives like Button, Input, Card, Dialog, Dropdown, Toggle, Checkbox, and Radio components using Radix UI primitives as the foundation. Ensure accessibility standards are met and components are properly typed.
+
+## 3. Create theming system and design tokens [pending]
+### Dependencies: 6.1
+### Description: Establish a comprehensive theming system with design tokens for colors, typography, spacing, and other visual properties.
+### Details:
+Define CSS variables for design tokens, implement light and dark mode support, create a theme provider component, and document the theming API. Ensure the system is flexible enough to allow for custom themes while maintaining consistency.
+
+## 4. Develop composite components [pending]
+### Dependencies: 6.2, 6.3
+### Description: Build higher-level composite components by combining primitive components to create more complex UI patterns.
+### Details:
+Implement composite components such as DataTable, Accordion, Tabs, Form layouts, Navigation menus, and Modal dialogs. These should leverage the primitive components while adding additional functionality and composition patterns.
+
+## 5. Create documentation and usage examples [pending]
+### Dependencies: 6.2, 6.3, 6.4
+### Description: Develop comprehensive documentation and usage examples for the component library.
+### Details:
+Set up a documentation site using a tool like Storybook or Docusaurus, write detailed API documentation for each component, create usage examples and code snippets, and provide guidelines for component composition and best practices.
 

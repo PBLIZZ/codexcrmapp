@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/nextjs'; // Added Sentry
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
@@ -40,26 +41,34 @@ export async function middleware(request: NextRequest) {
   );
 
   // Refresh session if expired - This will also update the cookies in the response.
-  console.log('Middleware: Attempting to get session...');
+  Sentry.captureMessage('Middleware: Attempting to get session...', 'info');
   const {
     data: { session },
     error: sessionError,
   } = await supabase.auth.getSession();
   if (sessionError) {
     console.error('Middleware: Error getting session:', sessionError.message);
+    Sentry.captureException(sessionError);
   }
-  console.log('Middleware: Session object:', JSON.stringify(session, null, 2));
+  Sentry.captureMessage(
+    `Middleware: Session object: ${JSON.stringify(session, null, 2)}`,
+    'debug'
+  ); // Changed to debug for potentially large object
 
   // Now get the user based on the (potentially refreshed) session.
-  console.log('Middleware: Attempting to get user...');
+  Sentry.captureMessage('Middleware: Attempting to get user...', 'info');
   const {
     data: { user },
     error: userError,
   } = await supabase.auth.getUser();
   if (userError) {
     console.error('Middleware: Error getting user:', userError.message);
+    Sentry.captureException(userError);
   }
-  console.log('Middleware: User object:', JSON.stringify(user, null, 2));
+  Sentry.captureMessage(
+    `Middleware: User object: ${JSON.stringify(user, null, 2)}`,
+    'debug'
+  ); // Changed to debug for potentially large object
 
   const { pathname } = request.nextUrl;
   const isProtectedPath = protectedPaths.some(
@@ -70,22 +79,22 @@ export async function middleware(request: NextRequest) {
 
   // Use authenticated user object from getUser() for protection checks
   if (isProtectedPath && !user) {
-    console.warn(
-      `Middleware: No authenticated user, redirecting from protected path ${pathname} to /log-in`
-    );
+    const message = `Middleware: No authenticated user, redirecting from protected path ${pathname} to /log-in`;
+    console.warn(message);
+    Sentry.captureMessage(message, 'warning');
     return NextResponse.redirect(new URL('/log-in', request.url));
   }
 
   if (isPublicOnlyPath && user) {
-    console.warn(
-      `Middleware: Authenticated user exists, redirecting from public-only path ${pathname} to /dashboard`
-    );
+    const message = `Middleware: Authenticated user exists, redirecting from public-only path ${pathname} to /dashboard`;
+    console.warn(message);
+    Sentry.captureMessage(message, 'warning');
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
-  console.warn(
-    `Middleware: Allowing request to ${pathname}. Authenticated user exists: ${!!user}`
-  );
+  const finalMessage = `Middleware: Allowing request to ${pathname}. Authenticated user exists: ${!!user}`;
+  console.warn(finalMessage); // Kept as warn as per original, but also logged to Sentry
+  Sentry.captureMessage(finalMessage, 'warning');
   return response;
 }
 
@@ -99,6 +108,6 @@ export const config = {
      * - favicon.ico (favicon file)
      * - images (static image files, if you have an /images folder)
      */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|.*.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };

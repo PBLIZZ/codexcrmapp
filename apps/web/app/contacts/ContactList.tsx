@@ -257,7 +257,10 @@ export function ContactList({
               scope="col"
               className="px-6 py-3 text-left text-xs font-semibold bg-gradient-to-r from-teal-50 to-teal-100 text-teal-800 uppercase tracking-wider"
             >
-              <div className="flex items-center cursor-pointer" onClick={() => onSortChange && onSortChange('name')}>
+              <div
+                className="flex items-center cursor-pointer"
+                onClick={() => onSortChange && onSortChange('name')}
+              >
                 Name
                 {sortField === 'name' && (
                   <span className="ml-1 flex items-center">

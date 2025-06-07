@@ -1,7 +1,7 @@
 'use client';
 
 import { Tag, Plus, X, Loader2 } from 'lucide-react';
-import { useState, useContext, createContext, ReactNode } from 'react';
+import { useState, useContext, createContext, ReactNode, useEffect } from 'react';
 
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
@@ -92,25 +92,39 @@ export function ContactGroupManager({
   const utils = api.useUtils();
 
   // Get all groups for this contact - but ONLY when the dialog is open to avoid excessive API calls
-  const { data: contactGroups, isLoading: isLoadingContactGroups } =
-    api.groups.getGroupsForContact.useQuery(
+  const {
+    data: contactGroups,
+    isLoading: isLoadingContactGroups,
+    error: contactGroupsError,
+  } = api.groups.getGroupsForContact.useQuery(
       { contactId },
       {
         enabled: !!contactId && isDialogOpen, // Only fetch when dialog is open
-        onError: (err) =>
-          setQueryError(`Failed to load contact groups: ${err.message}`),
         staleTime: 30000, // Cache for 30 seconds
       }
     );
 
+  useEffect(() => {
+    if (contactGroupsError) {
+      setQueryError(`Failed to load contact groups: ${contactGroupsError.message}`);
+    }
+  }, [contactGroupsError]);
+
   // Use groups from context if available, otherwise fetch them (but only when dialog is open)
-  const { data: localGroups, isLoading: isLoadingLocalGroups } =
-    api.groups.list.useQuery(undefined, {
-      enabled: isDialogOpen && !groupsContext.allGroups, // Only fetch when dialog is open and context doesn't have data
+  const {
+    data: localGroups,
+    isLoading: isLoadingLocalGroups,
+    error: localGroupsError,
+  } = api.groups.list.useQuery(undefined, {
+      enabled: isDialogOpen && !groupsContext.allGroups, // Only fetch when dialog is open
       staleTime: 30000, // Cache for 30 seconds
-      onError: (err) =>
-        setQueryError(`Failed to load all groups: ${err.message}`),
     });
+
+  useEffect(() => {
+    if (localGroupsError) {
+      setQueryError(`Failed to load all groups: ${localGroupsError.message}`);
+    }
+  }, [localGroupsError]);
 
   // Use groups from context, or local query, or preloaded groups
   const allGroups = groupsContext.allGroups || localGroups || preloadedGroups;
@@ -321,9 +335,9 @@ export function ContactGroupManager({
             </Button>
             <Button
               onClick={handleAddToGroup}
-              disabled={!selectedGroupId || addToGroupMutation.isLoading}
+              disabled={!selectedGroupId || addToGroupMutation.isPending}
             >
-              {addToGroupMutation.isLoading ? (
+              {addToGroupMutation.isPending ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                   Adding...

@@ -164,13 +164,16 @@ export function BulkContactSelector({
                   <Avatar className="h-10 w-10">
                     <AvatarImage src={contact.profile_image_url || undefined} />
                     <AvatarFallback>
-                      {contact.full_name?.split(' ').map(namePart => namePart[0]).join('').substring(0,2).toUpperCase() || '??'}
+                      {contact.full_name
+                        ?.split(' ')
+                        .map((namePart) => namePart[0])
+                        .join('')
+                        .substring(0, 2)
+                        .toUpperCase() || '??'}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
-                    <div className="font-medium">
-                      {contact.full_name}
-                    </div>
+                    <div className="font-medium">{contact.full_name}</div>
                     <div className="text-sm text-gray-500 flex items-center gap-2">
                       {contact.email && (
                         <span className="flex items-center gap-1">
@@ -196,11 +199,11 @@ export function BulkContactSelector({
           <Button
             onClick={handleAddContacts}
             disabled={
-              selectedContactIds.length === 0 || addContactsMutation.isLoading
+              selectedContactIds.length === 0 || addContactsMutation.isPending
             }
             className="bg-purple-500 hover:bg-purple-600"
           >
-            {addContactsMutation.isLoading
+            {addContactsMutation.isPending
               ? 'Adding...'
               : `Add ${selectedContactIds.length} Contact(s)`}
           </Button>
