@@ -4,6 +4,7 @@
 import { Geist, Geist_Mono } from 'next/font/google'; // Your fonts
 
 import './globals.css';
+import '@omnipotency/ui/dist/index.css'; // Styles from our new UI library
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 

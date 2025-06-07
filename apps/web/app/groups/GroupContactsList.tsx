@@ -30,7 +30,8 @@ const getInitials = (fullName: string | null | undefined) => {
   if (!fullName) return '??';
   const nameParts = fullName.split(' ');
   const firstInitial = nameParts[0]?.[0] || '';
-  const lastInitial = nameParts.length > 1 ? nameParts[nameParts.length - 1]?.[0] || '' : '';
+  const lastInitial =
+    nameParts.length > 1 ? nameParts[nameParts.length - 1]?.[0] || '' : '';
   return `${firstInitial}${lastInitial}`.toUpperCase();
 };
 
@@ -56,9 +57,12 @@ export function GroupContactsList({
 
   // Get all contacts for the add dialog
   const { data: allContacts, isLoading: isLoadingAllContacts } =
-    api.contacts.list.useQuery({}, {
-      enabled: isAddContactDialogOpen,
-    });
+    api.contacts.list.useQuery(
+      {},
+      {
+        enabled: isAddContactDialogOpen,
+      }
+    );
 
   // Mutation to add contact to group
   const addContactMutation = api.groups.addContact.useMutation({
@@ -175,9 +179,9 @@ export function GroupContactsList({
               <button
                 onClick={() => handleRemoveContact(contact.id)}
                 className="flex-shrink-0 p-1 hover:bg-purple-200 rounded-full transition-colors"
-                disabled={removeContactMutation.isLoading}
+                disabled={removeContactMutation.isPending}
               >
-                {removeContactMutation.isLoading ? (
+                {removeContactMutation.isPending ? (
                   <Loader2 className="h-3 w-3 animate-spin text-purple-400" />
                 ) : (
                   <X className="h-3 w-3 text-purple-400 hover:text-purple-600" />
@@ -257,9 +261,7 @@ export function GroupContactsList({
                           </span>
                         </div>
                         <div>
-                          <div className="font-medium">
-                            {contact.full_name}
-                          </div>
+                          <div className="font-medium">{contact.full_name}</div>
                           {contact.email && (
                             <div className="text-xs text-gray-500">
                               {contact.email}
@@ -287,9 +289,9 @@ export function GroupContactsList({
             </Button>
             <Button
               onClick={handleAddContact}
-              disabled={!selectedContactId || addContactMutation.isLoading}
+              disabled={!selectedContactId || addContactMutation.isPending}
             >
-              {addContactMutation.isLoading ? (
+              {addContactMutation.isPending ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                   Adding...

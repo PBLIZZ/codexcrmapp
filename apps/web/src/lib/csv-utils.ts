@@ -87,7 +87,7 @@ export interface CsvValidationError {
 const REQUIRED_HEADERS: string[] = ['full_name', 'email'];
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email format validation
 const URL_REGEX =
-  /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+  /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/;
 
 export function validateCsvData(parsedResult: ParseCsvFileResult): {
   validatedData: ValidatedContactData[];
@@ -178,9 +178,11 @@ export function validateCsvData(parsedResult: ParseCsvFileResult): {
         const emailLocalPart = emailValue.split('@')[0];
         const nameParts = emailLocalPart
           .split(/[._-]/) // Split by common separators like '.', '_', '-'
-          .map(part => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
-          .filter(part => part !== ''); // Remove empty parts
-        
+          .map(
+            (part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()
+          )
+          .filter((part) => part !== ''); // Remove empty parts
+
         if (nameParts.length > 0) {
           row.full_name = nameParts.join(' ');
         } else {

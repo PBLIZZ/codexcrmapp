@@ -19,7 +19,8 @@ import { useState, useEffect } from 'react';
 
 import { ColumnSelector } from './ColumnSelector';
 import { ContactForm, ContactFormData } from './ContactForm';
-import { GroupsProvider } from './ContactGroupManager';
+import { GroupsProvider } from '@/app/contacts/ContactGroupManager';
+import type { Contact as DBContact } from '@codexcrm/db';
 import {
   ContactList,
   Contact,
@@ -121,12 +122,13 @@ export function ContactsContent({
     },
     {
       // Keep previous data while loading new search/filter results
-      keepPreviousData: true,
+      placeholderData: (previousData: DBContact[] | undefined) => previousData,
     }
   );
 
   const sortedContacts = [...contacts].sort((a, b) => {
-    if (sortField === 'name') { // 'name' now refers to full_name
+    if (sortField === 'name') {
+      // 'name' now refers to full_name
       const aValue = a.full_name || '';
       const bValue = b.full_name || '';
       return sortDirection === 'asc'
@@ -420,8 +422,8 @@ export function ContactsContent({
               contacts={filteredContacts}
               onEditClick={handleEditClick}
               onDeleteClick={handleDeleteClick}
-              isDeleteMutationLoading={deleteMutation.isLoading}
-              isSaveMutationLoading={saveMutation.isLoading}
+              isDeleteMutationLoading={deleteMutation.isPending}
+              isSaveMutationLoading={saveMutation.isPending}
               searchQuery={searchQuery}
               selectedGroupId={selectedGroupId}
               sortField={sortField}
@@ -451,7 +453,7 @@ export function ContactsContent({
 
         {/*
         NOTE: For quick add, modal should only have fields: name, last name, email.
-        There should be an option (future) to "Add full details" that opens a full client card page with all fields empty.
+        There should be an option (future) to "Add full details" that opens a full contact card page with all fields empty.
         Fallback trigger for this modal will be added to the dashboard quicklinks page.
       */}
         {/* Add/Edit Contact Form Modal */}
@@ -495,7 +497,7 @@ export function ContactsContent({
                   initialData={formData}
                   isOpen={true}
                   onClose={() => setIsFormOpen(false)}
-                  isSubmitting={saveMutation.isLoading}
+                  isSubmitting={saveMutation.isPending}
                   error={formError}
                   editingContactId={editingContactId}
                 />

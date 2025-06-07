@@ -1,6 +1,6 @@
 import { type Database, Tables, TablesInsert, TablesUpdate, Enums } from './database.types';
 export { Database, Tables, TablesInsert, TablesUpdate, Enums };
-export type Client = Tables<'clients'>;
+export type Contact = Tables<'contacts'>;
 export type FollowUp = Tables<'follow_ups'>;
 export type Note = Tables<'notes'>;
 export type Payment = Tables<'payments'>;

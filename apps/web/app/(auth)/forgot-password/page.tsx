@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -13,7 +14,6 @@ import {
   CardFooter,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { supabase } from '@/lib/supabase/client';
 
 export default function ForgotPasswordPage() {
@@ -49,9 +49,11 @@ export default function ForgotPasswordPage() {
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="space-y-4 pt-6 pb-4 px-6">
           <div className="flex items-center space-x-3 self-start">
-            <img
+            <Image
               src="/images/logo.png"
               alt="OmniCRM Logo"
+              width={40}
+              height={40}
               className="h-10 w-10"
             />
             <div>
@@ -60,7 +62,9 @@ export default function ForgotPasswordPage() {
             </div>
           </div>
           <div className="text-center">
-            <CardTitle className="text-3xl font-bold text-teal-800">Reset Password</CardTitle>
+            <CardTitle className="text-3xl font-bold text-teal-800">
+              Reset Password
+            </CardTitle>
             <CardDescription className="text-sm text-teal-800">
               Enter your email to receive a password reset link.
             </CardDescription>

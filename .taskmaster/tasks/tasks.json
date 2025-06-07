@@ -386,13 +386,70 @@
       "description": "Create shared UI component library based on shadcn/ui and Radix.",
       "details": "",
       "testStrategy": "",
-      "status": "done",
+      "status": "pending",
       "dependencies": [
         53,
         2
       ],
       "priority": "medium",
-      "subtasks": []
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Set up project structure for UI component library",
+          "description": "Initialize the project structure for the UI component library with proper configuration for shadcn/ui and Radix integration. [Updated: 6/6/2025]",
+          "dependencies": [],
+          "details": "Create a new project directory, initialize package.json, install necessary dependencies (shadcn/ui, Radix UI, TypeScript, etc.), set up build tools (like Vite or Next.js), configure TypeScript, and establish folder structure for components, styles, and utilities.\n<info added on 2025-06-06T13:10:01.603Z>\nUpdate all package.json configurations to reflect the library name \"@omnipotency/ui\" including setting the \"name\" field and ensuring proper npm scope configuration. Add documentation placeholder in README.md introducing the library as omnipotency/ui. Create base folder structure with 'src/components/core' directory to establish namespace hierarchy aligned with the library naming convention.\n</info added on 2025-06-06T13:10:01.603Z>",
+          "status": "done",
+          "testStrategy": "Verify project builds successfully with no errors and that the configuration properly supports shadcn/ui and Radix components."
+        },
+        {
+          "id": 2,
+          "title": "Implement core primitive components",
+          "description": "Develop the foundational primitive components that will serve as building blocks for more complex components.",
+          "dependencies": [
+            1
+          ],
+          "details": "Implement basic UI primitives like Button, Input, Card, Dialog, Dropdown, Toggle, Checkbox, and Radio components using Radix UI primitives as the foundation. Ensure accessibility standards are met and components are properly typed.",
+          "status": "in-progress",
+          "testStrategy": "Create Storybook stories for each primitive component and test for accessibility, responsive behavior, and proper state management."
+        },
+        {
+          "id": 3,
+          "title": "Create theming system and design tokens",
+          "description": "Establish a comprehensive theming system with design tokens for colors, typography, spacing, and other visual properties.",
+          "dependencies": [
+            1
+          ],
+          "details": "Define CSS variables for design tokens, implement light and dark mode support, create a theme provider component, and document the theming API. Ensure the system is flexible enough to allow for custom themes while maintaining consistency.",
+          "status": "pending",
+          "testStrategy": "Test theme switching functionality, verify that all components properly respond to theme changes, and validate that design tokens are consistently applied."
+        },
+        {
+          "id": 4,
+          "title": "Develop composite components",
+          "description": "Build higher-level composite components by combining primitive components to create more complex UI patterns.",
+          "dependencies": [
+            2,
+            3
+          ],
+          "details": "Implement composite components such as DataTable, Accordion, Tabs, Form layouts, Navigation menus, and Modal dialogs. These should leverage the primitive components while adding additional functionality and composition patterns.",
+          "status": "pending",
+          "testStrategy": "Create comprehensive test cases for each composite component, testing both the visual appearance and interactive behaviors. Ensure proper keyboard navigation and screen reader support."
+        },
+        {
+          "id": 5,
+          "title": "Create documentation and usage examples",
+          "description": "Develop comprehensive documentation and usage examples for the component library.",
+          "dependencies": [
+            2,
+            3,
+            4
+          ],
+          "details": "Set up a documentation site using a tool like Storybook or Docusaurus, write detailed API documentation for each component, create usage examples and code snippets, and provide guidelines for component composition and best practices.",
+          "status": "pending",
+          "testStrategy": "Review documentation for completeness and accuracy, test code examples to ensure they work as expected, and gather feedback from potential users on clarity and usefulness."
+        }
+      ]
     },
     {
       "id": 7,
@@ -425,7 +482,7 @@
             1
           ],
           "details": "Create tRPC procedures for adding new contacts to the database. Include input validation, error handling, and proper response formatting. Ensure the procedure handles all required and optional fields defined in the schema.",
-          "status": "pending"
+          "status": "done"
         },
         {
           "id": 3,
@@ -435,7 +492,7 @@
             1
           ],
           "details": "Create tRPC procedures for fetching contacts with support for pagination (limit/offset), filtering by various fields (name, email, etc.), and sorting options. Include a procedure for fetching a single contact by ID.",
-          "status": "pending"
+          "status": "done"
         },
         {
           "id": 4,
@@ -5215,6 +5272,73 @@
       "dependencies": [],
       "status": "pending",
       "subtasks": []
+    },
+    {
+      "id": 210,
+      "title": "Refactor codebase for TanStack Query v5 and tRPC v11 compatibility",
+      "description": "Update application code to align with API changes and best practices for TanStack Query v5 and tRPC v11. This includes addressing breaking changes in how queries, mutations, and tRPC procedures are defined and used throughout the application.",
+      "details": "1. Review official tRPC v10 to v11 migration guides.\n2. Review official TanStack Query v4 to v5 migration guides.\n3. Update tRPC client setup in `apps/web` (e.g., `src/lib/trpc/client.ts`, `QueryClient` instantiation, `QueryClientProvider`).\n4. Update tRPC server setup in `packages/server` (e.g., `src/root.ts`, `src/trpc.ts`, `src/context.ts`).\n5. Refactor tRPC procedure definitions in all routers (`packages/server/src/routers/*`) for v11 compatibility.\n6. Update the usage of tRPC hooks (`useQuery`, `useMutation`, etc.) in all client components in `apps/web` to conform to TanStack Query v5 and tRPC v11 APIs.\n7. Address changes in query/mutation options, hook return values, and error handling.\n8. Ensure data fetching, caching, and cache invalidation mechanisms are working correctly with the new versions.\n9. Resolve any TypeScript errors and runtime issues arising from these upgrades.",
+      "testStrategy": "",
+      "status": "pending",
+      "dependencies": [
+        191
+      ],
+      "priority": "critical",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Review and Install Required Package Versions",
+          "description": "Audit the current dependencies and upgrade all relevant packages to TanStack Query v5 and tRPC v11, ensuring compatibility across the codebase.",
+          "dependencies": [],
+          "details": "Follow the official migration guides to install @tanstack/react-query@^5, @trpc/server@^11, @trpc/client@^11, and related packages. Verify that all peer dependencies are satisfied and remove deprecated packages if necessary.",
+          "status": "done",
+          "testStrategy": "Run 'npm install' or equivalent, then verify that the application builds and starts without dependency errors."
+        },
+        {
+          "id": 2,
+          "title": "Update tRPC Client and Server Configuration",
+          "description": "Refactor both client and server tRPC setup files to align with v11 API changes, including transformers, links, and context handling.",
+          "dependencies": [
+            1
+          ],
+          "details": "Update files such as 'apps/web/src/lib/trpc/client.ts', 'packages/server/src/root.ts', 'src/trpc.ts', and 'src/context.ts' to use the new configuration patterns. Address deprecations like 'createTRPCProxyClient' and move transformers to links as required.",
+          "status": "done",
+          "testStrategy": "Write unit tests for client and server initialization. Confirm that API requests succeed and context is correctly passed."
+        },
+        {
+          "id": 3,
+          "title": "Refactor tRPC Procedure and Router Definitions",
+          "description": "Update all tRPC procedure and router definitions to comply with v11 syntax and best practices.",
+          "dependencies": [
+            2
+          ],
+          "details": "Modify all routers in 'packages/server/src/routers/*' to use the new procedure definition patterns. Address any breaking changes in how procedures are created, composed, or exported.",
+          "status": "done",
+          "testStrategy": "Run and expand existing API integration tests to ensure all endpoints behave as expected."
+        },
+        {
+          "id": 4,
+          "title": "Update Client-Side Query and Mutation Usage",
+          "description": "Refactor all usages of tRPC hooks and TanStack Query hooks in client components to match the new APIs and handle updated return values and options.",
+          "dependencies": [
+            3
+          ],
+          "details": "Update all usages of 'useQuery', 'useMutation', and related hooks in 'apps/web' to match TanStack Query v5 and tRPC v11. Adjust for changes in hook signatures, options, and error handling.\n<info added on 2025-06-06T16:09:39.397Z>\nSuccessfully migrated all mutation status checks from 'isLoading' to 'isPending' property in client components ('apps/web'), resolving TypeScript errors and addressing TanStack Query v5's mutation return type changes. Verified build success post-refactor.\n</info added on 2025-06-06T16:09:39.397Z>",
+          "status": "done",
+          "testStrategy": "Manually test key user flows and write component tests to verify correct data fetching, error handling, and UI updates."
+        },
+        {
+          "id": 5,
+          "title": "Validate Data Fetching, Caching, and Error Handling",
+          "description": "Ensure that data fetching, caching, cache invalidation, and error handling mechanisms work correctly with the upgraded libraries.",
+          "dependencies": [
+            4
+          ],
+          "details": "Test all major data flows, including cache updates and invalidation. Resolve any TypeScript or runtime errors that arise from the migration.",
+          "status": "in-progress",
+          "testStrategy": "Perform end-to-end tests and regression testing. Use development tools to inspect cache state and error boundaries."
+        }
+      ]
     }
   ]
 }

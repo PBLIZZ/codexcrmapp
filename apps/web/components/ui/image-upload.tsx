@@ -33,11 +33,32 @@ export function ImageUpload({
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
   );
 
+  const getPathForQueryFromValue = (currentValue: string | null): string => {
+    if (!currentValue) return '';
+    if (currentValue.startsWith('http')) {
+      try {
+        const url = new URL(currentValue);
+        const parts = url.pathname.split('/');
+        const bucketMarker = 'contact-profile-photo';
+        const markerIndex = parts.indexOf(bucketMarker);
+        if (markerIndex !== -1 && markerIndex < parts.length - 1) {
+          return parts.slice(markerIndex + 1).join('/');
+        }
+        return ''; 
+      } catch (e) {
+        return ''; 
+      }
+    }
+    return currentValue; 
+  };
+
+  const pathForFileUrlQuery = getPathForQueryFromValue(value);
+
   // Generate signed URL for profile photos from Supabase Storage
   const { data: fileUrlData } = api.storage.getFileUrl.useQuery(
-    { filePath: value || '' },
+    { filePath: pathForFileUrlQuery }, // Use processed path
     {
-      enabled: !!value && value.includes('contact-profile-photo'),
+      enabled: !!pathForFileUrlQuery && !pathForFileUrlQuery.includes('?token='),
       staleTime: 55 * 60 * 1000, // 55 minutes (URLs valid for 1 hour)
     }
   );
@@ -104,14 +125,9 @@ export function ImageUpload({
         });
         if (!uploadResponse.ok) {
           const errorText = await uploadResponse.text();
-          console.error('Upload failed:', {
-            status: uploadResponse.status,
-            statusText: uploadResponse.statusText,
-            errorText,
-          });
-          throw new Error(
-            `Upload failed: ${uploadResponse.status} ${uploadResponse.statusText} - ${errorText}`
-          );
+          const errorMessage = `Upload failed: ${uploadResponse.status} ${uploadResponse.statusText} - ${errorText}`;
+          console.error(errorMessage, { status: uploadResponse.status, statusText: uploadResponse.statusText, errorText });
+          throw new Error(errorMessage);
         }
 
         // Get the URL for the file
@@ -120,30 +136,32 @@ export function ImageUpload({
           .createSignedUrl(path, 3600); // URL valid for 1 hour
 
         if (urlError) {
-          // If bucket doesn't exist, provide helpful error message
-          if (
-            urlError.message?.includes('bucket') ||
-            urlError.message?.includes('not found')
-          ) {
-            throw new Error(
-              'Storage bucket not set up. Please contact administrator to set up contact photo storage.'
-            );
+          let specificMessage = `Error creating signed URL: ${urlError.message}`;
+          if (urlError.message?.includes('bucket') || urlError.message?.includes('not found')) {
+            specificMessage = 'Storage bucket not set up. Please contact administrator to set up contact photo storage.';
           }
-          throw new Error(`Failed to create signed URL: ${urlError.message}`);
+          console.error(specificMessage, urlError);
+          throw new Error(specificMessage);
         }
 
-        if (!fileData?.signedUrl) {
-          throw new Error('No signed URL returned from storage');
-        }
+        const publicUrl = supabase.storage
+          .from('contact-profile-photo')
+          .getPublicUrl(path).data.publicUrl;
 
-        // Update the preview and pass the path to parent component
-        setPreviewUrl(fileData.signedUrl);
-        onChange(path); // Store just the path, not the full signed URL
-      } catch (error) {
-        console.error('Upload error:', error);
-        setUploadError(
-          error instanceof Error ? error.message : 'Failed to upload image'
-        );
+        onChange(path); // Store the relative path
+        setUploadError(null);
+      } catch (error: any) {
+        let message = 'An unknown error occurred during upload.';
+        if (error instanceof Error) {
+          message = error.message;
+        } else if (typeof error === 'string') {
+          message = error;
+        } else if (error && typeof error.message === 'string') {
+          message = error.message; // Attempt to get message from object
+        }
+        console.error('Error during upload process:', message, error);
+        setUploadError(message);
+        // onChange(null); // Consider if this is desired UX
       } finally {
         setIsUploading(false);
       }

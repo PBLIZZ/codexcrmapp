@@ -17,6 +17,7 @@ import { AddContactModal } from '@/components/contacts/AddContactModal';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { Button as OmniButton } from '@omnipotency/ui';
 import {
   Card,
   CardContent,
@@ -25,10 +26,10 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { api } from '@/lib/trpc';
-import { TailwindTestCard } from '@/components/ui/TailwindTestCard';
 import { ShadcnCalendarTest } from '@/components/ui/ShadcnCalendarTest';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { TailwindTestCard } from '@/components/ui/TailwindTestCard';
+import { api } from '@/lib/trpc';
 
 // UI Components
 
@@ -37,7 +38,8 @@ const getInitials = (fullName: string | null | undefined) => {
   if (!fullName) return '??';
   const nameParts = fullName.split(' ');
   const firstInitial = nameParts[0]?.[0] || '';
-  const lastInitial = nameParts.length > 1 ? nameParts[nameParts.length - 1]?.[0] || '' : '';
+  const lastInitial =
+    nameParts.length > 1 ? nameParts[nameParts.length - 1]?.[0] || '' : '';
   return `${firstInitial}${lastInitial}`.toUpperCase();
 };
 
@@ -220,12 +222,16 @@ export default function DashboardContent() {
                 </Button>
                 <Button
                   variant="outline"
-                  className="h-auto flex flex-col items-center justify-center p-4 space-y-2"
-                  disabled
+                  className="w-full flex items-center justify-center"
                 >
-                  <Calendar className="h-6 w-6 mb-2" />
-                  <span>Schedule Task</span>
+                  <Calendar className="mr-2 h-4 w-4" />
+                  Schedule Event
                 </Button>
+                <OmniButton variant="secondary" size="lg">Omni Test Button</OmniButton>
+                <OmniButton variant="destructive">Omni Destructive</OmniButton>
+                <OmniButton variant="outline">Omni Outline</OmniButton>
+                <OmniButton variant="ghost">Omni Ghost</OmniButton>
+                <OmniButton variant="link">Omni Link</OmniButton>
               </CardContent>
             </Card>
 

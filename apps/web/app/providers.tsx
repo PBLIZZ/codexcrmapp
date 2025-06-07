@@ -1,14 +1,14 @@
 'use client';
 
 import type { AppRouter } from '@codexcrm/server/src/root';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider, QueryCache, MutationCache } from '@tanstack/react-query';
 import { httpBatchLink } from '@trpc/client';
 import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
 import React from 'react';
 import superjson from 'superjson';
 
 // Import the tRPC client from the correct location
-import { api, API_VERSION } from '@/lib/trpc';
+import { api, API_VERSION } from '@/lib/trpc/client';
 
 // Export types for inputs and outputs
 
@@ -38,24 +38,27 @@ function getBaseUrl() {
  */
 export function Providers({ children }: { children: React.ReactNode }) {
   // Create React Query client with better error handling
-  const [queryClient] = React.useState(
+  const [queryClient] = React.useState<QueryClient>(
     () =>
       new QueryClient({
+        queryCache: new QueryCache({
+          onError: (error: Error) => {
+            console.error('React Query error:', error);
+          },
+        }),
+        mutationCache: new MutationCache({
+          onError: (error: Error) => {
+            console.error('Mutation error:', error);
+          },
+        }),
         defaultOptions: {
           queries: {
             refetchOnWindowFocus: false,
-            retry: 1, // Only retry once
-            onError: (error) => {
-              console.error('React Query error:', error);
-            },
+            retry: 1,
           },
-          mutations: {
-            onError: (error) => {
-              console.error('Mutation error:', error);
-            },
-          },
+          mutations: {},
         },
-      }) as QueryClient
+      })
   ); // Type assertion to avoid version compatibility issues
 
   // Force reset the cache on component mount to avoid stale references
@@ -73,9 +76,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     );
 
     return api.createClient({
-      transformer: superjson,
       links: [
         httpBatchLink({
+          transformer: superjson,
           // Ensure we have a proper absolute URL
           url: `${baseUrl}/api/trpc`,
 

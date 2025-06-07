@@ -329,9 +329,9 @@ export function ContactGroupsPage() {
               </Button>
               <Button
                 onClick={handleAddGroup}
-                disabled={createGroupMutation.isLoading || !newGroupName.trim()}
+                disabled={createGroupMutation.isPending || !newGroupName.trim()}
               >
-                {createGroupMutation.isLoading ? 'Creating...' : 'Create Group'}
+                {createGroupMutation.isPending ? 'Creating...' : 'Create Group'}
               </Button>
             </DialogFooter>
           </DialogContent>

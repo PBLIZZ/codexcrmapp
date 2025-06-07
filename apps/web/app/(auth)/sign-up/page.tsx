@@ -1,9 +1,10 @@
 'use client';
+import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { z } from 'zod';
 
+import OneTapComponent from '@/components/auth/OneTapComponent'; // Ensure this path is correct and component exists
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -14,77 +15,99 @@ import {
   CardFooter,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-
 import { supabase } from '@/lib/supabase/client';
-import OneTapComponent from '@/components/auth/OneTapComponent'; // Ensure this path is correct and component exists
 
 // Google Icon SVG Component (copied from log-in/page.tsx for now)
 const EyeIcon = ({ className }: { className?: string }) => (
-  <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
-    <circle cx="12" cy="12" r="3"/>
+  <svg
+    className={className}
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+    <circle cx="12" cy="12" r="3" />
   </svg>
 );
 
 const EyeOffIcon = ({ className }: { className?: string }) => (
-  <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/>
-    <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/>
-    <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/>
-    <line x1="2" x2="22" y1="2" y2="22"/>
+  <svg
+    className={className}
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
+    <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
+    <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
+    <line x1="2" x2="22" y1="2" y2="22" />
   </svg>
 );
 
 const CheckIcon = ({ className }: { className?: string }) => (
-  <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="20 6 9 17 4 12"/>
-  </svg>
-);
-
-const GoogleIcon = () => (
   <svg
-    width="20"
-    height="20"
+    className={className}
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
     viewBox="0 0 24 24"
     fill="none"
-    xmlns="http://www.w3.org/2000/svg"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
-    <path
-      d="M22.56 12.25C22.56 11.47 22.49 10.72 22.35 10H12V14.26H18.19C17.94 15.63 17.1 16.79 15.8 17.57V20.34H19.94C21.63 18.67 22.56 15.69 22.56 12.25Z"
-      fill="#4285F4"
-    />
-    <path
-      d="M12 23C14.97 23 17.45 22.02 19.28 20.34L15.8 17.57C14.83 18.23 13.5 18.66 12 18.66C9.14 18.66 6.7 16.73 5.84 14.09H1.69V16.92C3.47 20.53 7.39 23 12 23Z"
-      fill="#34A853"
-    />
-    <path
-      d="M5.84 14.09C5.62 13.43 5.5 12.73 5.5 12C5.5 11.27 5.62 10.57 5.84 9.91V7.08H1.69C.97 8.55 0.5 10.22 0.5 12C0.5 13.78 .97 15.45 1.69 16.92L5.84 14.09Z"
-      fill="#FBBC05"
-    />
-    <path
-      d="M12 5.34C13.62 5.34 15.06 5.93 16.2 7L19.34 3.86C17.45 2.09 14.97 1 12 1C7.39 1 3.47 3.47 1.69 7.08L5.84 9.91C6.7 7.27 9.14 5.34 12 5.34Z"
-      fill="#EA4335"
-    />
+    <polyline points="20 6 9 17 4 12" />
   </svg>
 );
 
 const PasswordRequirements = ({ password }: { password: string }) => {
   const requirements = [
     { text: 'At least 8 characters', met: password.length >= 8, id: 'length' },
-    { text: 'At least one uppercase letter', met: /[A-Z]/.test(password), id: 'uppercase' },
-    { text: 'At least one lowercase letter', met: /[a-z]/.test(password), id: 'lowercase' },
+    {
+      text: 'At least one uppercase letter',
+      met: /[A-Z]/.test(password),
+      id: 'uppercase',
+    },
+    {
+      text: 'At least one lowercase letter',
+      met: /[a-z]/.test(password),
+      id: 'lowercase',
+    },
     { text: 'At least one number', met: /[0-9]/.test(password), id: 'number' },
-    { text: 'At least one special character', met: /[^A-Za-z0-9]/.test(password), id: 'special' }
+    {
+      text: 'At least one special character',
+      met: /[^A-Za-z0-9]/.test(password),
+      id: 'special',
+    },
   ];
 
   return (
     <div className="mt-2 space-y-1 flex flex-col items-end">
       {requirements.map((req) => (
         <div key={req.id} className="flex items-center">
-          <span className={`mr-2 ${req.met ? 'text-green-500' : 'text-gray-400'}`}>
+          <span
+            className={`mr-2 ${req.met ? 'text-green-500' : 'text-gray-400'}`}
+          >
             {req.met ? '✓' : '○'}
           </span>
-          <span className={`text-xs ${req.met ? 'text-gray-700' : 'text-gray-500'}`}>{req.text}</span>
+          <span
+            className={`text-xs ${req.met ? 'text-gray-700' : 'text-gray-500'}`}
+          >
+            {req.text}
+          </span>
         </div>
       ))}
     </div>
@@ -97,7 +120,6 @@ export default function SignUpPage() {
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState<'error' | 'success'>('error');
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   // const [isOauthLoading, setIsOauthLoading] = useState<'google' | null>(null); // Replaced by OneTapComponent
   const [showPassword, setShowPassword] = useState(false);
@@ -108,15 +130,20 @@ export default function SignUpPage() {
   const signUpSchema = z.object({
     fullName: z.string().min(1, { message: 'Full name is required' }),
     email: z.string().email({ message: 'Invalid email address' }),
-    password: z.string()
+    password: z
+      .string()
       .min(8, { message: 'Password must be at least 8 characters.' })
-      .regex(/[A-Z]/, { message: 'Password must contain at least one uppercase letter.' })
-      .regex(/[a-z]/, { message: 'Password must contain at least one lowercase letter.' })
+      .regex(/[A-Z]/, {
+        message: 'Password must contain at least one uppercase letter.',
+      })
+      .regex(/[a-z]/, {
+        message: 'Password must contain at least one lowercase letter.',
+      })
       .regex(/[0-9]/, { message: 'Password must contain at least one number.' })
-      .regex(/[^A-Za-z0-9]/, { message: 'Password must contain at least one special character.' }),
+      .regex(/[^A-Za-z0-9]/, {
+        message: 'Password must contain at least one special character.',
+      }),
   });
-
-  type SignUpFormInputs = z.infer<typeof signUpSchema>;
 
   const [emailError, setEmailError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
@@ -131,7 +158,11 @@ export default function SignUpPage() {
     setPasswordError(null);
 
     // Validate form data
-    const validationResult = signUpSchema.safeParse({ fullName, email, password });
+    const validationResult = signUpSchema.safeParse({
+      fullName,
+      email,
+      password,
+    });
 
     if (!validationResult.success) {
       const fieldErrors = validationResult.error.flatten().fieldErrors;
@@ -158,7 +189,10 @@ export default function SignUpPage() {
         },
       });
       if (error) {
-        if (error.message.toLowerCase().includes('user already registered') || error.message.toLowerCase().includes('email address already in use')) {
+        if (
+          error.message.toLowerCase().includes('user already registered') ||
+          error.message.toLowerCase().includes('email address already in use')
+        ) {
           setMessage('USER_ALREADY_REGISTERED');
           setMessageType('error'); // Keep as error type for styling
         } else {
@@ -185,9 +219,11 @@ export default function SignUpPage() {
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="space-y-1 pt-6 pb-4 px-4 sm:px-6">
           <div className="flex items-center space-x-3 self-start">
-            <img
+            <Image
               src="/images/logo.png"
               alt="CodexCRM Logo"
+              width={40}
+              height={40}
               className="h-8 w-8 sm:h-10 sm:w-10"
             />
             <div>
@@ -196,7 +232,10 @@ export default function SignUpPage() {
             </div>
           </div>
           <div className="text-center">
-            <CardTitle className="text-xl sm:text-2xl font-bold text-teal-800 text-center"> Account</CardTitle>
+            <CardTitle className="text-xl sm:text-2xl font-bold text-teal-800 text-center">
+              {' '}
+              Account
+            </CardTitle>
             <CardDescription className="text-xs sm:text-sm text-gray-600 text-center">
               Enter your details to create a new account.
             </CardDescription>
@@ -208,13 +247,18 @@ export default function SignUpPage() {
           {message === 'USER_ALREADY_REGISTERED' ? (
             <p className="text-sm text-center text-red-600 mb-4">
               This email is already registered. Please{' '}
-              <Link href="/log-in" className="font-medium text-teal-600 hover:text-teal-500 underline">
+              <Link
+                href="/log-in"
+                className="font-medium text-teal-600 hover:text-teal-500 underline"
+              >
                 log in
               </Link>
               .
             </p>
           ) : message ? (
-            <p className={`text-sm text-center mb-4 ${messageType === 'error' ? 'text-red-600' : 'text-green-600'}`}>
+            <p
+              className={`text-sm text-center mb-4 ${messageType === 'error' ? 'text-red-600' : 'text-green-600'}`}
+            >
               {message}
             </p>
           ) : null}
@@ -227,13 +271,13 @@ export default function SignUpPage() {
               <span className="w-full border-t border-gray-300" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-2 text-gray-500">
-                OR
-              </span>
+              <span className="bg-white px-2 text-gray-500">OR</span>
             </div>
           </div>
 
-          <form onSubmit={handleSignUp} className="space-y-6"> {/* Increased space-y for better visual separation with placeholders */}
+          <form onSubmit={handleSignUp} className="space-y-6">
+            {' '}
+            {/* Increased space-y for better visual separation with placeholders */}
             {/* Full Name Input */}
             <div className="relative">
               <Input
@@ -250,7 +294,9 @@ export default function SignUpPage() {
                     setFullNameError(null);
                   }
                   if (fullNameBlurred) {
-                    const result = signUpSchema.shape.fullName.safeParse(e.target.value);
+                    const result = signUpSchema.shape.fullName.safeParse(
+                      e.target.value
+                    );
                     if (!result.success) {
                       setFullNameError(result.error.flatten().formErrors[0]);
                     } else {
@@ -260,7 +306,8 @@ export default function SignUpPage() {
                 }}
                 onBlur={() => {
                   setFullNameBlurred(true);
-                  const result = signUpSchema.shape.fullName.safeParse(fullName);
+                  const result =
+                    signUpSchema.shape.fullName.safeParse(fullName);
                   if (!result.success) {
                     setFullNameError(result.error.flatten().formErrors[0]);
                   } else {
@@ -272,7 +319,9 @@ export default function SignUpPage() {
               {fullNameBlurred && !fullNameError && fullName.length > 0 && (
                 <CheckIcon className="absolute inset-y-0 right-0 pr-3 flex items-center text-green-500 pointer-events-none h-5 w-5" />
               )}
-              {fullNameError && <p className="mt-1 text-xs text-red-600">{fullNameError}</p>}
+              {fullNameError && (
+                <p className="mt-1 text-xs text-red-600">{fullNameError}</p>
+              )}
             </div>
             <div className="relative">
               {/* Email Input - Label removed */}
@@ -290,7 +339,9 @@ export default function SignUpPage() {
                     setEmailError(null);
                   }
                   if (emailBlurred) {
-                    const result = signUpSchema.shape.email.safeParse(e.target.value);
+                    const result = signUpSchema.shape.email.safeParse(
+                      e.target.value
+                    );
                     if (!result.success) {
                       setEmailError(result.error.flatten().formErrors[0]);
                     } else {
@@ -314,9 +365,10 @@ export default function SignUpPage() {
               {emailBlurred && !emailError && email.length > 0 && (
                 <CheckIcon className="absolute inset-y-0 right-0 pr-3 flex items-center text-green-500 pointer-events-none h-5 w-5" />
               )}
-              {emailError && <p className="mt-1 text-xs text-red-600">{emailError}</p>}
+              {emailError && (
+                <p className="mt-1 text-xs text-red-600">{emailError}</p>
+              )}
             </div>
-
             <div className="relative">
               {/* Password Input - Label removed */}
               <Input
@@ -333,7 +385,9 @@ export default function SignUpPage() {
                     setPasswordError(null);
                   }
                   if (passwordBlurred) {
-                    const result = signUpSchema.shape.password.safeParse(e.target.value);
+                    const result = signUpSchema.shape.password.safeParse(
+                      e.target.value
+                    );
                     if (!result.success) {
                       setPasswordError(result.error.flatten().formErrors[0]);
                     } else {
@@ -343,7 +397,8 @@ export default function SignUpPage() {
                 }}
                 onBlur={() => {
                   setPasswordBlurred(true);
-                  const result = signUpSchema.shape.password.safeParse(password);
+                  const result =
+                    signUpSchema.shape.password.safeParse(password);
                   if (!result.success) {
                     setPasswordError(result.error.flatten().formErrors[0]);
                   } else {
@@ -352,21 +407,30 @@ export default function SignUpPage() {
                 }}
                 className={`block w-full appearance-none rounded-md border px-3 py-2 placeholder-gray-400 shadow-sm focus:border-teal-500 focus:outline-none focus:ring-teal-500 sm:text-sm pr-10 ${passwordBlurred ? (passwordError ? 'border-red-500' : 'border-green-500') : 'border-gray-300'}`}
               />
-              {passwordBlurred && !passwordError && password.length > 0 && signUpSchema.shape.password.safeParse(password).success && (
-                <CheckIcon className="absolute inset-y-0 right-0 pr-10 flex items-center text-green-500 pointer-events-none h-5 w-5" />
-              )}
+              {passwordBlurred &&
+                !passwordError &&
+                password.length > 0 &&
+                signUpSchema.shape.password.safeParse(password).success && (
+                  <CheckIcon className="absolute inset-y-0 right-0 pr-10 flex items-center text-green-500 pointer-events-none h-5 w-5" />
+                )}
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 text-gray-500 hover:text-orange-500"
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
-                >
-                  {showPassword ? <EyeOffIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
-                </button>
-              </div> {/* Closes <div className="relative"> for password input */}
-              {passwordError && <p className="mt-1 text-xs text-red-600">{passwordError}</p>}
-              <PasswordRequirements password={password} />
-
+              >
+                {showPassword ? (
+                  <EyeOffIcon className="h-5 w-5" />
+                ) : (
+                  <EyeIcon className="h-5 w-5" />
+                )}
+              </button>
+            </div>{' '}
+            {/* Closes <div className="relative"> for password input */}
+            {passwordError && (
+              <p className="mt-1 text-xs text-red-600">{passwordError}</p>
+            )}
+            <PasswordRequirements password={password} />
             <div>
               <Button
                 type="submit"
@@ -382,7 +446,10 @@ export default function SignUpPage() {
         <CardFooter className="flex flex-col items-center space-y-3 pt-4 sm:pt-6 px-4 sm:px-6 pb-4 sm:pb-6 text-sm text-gray-600">
           <p>
             Already have an account?{' '}
-            <Link href="/log-in" className="font-medium text-teal-600 hover:text-teal-500">
+            <Link
+              href="/log-in"
+              className="font-medium text-teal-600 hover:text-teal-500"
+            >
               Log In
             </Link>
           </p>

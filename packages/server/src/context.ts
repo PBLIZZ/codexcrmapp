@@ -14,7 +14,7 @@ export interface Context {
 
 /** Builds tRPC context for each request */
 export async function createContext({
-  req,
+  req: _req,
 }: {
   req: Request;
 }): Promise<Context> {

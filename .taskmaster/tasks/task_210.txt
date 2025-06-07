@@ -1,0 +1,54 @@
+# Task ID: 210
+# Title: Refactor codebase for TanStack Query v5 and tRPC v11 compatibility
+# Status: pending
+# Dependencies: 191
+# Priority: critical
+# Description: Update application code to align with API changes and best practices for TanStack Query v5 and tRPC v11. This includes addressing breaking changes in how queries, mutations, and tRPC procedures are defined and used throughout the application.
+# Details:
+1. Review official tRPC v10 to v11 migration guides.
+2. Review official TanStack Query v4 to v5 migration guides.
+3. Update tRPC client setup in `apps/web` (e.g., `src/lib/trpc/client.ts`, `QueryClient` instantiation, `QueryClientProvider`).
+4. Update tRPC server setup in `packages/server` (e.g., `src/root.ts`, `src/trpc.ts`, `src/context.ts`).
+5. Refactor tRPC procedure definitions in all routers (`packages/server/src/routers/*`) for v11 compatibility.
+6. Update the usage of tRPC hooks (`useQuery`, `useMutation`, etc.) in all client components in `apps/web` to conform to TanStack Query v5 and tRPC v11 APIs.
+7. Address changes in query/mutation options, hook return values, and error handling.
+8. Ensure data fetching, caching, and cache invalidation mechanisms are working correctly with the new versions.
+9. Resolve any TypeScript errors and runtime issues arising from these upgrades.
+
+# Test Strategy:
+
+
+# Subtasks:
+## 1. Review and Install Required Package Versions [done]
+### Dependencies: None
+### Description: Audit the current dependencies and upgrade all relevant packages to TanStack Query v5 and tRPC v11, ensuring compatibility across the codebase.
+### Details:
+Follow the official migration guides to install @tanstack/react-query@^5, @trpc/server@^11, @trpc/client@^11, and related packages. Verify that all peer dependencies are satisfied and remove deprecated packages if necessary.
+
+## 2. Update tRPC Client and Server Configuration [done]
+### Dependencies: 210.1
+### Description: Refactor both client and server tRPC setup files to align with v11 API changes, including transformers, links, and context handling.
+### Details:
+Update files such as 'apps/web/src/lib/trpc/client.ts', 'packages/server/src/root.ts', 'src/trpc.ts', and 'src/context.ts' to use the new configuration patterns. Address deprecations like 'createTRPCProxyClient' and move transformers to links as required.
+
+## 3. Refactor tRPC Procedure and Router Definitions [done]
+### Dependencies: 210.2
+### Description: Update all tRPC procedure and router definitions to comply with v11 syntax and best practices.
+### Details:
+Modify all routers in 'packages/server/src/routers/*' to use the new procedure definition patterns. Address any breaking changes in how procedures are created, composed, or exported.
+
+## 4. Update Client-Side Query and Mutation Usage [done]
+### Dependencies: 210.3
+### Description: Refactor all usages of tRPC hooks and TanStack Query hooks in client components to match the new APIs and handle updated return values and options.
+### Details:
+Update all usages of 'useQuery', 'useMutation', and related hooks in 'apps/web' to match TanStack Query v5 and tRPC v11. Adjust for changes in hook signatures, options, and error handling.
+<info added on 2025-06-06T16:09:39.397Z>
+Successfully migrated all mutation status checks from 'isLoading' to 'isPending' property in client components ('apps/web'), resolving TypeScript errors and addressing TanStack Query v5's mutation return type changes. Verified build success post-refactor.
+</info added on 2025-06-06T16:09:39.397Z>
+
+## 5. Validate Data Fetching, Caching, and Error Handling [in-progress]
+### Dependencies: 210.4
+### Description: Ensure that data fetching, caching, cache invalidation, and error handling mechanisms work correctly with the upgraded libraries.
+### Details:
+Test all major data flows, including cache updates and invalidation. Resolve any TypeScript or runtime errors that arise from the migration.
+

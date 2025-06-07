@@ -22,7 +22,7 @@
   "dependencies": {
     "@codexcrm/db": "workspace:*",
     "@supabase/supabase-js": "^2.45.1",
-    "@trpc/server": "^10.43.6",
+    "@trpc/server": "^11.3.1",
     "cookie": "^1.0.2",
     "next-themes": "^0.4.6",
     "sonner": "^2.0.3",

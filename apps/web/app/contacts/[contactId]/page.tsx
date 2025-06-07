@@ -8,9 +8,9 @@ import { Skeleton } from '@/components/ui/skeleton';
  * Props for the ContactDetailPage component following Next.js App Router conventions
  */
 interface ContactDetailPageProps {
-  params: {
+  params: Promise<{
     contactId: string;
-  };
+  }>;
 }
 
 /**
@@ -63,11 +63,12 @@ function ContactDetailSkeleton() {
  * Contact detail page component
  * Uses Next.js App Router conventions for dynamic route parameters
  */
-export default async function ContactDetailPage({
-  params,
-}: ContactDetailPageProps) {
-  // Extract contactId from params (await required in Next.js 15)
-  const { contactId } = await params;
+export default async function ContactDetailPage(
+  props: ContactDetailPageProps,
+) {
+  const params = await props.params;
+  // Extract contactId from params
+  const { contactId } = params;
 
   return (
     <Suspense fallback={<ContactDetailSkeleton />}>

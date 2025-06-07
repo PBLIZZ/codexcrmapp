@@ -343,12 +343,12 @@ export function GroupsContent() {
                         handleDeleteGroup(group.id, group.name);
                       }}
                       disabled={
-                        deleteGroupMutation.isLoading &&
+                        deleteGroupMutation.isPending &&
                         deleteGroupMutation.variables?.groupId === group.id
                       }
                       className="flex-1 justify-center"
                     >
-                      {deleteGroupMutation.isLoading &&
+                      {deleteGroupMutation.isPending &&
                       deleteGroupMutation.variables?.groupId === group.id ? (
                         <Loader2 className="h-3.5 w-3.5 animate-spin" />
                       ) : (
@@ -465,16 +465,16 @@ export function GroupsContent() {
                 type="button"
                 variant="outline"
                 onClick={() => setIsFormDialogOpen(false)}
-                disabled={saveGroupMutation.isLoading || isFormSubmittingRHF}
+                disabled={saveGroupMutation.isPending || isFormSubmittingRHF}
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
-                disabled={saveGroupMutation.isLoading || isFormSubmittingRHF}
+                disabled={saveGroupMutation.isPending || isFormSubmittingRHF}
                 className="bg-purple-500 hover:bg-purple-600 text-white"
               >
-                {saveGroupMutation.isLoading || isFormSubmittingRHF ? (
+                {saveGroupMutation.isPending || isFormSubmittingRHF ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 ) : editingGroup ? (
                   'Save Changes'
