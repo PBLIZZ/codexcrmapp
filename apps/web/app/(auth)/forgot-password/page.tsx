@@ -14,7 +14,9 @@ import {
   CardFooter,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { supabase } from '@/lib/supabase/client';
+import { createClient } from '@/lib/supabase/client';
+
+const supabase = createClient();
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');

@@ -5,7 +5,7 @@
   "type": "module",
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
-      "node scripts/ci-lint-guardrail.js --check",
+      "node packages/dev-scripts/eslint/ci-lint-guardrail.js --check",
       "eslint --max-warnings 0 --fix"
     ]
   },
@@ -15,18 +15,19 @@
     "start": "cd apps/web && next start",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
     "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
-    "lint:scan": "node scripts/ci-lint-guardrail.js --scan",
-    "lint:list": "node scripts/ci-lint-guardrail.js --list",
-    "lint:add": "node scripts/ci-lint-guardrail.js --add",
-    "lint:remove": "node scripts/ci-lint-guardrail.js --remove",
-    "lint:fix-legacy": "node scripts/fix-legacy-files.js --all",
-    "lint:fix-legacy-file": "node scripts/fix-legacy-files.js --file",
+    "lint:scan": "node packages/dev-scripts/eslint/ci-lint-guardrail.js --scan",
+    "lint:list": "node packages/dev-scripts/eslint/ci-lint-guardrail.js --list",
+    "lint:add": "node packages/dev-scripts/eslint/ci-lint-guardrail.js --add",
+    "lint:remove": "node packages/dev-scripts/eslint/ci-lint-guardrail.js --remove",
+    "lint:fix-legacy": "node packages/dev-scripts/eslint/fix-legacy-files.js --all",
+    "lint:fix-legacy-file": "node packages/dev-scripts/eslint/fix-legacy-files.js --file",
     "prepare": "husky"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
     "@sentry/nextjs": "^9.18.0",
     "@shadcn/ui": "^0.0.4",
+    "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.49.4",
     "@trpc/client": "next",

@@ -1,13 +1,62 @@
 {
-  "name": "@codexcrmapp/ui",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "name": "@codexcrm/ui",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./lib/utils": {
+      "types": "./dist/lib/utils.d.ts",
+      "import": "./dist/lib/utils.mjs",
+      "require": "./dist/lib/utils.js"
+    },
+    "./components/ui/avatar": {
+      "types": "./dist/components/ui/avatar.d.ts",
+      "import": "./dist/components/ui/avatar.mjs",
+      "require": "./dist/components/ui/avatar.js"
+    }
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "packageManager": "pnpm@10.9.0"
+  "scripts": {
+    "build": "tsup src/index.ts src/lib/utils.ts src/components/ui/avatar.tsx --format esm,cjs --external react --tsconfig ./tsconfig.json && tsc --emitDeclarationOnly --project tsconfig.json",
+    "dev": "tsup src/index.ts --format esm,cjs --external react --watch --tsconfig ./tsconfig.json",
+    "lint": "echo 'Lint script to be implemented, e.g., eslint . --ext .ts,.tsx'",
+    "clean": "rm -rf dist .turbo node_modules"
+  },
+  "dependencies": {
+    "@radix-ui/react-avatar": "^1.1.10",
+    "@radix-ui/react-slot": "^1.0.2",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.0",
+    "lucide-react": "^0.300.0",
+    "tailwind-merge": "^2.2.0"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0"
+  },
+  "devDependencies": {
+    "postcss": "^8.4.33",
+    "react": "^18.2.0",
+    "tailwindcss": "^3.4.1",
+    "tailwindcss-animate": "^1.0.7",
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.3"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "react",
+    "typescript",
+    "ui-components",
+    "codexcrm"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }

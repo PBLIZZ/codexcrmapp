@@ -2,7 +2,8 @@ import * as Sentry from '@sentry/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 
 // Import the server client creator from our new helper
-import { createSupabaseServer } from '@/lib/supabase/server';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 
 export const dynamic = 'force-dynamic';
 
@@ -38,7 +39,7 @@ export async function GET(req: NextRequest) {
 
   try {
     // Create Supabase client using the server helper
-    const supabase = await createSupabaseServer();
+    const supabase = createRouteHandlerClient({ cookies });
     const { searchParams } = new URL(req.url);
     const code = searchParams.get('code');
     const nextParam = searchParams.get('next');

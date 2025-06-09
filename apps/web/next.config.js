@@ -21,9 +21,27 @@ const nextConfig = {
       process.env.NEXT_PUBLIC_SUPABASE_URL
         ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname
         : '',
-      // Temporary: Allow external demo photo sources
-      'randomuser.me',
-      'images.unsplash.com',
+      'lh3.googleusercontent.com', // For Google profile pictures
+      'graph.facebook.com', // For Facebook profile pictures
+      'media.licdn.com', // For LinkedIn profile pictures
+      // Apple
+      's.gravatar.com',
+      'secure.gravatar.com',
+      '*.apple.com',
+      '*.mzstatic.com',
+      // Instagram
+      'scontent.cdninstagram.com',
+      // TikTok
+      'p16-sign-va.tiktokcdn.com',
+      // X (Twitter)
+      'pbs.twimg.com',
+      // YouTube (Google)
+      'yt3.ggpht.com',
+      'i.ytimg.com',
+      // Microsoft
+      'profile.microsoft.com',
+      'img-prod-cms-rt-microsoft-com.akamaized.net',
+      // Add other domains as needed
     ].filter(Boolean), // Remove empty strings
   },
 };

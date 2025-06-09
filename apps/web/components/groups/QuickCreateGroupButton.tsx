@@ -6,7 +6,9 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
-import { supabase } from '@/lib/supabase/client';
+import { createClient } from '@/lib/supabase/client';
+
+const supabase = createClient();
 import { api } from '@/lib/trpc';
 
 export function QuickCreateGroupButton() {

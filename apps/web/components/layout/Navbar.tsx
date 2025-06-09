@@ -1,6 +1,6 @@
 'use client';
 
-import { AuthChangeEvent, Session, User } from '@supabase/supabase-js';
+import type { User } from '@supabase/supabase-js';
 import {
   Home,
   Users,
@@ -8,15 +8,14 @@ import {
   Calendar,
   MessageSquare, // Assuming for Messages
   BarChart, // Assuming for Analytics
-  Settings, // For user menu
-  LogOut, // For user menu
-  User as UserIcon, // Renamed to avoid conflict with Supabase User type
+  Settings, // For System settings menu
+  // LogOut and UserIcon are now handled by DropdownMenuWithIcon
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { SignOutButton } from '@/components/layout/SignOutButton'; // Assuming SignOutButton is in the same directory
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+// LogoutButton is no longer needed here as DropdownMenuWithIcon handles Logout
+// import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'; // Avatar components are used by DropdownMenuWithIcon
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -25,28 +24,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@/components/ui/dropdown-menu'; // Keep for System Settings dropdown
+import DropdownMenuWithIcon from '@/components/customized/dropdown-menu/dropdown-menu-02';
 
 interface NavbarProps {
-  user: User | null; // Passed from MainLayout (which gets it from RootLayout or its own state)
+  user: User | null;
 }
 
-// Helper to get initials from name (or email)
-const getInitials = (user: User | null) => {
-  if (!user) return 'NN'; // No Name or Not LoggedIn
-  const emailPrefix = user.email?.split('@')[0];
-  const name =
-    user.user_metadata?.full_name ||
-    user.user_metadata?.name ||
-    emailPrefix ||
-    '';
-
-  if (name.includes(' ')) {
-    const parts = name.split(' ');
-    return `${parts[0]?.[0] || ''}${parts[parts.length - 1]?.[0] || ''}`.toUpperCase();
-  }
-  return `${name?.[0] || ''}${name?.[1] || ''}`.toUpperCase() || 'NN';
-};
+// getInitials helper is now part of DropdownMenuWithIcon
 
 export function Navbar({ user }: NavbarProps) {
   const pathname = usePathname();
@@ -207,45 +192,8 @@ export function Navbar({ user }: NavbarProps) {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* User Profile Dropdown - from MainLayout.tsx's header */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage
-                    src={user.user_metadata?.avatar_url || undefined}
-                    alt={user.user_metadata?.name || user.email}
-                  />
-                  <AvatarFallback>{getInitials(user)}</AvatarFallback>
-                </Avatar>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="end" forceMount>
-              <DropdownMenuLabel className="font-normal">
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">
-                    {user.user_metadata?.full_name ||
-                      user.user_metadata?.name ||
-                      user.email?.split('@')[0]}
-                  </p>
-                  <p className="text-xs leading-none text-muted-foreground">
-                    {user.email}
-                  </p>
-                </div>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link href="/account" className="w-full">
-                  <UserIcon className="mr-2 h-4 w-4" />
-                  <span>Profile</span>
-                </Link>
-              </DropdownMenuItem>
-              {/* Add other items like "Upload Photo", "Change Password" here, linking to /account or specific sub-pages */}
-              <DropdownMenuSeparator />
-              <SignOutButton />{' '}
-              {/* Use the dedicated SignOutButton component */}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {/* User Profile Dropdown - Now using DropdownMenuWithIcon */}
+          {user && <DropdownMenuWithIcon user={user} />}
         </div>
       </div>
     </nav>

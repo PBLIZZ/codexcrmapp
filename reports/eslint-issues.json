@@ -1,8 +1,0 @@
-{
-  "no-explicit-any": [],
-  "no-console": [],
-  "no-unused-vars": [],
-  "no-prototype-builtins": [],
-  "no-constant-condition": [],
-  "other": []
-}
