@@ -15,7 +15,9 @@ import {
   CardFooter,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { supabase } from '@/lib/supabase/client';
+import { createClient } from '@/lib/supabase/client';
+
+const supabase = createClient();
 
 // Google Icon SVG Component
 const EyeIcon = ({ className }: { className?: string }) => (

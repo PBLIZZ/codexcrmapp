@@ -1,11 +1,11 @@
 # Task ID: 189
 # Title: Navbar logout still produces TRPCClientError: UNAUTHORIZED
 # Status: pending
-# Dependencies: None
+# Dependencies: 211
 # Priority: high
-# Description: The logout button in the main navigation bar (user avatar dropdown) continues to produce a TRPCClientError: UNAUTHORIZED, even after attempting a fix by removing queryClient.clear() from SignOutButton.tsx. Logout from the /account page works correctly. Investigate the cause of the error, which might be related to component re-renders triggering protected tRPC calls during the logout transition.
+# Description: This issue is now being addressed as part of the comprehensive logout functionality improvements in task #211. The original error (TRPCClientError: UNAUTHORIZED from navbar logout) will be resolved through centralized logout handling implementation.
 # Details:
-
+Superseded by task #211 'Fix, Centralize, and Standardize Logout Functionality'. The root cause investigation and solution will be implemented as part of the new standardized approach to logout flows across all application components.
 
 # Test Strategy:
-
+Testing will be handled under task #211's validation strategy covering all logout entry points including navbar, account page, and session timeout scenarios.

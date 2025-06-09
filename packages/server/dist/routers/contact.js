@@ -2,29 +2,34 @@ import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { router, protectedProcedure } from '../trpc';
 const contactInputSchema = z.object({
-    id: z.string().uuid().optional(), // ID is UUID string, optional for creation
+    id: z.string().uuid().optional(),
     full_name: z.string().min(1, 'Full name is required'),
     email: z.string().email('Invalid email address').optional().nullable(),
     phone: z.string().optional().nullable(),
+    phone_country_code: z.string().optional().nullable(), // New
     company_name: z.string().optional().nullable(),
     job_title: z.string().optional().nullable(),
-    profile_image_url: z.string().optional().nullable(),
+    address_street: z.string().optional().nullable(), // New
+    address_city: z.string().optional().nullable(), // New
+    address_postal_code: z.string().optional().nullable(), // New
+    address_country: z.string().optional().nullable(), // New
+    website: z.string().url({ message: "Invalid URL" }).optional().nullable(), // New
+    profile_image_url: z.string().optional().nullable(), // Reverted: No strict URL validation to support upload paths
     notes: z.string().optional().nullable(),
-    source: z.string().optional().nullable(), // Added source
+    tags: z.array(z.string()).optional().nullable(), // New
+    social_handles: z.array(z.string()).optional().nullable(), // New
+    source: z.string().optional().nullable(),
     last_contacted_at: z.preprocess((arg) => {
-        // Added last_contacted_at
-        // Empty string or null/undefined should become null
-        if (arg === '' || arg === null || arg === undefined) {
+        if (arg === '' || arg === null || arg === undefined)
             return null;
-        }
-        // Try to parse as date if it's a string or Date
         if (typeof arg === 'string' || arg instanceof Date) {
             const date = new Date(arg);
-            // Check if date is valid
             return isNaN(date.getTime()) ? null : date;
         }
-        return null; // Default to null for any other case
+        return null;
     }, z.date().optional().nullable()),
+    enriched_data: z.any().optional().nullable(), // New
+    enrichment_status: z.string().optional().nullable(), // New
 });
 // Defines tRPC procedures for contacts.
 export const contactRouter = router({
@@ -39,22 +44,16 @@ export const contactRouter = router({
         if (!ctx.user) {
             throw new TRPCError({ code: 'UNAUTHORIZED' });
         }
-        // Use the USER-SCOPED client from context for reads to respect RLS!
         let query = ctx.supabaseUser.from('contacts');
         if (input.groupId) {
-            // If filtering by group, INNER JOIN and filter on group_id
             query = query
                 .select('*, group_members!inner(group_id)')
                 .eq('group_members.group_id', input.groupId);
         }
         else {
-            // If not filtering by group, LEFT JOIN to show all contacts and their group memberships
             query = query.select('*, group_members!left(group_id)');
         }
-        // Apply ordering after select and potential group filter
         query = query.order('created_at', { ascending: false });
-        // Apply search filter if provided
-        // This will apply to all contacts (if no groupId) or group-filtered contacts
         if (input.search) {
             query = query.or(`full_name.ilike.%${input.search}%,email.ilike.%${input.search}%`);
         }
@@ -90,45 +89,56 @@ export const contactRouter = router({
         }
         return data;
     }),
-    // Protected procedure for creating/updating contacts
     save: protectedProcedure
-        .input(contactInputSchema)
+        .input(contactInputSchema) // Uses the schema defined above this router
         .mutation(async ({ input, ctx }) => {
         if (!ctx.user) {
             throw new TRPCError({ code: 'UNAUTHORIZED' });
         }
         const contactId = input.id;
-        // Prepare fields to update/insert, mapping client field names to DB columns
-        const fields = {
+        const fieldsToSave = {
             full_name: input.full_name,
             email: input.email || null,
             phone: input.phone || null,
+            phone_country_code: input.phone_country_code || null,
             company_name: input.company_name || null,
             job_title: input.job_title || null,
+            address_street: input.address_street || null,
+            address_city: input.address_city || null,
+            address_postal_code: input.address_postal_code || null,
+            address_country: input.address_country || null,
+            website: input.website || null,
             profile_image_url: input.profile_image_url || null,
             notes: input.notes || null,
-            source: input.source || null, // Added source
-            last_contacted_at: input.last_contacted_at || null, // Added last_contacted_at
+            tags: input.tags || null,
+            social_handles: input.social_handles || null,
+            source: input.source || null,
+            last_contacted_at: input.last_contacted_at || null,
+            enriched_data: input.enriched_data || null,
+            enrichment_status: input.enrichment_status || null,
         };
+        let dataObject = null;
+        // Supabase errors have a 'code' property (string) among others
+        let dbError = null;
         try {
-            // Iterative fallback for missing columns during update/insert
-            const attemptFields = { ...fields };
-            let data = null;
-            let dbError = null;
             if (contactId) {
-                console.warn(`Attempting contact update for id: ${contactId}`, attemptFields);
+                // UPDATE LOGIC
+                console.warn(`Attempting contact update for id: ${contactId}`, fieldsToSave);
+                let attemptFields = { ...fieldsToSave };
                 do {
-                    ({ data, error: dbError } = await ctx.supabaseUser
+                    const updateOp = await ctx.supabaseUser
                         .from('contacts')
                         .update(attemptFields)
                         .match({ id: contactId, user_id: ctx.user.id })
                         .select()
-                        .single());
+                        .single();
+                    dataObject = updateOp.data;
+                    dbError = updateOp.error;
                     if (dbError) {
-                        const m = dbError.message.match(/Could not find the '(.+)' column/);
-                        if (m && Object.hasOwn(attemptFields, m[1])) {
-                            console.warn(`${m[1]} column missing, retrying without it`);
-                            delete attemptFields[m[1]];
+                        const columnMatch = dbError.message.match(/Could not find the '(.+)' column/);
+                        if (columnMatch && Object.hasOwn(attemptFields, columnMatch[1])) {
+                            console.warn(`${columnMatch[1]} column missing, retrying update without it`);
+                            delete attemptFields[columnMatch[1]];
                             continue;
                         }
                     }
@@ -136,79 +146,79 @@ export const contactRouter = router({
                 } while (dbError !== null);
             }
             else {
-                console.warn('Attempting contact insert with user context', {
-                    ...attemptFields,
-                    user_id: ctx.user.id,
-                });
-                do {
-                    ({ data, error: dbError } = await ctx.supabaseUser
-                        .from('contacts')
-                        .insert({ ...attemptFields, user_id: ctx.user.id })
-                        .select()
-                        .single());
-                    if (dbError) {
-                        const m = dbError.message.match(/Could not find the '(.+)' column/);
-                        if (m && Object.hasOwn(attemptFields, m[1])) {
-                            console.warn(`${m[1]} column missing, retrying insert without it`);
-                            delete attemptFields[m[1]];
-                            continue;
-                        }
-                    }
-                    break;
-                } while (dbError !== null);
+                // INSERT LOGIC
+                const insertPayload = { ...fieldsToSave, user_id: ctx.user.id };
+                console.warn('[DEBUG] Attempting contact insert:', insertPayload);
+                const insertOp = await ctx.supabaseUser
+                    .from('contacts')
+                    .insert(insertPayload)
+                    .select('id, created_at, updated_at, user_id, email, full_name, profile_image_url') // Select minimal essential fields
+                    .single();
+                dataObject = insertOp.data;
+                dbError = insertOp.error;
+                if (!dbError && !dataObject) {
+                    console.warn("Contact insert: Supabase insert succeeded but .select() returned no data (RLS visibility issue?). Constructing response from input.");
+                    // The insert was likely successful, but RLS prevents reading it back immediately.
+                    // We return the input data merged with user_id, but server-generated fields like 'id' and 'created_at' will be missing.
+                    // The client should be aware or refetch if these are critical immediately.
+                    dataObject = { ...insertPayload, id: undefined, created_at: undefined, updated_at: undefined };
+                }
             }
             if (dbError) {
-                console.error('Supabase save error:', dbError, {
-                    input,
-                    userId: ctx.user.id,
-                });
+                console.error('Supabase save error:', JSON.stringify(dbError, null, 2), { input, contactId });
+                if (dbError.code === '23505') { // PostgreSQL unique_violation
+                    throw new TRPCError({
+                        code: 'CONFLICT',
+                        message: `A contact with this email (${input.email}) already exists.`,
+                        cause: dbError,
+                    });
+                }
                 throw new TRPCError({
                     code: 'INTERNAL_SERVER_ERROR',
-                    message: `Failed to save contact: ${dbError.message}`,
+                    message: `Database error: ${dbError.message}`,
                     cause: dbError,
                 });
             }
-            if (!data) {
-                console.error('Supabase save returned no data and no error.');
+            if (!dataObject) {
+                console.error('Supabase save returned no data and no explicit error after processing.', { input, contactId });
                 throw new TRPCError({
                     code: 'INTERNAL_SERVER_ERROR',
-                    message: 'Failed to save contact due to unexpected issue.',
+                    message: 'Failed to save contact: No data returned from database operation.',
                 });
             }
-            console.warn('Contact save successful:', data);
-            return data;
+            console.warn('Contact save successful:', dataObject);
+            return dataObject;
         }
-        catch (err) {
-            console.error('Unexpected error in save procedure:', err);
-            if (err instanceof TRPCError)
-                throw err;
+        catch (error) {
+            if (error instanceof TRPCError) {
+                throw error;
+            }
+            console.error('Unhandled error in contact save procedure:', error, { input, contactId });
             throw new TRPCError({
                 code: 'INTERNAL_SERVER_ERROR',
-                message: err instanceof Error
-                    ? err.message
-                    : 'An unknown error occurred while saving the contact.',
+                message: 'An unexpected error occurred while saving the contact.',
+                cause: error instanceof Error ? error : undefined,
             });
         }
     }),
-    // Procedure to delete a contact
     delete: protectedProcedure
-        .input(z.object({
-        contactId: z.string().uuid(), // Expect UUID string ID
-    }))
+        .input(z.object({ contactId: z.string().uuid() }))
         .mutation(async ({ input, ctx }) => {
-        console.warn(`Attempting to delete contact ID: ${input.contactId} by user ${ctx.user.id}`);
+        if (!ctx.user) {
+            throw new TRPCError({ code: 'UNAUTHORIZED' });
+        }
         const { error } = await ctx.supabaseUser
             .from('contacts')
             .delete()
-            .match({ id: input.contactId, user_id: ctx.user.id }); // Match on UUID string ID and user_id
+            .match({ id: input.contactId, user_id: ctx.user.id });
         if (error) {
             console.error('Error deleting contact:', error);
             throw new TRPCError({
                 code: 'INTERNAL_SERVER_ERROR',
                 message: 'Failed to delete contact',
+                cause: error,
             });
         }
-        console.warn(`Contact ${input.contactId} deleted successfully by user ${ctx.user.id}`);
-        return { success: true, deletedContactId: input.contactId };
+        return { success: true, contactId: input.contactId };
     }),
 });

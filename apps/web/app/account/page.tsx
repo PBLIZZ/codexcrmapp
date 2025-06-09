@@ -4,8 +4,6 @@ import type { User } from '@supabase/supabase-js';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, useReducer } from 'react';
-
-import { SignOutButton } from '@/components/layout/SignOutButton';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -21,9 +19,8 @@ import { Separator } from '@/components/ui/separator';
 import {
   fetchCurrentUser,
   updateUserPassword,
-  signOutUser,
   mapAuthErrorMessage,
-} from '@/lib/auth/service';
+} from '@/src/lib/auth/service';
 
 // Constants
 const MIN_PASSWORD_LENGTH = 6;
@@ -176,27 +173,6 @@ export default function AccountPage() {
     setIsPasswordLoading(false);
   };
 
-  // Handle sign out
-  const handleSignOut = async () => {
-    setIsSigningOut(true);
-    dispatchMessage({ type: 'CLEAR_MESSAGE' });
-
-    const { error } = await signOutUser();
-
-    if (error) {
-      dispatchMessage({
-        type: 'SET_MESSAGE',
-        payload: {
-          text: `Sign out failed: ${mapAuthErrorMessage(error.message)}`,
-          type: 'error',
-        },
-      });
-      setIsSigningOut(false);
-    } else {
-      router.push(ROUTES.signIn);
-    }
-  };
-
   // Loading state
   if (isFetchingUser && !user) {
     return (
@@ -225,7 +201,7 @@ export default function AccountPage() {
     <div className="flex min-h-screen items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <Card className="w-full max-w-lg shadow-lg">
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-bold text-blue-600">
+          <CardTitle className="text-3xl font-bold text-teal-600">
             My Account
           </CardTitle>
           <CardDescription>
@@ -301,23 +277,12 @@ export default function AccountPage() {
           )}
 
           <Separator />
-
-          <div>
-            <Button
-              variant="destructive"
-              onClick={handleSignOut}
-              className="w-full sm:w-auto"
-              disabled={isSigningOut || isPasswordLoading}
-            >
-              {isSigningOut ? 'Signing out...' : 'Sign Out'}
-            </Button>
-          </div>
         </CardContent>
 
         <CardFooter className="justify-center">
           <Link
             href={ROUTES.dashboard}
-            className="text-sm font-medium text-blue-600 hover:underline"
+            className="text-sm font-medium text-teal-600 hover:underline"
           >
             Back to Dashboard
           </Link>
@@ -326,3 +291,4 @@ export default function AccountPage() {
     </div>
   );
 }
+

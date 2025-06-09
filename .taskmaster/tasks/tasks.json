@@ -1920,9 +1920,7 @@
     {
       "id": 27,
       "title": "Feature: Implement Dedicated SignOutButton Component",
-      "description": "Create a reusable SignOutButton component for reliable sign-out functionality across all application surfaces. (Corresponds to original Task 27)",
-      "details": "",
-      "testStrategy": "",
+      "description": "[DEPRECATED] Original objectives superseded by Task #211 - Fix, Centralize, and Standardize Logout Functionality",
       "status": "pending",
       "dependencies": [
         54,
@@ -1930,34 +1928,15 @@
         6
       ],
       "priority": "high",
+      "details": "This implementation has been replaced by a comprehensive logout standardization effort. All sign-out functionality requirements are now addressed in Task #211.",
+      "testStrategy": "No testing required - functionality moved to Task #211",
       "subtasks": [
         {
-          "id": 1,
-          "title": "Design SignOutButton component API and appearance",
-          "description": "Define the component interface, props, and visual design for the SignOutButton component",
+          "id": 4,
+          "title": "Redirect to centralized logout implementation (Task #211)",
+          "description": "All sign-out functionality development moved to Task #211 - Fix, Centralize, and Standardize Logout Functionality",
           "dependencies": [],
-          "details": "Create a design specification for the SignOutButton component including: required props (e.g., size, variant, custom text), default appearance (colors, dimensions, hover states), accessibility considerations (keyboard navigation, ARIA attributes), and responsive behavior. Create mockups or wireframes showing different states (default, hover, active, loading).",
-          "status": "pending"
-        },
-        {
-          "id": 2,
-          "title": "Implement sign-out logic with session cleanup",
-          "description": "Develop the core functionality to handle user sign-out with proper session management",
-          "dependencies": [
-            1
-          ],
-          "details": "Implement the sign-out handler function that will: call the appropriate authentication service method to log the user out, clear any stored tokens or credentials from localStorage/cookies, reset the application state related to user authentication, handle any loading states during the sign-out process, and implement proper error handling. Ensure the component provides feedback during the sign-out process.",
-          "status": "pending"
-        },
-        {
-          "id": 3,
-          "title": "Integrate SignOutButton into application surfaces",
-          "description": "Add the SignOutButton component to relevant parts of the application with appropriate styling",
-          "dependencies": [
-            1,
-            2
-          ],
-          "details": "Identify all locations where the SignOutButton should appear (e.g., navigation bar, user profile dropdown, settings page). Integrate the component into these locations with appropriate styling that matches the surrounding UI. Ensure the button is only visible when a user is authenticated. Add any necessary context providers or hooks to make the sign-out functionality available throughout the application.",
+          "details": "This component implementation is no longer needed. Refer to Task #211 for the updated approach to logout functionality which includes standardization across the application.",
           "status": "pending"
         }
       ]
@@ -5113,12 +5092,14 @@
     {
       "id": 189,
       "title": "Navbar logout still produces TRPCClientError: UNAUTHORIZED",
-      "description": "The logout button in the main navigation bar (user avatar dropdown) continues to produce a TRPCClientError: UNAUTHORIZED, even after attempting a fix by removing queryClient.clear() from SignOutButton.tsx. Logout from the /account page works correctly. Investigate the cause of the error, which might be related to component re-renders triggering protected tRPC calls during the logout transition.",
-      "details": "",
-      "testStrategy": "",
+      "description": "This issue is now being addressed as part of the comprehensive logout functionality improvements in task #211. The original error (TRPCClientError: UNAUTHORIZED from navbar logout) will be resolved through centralized logout handling implementation.",
       "status": "pending",
-      "dependencies": [],
+      "dependencies": [
+        211
+      ],
       "priority": "high",
+      "details": "Superseded by task #211 'Fix, Centralize, and Standardize Logout Functionality'. The root cause investigation and solution will be implemented as part of the new standardized approach to logout flows across all application components.",
+      "testStrategy": "Testing will be handled under task #211's validation strategy covering all logout entry points including navbar, account page, and session timeout scenarios.",
       "subtasks": []
     },
     {
@@ -5337,6 +5318,82 @@
           "details": "Test all major data flows, including cache updates and invalidation. Resolve any TypeScript or runtime errors that arise from the migration.",
           "status": "in-progress",
           "testStrategy": "Perform end-to-end tests and regression testing. Use development tools to inspect cache state and error boundaries."
+        }
+      ]
+    },
+    {
+      "id": 211,
+      "title": "Fix, Centralize, and Standardize Logout Functionality",
+      "description": "Consolidate all sign-out functionality into a single component and standardize all terminology from 'Sign Out' to 'Logout'. This will resolve a critical bug (TRPCClientError: UNAUTHORIZED) and enforce consistent naming conventions (Login/Logout/Signup) across the application.",
+      "details": "The primary goal is to fix a logout race condition by using a Server Action that handles session invalidation and an immediate server-side redirect. As part of this fix, all related code—components, functions, variables, and user-facing text—will be refactored from 'Sign Out' or 'signout' to 'Logout'. This will create a single, robust, and consistently named `LogoutButton` component.",
+      "testStrategy": "Verify that logging out from all application entry points redirects the user to the login page without any console errors. Confirm that all user-facing text, component names, and function names have been updated from 'Sign Out' to 'Logout'.",
+      "status": "pending",
+      "dependencies": [],
+      "priority": "high",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Implement the `logout` Server Action",
+          "description": "Create a dedicated Server Action named `logout` that securely signs the user out and performs an immediate server-side redirect to the login page.",
+          "details": "",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 211
+        },
+        {
+          "id": 2,
+          "title": "Create a Reusable `LogoutButton` Component",
+          "description": "Develop a form-based client component named `LogoutButton` that triggers the `logout` Server Action. It should be styled with Shadcn UI and manage its own pending state.",
+          "details": "",
+          "status": "pending",
+          "dependencies": [
+            "211.1"
+          ],
+          "parentTaskId": 211
+        },
+        {
+          "id": 3,
+          "title": "Integrate `LogoutButton` into all UI Surfaces",
+          "description": "Replace existing sign-out logic and buttons in the main navigation's user dropdown and the account settings page with the new reusable `LogoutButton` component.",
+          "details": "",
+          "status": "pending",
+          "dependencies": [
+            "211.2"
+          ],
+          "parentTaskId": 211
+        },
+        {
+          "id": 4,
+          "title": "Standardize All Terminology to 'Logout'",
+          "description": "Perform a comprehensive, case-insensitive search across the entire codebase for 'Sign Out' and 'signout', refactoring all instances (variables, comments, log messages, etc.) to 'Logout'.",
+          "details": "",
+          "status": "pending",
+          "dependencies": [
+            "211.3"
+          ],
+          "parentTaskId": 211
+        },
+        {
+          "id": 5,
+          "title": "Remove Redundant Sign-Out Implementations",
+          "description": "Audit the codebase to find and delete any old `SignOutButton` components, handler functions, or client-side API calls to ensure the new `logout` Server Action is the single source of truth.",
+          "details": "",
+          "status": "pending",
+          "dependencies": [
+            "211.4"
+          ],
+          "parentTaskId": 211
+        },
+        {
+          "id": 6,
+          "title": "Final Verification and Validation",
+          "description": "Thoroughly test the end-to-end logout flow from all entry points to confirm the TRPCClientError is resolved and the user experience is seamless and consistent.",
+          "details": "",
+          "status": "pending",
+          "dependencies": [
+            "211.5"
+          ],
+          "parentTaskId": 211
         }
       ]
     }

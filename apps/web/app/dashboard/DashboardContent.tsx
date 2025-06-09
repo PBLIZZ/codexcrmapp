@@ -17,7 +17,6 @@ import { AddContactModal } from '@/components/contacts/AddContactModal';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Button as OmniButton } from '@omnipotency/ui';
 import {
   Card,
   CardContent,
@@ -26,9 +25,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { ShadcnCalendarTest } from '@/components/ui/ShadcnCalendarTest';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { TailwindTestCard } from '@/components/ui/TailwindTestCard';
 import { api } from '@/lib/trpc';
 
 // UI Components
@@ -177,12 +174,6 @@ export default function DashboardContent() {
           </Card>
         </div>
 
-        {/* Tailwind CSS Test Card */}
-        <TailwindTestCard />
-
-        {/* Shadcn UI Calendar Test */}
-        <ShadcnCalendarTest />
-
         {/* Tabs for different dashboard sections */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-3">
@@ -227,11 +218,6 @@ export default function DashboardContent() {
                   <Calendar className="mr-2 h-4 w-4" />
                   Schedule Event
                 </Button>
-                <OmniButton variant="secondary" size="lg">Omni Test Button</OmniButton>
-                <OmniButton variant="destructive">Omni Destructive</OmniButton>
-                <OmniButton variant="outline">Omni Outline</OmniButton>
-                <OmniButton variant="ghost">Omni Ghost</OmniButton>
-                <OmniButton variant="link">Omni Link</OmniButton>
               </CardContent>
             </Card>
 

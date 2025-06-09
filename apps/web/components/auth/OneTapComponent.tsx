@@ -5,7 +5,9 @@ import { useRouter } from 'next/navigation';
 import Script from 'next/script';
 import { useEffect, useRef } from 'react';
 
-import { supabase } from '@/lib/supabase/client';
+import { createClient } from '@/lib/supabase/client';
+
+const supabase = createClient();
 
 const OneTapComponent = () => {
   const router = useRouter();

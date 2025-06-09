@@ -4,7 +4,7 @@
 import { Geist, Geist_Mono } from 'next/font/google'; // Your fonts
 
 import './globals.css';
-import '@omnipotency/ui/dist/index.css'; // Styles from our new UI library
+// import '@codexcrm/ui/dist/index.css'; // Styles from our new UI library
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -13,7 +13,9 @@ import { Providers } from './providers';
 import { MainLayout } from '@/components/layout/MainLayout'; // Main app shell
 import { Navbar } from '@/components/layout/Navbar'; // The global Navbar for auth pages
 import { Toaster } from '@/components/ui/sonner';
-import { supabase } from '@/lib/supabase/client'; // Your Supabase client
+import { createClient } from '@/lib/supabase/client'; // Your Supabase client
+
+const supabase = createClient();
 
 import type { User } from '@supabase/supabase-js';
 

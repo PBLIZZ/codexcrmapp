@@ -34,7 +34,8 @@ module.exports = {
   content: [
     './app/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
-    './node_modules/@shadcn/ui/dist/**/*.{js,ts,jsx,tsx}',
+    '../../packages/ui/src/**/*.{ts,tsx}', // Added path to shared UI package
+    './node_modules/@shadcn/ui/dist/**/*.{js,ts,jsx,tsx}', // This line might be for an older version or direct shadcn/ui usage, review if still needed
   ],
   plugins: [],
 };

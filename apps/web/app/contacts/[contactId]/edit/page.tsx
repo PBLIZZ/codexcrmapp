@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 
-import { createSupabaseServer } from '@/lib/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 
 // Define a more specific interface for the params prop
 interface EditContactPageProps {
@@ -32,7 +32,7 @@ export default async function EditContactPage(
   }
 
   // Server-side auth check
-  const supabase = await createSupabaseServer();
+  const supabase = createClient();
   const {
     data: { session },
   } = await supabase.auth.getSession();

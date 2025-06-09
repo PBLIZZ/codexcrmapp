@@ -1,12 +1,10 @@
-import * as Sentry from '@sentry/nextjs'; // Added Sentry
-import { createServerClient, type CookieOptions } from '@supabase/ssr';
+// apps/web/middleware.ts
+
+import * as Sentry from '@sentry/nextjs';
+import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
-// Define paths that require authentication
-const protectedPaths = ['/', '/dashboard', '/contacts', '/contacts', '/groups'];
-
-// Define paths that should be accessible only when logged out
-// Auth-related pages that should only be accessible when NOT logged in
+const protectedPaths = ['/', '/dashboard', '/contacts', '/groups'];
 const publicOnlyPaths = [
   '/log-in',
   '/sign-up',
@@ -16,85 +14,54 @@ const publicOnlyPaths = [
 ];
 
 export async function middleware(request: NextRequest) {
-  const response = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
+  let response = NextResponse.next({
+    request: { headers: request.headers },
   });
 
+  // 1. Use the modern, non-deprecated cookie handling for middleware
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        get(name: string) {
-          return request.cookies.get(name)?.value;
+        getAll() {
+          return request.cookies.getAll();
         },
-        set(name: string, value: string, options: CookieOptions) {
-          response.cookies.set({ name, value, ...options });
-        },
-        remove(name: string, options: CookieOptions) {
-          response.cookies.set({ name, value: '', ...options });
+        // The `setAll` function is required for the new API
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value));
+          response = NextResponse.next({
+            request: { headers: request.headers },
+          });
+          cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
         },
       },
     }
   );
 
-  // Refresh session if expired - This will also update the cookies in the response.
-  Sentry.captureMessage('Middleware: Attempting to get session...', 'info');
-  const {
-    data: { session },
-    error: sessionError,
-  } = await supabase.auth.getSession();
-  if (sessionError) {
-    console.error('Middleware: Error getting session:', sessionError.message);
-    Sentry.captureException(sessionError);
-  }
-  Sentry.captureMessage(
-    `Middleware: Session object: ${JSON.stringify(session, null, 2)}`,
-    'debug'
-  ); // Changed to debug for potentially large object
-
-  // Now get the user based on the (potentially refreshed) session.
-  Sentry.captureMessage('Middleware: Attempting to get user...', 'info');
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
-  if (userError) {
-    console.error('Middleware: Error getting user:', userError.message);
-    Sentry.captureException(userError);
-  }
-  Sentry.captureMessage(
-    `Middleware: User object: ${JSON.stringify(user, null, 2)}`,
-    'debug'
-  ); // Changed to debug for potentially large object
+  // 2. Use only `getUser()`. It efficiently handles session refresh and is the source of truth.
+  const { data: { user } } = await supabase.auth.getUser();
 
   const { pathname } = request.nextUrl;
   const isProtectedPath = protectedPaths.some(
-    (path) =>
-      pathname === path || (path !== '/' && pathname.startsWith(path + '/'))
+    (path) => path === '/' ? pathname === path : pathname.startsWith(path)
   );
   const isPublicOnlyPath = publicOnlyPaths.includes(pathname);
 
-  // Use authenticated user object from getUser() for protection checks
+  // 3. Handle redirects with focused logging
   if (isProtectedPath && !user) {
-    const message = `Middleware: No authenticated user, redirecting from protected path ${pathname} to /log-in`;
-    console.warn(message);
-    Sentry.captureMessage(message, 'warning');
-    return NextResponse.redirect(new URL('/log-in', request.url));
+    const redirectUrl = new URL('/log-in', request.url);
+    Sentry.captureMessage(`Redirecting unauthenticated user from ${pathname} to /log-in`, 'warning');
+    return NextResponse.redirect(redirectUrl);
   }
 
   if (isPublicOnlyPath && user) {
-    const message = `Middleware: Authenticated user exists, redirecting from public-only path ${pathname} to /dashboard`;
-    console.warn(message);
-    Sentry.captureMessage(message, 'warning');
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+    const redirectUrl = new URL('/dashboard', request.url);
+    Sentry.captureMessage(`Redirecting authenticated user (ID: ${user.id}) from ${pathname} to /dashboard`, 'warning');
+    return NextResponse.redirect(redirectUrl);
   }
 
-  const finalMessage = `Middleware: Allowing request to ${pathname}. Authenticated user exists: ${!!user}`;
-  console.warn(finalMessage); // Kept as warn as per original, but also logged to Sentry
-  Sentry.captureMessage(finalMessage, 'warning');
+  // If no redirect, return the response. Any updated auth cookies are already set.
   return response;
 }
 
@@ -102,12 +69,12 @@ export const config = {
   matcher: [
     /*
      * Match all request paths except for the ones starting with:
-     * - api (API routes)
+     * - api (API routes, e.g., tRPC)
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
-     * - images (static image files, if you have an /images folder)
+     * - etc.
      */
-    '/((?!_next/static|_next/image|favicon.ico|.*.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };

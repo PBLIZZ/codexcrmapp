@@ -3,29 +3,17 @@
 # Status: pending
 # Dependencies: 54, 4, 6
 # Priority: high
-# Description: Create a reusable SignOutButton component for reliable sign-out functionality across all application surfaces. (Corresponds to original Task 27)
+# Description: [DEPRECATED] Original objectives superseded by Task #211 - Fix, Centralize, and Standardize Logout Functionality
 # Details:
-
+This implementation has been replaced by a comprehensive logout standardization effort. All sign-out functionality requirements are now addressed in Task #211.
 
 # Test Strategy:
-
+No testing required - functionality moved to Task #211
 
 # Subtasks:
-## 1. Design SignOutButton component API and appearance [pending]
+## 4. Redirect to centralized logout implementation (Task #211) [pending]
 ### Dependencies: None
-### Description: Define the component interface, props, and visual design for the SignOutButton component
+### Description: All sign-out functionality development moved to Task #211 - Fix, Centralize, and Standardize Logout Functionality
 ### Details:
-Create a design specification for the SignOutButton component including: required props (e.g., size, variant, custom text), default appearance (colors, dimensions, hover states), accessibility considerations (keyboard navigation, ARIA attributes), and responsive behavior. Create mockups or wireframes showing different states (default, hover, active, loading).
-
-## 2. Implement sign-out logic with session cleanup [pending]
-### Dependencies: 27.1
-### Description: Develop the core functionality to handle user sign-out with proper session management
-### Details:
-Implement the sign-out handler function that will: call the appropriate authentication service method to log the user out, clear any stored tokens or credentials from localStorage/cookies, reset the application state related to user authentication, handle any loading states during the sign-out process, and implement proper error handling. Ensure the component provides feedback during the sign-out process.
-
-## 3. Integrate SignOutButton into application surfaces [pending]
-### Dependencies: 27.1, 27.2
-### Description: Add the SignOutButton component to relevant parts of the application with appropriate styling
-### Details:
-Identify all locations where the SignOutButton should appear (e.g., navigation bar, user profile dropdown, settings page). Integrate the component into these locations with appropriate styling that matches the surrounding UI. Ensure the button is only visible when a user is authenticated. Add any necessary context providers or hooks to make the sign-out functionality available throughout the application.
+This component implementation is no longer needed. Refer to Task #211 for the updated approach to logout functionality which includes standardization across the application.
 

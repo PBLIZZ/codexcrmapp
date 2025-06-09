@@ -15,7 +15,9 @@ import {
   CardFooter,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { supabase } from '@/lib/supabase/client';
+import { createClient } from '@/lib/supabase/client';
+
+const supabase = createClient();
 
 // Google Icon SVG Component (copied from log-in/page.tsx for now)
 const EyeIcon = ({ className }: { className?: string }) => (
@@ -178,7 +180,7 @@ export default function SignUpPage() {
     setIsLoading(true);
     try {
       // Attempt sign up with email confirmation redirect
-      const { data: _data, error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email: validationResult.data.email, // Use validated email
         password: validationResult.data.password, // Use validated password
         options: {
@@ -199,10 +201,13 @@ export default function SignUpPage() {
           setMessage(error.message);
           setMessageType('error');
         }
+      } else if (data.session) {
+        // If session exists, navigate to dashboard
+        window.location.href = '/dashboard';
+        return;
       } else {
         setMessage('Check your email to confirm your account!'); // Updated message
         setMessageType('success');
-        // router.push('/sign-up/confirmation'); // Keep user on page to see message
       }
     } catch (err) {
       setMessage(
