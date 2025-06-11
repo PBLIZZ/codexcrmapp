@@ -15,7 +15,7 @@ import {
   CsvValidationError,
   ValidatedContactData,
 } from '@/lib/csv-utils'; // Removed ParsedCsvRow, Added ValidatedContactData
-import { api } from '@/lib/trpc/client';
+import { api } from '@/lib/trpc';
 
 // Define the expected response structure from the importCsvData mutation (matching backend's importCsvDataOutputSchema)
 interface ContactImportResult {

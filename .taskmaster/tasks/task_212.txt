@@ -1,0 +1,84 @@
+# Task ID: 212
+# Title: Database Schema Refactoring for AI-Enhanced CRM
+# Status: done
+# Dependencies: None
+# Priority: high
+# Description: Refactor the Supabase database schema to support new features including contact enrichment, AI insights, and relationship tracking for wellness professionals.
+# Details:
+Implement the following schema changes in Supabase:
+
+1. Enhance contacts table with additional fields for wellness journey tracking
+2. Create contact_profiles table for extended profile information
+3. Create sessions table for tracking client interactions
+4. Create ai_actions table to track AI-generated suggestions and approval status
+5. Create notes table with structure for AI analysis and tagging
+6. Implement proper relationships and foreign keys between tables
+7. Set up appropriate indexes for performance optimization
+
+Implementation details:
+- Use Supabase migrations for schema changes (npx supabase migration new ...)
+- Define TypeScript types for all database entities
+- Implement Row Level Security (RLS) policies for data protection
+- Set up appropriate triggers for maintaining data integrity
+- Use Supabase's PostgREST API for efficient querying
+
+Example schema for ai_actions table:
+```sql
+CREATE TABLE ai_actions (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES auth.users(id) NOT NULL,
+  contact_id UUID REFERENCES contacts(id),
+  action_type TEXT NOT NULL,
+  suggestion TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending',
+  feedback TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+```
+
+# Test Strategy:
+1. Write unit tests for database schema validation using Supabase's JavaScript client
+2. Test data integrity with sample data insertion and relationship validation
+3. Verify RLS policies work correctly for different user roles
+4. Performance testing for common queries to ensure proper indexing
+5. Validate type definitions against actual database schema
+6. Test migration scripts in a staging environment before production deployment
+
+# Subtasks:
+## 1. Design Core Database Schema Structure [done]
+### Dependencies: None
+### Description: Create comprehensive database schema design with all tables, relationships, constraints, and indexing strategy for the application entities
+### Details:
+Define primary tables (users, profiles, posts, comments, etc.), establish foreign key relationships, design composite indexes for query optimization, and create entity relationship diagrams. Include data types, constraints, and normalization considerations.
+
+## 2. Create Database Migration Scripts [done]
+### Dependencies: 212.1
+### Description: Develop sequential migration scripts to create all database tables, indexes, and constraints in the correct order
+### Details:
+Write SQL migration files for table creation, foreign key establishment, index creation, and initial data seeding. Ensure migrations are reversible and handle dependency order correctly. Include version control and rollback capabilities.
+
+## 3. Implement Row Level Security (RLS) Policies [done]
+### Dependencies: 212.2
+### Description: Create and configure RLS policies for each table to ensure proper data access control and security
+### Details:
+Define RLS policies for user data isolation, role-based access control, and data privacy. Implement policies for SELECT, INSERT, UPDATE, and DELETE operations. Test policy effectiveness and performance impact.
+
+## 4. Generate TypeScript Type Definitions [done]
+### Dependencies: 212.2
+### Description: Create comprehensive TypeScript interfaces and types that match the database schema structure
+### Details:
+Generate TypeScript interfaces for each database table, including optional fields, relationships, and computed properties. Create union types for enums, utility types for partial updates, and ensure type safety across the application.
+
+## 5. Create Database Query Helpers and Utilities [done]
+### Dependencies: 212.3, 212.4
+### Description: Develop reusable database query functions, connection utilities, and ORM configuration for each entity
+### Details:
+Build typed query builders, CRUD operation helpers, transaction utilities, and connection pooling configuration. Include error handling, query optimization, and logging mechanisms for database operations.
+
+## 6. Validate Schema Integration and Performance Testing [done]
+### Dependencies: 212.5
+### Description: Conduct comprehensive testing of the database schema, migrations, RLS policies, and TypeScript integration
+### Details:
+Execute integration tests for all database operations, validate RLS policy enforcement, test migration rollbacks, verify TypeScript type accuracy, and conduct performance benchmarking. Include load testing and query optimization validation.
+

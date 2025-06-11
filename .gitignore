@@ -81,3 +81,5 @@ node_modules/
 
 # Codeium Windsurf specific config
 .codeium/windsurf/mcp_config.json
+*storybook.log
+storybook-static

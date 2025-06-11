@@ -1,0 +1,138 @@
+# Task ID: 215
+# Title: Implement Contact Relationship Hub with Timeline Visualization
+# Status: in-progress
+# Dependencies: 212, 213, 226, 227
+# Priority: high
+# Description: Develop the Contact Relationship Hub module with enhanced contact list, detailed contact cards, wellness journey timelines, and AI-powered relationship insights.
+# Details:
+Create a comprehensive contact management system with the following features:
+
+1. Enhanced contact list with:
+   - Customizable columns
+   - Bulk actions
+   - Advanced filtering and sorting
+   - Quick action buttons
+2. Detailed contact cards with:
+   - Wellness journey timeline visualization
+   - Session history with note-taking capabilities
+   - Client-submitted media integration placeholder
+   - Referral tracking visualization
+3. AI-powered relationship insights panel
+4. Group management interface
+5. Quick email/message composers
+
+Implementation details:
+- Use TanStack Table v8+ for the contact list with advanced features
+- Implement virtualized lists for performance with large contact databases
+- Create a timeline visualization component using a custom React component
+- Use tRPC procedures for data fetching with proper pagination
+- Implement optimistic UI updates for better user experience
+- Use React Hook Form for quick message composers
+
+Example contact list implementation:
+```tsx
+// components/contacts/ContactList.tsx
+import { useState } from 'react';
+import {
+  useReactTable,
+  getCoreRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  getFilteredRowModel,
+  ColumnDef,
+  flexRender,
+} from '@tanstack/react-table';
+import { trpc } from '@/lib/trpc';
+
+export function ContactList() {
+  const [sorting, setSorting] = useState([]);
+  const [columnFilters, setColumnFilters] = useState([]);
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 20 });
+  
+  const { data, isLoading } = trpc.contacts.list.useQuery({
+    page: pagination.pageIndex,
+    limit: pagination.pageSize,
+    filters: columnFilters,
+    sorting,
+  });
+  
+  const columns = [
+    // Define columns here
+  ];
+  
+  const table = useReactTable({
+    data: data?.contacts || [],
+    columns,
+    state: {
+      sorting,
+      columnFilters,
+      pagination,
+    },
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    onPaginationChange: setPagination,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    manualPagination: true,
+    pageCount: data?.pageCount || 0,
+  });
+  
+  // Render table UI
+}
+```
+
+# Test Strategy:
+1. Unit tests for contact list filtering, sorting, and pagination
+2. Integration tests for contact data fetching and manipulation
+3. Component tests for timeline visualization with sample data
+4. End-to-end tests for contact creation, editing, and deletion workflows
+5. Performance testing with large datasets (1000+ contacts)
+6. Accessibility testing for all contact management interfaces
+7. Visual regression tests for timeline visualization
+8. User acceptance testing with wellness professionals to validate the relationship-focused approach
+
+# Subtasks:
+## 1. Contact List Table Implementation [pending]
+### Dependencies: None
+### Description: Develop a comprehensive contact list table with advanced features including column sorting, resizing, virtual scrolling, bulk selection, and inline editing capabilities
+### Details:
+Create a data table component with features like sortable columns, column reordering, row selection, pagination, search functionality, and support for custom cell renderers. Implement virtual scrolling for performance with large datasets.
+
+## 2. Timeline Visualization Component [pending]
+### Dependencies: None
+### Description: Build a custom timeline component to display contact interaction history, communication events, and relationship progression over time
+### Details:
+Design and implement an interactive timeline with zoom capabilities, event markers, filtering by event types, and smooth animations. Support different view modes (daily, weekly, monthly) and event categorization.
+
+## 3. Contact Detail Cards [pending]
+### Dependencies: 215.1
+### Description: Create detailed contact cards with comprehensive information display, edit modes, and relationship mapping
+### Details:
+Develop expandable contact cards showing personal information, communication history, tags, notes, and related contacts. Include quick action buttons, photo upload, and social media integration.
+
+## 4. Filtering and Sorting System [pending]
+### Dependencies: 215.1
+### Description: Implement advanced filtering and sorting capabilities with multiple criteria, saved filters, and real-time search
+### Details:
+Build a comprehensive filtering system supporting multiple filter types (text, date ranges, tags, categories), boolean operators, saved filter presets, and dynamic search with autocomplete suggestions.
+
+## 5. AI Insights Integration [pending]
+### Dependencies: 215.1, 215.2, 215.3
+### Description: Integrate AI-powered features for contact analysis, relationship insights, communication suggestions, and predictive analytics
+### Details:
+Implement AI services for contact scoring, relationship strength analysis, communication pattern recognition, follow-up suggestions, and automated tagging. Include sentiment analysis and engagement predictions.
+
+## 6. Performance Optimization for Large Datasets [pending]
+### Dependencies: 215.1, 215.4
+### Description: Optimize application performance for handling large contact databases with efficient data loading, caching, and memory management
+### Details:
+Implement lazy loading, data virtualization, efficient caching strategies, database indexing optimization, and memory leak prevention. Add performance monitoring and optimization for search and filter operations.
+
+## 7. System Integration and Testing [pending]
+### Dependencies: 215.1, 215.2, 215.3, 215.4, 215.5, 215.6
+### Description: Integrate all components, conduct comprehensive testing, and ensure seamless functionality across the entire contact management system
+### Details:
+Perform integration testing, user acceptance testing, performance testing with large datasets, cross-browser compatibility testing, and accessibility compliance verification. Optimize component interactions and data flow.
+

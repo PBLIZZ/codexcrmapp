@@ -13,7 +13,8 @@
     "composite": true,
     "jsx": "react-jsx",
     "module": "esnext",
-    "target": "es2020"
+    "target": "es2020",
+    "allowSyntheticDefaultImports": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "files": [],

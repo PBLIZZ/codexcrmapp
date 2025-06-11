@@ -4,9 +4,9 @@
   "rsc": true,
   "tsx": true,
   "tailwind": {
-    "config": "",
+    "config": "tailwind.config.js",
     "css": "src/styles/globals.css",
-    "baseColor": "zinc",
+    "baseColor": "slate",
     "cssVariables": true
   },
   "iconLibrary": "lucide-react",
@@ -14,6 +14,7 @@
     "components": "@codexcrm/ui/components",
     "utils": "@codexcrm/ui/lib/utils",
     "hooks": "@codexcrm/ui/hooks",
-    "lib": "@codexcrm/ui/lib"
+    "lib": "@codexcrm/ui/lib",
+    "ui": "@codexcrm/ui/components/ui"
   }
 }

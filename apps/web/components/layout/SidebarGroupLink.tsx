@@ -17,7 +17,7 @@ export function SidebarGroupLink({ group }: { group: Group }) {
   const pathname = usePathname();
   const params = useSearchParams();
 
-  const isActive = params.get('group') === group.id && pathname === '/contacts';
+  const isActive = params?.get('group') === group.id && pathname === '/contacts';
 
   return (
     <button

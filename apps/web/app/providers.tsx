@@ -4,11 +4,11 @@ import type { AppRouter } from '@codexcrm/server/src/root';
 import { QueryClient, QueryClientProvider, QueryCache, MutationCache } from '@tanstack/react-query';
 import { httpBatchLink } from '@trpc/client';
 import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
-import React from 'react';
+import * as React from 'react';
 import superjson from 'superjson';
 
 // Import the tRPC client from the correct location
-import { api, API_VERSION } from '@/lib/trpc/client';
+import { api, API_VERSION } from '@/lib/trpc';
 
 // Export types for inputs and outputs
 

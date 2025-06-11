@@ -1,10 +1,7 @@
-import { ContactsContent } from './ContactsContent'; // Import the extracted contact component
+'use client';
 
-/**
- * Server component for the Contacts page.
- * Authentication is handled by middleware.
- */
+import { ContactsLayout } from './ContactsLayout';
+
 export default function ContactsPage() {
-  // Render the contact component that handles data fetching and display
-  return <ContactsContent />;
+  return <ContactsLayout />;
 }

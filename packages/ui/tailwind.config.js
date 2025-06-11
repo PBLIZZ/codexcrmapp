@@ -2,7 +2,8 @@
 module.exports = {
   darkMode: ["class"],
   content: [
-    './src/**/*.{ts,tsx}', 
+    './src/**/*.{ts,tsx}',
+    '../../apps/web/**/*.{js,ts,jsx,tsx,mdx}'
   ],
   prefix: "", 
   theme: {
@@ -21,7 +22,12 @@ module.exports = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "hsl(var(--primary))",
+          DEFAULT: "oklch(0.70 0.12 183)", // Teal brand
+          50: "oklch(0.95 0.02 183)",
+          100: "oklch(0.90 0.04 183)",
+          500: "oklch(0.70 0.12 183)",
+          600: "oklch(0.60 0.12 183)",
+          700: "oklch(0.50 0.12 183)",
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
@@ -37,7 +43,11 @@ module.exports = {
           foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
+          DEFAULT: "oklch(0.76 0.16 56)", // Orange 400
+          50: "oklch(0.95 0.03 56)",
+          100: "oklch(0.90 0.06 56)",
+          400: "oklch(0.76 0.16 56)",
+          500: "oklch(0.70 0.16 56)",
           foreground: "hsl(var(--accent-foreground))",
         },
         popover: {

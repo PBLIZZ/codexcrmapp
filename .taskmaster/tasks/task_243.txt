@@ -1,0 +1,73 @@
+# Task ID: 243
+# Title: Refactor Codebase to Use Relative Paths for Monorepo Structure
+# Status: pending
+# Dependencies: 184, 210
+# Priority: medium
+# Description: Refactor the codebase to change absolute filepaths to relative paths to better align with the monorepo structure, improving maintainability and reducing import errors.
+# Details:
+This task involves systematically updating file imports throughout the codebase to use relative paths instead of absolute paths, ensuring compatibility with the monorepo architecture:
+
+1. Identify all files using absolute paths:
+   - Scan the entire codebase for import statements using absolute paths (e.g., imports starting with '@/' or '/' or referencing packages by name)
+   - Focus on key directories: apps/web, packages/server, and shared libraries
+
+2. Establish consistent path resolution rules:
+   - For imports within the same package/app: Use relative paths (e.g., `import { Component } from '../components/Component'`)
+   - For imports across packages: Use package references defined in tsconfig paths (e.g., `import { type } from '@myapp/shared'`)
+
+3. Update import statements:
+   - Replace absolute paths with relative paths
+   - Example:
+     ```typescript
+     // Before
+     import { ContactForm } from '@/components/contacts/ContactForm';
+     
+     // After
+     import { ContactForm } from '../../components/contacts/ContactForm';
+     ```
+
+4. Update tsconfig.json files:
+   - Ensure path aliases are correctly configured in all tsconfig.json files
+   - Verify baseUrl and paths settings are consistent across packages
+
+5. Update build configurations:
+   - Ensure webpack, vite, or other bundler configurations properly resolve the relative paths
+   - Update any path-related plugins or settings
+
+6. Special considerations:
+   - Handle dynamic imports correctly
+   - Ensure test files maintain correct imports
+   - Update any path utilities or helper functions that construct file paths
+
+7. Documentation:
+   - Update documentation to reflect the new path resolution strategy
+   - Create guidelines for future development to maintain consistency
+
+# Test Strategy:
+1. Static Analysis:
+   - Run ESLint with import/no-absolute-path rule enabled to verify no absolute paths remain
+   - Use TypeScript compiler to check for any type errors resulting from path changes
+
+2. Build Verification:
+   - Run the build process for all packages to ensure no build errors
+   - Verify that all imports are correctly resolved during build time
+
+3. Runtime Testing:
+   - Start the application and navigate through major features
+   - Verify that all components load correctly without console errors related to imports
+
+4. Cross-Package Testing:
+   - Test functionality that relies on imports between different packages
+   - Verify that shared components and utilities are correctly imported and function as expected
+
+5. CI/CD Pipeline:
+   - Ensure CI/CD pipeline successfully builds and tests the application
+   - Verify that deployment processes work correctly with the updated path structure
+
+6. Code Review:
+   - Have team members review the changes to ensure consistency
+   - Verify that the established path conventions are followed throughout
+
+7. Documentation Testing:
+   - Verify that any path examples in documentation are updated
+   - Test that developer onboarding processes work with the new path structure

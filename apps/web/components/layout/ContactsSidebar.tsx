@@ -1,250 +1,227 @@
-'use client';
+"use client"
 
-import {
-  ChevronRight,
-  Folder,
-  // Home, // Home was unused
-  Settings,
-  Users,
-  // Calendar, // Calendar was unused
-  // BarChart, // BarChart was unused
-  // MessagesSquare, // MessagesSquare was unused
-  // Star, // Star was unused
-  PlusCircle,
-  Upload,
-  // X // X was unused
-} from 'lucide-react';
-import Link from 'next/link';
-import { usePathname, useSearchParams, useRouter } from 'next/navigation'; // Combined useRouter
-import * as React from 'react'; // Import React namespace
-import { useState } from 'react';
+import { useState } from "react"
+import { Users, UserPlus, Upload, PlusCircle, Tag, X } from "lucide-react"
+import { NavUser } from "@/components/layout/nav-user"
+import { api } from "@/lib/trpc"
 
-import { SidebarGroupLink } from './SidebarGroupLink'; // Assuming this path is correct
-
-import { AddContactModal } from '@/components/contacts/AddContactModal';
-import { QuickCreateGroupButton } from '@/components/groups/QuickCreateGroupButton'; // Assuming this path
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible';
-import { api } from '@/lib/trpc';
-import { cn } from '@/lib/utils';
-
+// Define the Group type based on the expected structure
 interface Group {
-  id: string;
-  name: string;
-  emoji?: string;
-  color?: string;
-  contactCount?: number;
-  // _count?: { // Keeping for reference if API still sends it, but prefer contactCount
-  //   contacts: number;
-  // };
+  id: string
+  name: string
+  emoji?: string
+  memberCount?: number
 }
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarRail,
+  SidebarProvider,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+} from "@/components/ui/sidebar"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
-interface ContactsSidebarProps {
-  totalContacts?: number;
-}
-
-export function ContactsSidebar({ totalContacts = 0 }: ContactsSidebarProps) {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const utils = api.useUtils(); // Get tRPC utils
-
-  const [isGroupsOpen, setIsGroupsOpen] = useState(true);
-  const selectedGroupId = searchParams.get('group') || '';
-
-  // Fetch groups data with contact counts
-  const { data: groupsData = [] } = api.groups.list.useQuery(undefined, {
-    // isLoadingGroups removed as not used
-    staleTime: 30000,
-    refetchOnWindowFocus: false,
+export function ContactsSidebar() {
+  const [isCreateGroupOpen, setIsCreateGroupOpen] = useState(false)
+  const [newGroupName, setNewGroupName] = useState("")
+  const [selectedEmoji, setSelectedEmoji] = useState("🏷️")
+  
+  // Available emojis for group selection
+  const emojis = ["🏷️", "🧘", "💆", "👑", "🆕", "💼", "🌟", "🔥", "💯", "🎯"]
+  
+  // Fetch groups from the database using tRPC
+  const { data: fetchedGroups } = api.groups.list.useQuery()
+  
+  // Use fetched groups if available, otherwise use mock data
+  const groups: Group[] = fetchedGroups || [
+    { id: "1", name: "Yoga Enthusiasts", emoji: "🧘", memberCount: 12 },
+    { id: "2", name: "Massage Clients", emoji: "💆", memberCount: 8 },
+    { id: "3", name: "VIP Customers", emoji: "👑", memberCount: 5 },
+    { id: "4", name: "New Clients", emoji: "🆕", memberCount: 3 },
+  ]
+  
+  // Get the tRPC utils for cache invalidation
+  const utils = api.useUtils();
+  
+  // Get the create group mutation
+  const createGroupMutation = api.groups.save.useMutation({
+    onSuccess: () => {
+      // Invalidate the groups query to refetch the list
+      utils.groups.list.invalidate();
+      
+      // Reset form and close dialog
+      setNewGroupName("");
+      setSelectedEmoji("🏷️");
+      setIsCreateGroupOpen(false);
+    },
+    onError: (error) => {
+      console.error("Error creating group:", error);
+      // You could add error handling UI here
+    }
   });
-
-  const groups: Group[] = groupsData as Group[]; // Assert type if API returns it correctly
-
-  const isActive = (path: string) => {
-    if (path === '/') return pathname === '/';
-    return pathname.startsWith(path);
-  };
-
-  const secondaryNavItems = [
-    { href: '/settings', label: 'Settings', icon: Settings },
-  ];
-
-  // Internal component for the "Add Contact" button and its modal logic
-  function AddContactSidebarButton() {
-    const [open, setOpen] = React.useState(false);
-
-    const handleModalCloseAndRefresh = () => {
-      setOpen(false);
-      // Invalidate contacts list to show the new contact
-      utils.contacts.list.invalidate();
-
-      // Optional: Clear ?new=true from URL if it was used to open this
-      const currentParams = new URLSearchParams(
-        Array.from(searchParams.entries())
-      );
-      if (currentParams.get('new') === 'true') {
-        currentParams.delete('new');
-        // Ensure pathname is defined, fallback if needed. router.pathname might not exist in app router directly
-        router.replace(`${pathname}?${currentParams.toString()}`, {
-          scroll: false,
-        });
-      }
-    };
-
-    return (
-      <>
-        <Button
-          onClick={() => setOpen(true)}
-          className={cn(
-            'w-full flex items-center gap-2 ml-2 px-3 py-2 rounded-md text-sm font-semibold shadow-md',
-            'bg-gradient-to-r from-teal-400 to-orange-500 text-white border-0',
-            'hover:from-teal-500 hover:to-orange-600',
-            'focus:ring-2 focus:ring-orange-400 focus:outline-none',
-            'justify-start' // Tailwind class for justify-content: flex-start;
-          )}
-          // No inline style prop needed here for justify-content
-        >
-          <PlusCircle className="w-4 h-4 mr-2" />
-          Add Contact
-        </Button>
-        <AddContactModal
-          open={open}
-          onOpenChange={setOpen}
-          onContactAdded={handleModalCloseAndRefresh}
-          showTriggerButton={false} // IMPORTANT: Tell modal not to show its own button
-        />
-      </>
-    );
+  
+  // Handle group creation
+  const handleCreateGroup = () => {
+    if (newGroupName.trim()) {
+      // Call the API to create the group
+      createGroupMutation.mutate({
+        name: newGroupName,
+        emoji: selectedEmoji
+      });
+    }
   }
-
   return (
-    <div className="h-full flex flex-col">
-      {/* Contacts Section */}
-      <div className="px-3 py-4 mt-2">
-        <div className="flex items-center justify-between px-3 py-2 text-sm">
-          <div className="flex items-center">
-            <Users className="w-4 h-4 mr-3" />
-            <span className="font-medium">Contacts</span>
-          </div>
-        </div>
-        <div className="mt-1 space-y-1">
-          <button
-            className={cn(
-              'flex items-center justify-between ml-2 px-3 py-2 rounded-md cursor-pointer text-sm w-full text-left', // Added text-left
-              !selectedGroupId
-                ? 'bg-primary/10 text-primary font-medium'
-                : 'hover:bg-muted text-muted-foreground'
-            )}
-            onClick={() => {
-              router.push('/contacts');
-            }}
-          >
-            <div className="flex items-center">
-              <Users className="w-4 h-4 mr-2" />
-              <span>All Contacts</span>
-            </div>
-            <Badge variant="secondary" className="ml-auto">
-              {totalContacts}
-            </Badge>
-          </button>
+    <SidebarProvider>
+      <Sidebar collapsible="icon" className="h-[calc(100vh-6rem)] sticky top-20 bg-white rounded-lg shadow-sm border">
+        <SidebarHeader />
+        <SidebarContent>
+          {/* Contacts Navigation */}
+          <SidebarGroup>
+            <SidebarGroupLabel>Contacts</SidebarGroupLabel>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link href="/contacts">
+                    <Users />
+                    <span>All Contacts</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              {/* Groups link */}
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link href="/groups">
+                    <Users />
+                    <span>Groups</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link href="/contacts/import">
+                    <Upload />
+                    <span>Import Contacts</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroup>
 
-          {/* Add Contact Modal Button */}
-          <AddContactSidebarButton />
+          {/* Quick Actions */}
+          <SidebarGroup>
+            <SidebarGroupLabel>Quick Actions</SidebarGroupLabel>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link href="/contacts/new" className="flex items-center w-full">
+                    <UserPlus />
+                    <span>Add Contact</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton onClick={() => setIsCreateGroupOpen(true)}>
+                  <PlusCircle />
+                  <span>Create New Group</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroup>
 
-          {/* Import Contacts Link */}
-          <Link href="/contacts/import" className="block ml-2">
-            <div className="flex items-center px-3 py-2 rounded-md text-sm hover:bg-muted text-muted-foreground">
-              <Upload className="w-4 h-4 mr-2" />
-              <span>Import Contacts</span>
-            </div>
-          </Link>
-        </div>
-      </div>
-
-      {/* Groups Section */}
-      <div className="px-3 py-2 border-t mt-4">
-        <Collapsible open={isGroupsOpen} onOpenChange={setIsGroupsOpen}>
-          <CollapsibleTrigger asChild>
-            <button className="flex items-center justify-between px-3 py-2 text-sm cursor-pointer hover:bg-muted rounded-md w-full text-left">
-              {' '}
-              {/* Changed to button */}
-              <div className="flex items-center">
-                <Folder className="w-4 h-4 mr-3" />
-                <span className="font-medium">Groups</span>
-              </div>
-              <ChevronRight
-                className={cn(
-                  'w-4 h-4 transition-transform',
-                  isGroupsOpen && 'transform rotate-90'
-                )}
-              />
-            </button>
-          </CollapsibleTrigger>
-          <CollapsibleContent>
-            <div className="mt-1 space-y-1">
-              {groups.length > 0 ? (
-                groups.map(
-                  (
-                    group // Removed : Group type hint here as it's inferred
-                  ) => <SidebarGroupLink key={group.id} group={group} />
-                )
-              ) : (
-                <div className="ml-2 px-3 py-2 text-sm text-muted-foreground">
-                  No groups yet. Create your first group below.
-                </div>
-              )}
-
-              <div className="ml-2 mb-1 mt-2">
-                {' '}
-                {/* Added mt-2 for spacing */}
-                <QuickCreateGroupButton />
-              </div>
-
-              <Link href="/groups" className="block ml-2">
+          {/* Groups Section */}
+          <SidebarGroup>
+            <SidebarGroupLabel>Groups</SidebarGroupLabel>
+            <SidebarMenu>
+              {groups.map((group: Group) => (
+                <SidebarMenuItem key={group.id}>
+                  <SidebarMenuButton asChild>
+                    <Link href={`/contacts?group=${group.id}`}>
+                      <span className="mr-2">{group.emoji || "🏷️"}</span>
+                      <span>{group.name}</span>
+                      <span className="ml-auto text-xs text-muted-foreground">
+                        {group.memberCount || 0}
+                      </span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
+        </SidebarContent>
+        <SidebarFooter>
+          <NavUser />
+        </SidebarFooter>
+        <SidebarRail />
+      </Sidebar>
+      
+      {/* Create Group Dialog */}
+      <Dialog open={isCreateGroupOpen} onOpenChange={setIsCreateGroupOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Create New Group</DialogTitle>
+            <DialogDescription>
+              Create a new group to organize your contacts. Choose an emoji and enter a name.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="flex flex-wrap gap-2 justify-center">
+              {emojis.map((emoji) => (
                 <Button
-                  variant="ghost"
-                  size="sm"
-                  className="w-full justify-start text-xs text-muted-foreground pl-0"
+                  key={emoji}
+                  variant={selectedEmoji === emoji ? "default" : "outline"}
+                  className="w-10 h-10 p-0 text-lg"
+                  onClick={() => setSelectedEmoji(emoji)}
                 >
-                  {' '}
-                  {/* Adjusted padding */}
-                  <span className="ml-2">Manage Groups</span>
+                  {emoji}
                 </Button>
-              </Link>
+              ))}
             </div>
-          </CollapsibleContent>
-        </Collapsible>
-      </div>
-
-      {/* Secondary Navigation (Settings) - Placed at the very bottom for common sidebar patterns */}
-      <div className="mt-auto px-3 py-2 border-t">
-        {' '}
-        {/* mt-auto pushes it to the bottom */}
-        <nav className="space-y-1">
-          {secondaryNavItems.map((item) => (
-            <Link key={item.href} href={item.href}>
-              <div
-                className={cn(
-                  'flex items-center px-3 py-2 rounded-md text-sm transition-colors',
-                  isActive(item.href)
-                    ? 'bg-primary/10 text-primary font-medium'
-                    : 'text-muted-foreground hover:bg-muted'
-                )}
-              >
-                {item.icon && <item.icon className="w-4 h-4 mr-3" />}{' '}
-                {/* Ensure icon exists */}
-                {item.label}
-              </div>
-            </Link>
-          ))}
-        </nav>
-      </div>
-    </div>
-  );
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="name" className="text-right">
+                Name
+              </label>
+              <Input
+                id="name"
+                value={newGroupName}
+                onChange={(e) => setNewGroupName(e.target.value)}
+                className="col-span-3"
+                placeholder="Enter group name"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsCreateGroupOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleCreateGroup}
+              disabled={createGroupMutation.isPending || !newGroupName.trim()}
+            >
+              {createGroupMutation.isPending ? "Creating..." : "Create Group"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </SidebarProvider>
+  )
 }

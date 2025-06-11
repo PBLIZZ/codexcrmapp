@@ -4,6 +4,7 @@
   "compilerOptions": {
     /* === App‑specific tweaks === */
     "baseUrl": ".", // enables "@/..." alias below
+    "moduleResolution": "bundler",
     "paths": {
       "@/*": [
         "./*",     // allow imports from root (components/, lib/, app/, etc.)

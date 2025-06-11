@@ -1,17 +1,39 @@
-// apps/web/app/layout.tsx
+/**
+ * Root Layout - Main Application Container
+ * 
+ * This is the top-level layout component defined in the Next.js App Router.
+ * While not the absolute root (Next.js itself adds providers above this),
+ * it's the highest level layout we control as developers.
+ * 
+ * It provides core functionality and UI structure that's shared across all pages:
+ * 
+ * 1. Font configuration (Geist Sans and Geist Mono)
+ * 2. Global CSS imports and theme styling
+ * 3. Authentication state management via Supabase
+ * 4. Global providers (tRPC, auth context, etc.)
+ * 5. Main application shell (MainLayout component)
+ * 6. Toast notifications system
+ * 
+ * Every page in the application inherits from this layout, ensuring consistent
+ * styling, authentication, and core functionality throughout the app.
+ * 
+ * Date: June 11, 2025
+ */
+
 'use client';
 
 import { Geist, Geist_Mono } from 'next/font/google'; // Your fonts
 
 import './globals.css';
-// import '@codexcrm/ui/dist/index.css'; // Styles from our new UI library
+import './theme.css'; // Custom theme for wellness CRM
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { Providers } from './providers';
+import { StagewiseToolbar } from '@stagewise/toolbar-next';
+import { ReactPlugin } from '@stagewise-plugins/react';
 
 import { MainLayout } from '@/components/layout/MainLayout'; // Main app shell
-import { Navbar } from '@/components/layout/Navbar'; // The global Navbar for auth pages
 import { Toaster } from '@/components/ui/sonner';
 import { createClient } from '@/lib/supabase/client'; // Your Supabase client
 
@@ -53,7 +75,7 @@ export default function RootLayout({
     '/reset-password',
     '/sign-up/confirmation',
   ];
-  const isAuthPage = authPages.includes(pathname);
+  const isAuthPage = pathname ? authPages.includes(pathname) : false;
 
   useEffect(() => {
     const getSessionAndSetUser = async () => {
@@ -97,9 +119,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          {' '}
-          {/* tRPC, React Query Providers */}
           <Toaster />
+          <StagewiseToolbar config={{ plugins: [ReactPlugin] }} />
           {user && !isAuthPage ? (
             // Authenticated user, not on an auth page: Render MainLayout which includes its own Navbar
             <MainLayout
@@ -111,15 +132,13 @@ export default function RootLayout({
             </MainLayout>
           ) : isAuthPage ? (
             // Unauthenticated (or authenticated but on auth page, middleware will redirect if needed)
-            // Render the auth page directly, possibly with a simpler Navbar
+            // Render the auth page directly
             <>
-              {/* <Navbar user={user} />  // You might want a simpler Navbar for auth pages or no navbar at all */}
               {children}
             </>
           ) : (
             // Unauthenticated and not on an auth page (e.g. public homepage, or middleware will redirect to /sign-in)
             <>
-              {/* <Navbar user={user} /> // Simple Navbar for public pages */}
               {children}
             </>
           )}

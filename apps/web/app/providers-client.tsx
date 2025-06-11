@@ -7,7 +7,7 @@ import React, { useEffect } from 'react';
 import superjson from 'superjson';
 
 import { logDebugInfo } from '@/lib/debug-helper';
-import { api, API_VERSION } from '@/lib/trpc/client';
+import { api, API_VERSION } from '@/lib/trpc';
 
 export default function ClientProviders({
   children,

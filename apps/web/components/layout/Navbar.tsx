@@ -48,6 +48,8 @@ export function Navbar({ user }: NavbarProps) {
 
   // Determine current section color accent - matches logic from your MainLayout.tsx
   const getCurrentSectionPath = (): string => {
+    if (!pathname) return '/dashboard'; // Default if pathname is null
+    
     for (const item of mainNavItems) {
       if (pathname === item.href || pathname.startsWith(`${item.href}/`)) {
         return item.href;
@@ -124,8 +126,8 @@ export function Navbar({ user }: NavbarProps) {
         {/* Desktop Navigation Items - from MainLayout.tsx's header */}
         <div className="hidden md:flex items-center gap-4 lg:gap-6">
           {mainNavItems.map((item) => {
-            const isActive =
-              pathname === item.href || pathname.startsWith(`${item.href}/`);
+            const isActive = pathname ?
+              (pathname === item.href || pathname.startsWith(`${item.href}/`)) : false;
             const sectionColor =
               sectionColors[item.href] || sectionColors['/dashboard'];
 

@@ -1,0 +1,216 @@
+# Task ID: 221
+# Title: Implement Authentication and User Management with Enhanced Profiles
+# Status: pending
+# Dependencies: 212, 213, 237
+# Priority: high
+# Description: Develop enhanced user profiles for practitioners, subscription management capabilities, and settings for AI assistant preferences.
+# Details:
+Create a comprehensive authentication and user management system with the following features:
+
+1. Enhanced user profiles for wellness practitioners
+2. Subscription management capabilities
+3. Settings for AI assistant preferences
+4. User onboarding flow
+5. Role-based access control
+
+Implementation details:
+- Use Supabase Auth for authentication
+- Create custom user profile tables in Supabase
+- Implement subscription management using Stripe or a similar service
+- Create a settings UI for configuring AI assistant preferences
+- Implement a step-by-step onboarding flow for new users
+
+Example user profile schema:
+```sql
+CREATE TABLE practitioner_profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id),
+  display_name TEXT NOT NULL,
+  professional_title TEXT,
+  specialization TEXT,
+  bio TEXT,
+  profile_image_url TEXT,
+  business_name TEXT,
+  business_address JSONB,
+  contact_email TEXT,
+  contact_phone TEXT,
+  website_url TEXT,
+  social_links JSONB,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE user_settings (
+  user_id UUID PRIMARY KEY REFERENCES auth.users(id),
+  theme TEXT DEFAULT 'light',
+  notifications_enabled BOOLEAN DEFAULT TRUE,
+  ai_assistant_enabled BOOLEAN DEFAULT TRUE,
+  ai_assistant_voice TEXT DEFAULT 'neutral',
+  ai_suggestion_frequency TEXT DEFAULT 'medium',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE subscriptions (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES auth.users(id) NOT NULL,
+  stripe_customer_id TEXT,
+  stripe_subscription_id TEXT,
+  plan_id TEXT NOT NULL,
+  status TEXT NOT NULL,
+  current_period_start TIMESTAMP WITH TIME ZONE,
+  current_period_end TIMESTAMP WITH TIME ZONE,
+  cancel_at_period_end BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+```
+
+Example settings UI:
+```tsx
+// components/settings/UserSettings.tsx
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { trpc } from '@/lib/trpc';
+
+const profileFormSchema = z.object({
+  displayName: z.string().min(2).max(50),
+  professionalTitle: z.string().max(100).optional(),
+  specialization: z.string().max(100).optional(),
+  bio: z.string().max(500).optional(),
+  // Other fields
+});
+
+const aiSettingsSchema = z.object({
+  aiAssistantEnabled: z.boolean(),
+  aiAssistantVoice: z.enum(['neutral', 'supportive', 'direct']),
+  aiSuggestionFrequency: z.enum(['low', 'medium', 'high']),
+});
+
+export function UserSettings() {
+  const { data: user, isLoading } = trpc.users.getProfile.useQuery();
+  const updateProfileMutation = trpc.users.updateProfile.useMutation();
+  const updateSettingsMutation = trpc.users.updateSettings.useMutation();
+  
+  const profileForm = useForm({
+    resolver: zodResolver(profileFormSchema),
+    defaultValues: {
+      displayName: user?.displayName || '',
+      professionalTitle: user?.professionalTitle || '',
+      specialization: user?.specialization || '',
+      bio: user?.bio || '',
+      // Other fields
+    },
+  });
+  
+  const aiSettingsForm = useForm({
+    resolver: zodResolver(aiSettingsSchema),
+    defaultValues: {
+      aiAssistantEnabled: user?.settings?.aiAssistantEnabled ?? true,
+      aiAssistantVoice: user?.settings?.aiAssistantVoice || 'neutral',
+      aiSuggestionFrequency: user?.settings?.aiSuggestionFrequency || 'medium',
+    },
+  });
+  
+  const onProfileSubmit = (data) => {
+    updateProfileMutation.mutate(data);
+  };
+  
+  const onAiSettingsSubmit = (data) => {
+    updateSettingsMutation.mutate(data);
+  };
+  
+  if (isLoading) return <div>Loading...</div>;
+  
+  return (
+    <div className="container mx-auto py-10">
+      <h1 className="text-3xl font-bold mb-6">Settings</h1>
+      
+      <Tabs defaultValue="profile">
+        <TabsList>
+          <TabsTrigger value="profile">Profile</TabsTrigger>
+          <TabsTrigger value="ai">AI Assistant</TabsTrigger>
+          <TabsTrigger value="subscription">Subscription</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="profile">
+          <Form {...profileForm}>
+            <form onSubmit={profileForm.handleSubmit(onProfileSubmit)} className="space-y-6">
+              {/* Form fields */}
+              <Button type="submit">Save Profile</Button>
+            </form>
+          </Form>
+        </TabsContent>
+        
+        <TabsContent value="ai">
+          <Form {...aiSettingsForm}>
+            <form onSubmit={aiSettingsForm.handleSubmit(onAiSettingsSubmit)} className="space-y-6">
+              {/* AI settings fields */}
+              <Button type="submit">Save AI Settings</Button>
+            </form>
+          </Form>
+        </TabsContent>
+        
+        <TabsContent value="subscription">
+          {/* Subscription management UI */}
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
+```
+
+# Test Strategy:
+1. Unit tests for form validation logic
+2. Integration tests for user profile CRUD operations
+3. End-to-end tests for complete user settings workflows
+4. Security testing for authentication flows
+5. Performance testing for profile data loading
+6. Accessibility testing for settings forms
+7. User acceptance testing for subscription management
+8. Cross-browser compatibility testing
+
+# Subtasks:
+## 1. Supabase Auth Setup [pending]
+### Dependencies: None
+### Description: Configure Supabase authentication system with email/password, social logins, and security policies
+### Details:
+Set up Supabase project, configure authentication providers (email, Google, GitHub), implement RLS policies, set up JWT configuration, and establish secure session management
+
+## 2. User Profile Schema and UI [pending]
+### Dependencies: 221.1
+### Description: Design and implement user profile database schema and corresponding user interface components
+### Details:
+Create user profiles table with fields for personal info, preferences, and metadata. Build profile management UI with forms for editing profile information, avatar upload, and account settings
+
+## 3. Subscription Management Integration [pending]
+### Dependencies: 221.1, 221.2
+### Description: Integrate subscription billing system with user accounts and implement subscription-based features
+### Details:
+Set up Stripe/payment provider integration, create subscription plans table, implement billing webhooks, build subscription management UI, and handle plan upgrades/downgrades
+
+## 4. Settings Interface [pending]
+### Dependencies: 221.2
+### Description: Create comprehensive user settings interface for account preferences and configuration
+### Details:
+Build settings dashboard with sections for account preferences, notification settings, privacy controls, security options, and theme customization. Include data export/import functionality
+
+## 5. Onboarding Flow [pending]
+### Dependencies: 221.1, 221.2
+### Description: Design and implement user onboarding experience for new account setup and feature introduction
+### Details:
+Create multi-step onboarding wizard including account verification, profile completion, feature tour, initial setup guidance, and welcome messaging system
+
+## 6. Role-Based Access Control Implementation [pending]
+### Dependencies: 221.1, 221.2, 221.3
+### Description: Implement comprehensive role-based access control system with permissions and user roles
+### Details:
+Define user roles and permissions schema, implement middleware for route protection, create admin interface for role management, and establish fine-grained access controls for features and data
+
