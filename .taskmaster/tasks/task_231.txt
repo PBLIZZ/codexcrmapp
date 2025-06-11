@@ -1,0 +1,37 @@
+# Task ID: 231
+# Title: Contextual Navigation System
+# Status: pending
+# Dependencies: 224, 218
+# Priority: medium
+# Description: Build dynamic navigation system that adapts to user context within the application
+# Details:
+Implement navigation with: 1) Top navigation bar with global actions 2) Context-specific sidebars for each module 3) Breadcrumb navigation for deep pages 4) Quick action button groups relevant to current view 5) Recent items and favorites access 6) AI assistant access point integration 7) Mobile-responsive hamburger menu. Use React Router v6 for routing and implement proper navigation state management.
+
+# Test Strategy:
+Navigation flow testing, responsive design validation, accessibility testing for screen readers, and user experience testing for context switching
+
+# Subtasks:
+## 1. Navigation Component Creation [pending]
+### Dependencies: None
+### Description: Create the core navigation component structure with routing capabilities and menu items
+### Details:
+Build the main navigation component with proper routing integration, menu item configuration, and basic navigation logic. Include support for nested routes and dynamic menu generation.
+
+## 2. Context Detection Implementation [pending]
+### Dependencies: 231.1
+### Description: Implement context-aware navigation that adapts based on current route and user state
+### Details:
+Add context detection logic to highlight active navigation items, manage navigation state, and provide contextual navigation options based on current application state and user permissions.
+
+## 3. Responsive Design Implementation [pending]
+### Dependencies: 231.1
+### Description: Implement responsive navigation design for mobile, tablet, and desktop viewports
+### Details:
+Create responsive navigation layouts including mobile hamburger menu, tablet navigation patterns, and desktop navigation bar. Implement breakpoint-based styling and touch-friendly interactions for mobile devices.
+
+## 4. Accessibility Features with Keyboard Navigation [pending]
+### Dependencies: 231.2, 231.3
+### Description: Implement comprehensive accessibility features including keyboard navigation and screen reader support
+### Details:
+Add ARIA labels, keyboard navigation support (Tab, Enter, Arrow keys), focus management, screen reader compatibility, and ensure WCAG compliance. Include skip links and proper semantic markup for assistive technologies.
+

@@ -4,10 +4,10 @@ import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { Database } from '@codexcrm/db'
 
-// This should be a synchronous function
-export function createClient() {
-  // `cookies()` is not async, so no `await` is needed
-  const cookieStore = cookies()
+// This is now an async function since cookies() returns a Promise
+export async function createClient() {
+  // `cookies()` is now async, so we need to await it
+  const cookieStore = await cookies()
 
   return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

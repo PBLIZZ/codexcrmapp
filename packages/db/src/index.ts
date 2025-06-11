@@ -1,17 +1,59 @@
-import {
-  type Database,
-  Tables,
-  TablesInsert,
-  TablesUpdate,
-  Enums,
-} from './database.types';
+import { createClient } from '@supabase/supabase-js';
+import { Database } from './database.types';
+import { getSupabaseClient } from './utils/db-helpers';
+import { 
+  ProjectsRepository,
+  HeadingsRepository,
+  TasksRepository,
+  ChecklistsRepository,
+  TagsRepository,
+  TaskDependenciesRepository,
+  ContactsRepository,
+  SessionsRepository,
+  AiActionsRepository
+} from './repositories';
 
-export { Database, Tables, TablesInsert, TablesUpdate, Enums };
+// Export database types
+export * from './database.types';
 
-// Export convenience type helpers for easier access
-export type Contact = Tables<'contacts'>;
-export type FollowUp = Tables<'follow_ups'>;
-export type Note = Tables<'notes'>;
-export type Payment = Tables<'payments'>;
-export type Program = Tables<'programs'>;
-export type Session = Tables<'sessions'>;
+// Export models
+export * from './models';
+
+// Export repositories
+export { 
+  ProjectsRepository,
+  HeadingsRepository,
+  TasksRepository,
+  ChecklistsRepository,
+  TagsRepository,
+  TaskDependenciesRepository,
+  ContactsRepository,
+  SessionsRepository,
+  AiActionsRepository
+};
+
+// Export utility functions
+export { getSupabaseClient } from './utils/db-helpers';
+
+/**
+ * Create a database client with all repositories
+ * @param supabaseUrl Supabase URL
+ * @param supabaseKey Supabase API key
+ * @returns Object with all repositories
+ */
+export function createDatabaseClient(supabaseUrl: string, supabaseKey: string) {
+  const supabase = createClient<Database>(supabaseUrl, supabaseKey);
+  
+  return {
+    projects: new ProjectsRepository(supabase),
+    headings: new HeadingsRepository(supabase),
+    tasks: new TasksRepository(supabase),
+    checklists: new ChecklistsRepository(supabase),
+    tags: new TagsRepository(supabase),
+    taskDependencies: new TaskDependenciesRepository(supabase),
+    contacts: ContactsRepository, // These are objects, not classes
+    sessions: SessionsRepository, // These are objects, not classes
+    aiActions: AiActionsRepository, // These are objects, not classes
+    supabase
+  };
+}

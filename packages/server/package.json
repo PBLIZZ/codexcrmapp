@@ -10,7 +10,8 @@
     "./src/context": "./src/context.ts",
     "./src/trpc": "./src/trpc.ts",
     "./src/supabaseAdmin": "./src/supabaseAdmin.ts",
-    "./src/routers/*": "./src/routers/*.ts"
+    "./src/routers/*": "./src/routers/*.ts",
+    "./src/utils/openapi": "./src/utils/openapi.ts"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

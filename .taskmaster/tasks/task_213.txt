@@ -1,0 +1,127 @@
+# Task ID: 213
+# Title: Implement Core UI Component Library with Tailwind and Shadcn
+# Status: done
+# Dependencies: 222, 223
+# Priority: high
+# Description: Develop a comprehensive set of reusable UI components using Tailwind CSS and Shadcn UI components that adhere to the wellness aesthetic defined in the PRD.
+# Details:
+Create a component library with the following elements:
+
+1. Configure Tailwind CSS with the wellness-focused color palette (Teal primary, Orange accent)
+2. Set up Shadcn UI components with custom theming
+3. Create the following custom components:
+   - Metric cards with visual indicators
+   - Contact detail cards with tabbed interface
+   - Timeline visualization component
+   - Task cards with priority indicators
+   - AI suggestion components with approval workflow UI
+   - Module-specific sidebars
+   - Quick action button groups
+
+Implementation details:
+- Use Tailwind CSS v3.3+ for styling
+- Implement Shadcn UI v0.4+ components with custom theming
+- Create a theme configuration file for consistent styling
+- Use CSS variables for theming to support future dark mode
+- Implement responsive designs for all components
+- Use React Server Components where appropriate for Next.js optimization
+
+Example component structure:
+```tsx
+// components/ui/MetricCard.tsx
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
+
+interface MetricCardProps {
+  title: string;
+  value: string | number;
+  trend?: 'up' | 'down' | 'neutral';
+  icon?: React.ReactNode;
+  className?: string;
+}
+
+export function MetricCard({ title, value, trend = 'neutral', icon, className }: MetricCardProps) {
+  return (
+    <Card className={cn('overflow-hidden', className)}>
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <CardTitle className="text-sm font-medium">{title}</CardTitle>
+        {icon && <div className="h-4 w-4 text-muted-foreground">{icon}</div>}
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">{value}</div>
+        {trend && (
+          <p className={cn(
+            "text-xs",
+            trend === 'up' && "text-green-500",
+            trend === 'down' && "text-red-500"
+          )}>
+            {trend === 'up' && '↑'}
+            {trend === 'down' && '↓'}
+            {trend === 'neutral' && '→'}
+          </p>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+# Test Strategy:
+1. Create Storybook stories for each component to visualize and test in isolation
+2. Implement component unit tests using React Testing Library
+3. Test responsive behavior using viewport simulation
+4. Accessibility testing using axe-core or similar tools
+5. Visual regression testing to ensure consistent styling
+6. Cross-browser compatibility testing
+7. Performance testing for component rendering efficiency
+
+# Subtasks:
+## 1. Tailwind CSS Configuration Setup [done]
+### Dependencies: None
+### Description: Configure Tailwind CSS with custom design tokens, color palette, typography scales, spacing system, and breakpoints for the component library foundation
+### Details:
+Set up tailwind.config.js with custom theme extensions, configure content paths, add custom utilities, and establish design system tokens including colors, fonts, shadows, and animations
+
+## 2. Shadcn/ui Integration and Base Setup [done]
+### Dependencies: 213.1
+### Description: Initialize Shadcn/ui components library, configure components.json, and set up the base component architecture with proper TypeScript support
+### Details:
+Install and configure Shadcn/ui CLI, set up components directory structure, configure path aliases, and establish base component patterns with proper typing
+
+## 3. Custom Theming System Implementation [done]
+### Dependencies: 213.1, 213.2
+### Description: Create a comprehensive theming system with light/dark mode support, CSS custom properties, and theme context providers
+### Details:
+Implement theme provider with React context, create CSS custom properties for dynamic theming, set up theme switching functionality, and establish theme-aware component patterns
+
+## 4. MetricCard Component Development [done]
+### Dependencies: 213.2, 213.3
+### Description: Build reusable MetricCard component with variants for different data visualization needs, including charts, progress indicators, and statistical displays
+### Details:
+Create MetricCard with props for title, value, trend indicators, optional charts, loading states, and multiple size variants with proper TypeScript interfaces
+
+## 5. ContactCard Component Development [done]
+### Dependencies: 213.2, 213.3
+### Description: Develop ContactCard component with avatar support, contact information display, action buttons, and various layout options
+### Details:
+Build ContactCard with avatar handling, contact details layout, action buttons (call, email, message), status indicators, and responsive design patterns
+
+## 6. Additional Core Components Creation [done]
+### Dependencies: 213.2, 213.3
+### Description: Develop remaining essential components including navigation elements, form components, data display components, and utility components
+### Details:
+Create components like DataTable, FormField, Modal, Dropdown, Tabs, Accordion, and other foundational UI elements with consistent styling and behavior patterns
+
+## 7. Responsive Design Implementation [done]
+### Dependencies: 213.4, 213.5, 213.6
+### Description: Implement comprehensive responsive design patterns across all components with mobile-first approach and adaptive layouts
+### Details:
+Apply responsive design principles to all components, implement mobile-first CSS, create adaptive layouts, test across different screen sizes, and optimize touch interactions
+
+## 8. Storybook Documentation Setup [done]
+### Dependencies: 213.7
+### Description: Configure Storybook for component documentation, create comprehensive stories for all components, and establish design system documentation
+### Details:
+Set up Storybook with proper addons, create stories for each component with all variants and states, document component APIs, add design tokens documentation, and create usage guidelines
+

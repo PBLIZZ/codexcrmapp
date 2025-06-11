@@ -1,0 +1,232 @@
+# Task ID: 219
+# Title: Implement MCP Client Architecture for Third-Party Integrations
+# Status: pending
+# Dependencies: 212, 232
+# Priority: medium
+# Description: Develop the Multi-Channel Platform (MCP) client architecture for integrating with third-party services like Google, Calendly, MailChimp, and social media platforms.
+# Details:
+Create a flexible MCP client architecture with the following features:
+
+1. Google services integration (Calendar, Contacts, Gmail) with two-way sync
+2. Email service integration (Gmail, MailChimp, custom SMTP, SendGrid)
+3. WhatsApp/Twilio for messaging
+4. Social Media Integration (Instagram, Facebook, LinkedIn)
+5. Configuration UI for connections
+
+Implementation details:
+- Create an abstract MCP client interface for consistent integration patterns
+- Implement OAuth flows for third-party authentication
+- Create service-specific adapters for each integration
+- Implement background sync processes using Next.js API routes
+- Create a configuration UI for managing integrations
+- Implement secure credential storage in Supabase
+
+Example MCP client architecture:
+```typescript
+// lib/mcp/types.ts
+export interface McpClientConfig {
+  userId: string;
+  serviceId: string;
+  credentials: Record<string, any>;
+  settings: Record<string, any>;
+}
+
+export interface McpClient<T = any> {
+  connect(): Promise<boolean>;
+  disconnect(): Promise<boolean>;
+  isConnected(): Promise<boolean>;
+  getData(options?: any): Promise<T[]>;
+  sendData(data: any): Promise<boolean>;
+  syncData(direction: 'push' | 'pull' | 'both'): Promise<SyncResult>;
+}
+
+export interface SyncResult {
+  success: boolean;
+  itemsProcessed: number;
+  errors: Error[];
+  timestamp: Date;
+}
+
+// lib/mcp/google-calendar.ts
+import { google } from 'googleapis';
+import { McpClient, McpClientConfig, SyncResult } from './types';
+
+export class GoogleCalendarClient implements McpClient<google.calendar.v3.Event> {
+  private config: McpClientConfig;
+  private auth: any;
+  private calendarClient: any;
+  
+  constructor(config: McpClientConfig) {
+    this.config = config;
+  }
+  
+  async connect(): Promise<boolean> {
+    try {
+      this.auth = new google.auth.OAuth2(
+        process.env.GOOGLE_CLIENT_ID,
+        process.env.GOOGLE_CLIENT_SECRET,
+        process.env.GOOGLE_REDIRECT_URI
+      );
+      
+      this.auth.setCredentials(this.config.credentials);
+      this.calendarClient = google.calendar({ version: 'v3', auth: this.auth });
+      return true;
+    } catch (error) {
+      console.error('Failed to connect to Google Calendar:', error);
+      return false;
+    }
+  }
+  
+  // Implement other interface methods
+}
+```
+
+Configuration UI example:
+```tsx
+// components/integrations/IntegrationCard.tsx
+import { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
+import { trpc } from '@/lib/trpc';
+
+interface IntegrationCardProps {
+  integration: {
+    id: string;
+    name: string;
+    description: string;
+    isConnected: boolean;
+    icon: React.ReactNode;
+  };
+}
+
+export function IntegrationCard({ integration }: IntegrationCardProps) {
+  const [isConnecting, setIsConnecting] = useState(false);
+  
+  const connectMutation = trpc.integrations.connect.useMutation({
+    onSuccess: () => {
+      // Handle successful connection
+    }
+  });
+  
+  const disconnectMutation = trpc.integrations.disconnect.useMutation({
+    onSuccess: () => {
+      // Handle successful disconnection
+    }
+  });
+  
+  const handleConnect = async () => {
+    setIsConnecting(true);
+    
+    if (integration.isConnected) {
+      await disconnectMutation.mutateAsync({ integrationId: integration.id });
+    } else {
+      // For OAuth flows, open a popup window
+      const width = 600;
+      const height = 600;
+      const left = window.screenX + (window.outerWidth - width) / 2;
+      const top = window.screenY + (window.outerHeight - height) / 2;
+      
+      window.open(
+        `/api/auth/${integration.id}`,
+        'Connect to ' + integration.name,
+        `width=${width},height=${height},left=${left},top=${top}`
+      );
+      
+      // Listen for message from popup
+      window.addEventListener('message', (event) => {
+        if (event.data.type === 'INTEGRATION_CONNECTED' && 
+            event.data.integrationId === integration.id) {
+          connectMutation.mutate({
+            integrationId: integration.id,
+            credentials: event.data.credentials
+          });
+        }
+      }, { once: true });
+    }
+    
+    setIsConnecting(false);
+  };
+  
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <CardTitle className="text-sm font-medium">
+          <div className="flex items-center">
+            <div className="mr-2">{integration.icon}</div>
+            {integration.name}
+          </div>
+        </CardTitle>
+        <Switch
+          checked={integration.isConnected}
+          onCheckedChange={handleConnect}
+          disabled={isConnecting}
+        />
+      </CardHeader>
+      <CardContent>
+        <p className="text-sm text-muted-foreground">{integration.description}</p>
+        {integration.isConnected && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="mt-4"
+            onClick={() => {
+              // Open configuration dialog
+            }}
+          >
+            Configure
+          </Button>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+# Test Strategy:
+1. Unit tests for each MCP client implementation
+2. Integration tests with mock third-party APIs
+3. OAuth flow testing in a sandbox environment
+4. End-to-end tests for complete integration workflows
+5. Security testing for credential handling
+6. Performance testing for sync operations
+7. Error handling and recovery testing
+8. User acceptance testing for integration configuration UI
+
+# Subtasks:
+## 1. Abstract MCP Interface Design [pending]
+### Dependencies: None
+### Description: Design and implement the core abstract interface for MCP (Model Context Protocol) that defines the contract for all service integrations, including standardized methods for authentication, data retrieval, and service communication.
+### Details:
+Create base classes and interfaces that establish common patterns for service integration, define standard response formats, implement protocol-level abstractions, and establish the foundation for extensible service architecture.
+
+## 2. OAuth Flow Implementation [pending]
+### Dependencies: 219.1
+### Description: Implement comprehensive OAuth 2.0 and OpenID Connect authentication flows supporting authorization code, PKCE, refresh tokens, and multi-tenant scenarios across different service providers.
+### Details:
+Build secure OAuth handlers, implement token lifecycle management, create authorization URL generation, handle callback processing, implement refresh token rotation, and ensure compliance with OAuth security best practices.
+
+## 3. Service-Specific Adapters [pending]
+### Dependencies: 219.1, 219.2
+### Description: Develop individual adapter implementations for each third-party service, translating service-specific APIs and data formats into the standardized MCP interface while handling service-unique requirements.
+### Details:
+Create adapters for major services (Google, Microsoft, Slack, etc.), implement service-specific API calls, handle rate limiting and pagination, transform data formats to common schema, and manage service-specific authentication nuances.
+
+## 4. Credential Management System [pending]
+### Dependencies: 219.2
+### Description: Build a secure credential storage and management system that handles encryption, token storage, credential rotation, and secure access patterns for multiple service accounts and users.
+### Details:
+Implement encrypted credential storage, create secure key management, build credential lifecycle management, implement access control mechanisms, and establish audit logging for credential operations.
+
+## 5. Configuration UI [pending]
+### Dependencies: 219.3, 219.4
+### Description: Design and implement user interface components for service configuration, authentication setup, permission management, and integration monitoring with intuitive workflows for non-technical users.
+### Details:
+Create service connection wizards, build authentication flow UI, implement permission configuration screens, design integration status dashboards, and provide troubleshooting interfaces.
+
+## 6. Error Handling Systems [pending]
+### Dependencies: 219.3, 219.4
+### Description: Implement comprehensive error handling, logging, monitoring, and recovery mechanisms that provide detailed diagnostics, automatic retry logic, and graceful degradation across all integration points.
+### Details:
+Build centralized error handling, implement retry mechanisms with exponential backoff, create detailed logging and monitoring, establish error categorization and reporting, and implement circuit breaker patterns for service resilience.
+

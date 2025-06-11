@@ -20,13 +20,14 @@ import { useState, useEffect } from 'react';
 import { ColumnSelector } from './ColumnSelector';
 import { ContactForm, ContactFormData } from './ContactForm';
 import { GroupsProvider } from '@/app/contacts/ContactGroupManager';
-import type { Contact as DBContact } from '@codexcrm/db';
+import type { Tables } from '@codexcrm/db';
+type DBContact = Tables<'contacts'>;
 import {
-  ContactList,
+  EnhancedContactList,
   Contact,
   DateFilterPeriod,
   SourceOption,
-} from './ContactList';
+} from './EnhancedContactList';
 
 import { AddContactModal } from '@/components/contacts/AddContactModal';
 import { Button } from '@/components/ui/button';
@@ -52,19 +53,19 @@ export function ContactsContent({
   // --- State Management ---
   const router = useRouter();
   const searchParams = useSearchParams();
-  const groupIdFromUrl = searchParams.get('group') ?? initialGroupId ?? '';
+  const groupIdFromUrl = searchParams?.get('group') ?? initialGroupId ?? '';
   // --- Modal state for quick add contact ---
   const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
   // Auto-open modal if ?new=true is present
   useEffect(() => {
-    if (searchParams.get('new') === 'true') {
+    if (searchParams?.get('new') === 'true') {
       setIsQuickAddOpen(true);
     }
   }, [searchParams]);
   // Remove ?new=true from URL after closing modal or successful add
   const handleQuickAddClose = () => {
     setIsQuickAddOpen(false);
-    const params = new URLSearchParams(Array.from(searchParams.entries()));
+    const params = new URLSearchParams(Array.from(searchParams?.entries() || []));
     params.delete('new');
     router.replace(`?${params.toString()}`, { scroll: false });
   };
@@ -418,7 +419,7 @@ export function ContactsContent({
             )}
 
             {/* Contact List */}
-            <ContactList
+            <EnhancedContactList
               contacts={filteredContacts}
               onEditClick={handleEditClick}
               onDeleteClick={handleDeleteClick}
@@ -426,6 +427,7 @@ export function ContactsContent({
               isSaveMutationLoading={saveMutation.isPending}
               searchQuery={searchQuery}
               selectedGroupId={selectedGroupId}
+              visibleColumns={visibleColumns}
               sortField={sortField}
               sortDirection={sortDirection}
               onSortChange={handleSortChange}

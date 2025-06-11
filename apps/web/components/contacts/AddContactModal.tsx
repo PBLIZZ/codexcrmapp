@@ -57,13 +57,24 @@ export function AddContactModal({
 
   useEffect(() => {
     if (success) {
-      const timer = setTimeout(() => {
-        setOpen(false);
-        // Resetting form is now handled by the effect watching 'open' state
-      }, 1500);
-      return () => clearTimeout(timer);
+      // Close the modal immediately after successful contact addition
+      setOpen(false);
+      // Resetting form is handled by the effect watching 'open' state
     }
   }, [success, setOpen]);
+
+  // Listen for custom event to open the modal
+  useEffect(() => {
+    const handleOpenModal = () => {
+      setOpen(true);
+    };
+    
+    window.addEventListener('open-add-contact-modal', handleOpenModal);
+    
+    return () => {
+      window.removeEventListener('open-add-contact-modal', handleOpenModal);
+    };
+  }, [setOpen]);
 
   useEffect(() => {
     if (!open) {

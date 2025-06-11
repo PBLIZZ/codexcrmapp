@@ -38,7 +38,7 @@ export function queryBrowserTyped<T extends TableName>(table: T) {
  * import { createClient } from '@/lib/supabase/server';
  * import { queryServerTyped } from '@/lib/supabase/utils';
  * 
- * const supabase = createClient();
+ * const supabase = await createClient();
  * const { data, error } = await queryServerTyped(supabase, 'contacts').select('*');
  */
 export function queryServerTyped<T extends TableName>(

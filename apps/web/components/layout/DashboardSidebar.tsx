@@ -1,29 +1,63 @@
-'use client';
+"use client"
 
-import React from 'react';
+import { Home, Calendar, BarChart, Users, Settings, Star } from "lucide-react"
+import { NavMain } from "@/components/nav-main"
+import { NavProjects } from "@/components/nav-projects"
+import { NavUser } from "@/components/layout/nav-user"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarRail,
+  SidebarProvider,
+  SidebarGroup,
+  SidebarGroupLabel,
+} from "@/components/ui/sidebar"
 
 export function DashboardSidebar() {
+  // Dashboard navigation data
+  const navMainData = [
+    {
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: Home,
+      isActive: true,
+      items: [], // Empty for now, will be populated when we have secondary pages
+    },
+  ]
+
+  // Favorites data
+  const favoritesData = [
+    {
+      name: "Recent Contacts",
+      url: "/contacts/recent",
+      icon: Users,
+    },
+    {
+      name: "Starred Items",
+      url: "/starred",
+      icon: Star,
+    },
+  ]
+
   return (
-    <div className="p-4 h-full">
-      <h2 className="font-semibold text-lg mb-4">Dashboard</h2>
-      {/* Placeholder links for DashboardSidebar */}
-      <ul className="space-y-2">
-        <li>
-          <a href="#" className="text-sm text-gray-700 hover:text-primary">
-            Overview
-          </a>
-        </li>
-        <li>
-          <a href="#" className="text-sm text-gray-700 hover:text-primary">
-            Analytics
-          </a>
-        </li>
-        <li>
-          <a href="#" className="text-sm text-gray-700 hover:text-primary">
-            Reports
-          </a>
-        </li>
-      </ul>
-    </div>
-  );
+    <SidebarProvider>
+      <Sidebar collapsible="icon" className="h-[calc(100vh-6rem)] sticky top-20 bg-white rounded-lg shadow-sm border">
+      {/* Empty header */}
+      <SidebarHeader />
+      <SidebarContent>
+        <NavMain items={navMainData} />
+        <SidebarGroup>
+          <SidebarGroupLabel>Favourites</SidebarGroupLabel>
+          <NavProjects projects={favoritesData} />
+        </SidebarGroup>
+      </SidebarContent>
+      <SidebarFooter>
+        <NavUser />
+      </SidebarFooter>
+      <SidebarRail />
+      </Sidebar>
+    </SidebarProvider>
+  )
 }

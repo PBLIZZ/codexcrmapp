@@ -1,0 +1,43 @@
+# Task ID: 237
+# Title: User Authentication and Profile Management
+# Status: pending
+# Dependencies: 222, 221
+# Priority: high
+# Description: Enhance user authentication system with practitioner profiles and subscription management
+# Details:
+Build authentication system with: 1) Supabase Auth integration with email/password and OAuth providers 2) Enhanced user profiles for wellness practitioners 3) Subscription tier management and feature gating 4) AI assistant preferences and settings 5) Integration connection management 6) Security settings and two-factor authentication 7) Profile customization for branding. Implement proper role-based access control and session management.
+
+# Test Strategy:
+Authentication flow testing, subscription tier validation, security settings verification, profile customization testing, and session management validation
+
+# Subtasks:
+## 1. Supabase Auth Setup [pending]
+### Dependencies: None
+### Description: Configure Supabase authentication system including OAuth providers, email/password authentication, and session management
+### Details:
+Set up Supabase project, configure authentication providers (Google, GitHub, email), implement auth hooks, configure RLS policies, and establish secure session handling
+
+## 2. Profile Management UI [pending]
+### Dependencies: 237.1
+### Description: Create user interface components for profile creation, editing, and management functionality
+### Details:
+Build profile forms, avatar upload functionality, personal information management, account settings interface, and profile validation logic
+
+## 3. Subscription Integration [pending]
+### Dependencies: 237.1
+### Description: Implement subscription management system with payment processing and plan management
+### Details:
+Integrate payment gateway (Stripe/PayPal), create subscription plans, implement billing cycles, handle payment webhooks, and manage subscription status updates
+
+## 4. Security Settings [pending]
+### Dependencies: 237.1, 237.2
+### Description: Develop comprehensive security settings and controls for user accounts
+### Details:
+Implement two-factor authentication, password change functionality, login history tracking, device management, security notifications, and account recovery options
+
+## 5. Role-Based Access Control Implementation [pending]
+### Dependencies: 237.1, 237.2, 237.3
+### Description: Create role-based permission system with granular access controls and user role management
+### Details:
+Define user roles and permissions, implement middleware for access control, create admin interfaces for role management, establish resource-level permissions, and integrate with subscription tiers
+
