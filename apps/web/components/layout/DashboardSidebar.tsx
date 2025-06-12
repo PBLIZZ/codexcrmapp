@@ -3,7 +3,7 @@
 import { Home, Calendar, BarChart, Users, Settings, Star } from "lucide-react"
 import { NavMain } from "@/components/nav-main"
 import { NavProjects } from "@/components/nav-projects"
-import { NavUser } from "@/components/layout/nav-user"
+import { UserNav } from "@/components/layout/UserNav"
 import {
   Sidebar,
   SidebarContent,
@@ -54,7 +54,7 @@ export function DashboardSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <NavUser />
+        <UserNav />
       </SidebarFooter>
       <SidebarRail />
       </Sidebar>

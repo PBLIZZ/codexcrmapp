@@ -9,22 +9,24 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@codexcrm/server/*": ["packages/server/src/*"],
-      "@codexcrm/db/*":     ["packages/db/src/*"],
-      "@codexcrm/jobs/*":   ["packages/jobs/*"],
+      "@codexcrm/server": ["packages/server/src"],
+      "@codexcrm/auth": ["packages/auth/src"],
+      "@codexcrm/config": ["packages/config/src"],
+      "@codexcrm/db":     ["packages/db/src"],
+      "@codexcrm/jobs":   ["packages/jobs/src"],
       "@codexcrm/ui/*":     ["packages/ui/src/*"],
-      "@codexcrm/web/*":    ["apps/web/*"]
+      "@/*": ["apps/web/*"]
     }
   },
   "references": [
+    { "path": "./packages/auth" },
+    { "path": "./packages/config" },
     { "path": "./packages/db" },
     { "path": "./packages/server" },
     { "path": "./packages/jobs" },
-    { "path": "./packages/ui" },
-    { "path": "./apps/web" }
+    { "path": "./packages/ui" }
   ],
   "exclude": [
     "node_modules"
-  ],
-  "files": []
+  ]
 }

@@ -1,0 +1,20 @@
+# Task ID: 264
+# Title: Create SettingsSidebar Component
+# Status: pending
+# Dependencies: 259
+# Priority: medium
+# Description: Create a new SettingsSidebar.tsx component for the settings route, following the established pattern with specific links and the UserNav component.
+# Details:
+1. Create a new file at apps/web/components/sidebars/SettingsSidebar.tsx
+2. Implement settings-specific navigation links
+3. Import and render the UserNav component at the bottom
+4. Follow the established pattern for sidebar components
+
+# Test Strategy:
+1. Render the SettingsSidebar component
+2. Verify all settings-specific navigation links are present
+3. Test that the links have the correct href attributes
+4. Ensure the UserNav component is properly imported and rendered at the bottom
+5. Verify the sidebar has the correct dimensions and styling
+6. Check that the component is responsive and handles overflow correctly
+7. Test that the component follows the same pattern as other sidebar components

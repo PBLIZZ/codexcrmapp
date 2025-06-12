@@ -1,0 +1,21 @@
+# Task ID: 257
+# Title: Refactor Navbar.tsx into Header.tsx
+# Status: done
+# Dependencies: 256
+# Priority: high
+# Description: Rename Navbar.tsx to Header.tsx and refactor it to be the primary desktop header, delegating mobile concerns to the new MobileMenu component.
+# Details:
+1. Rename the file from apps/web/components/layout/Navbar.tsx to Header.tsx
+2. Update the component's function name from Navbar to Header
+3. Remove all mobile Sheet JSX that was extracted to MobileMenu
+4. Import and render the new MobileMenu component
+5. Refactor the component to focus on desktop header responsibilities
+
+# Test Strategy:
+1. Verify the component renders correctly with all expected elements
+2. Test that the MobileMenu component is properly imported and rendered
+3. Ensure desktop navigation links are displayed correctly and only on desktop viewports
+4. Test that the user profile and settings buttons are functional
+5. Verify the header is sticky and has the correct z-index
+6. Test that all links have the correct href attributes
+7. Update any imports in other files that referenced Navbar.tsx to now use Header.tsx

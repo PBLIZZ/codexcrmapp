@@ -44,6 +44,7 @@ export const taskRouter = router({
       projectId: z.string().optional().nullable(),
       headingId: z.string().optional().nullable(),
       position: z.number().optional(),
+      is_repeating: z.boolean().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
       if (!ctx.user) {
@@ -67,6 +68,7 @@ export const taskRouter = router({
       projectId: z.string().optional().nullable(),
       headingId: z.string().optional().nullable(),
       position: z.number().optional(),
+      is_repeating: z.boolean().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
       if (!ctx.user) {
@@ -191,7 +193,6 @@ export const taskRouter = router({
     return tasksRepo.getCategoryCounts(ctx.user.id);
   }),
 
-  // Get tasks for a specific contact
   getTasksByContactId: protectedProcedure
     .input(z.object({ contactId: z.string() }))
     .query(async ({ ctx, input }) => {

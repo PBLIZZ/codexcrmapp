@@ -7744,6 +7744,281 @@
           "testStrategy": "Verify all system categories are properly created, test relationships between seeded entities, and validate that the seeded data follows the schema constraints and business rules."
         }
       ]
+    },
+    {
+      "id": 245,
+      "title": "Create packages/config for shared constants",
+      "description": "Create a new package at packages/config to house shared application constants including route paths and authentication-related constants",
+      "details": "1. Create packages/config directory structure with package.json, tsconfig.json, and index.ts\n2. Create paths.ts file exporting AUTH_PAGES array, SIGN_IN_PATH, and DASHBOARD_PATH constants\n3. Set up proper TypeScript configuration with module resolution\n4. Export all constants from index.ts for easy importing\n5. Use modern ES modules with proper type definitions",
+      "testStrategy": "Verify package can be imported in other packages, constants are properly typed and exported, and TypeScript compilation succeeds without errors",
+      "priority": "high",
+      "dependencies": [],
+      "status": "done",
+      "subtasks": []
+    },
+    {
+      "id": 246,
+      "title": "Create LoadingSpinner component in packages/ui",
+      "description": "Create a reusable LoadingSpinner component in the packages/ui library to serve as the global loading indicator throughout the application",
+      "details": "1. Create LoadingSpinner.tsx component in packages/ui/src/components\n2. Implement centered, animated spinner using modern CSS animations or Tailwind CSS\n3. Make component accessible with proper ARIA labels\n4. Export component from packages/ui index file\n5. Use React 19 compatible patterns",
+      "testStrategy": "",
+      "priority": "medium",
+      "dependencies": [],
+      "status": "done",
+      "subtasks": []
+    },
+    {
+      "id": 247,
+      "title": "Create packages/auth with AuthProvider and useAuth hook",
+      "description": "Create a new authentication package containing AuthProvider component and useAuth hook using React 19's use() hook for context consumption",
+      "details": "1. Create packages/auth directory with proper package.json and TypeScript config\n2. Create provider.tsx with AuthProvider component using Supabase auth\n3. Implement useAuth hook using React 19's use() hook for context consumption\n4. Handle onAuthStateChange events from Supabase\n5. Provide user state, loading state, and auth methods\n6. Use Supabase v2 latest patterns with proper TypeScript types",
+      "testStrategy": "Test AuthProvider initializes correctly, useAuth hook returns proper values, auth state changes are handled, and React 19 use() hook works as expected",
+      "priority": "high",
+      "dependencies": [
+        245
+      ],
+      "status": "done",
+      "subtasks": []
+    },
+    {
+      "id": 248,
+      "title": "Update pnpm-workspace.yaml for new packages",
+      "description": "Update the pnpm-workspace.yaml file to recognize the new packages/config and packages/auth packages in the monorepo",
+      "details": "1. Add packages/config and packages/auth to the pnpm-workspace.yaml packages array\n2. Ensure proper glob patterns are used for package discovery\n3. Verify workspace configuration follows PNPM v8+ best practices\n4. Test that pnpm install recognizes new packages\n```\n\nEnsure all new packages have proper package.json with correct naming convention",
+      "testStrategy": "Run pnpm install and verify new packages are recognized, check pnpm list shows new packages, and ensure cross-package imports work correctly",
+      "priority": "medium",
+      "dependencies": [
+        245,
+        247
+      ],
+      "status": "done",
+      "subtasks": []
+    },
+    {
+      "id": 249,
+      "title": "Migrate apps/web from src/ directory structure to root-level",
+      "description": "Move all contents from apps/web/src to the root of apps/web directory following Next.js 15 App Router conventions",
+      "details": "1. Move apps/web/src to apps/web\n2. Move apps/web/src/lib to apps/web/lib\n3. Move any other directories from src/ to root level\n6. Remove empty src/ directory\n4. Ensure all internal imports still work after the move\n\nDirectory structure after migration:\n```\napps/web/\n├── app/\n├── components/\n├── lib/\n├── hooks/\n├── package.json\n├── tsconfig.json\n└── tailwind.config.js\n```",
+      "testStrategy": "Verify all files moved correctly, no broken imports exist, Next.js can find all files in new locations, and application builds successfully",
+      "priority": "high",
+      "dependencies": [],
+      "status": "done",
+      "subtasks": []
+    },
+    {
+      "id": 250,
+      "title": "Update apps/web configuration files for new directory structure",
+      "description": "Update tsconfig.json and tailwind.config.js in apps/web to reflect the new root-level directory structure",
+      "details": "1. Update tsconfig.json paths configuration to change @/* from './src/*' to './*'\n2. Update tailwind.config.js content paths to remove src/ references\n3. Ensure all path aliases work correctly with new structure\n4. Update any other config files that reference src/ directory\n5. Test that TypeScript compilation and Tailwind CSS work properly\n\nImplementation:\n```json\n// apps/web/tsconfig.json\n{\n  \"compilerOptions\": {\n    \"paths\": {\n      \"@/*\": [\"./*\"]\n    }\n  }\n}\n```\n\n```javascript\n// apps/web/tailwind.config.js\nmodule.exports = {\n  content: [\n    './app/**/*.{js,ts,jsx,tsx,mdx}',\n    './components/**/*.{js,ts,jsx,tsx,mdx}',\n    '../../packages/ui/src/**/*.{js,ts,jsx,tsx,mdx}'\n  ]\n}\n```",
+      "testStrategy": "Verify TypeScript compilation succeeds, imports with @/ alias work correctly, Tailwind CSS classes are applied properly, and no build errors occur",
+      "priority": "high",
+      "dependencies": [
+        249
+      ],
+      "status": "done",
+      "subtasks": []
+    },
+    {
+      "id": 251,
+      "title": "Refactor RootLayout to pure Server Component",
+      "description": "Refactor apps/web/app/layout.tsx to be a pure Server Component by removing all client-side hooks and authentication logic",
+      "details": "1. Remove 'use client' directive from layout.tsx\n2. Remove all useState and useEffect hooks for auth management\n3. Remove user state management and prop drilling\n4. Keep only static HTML shell (html, body tags) and global providers\n5. Import and render new AppContent component\n6. Ensure Server Component compatibility with Next.js 15",
+      "testStrategy": "Verify layout is a Server Component, no client-side hooks remain, application renders correctly, and Next.js build succeeds without warnings",
+      "priority": "high",
+      "dependencies": [
+        246,
+        247,
+        250
+      ],
+      "status": "done",
+      "subtasks": []
+    },
+    {
+      "id": 252,
+      "title": "Create AppContent client component for auth state management",
+      "description": "Create a new AppContent.tsx client component to handle authentication state management and conditional rendering logic",
+      "details": "1. Create apps/web/components/layout/AppContent.tsx with 'use client' directive\n2. Use useAuth hook to get user authentication state\n3. Use usePathname and useRouter for routing logic\n4. Implement loading state with LoadingSpinner component\n5. Handle routing rules for authenticated/unauthenticated users\n6. Conditionally render MainLayout for authenticated users on protected pages\n7. Use constants from @codexcrm/config for route paths",
+      "testStrategy": "Test authentication redirects work correctly, loading states display properly, MainLayout renders for authenticated users, and routing logic handles all scenarios",
+      "priority": "high",
+      "dependencies": [
+        245,
+        246,
+        247,
+        251
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 253,
+      "title": "Update ClientProviders to include AuthProvider",
+      "description": "Update the ClientProviders component in apps/web/app/providers-client.tsx to include the new AuthProvider as the top-level provider",
+      "details": "1. Import AuthProvider from @codexcrm/auth package\n2. Wrap existing providers with AuthProvider as the outermost provider\n3. Ensure proper provider hierarchy with AuthProvider > TRPCReactProvider\n4. Maintain existing TanStack Query and other provider configurations\n5. Test that all providers work together correctly",
+      "testStrategy": "Verify AuthProvider is the top-level provider, all existing functionality works, tRPC and TanStack Query integration remains functional, and no provider conflicts occur",
+      "priority": "medium",
+      "dependencies": [
+        247,
+        252
+      ],
+      "status": "done",
+      "subtasks": []
+    },
+    {
+      "id": 254,
+      "title": "Remove user prop from MainLayout and update related components",
+      "description": "Remove the user prop from MainLayout component and update any child components that were receiving user data through prop drilling",
+      "details": "1. Remove user prop from MainLayout component interface\n2. Update MainLayout to use useAuth hook instead of props\n3. Find and update any child components that were receiving user via props\n4. Replace prop drilling with useAuth hook usage in components that need user data\n5. Ensure all components that need auth state use the useAuth hook directly\n6. Test that user data is accessible throughout the component tree",
+      "testStrategy": "Verify MainLayout no longer receives user prop, all components can access user data via useAuth hook, no prop drilling remains, and user data is consistent across components",
+      "priority": "medium",
+      "dependencies": [
+        252,
+        253
+      ],
+      "status": "done",
+      "subtasks": []
+    },
+    {
+      "id": 255,
+      "title": "Migrate from @supabase/auth-helpers-nextjs to @supabase/ssr Package",
+      "description": "Update the application to use the new @supabase/ssr package instead of the deprecated @supabase/auth-helpers-nextjs, ensuring compatibility with Next.js App Router patterns.",
+      "details": "This migration requires several key changes to the codebase:\n\n1. Install the new package:\n```bash\nnpm install @supabase/ssr\nnpm uninstall @supabase/auth-helpers-nextjs\n```\n\n2. Update the Supabase client creation in lib/supabase:\n   - Replace createClientComponentClient and createServerComponentClient with new methods\n   - Update the client creation in lib/supabase/client.ts to use the new pattern:\n   ```typescript\n   import { createBrowserClient } from '@supabase/ssr'\n\n   export const createClient = () => {\n     return createBrowserClient(\n       process.env.NEXT_PUBLIC_SUPABASE_URL!,\n       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!\n     )\n   }\n   ```\n\n   - Update the server-side client in lib/supabase/server.ts:\n   ```typescript\n   import { createServerClient } from '@supabase/ssr'\n   import { cookies } from 'next/headers'\n\n   export const createClient = () => {\n     const cookieStore = cookies()\n     \n     return createServerClient(\n       process.env.NEXT_PUBLIC_SUPABASE_URL!,\n       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,\n       {\n         cookies: {\n           get(name) {\n             return cookieStore.get(name)?.value\n           },\n           set(name, value, options) {\n             cookieStore.set({ name, value, ...options })\n           },\n           remove(name, options) {\n             cookieStore.set({ name, value: '', ...options })\n           },\n         },\n       }\n     )\n   }\n   ```\n\n3. Update middleware.ts to use the new package:\n   ```typescript\n   import { createServerClient } from '@supabase/ssr'\n   import { NextResponse } from 'next/server'\n   import type { NextRequest } from 'next/server'\n   \n   export async function middleware(request: NextRequest) {\n     let response = NextResponse.next({\n       request: {\n         headers: request.headers,\n       },\n     })\n     \n     const supabase = createServerClient(\n       process.env.NEXT_PUBLIC_SUPABASE_URL!,\n       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,\n       {\n         cookies: {\n           get(name) {\n             return request.cookies.get(name)?.value\n           },\n           set(name, value, options) {\n             request.cookies.set({\n               name,\n               value,\n               ...options,\n             })\n             response = NextResponse.next({\n               request: {\n                 headers: request.headers,\n               },\n             })\n             response.cookies.set({\n               name,\n               value,\n               ...options,\n             })\n           },\n           remove(name, options) {\n             request.cookies.set({\n               name,\n               value: '',\n               ...options,\n             })\n             response = NextResponse.next({\n               request: {\n                 headers: request.headers,\n               },\n             })\n             response.cookies.set({\n               name,\n               value: '',\n               ...options,\n             })\n           },\n         },\n       }\n     )\n     \n     // Authentication logic here\n     \n     return response\n   }\n   ```\n\n4. Update authentication flows:\n   - Modify sign-in, sign-up, and sign-out functions to use the new client\n   - Update any components that use the auth helpers\n   - Ensure session handling is updated to use the new methods\n\n5. Update the AuthProvider component to use the new package:\n   - Modify the context provider to use the new client methods\n   - Update any hooks that depend on the auth helpers\n\n6. Test all authentication flows to ensure they work correctly with the new package\n   - Sign-in\n   - Sign-up\n   - Sign-out\n   - Session persistence\n   - Protected routes\n\n7. Update any documentation or comments to reflect the new package usage",
+      "testStrategy": "1. Unit Testing:\n   - Create unit tests for the updated Supabase client creation functions\n   - Verify that the client is properly initialized with the correct environment variables\n   - Test that the cookie handling functions work as expected\n\n2. Integration Testing:\n   - Test the complete authentication flow (sign-up, sign-in, sign-out)\n   - Verify that sessions are properly maintained across page refreshes\n   - Test protected routes to ensure they still require authentication\n   - Verify that redirects work correctly for authenticated and unauthenticated users\n\n3. Manual Testing:\n   - Perform a complete sign-up process with a new user\n   - Test sign-in with existing credentials\n   - Verify that the user remains signed in after browser refresh\n   - Test sign-out functionality\n   - Verify that protected routes redirect unauthenticated users\n   - Test on different browsers to ensure cross-browser compatibility\n\n4. Regression Testing:\n   - Verify that all existing authentication-related features continue to work\n   - Check that user profile data is still accessible\n   - Ensure that any components that relied on the previous auth helpers still function\n\n5. Error Handling:\n   - Test error scenarios (invalid credentials, network issues)\n   - Verify that appropriate error messages are displayed\n   - Check that the application gracefully handles authentication failures\n\n6. Performance Testing:\n   - Compare authentication response times before and after the migration\n   - Ensure that the new implementation doesn't introduce performance regressions",
+      "status": "pending",
+      "dependencies": [
+        4,
+        209,
+        249,
+        252,
+        253
+      ],
+      "priority": "medium",
+      "subtasks": []
+    },
+    {
+      "id": 256,
+      "title": "Create Dedicated MobileMenu Component",
+      "description": "Extract the mobile Sheet-based navigation logic from the existing Navbar.tsx into a new MobileMenu.tsx component.",
+      "details": "1. Create a new file at apps/web/components/layout/MobileMenu.tsx\n2. Extract the following from Navbar.tsx:\n   - The Sheet component and its related SheetTrigger and SheetContent\n   - All JSX related to the mobile slide-out panel\n   - The logo and navigation links for mobile view\n3. Move the mainNavItems constant into this file\n4. Implement the component structure",
+      "testStrategy": "1. Render the MobileMenu component in isolation using React Testing Library\n2. Verify the Sheet, SheetTrigger, and SheetContent components are properly rendered\n3. Test that clicking the menu button opens the sheet\n4. Verify all navigation items from mainNavItems are correctly displayed\n5. Test that navigation links have the correct href attributes\n6. Ensure the component is only visible on mobile viewports using responsive testing",
+      "priority": "high",
+      "dependencies": [],
+      "status": "done",
+      "subtasks": []
+    },
+    {
+      "id": 257,
+      "title": "Refactor Navbar.tsx into Header.tsx",
+      "description": "Rename Navbar.tsx to Header.tsx and refactor it to be the primary desktop header, delegating mobile concerns to the new MobileMenu component.",
+      "details": "1. Rename the file from apps/web/components/layout/Navbar.tsx to Header.tsx\n2. Update the component's function name from Navbar to Header\n3. Remove all mobile Sheet JSX that was extracted to MobileMenu\n4. Import and render the new MobileMenu component\n5. Refactor the component to focus on desktop header responsibilities",
+      "testStrategy": "1. Verify the component renders correctly with all expected elements\n2. Test that the MobileMenu component is properly imported and rendered\n3. Ensure desktop navigation links are displayed correctly and only on desktop viewports\n4. Test that the user profile and settings buttons are functional\n5. Verify the header is sticky and has the correct z-index\n6. Test that all links have the correct href attributes\n7. Update any imports in other files that referenced Navbar.tsx to now use Header.tsx",
+      "priority": "high",
+      "dependencies": [
+        256
+      ],
+      "status": "done",
+      "subtasks": []
+    },
+    {
+      "id": 258,
+      "title": "Implement Floating OmniBot UI (OmniBotFloat.tsx)",
+      "description": "Create a new component OmniBotFloat.tsx that provides a floating action button (FAB) to trigger the AI assistant sidebar.",
+      "details": "1. Create a new file at apps/web/components/layout/OmniBotFloat.tsx\n2. Implement a floating action button fixed to the bottom-right of the viewport\n3. Use Sheet components to create a floating panel that appears when the FAB is clicked\n4. Style the panel to appear as a floating element rather than a full-height sidebar\n5. Import and render the existing OmniBot component inside the panel",
+      "testStrategy": "1. Render the OmniBotFloat component in isolation\n2. Verify the floating action button is positioned correctly at the bottom-right\n3. Test that clicking the FAB opens the sheet panel\n4. Ensure the panel is styled correctly with margins, rounded corners, and proper dimensions\n5. Verify the OmniBot component is properly rendered inside the panel\n6. Test that the panel can be closed\n7. Verify the z-index ensures the component appears above other page elements",
+      "priority": "medium",
+      "dependencies": [],
+      "status": "done",
+      "subtasks": []
+    },
+    {
+      "id": 259,
+      "title": "Create Shared UserNav Component",
+      "description": "Create a UserNav.tsx component that displays the current user's avatar and name/email, to be reused across different sidebars.",
+      "details": "1. Create a new file at apps/web/components/layout/UserNav.tsx\n2. Use the useAuth() hook to fetch user data\n3. Design a self-contained component that displays user avatar and information\n4. Ensure it can be easily placed at the bottom of any sidebar",
+      "testStrategy": "1. Render the UserNav component with a mocked useAuth hook\n2. Test with different user data scenarios (full profile, missing avatar, etc.)\n3. Verify the component correctly displays user name, email, and avatar\n4. Test that the dropdown menu opens when clicked\n5. Verify all dropdown menu items are present and functional\n6. Test that the signOut function is called when the Log out option is clicked\n7. Ensure the component returns null when no user is present",
+      "priority": "medium",
+      "dependencies": [],
+      "status": "done",
+      "subtasks": []
+    },
+    {
+      "id": 260,
+      "title": "Create AppSidebarController Component",
+      "description": "Create a new AppSidebarController.tsx component to manage the display of contextual sidebars based on the current route.",
+      "details": "1. Create a new file at apps/web/components/layout/AppSidebarController.tsx\n2. Use the usePathname hook to determine the current route\n3. Implement logic to decide which sidebar to render based on the route\n4. Import all potential sidebar components",
+      "testStrategy": "1. Test the component with various mocked pathname values\n2. Verify that the correct sidebar component is rendered for each route\n3. Test edge cases like unknown routes\n4. Ensure the component correctly handles nested routes\n5. Verify that the component updates when the pathname changes\n6. Test with a real router context to ensure integration with Next.js routing",
+      "priority": "high",
+      "dependencies": [
+        259
+      ],
+      "status": "done",
+      "subtasks": []
+    },
+    {
+      "id": 261,
+      "title": "Update ContactsSidebar Component",
+      "description": "Refactor the existing ContactsSidebar.tsx to conform to the new pattern, ensuring it's a self-contained component with its specific links and includes the UserNav component.",
+      "details": "1. Update the existing ContactsSidebar.tsx file\n2. Ensure it contains all contacts-specific navigation links\n3. Import and render the UserNav component at the bottom\n4. Make it a self-contained component with clear responsibilities",
+      "testStrategy": "1. Render the ContactsSidebar component\n2. Verify all contact-specific navigation links are present\n3. Test that the links have the correct href attributes\n4. Ensure the UserNav component is properly imported and rendered at the bottom\n5. Verify the sidebar has the correct dimensions and styling\n6. Test that the 'New' button is present and correctly positioned\n7. Check that the component is responsive and handles overflow correctly",
+      "priority": "medium",
+      "dependencies": [
+        259
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 262,
+      "title": "Update TasksSidebar Component",
+      "description": "Refactor the existing TasksSidebar.tsx to conform to the new pattern, ensuring it's a self-contained component with its specific links and includes the UserNav component.",
+      "details": "1. Update the existing TasksSidebar.tsx file\n2. Ensure it contains all tasks-specific navigation links\n3. Import and render the UserNav component at the bottom\n4. Make it a self-contained component with clear responsibilities",
+      "testStrategy": "1. Render the TasksSidebar component\n2. Verify all task-specific navigation links are present\n3. Test that the links have the correct href attributes\n4. Ensure the UserNav component is properly imported and rendered at the bottom\n5. Verify the sidebar has the correct dimensions and styling\n6. Test that the 'New' button is present and correctly positioned\n7. Check that the component is responsive and handles overflow correctly",
+      "priority": "medium",
+      "dependencies": [
+        259
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 263,
+      "title": "Create DashboardSidebar Component",
+      "description": "Create a new DashboardSidebar.tsx component for the dashboard route, following the established pattern with specific links and the UserNav component.",
+      "details": "1. Create a new file at apps/web/components/sidebars/DashboardSidebar.tsx\n2. Implement dashboard-specific navigation links\n3. Import and render the UserNav component at the bottom\n4. Follow the established pattern for sidebar components",
+      "testStrategy": "1. Render the DashboardSidebar component\n2. Verify all dashboard-specific navigation links are present\n3. Test that the links have the correct href attributes\n4. Ensure the UserNav component is properly imported and rendered at the bottom\n5. Verify the sidebar has the correct dimensions and styling\n6. Check that the component is responsive and handles overflow correctly\n7. Test that the component follows the same pattern as other sidebar components",
+      "priority": "medium",
+      "dependencies": [
+        259
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 264,
+      "title": "Create SettingsSidebar Component",
+      "description": "Create a new SettingsSidebar.tsx component for the settings route, following the established pattern with specific links and the UserNav component.",
+      "details": "1. Create a new file at apps/web/components/sidebars/SettingsSidebar.tsx\n2. Implement settings-specific navigation links\n3. Import and render the UserNav component at the bottom\n4. Follow the established pattern for sidebar components",
+      "testStrategy": "1. Render the SettingsSidebar component\n2. Verify all settings-specific navigation links are present\n3. Test that the links have the correct href attributes\n4. Ensure the UserNav component is properly imported and rendered at the bottom\n5. Verify the sidebar has the correct dimensions and styling\n6. Check that the component is responsive and handles overflow correctly\n7. Test that the component follows the same pattern as other sidebar components",
+      "priority": "medium",
+      "dependencies": [
+        259
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 265,
+      "title": "Simplify MainLayout.tsx to a Skeleton",
+      "description": "Strip MainLayout.tsx down to its essential structural role, integrating all the new components to create a clean, modular layout structure.",
+      "details": "1. Refactor the MainLayout.tsx file to remove all complex logic and state management\n2. Import and render the new Header, AppSidebarController, and OmniBotFloat components\n3. Define the primary page grid structure\n4. Ensure the layout is responsive and accessible",
+      "testStrategy": "1. Render the MainLayout component with mock children\n2. Verify that Header, AppSidebarController, and OmniBotFloat components are properly imported and rendered\n3. Test the layout structure with different viewport sizes\n4. Ensure the main content area correctly adjusts based on sidebar presence\n5. Verify that the layout is accessible and follows best practices\n6. Test that the component is significantly simpler than the original version\n7. Perform integration tests with actual page content to ensure the layout works correctly in a real application context",
+      "priority": "high",
+      "dependencies": [
+        257,
+        258,
+        260
+      ],
+      "status": "pending",
+      "subtasks": []
     }
   ]
 }

@@ -1,0 +1,22 @@
+# Task ID: 256
+# Title: Create Dedicated MobileMenu Component
+# Status: done
+# Dependencies: None
+# Priority: high
+# Description: Extract the mobile Sheet-based navigation logic from the existing Navbar.tsx into a new MobileMenu.tsx component.
+# Details:
+1. Create a new file at apps/web/components/layout/MobileMenu.tsx
+2. Extract the following from Navbar.tsx:
+   - The Sheet component and its related SheetTrigger and SheetContent
+   - All JSX related to the mobile slide-out panel
+   - The logo and navigation links for mobile view
+3. Move the mainNavItems constant into this file
+4. Implement the component structure
+
+# Test Strategy:
+1. Render the MobileMenu component in isolation using React Testing Library
+2. Verify the Sheet, SheetTrigger, and SheetContent components are properly rendered
+3. Test that clicking the menu button opens the sheet
+4. Verify all navigation items from mainNavItems are correctly displayed
+5. Test that navigation links have the correct href attributes
+6. Ensure the component is only visible on mobile viewports using responsive testing

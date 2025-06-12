@@ -1,0 +1,173 @@
+# Task ID: 255
+# Title: Migrate from @supabase/auth-helpers-nextjs to @supabase/ssr Package
+# Status: pending
+# Dependencies: 4, 209, 249, 252, 253
+# Priority: medium
+# Description: Update the application to use the new @supabase/ssr package instead of the deprecated @supabase/auth-helpers-nextjs, ensuring compatibility with Next.js App Router patterns.
+# Details:
+This migration requires several key changes to the codebase:
+
+1. Install the new package:
+```bash
+npm install @supabase/ssr
+npm uninstall @supabase/auth-helpers-nextjs
+```
+
+2. Update the Supabase client creation in lib/supabase:
+   - Replace createClientComponentClient and createServerComponentClient with new methods
+   - Update the client creation in lib/supabase/client.ts to use the new pattern:
+   ```typescript
+   import { createBrowserClient } from '@supabase/ssr'
+
+   export const createClient = () => {
+     return createBrowserClient(
+       process.env.NEXT_PUBLIC_SUPABASE_URL!,
+       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+     )
+   }
+   ```
+
+   - Update the server-side client in lib/supabase/server.ts:
+   ```typescript
+   import { createServerClient } from '@supabase/ssr'
+   import { cookies } from 'next/headers'
+
+   export const createClient = () => {
+     const cookieStore = cookies()
+     
+     return createServerClient(
+       process.env.NEXT_PUBLIC_SUPABASE_URL!,
+       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+       {
+         cookies: {
+           get(name) {
+             return cookieStore.get(name)?.value
+           },
+           set(name, value, options) {
+             cookieStore.set({ name, value, ...options })
+           },
+           remove(name, options) {
+             cookieStore.set({ name, value: '', ...options })
+           },
+         },
+       }
+     )
+   }
+   ```
+
+3. Update middleware.ts to use the new package:
+   ```typescript
+   import { createServerClient } from '@supabase/ssr'
+   import { NextResponse } from 'next/server'
+   import type { NextRequest } from 'next/server'
+   
+   export async function middleware(request: NextRequest) {
+     let response = NextResponse.next({
+       request: {
+         headers: request.headers,
+       },
+     })
+     
+     const supabase = createServerClient(
+       process.env.NEXT_PUBLIC_SUPABASE_URL!,
+       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+       {
+         cookies: {
+           get(name) {
+             return request.cookies.get(name)?.value
+           },
+           set(name, value, options) {
+             request.cookies.set({
+               name,
+               value,
+               ...options,
+             })
+             response = NextResponse.next({
+               request: {
+                 headers: request.headers,
+               },
+             })
+             response.cookies.set({
+               name,
+               value,
+               ...options,
+             })
+           },
+           remove(name, options) {
+             request.cookies.set({
+               name,
+               value: '',
+               ...options,
+             })
+             response = NextResponse.next({
+               request: {
+                 headers: request.headers,
+               },
+             })
+             response.cookies.set({
+               name,
+               value: '',
+               ...options,
+             })
+           },
+         },
+       }
+     )
+     
+     // Authentication logic here
+     
+     return response
+   }
+   ```
+
+4. Update authentication flows:
+   - Modify sign-in, sign-up, and sign-out functions to use the new client
+   - Update any components that use the auth helpers
+   - Ensure session handling is updated to use the new methods
+
+5. Update the AuthProvider component to use the new package:
+   - Modify the context provider to use the new client methods
+   - Update any hooks that depend on the auth helpers
+
+6. Test all authentication flows to ensure they work correctly with the new package
+   - Sign-in
+   - Sign-up
+   - Sign-out
+   - Session persistence
+   - Protected routes
+
+7. Update any documentation or comments to reflect the new package usage
+
+# Test Strategy:
+1. Unit Testing:
+   - Create unit tests for the updated Supabase client creation functions
+   - Verify that the client is properly initialized with the correct environment variables
+   - Test that the cookie handling functions work as expected
+
+2. Integration Testing:
+   - Test the complete authentication flow (sign-up, sign-in, sign-out)
+   - Verify that sessions are properly maintained across page refreshes
+   - Test protected routes to ensure they still require authentication
+   - Verify that redirects work correctly for authenticated and unauthenticated users
+
+3. Manual Testing:
+   - Perform a complete sign-up process with a new user
+   - Test sign-in with existing credentials
+   - Verify that the user remains signed in after browser refresh
+   - Test sign-out functionality
+   - Verify that protected routes redirect unauthenticated users
+   - Test on different browsers to ensure cross-browser compatibility
+
+4. Regression Testing:
+   - Verify that all existing authentication-related features continue to work
+   - Check that user profile data is still accessible
+   - Ensure that any components that relied on the previous auth helpers still function
+
+5. Error Handling:
+   - Test error scenarios (invalid credentials, network issues)
+   - Verify that appropriate error messages are displayed
+   - Check that the application gracefully handles authentication failures
+
+6. Performance Testing:
+   - Compare authentication response times before and after the migration
+   - Ensure that the new implementation doesn't introduce performance regressions
