@@ -1,0 +1,38 @@
+# Task ID: 250
+# Title: Update apps/web configuration files for new directory structure
+# Status: done
+# Dependencies: 249
+# Priority: high
+# Description: Update tsconfig.json and tailwind.config.js in apps/web to reflect the new root-level directory structure
+# Details:
+1. Update tsconfig.json paths configuration to change @/* from './src/*' to './*'
+2. Update tailwind.config.js content paths to remove src/ references
+3. Ensure all path aliases work correctly with new structure
+4. Update any other config files that reference src/ directory
+5. Test that TypeScript compilation and Tailwind CSS work properly
+
+Implementation:
+```json
+// apps/web/tsconfig.json
+{
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./*"]
+    }
+  }
+}
+```
+
+```javascript
+// apps/web/tailwind.config.js
+module.exports = {
+  content: [
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    '../../packages/ui/src/**/*.{js,ts,jsx,tsx,mdx}'
+  ]
+}
+```
+
+# Test Strategy:
+Verify TypeScript compilation succeeds, imports with @/ alias work correctly, Tailwind CSS classes are applied properly, and no build errors occur

@@ -35,7 +35,6 @@ import {
   FolderClosed
 } from 'lucide-react';
 
-import { AppSidebar } from '@/components/app-sidebar';
 import { ThingsMainContent } from './ThingsMainContent';
 import { api } from '@/lib/trpc';
 
@@ -98,11 +97,6 @@ export function ThingsTasksLayout() {
 
   return (
     <div className="flex h-screen bg-background">
-      <AppSidebar 
-        navMainData={thingsNavMain}
-        projectsData={thingsProjects}
-        className="h-full"
-      />
       <main className="flex-1 overflow-y-auto">
         <ThingsMainContent
           searchQuery={searchQuery}

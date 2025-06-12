@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Users, UserPlus, Upload, PlusCircle, Tag, X } from "lucide-react"
-import { NavUser } from "@/components/layout/nav-user"
+import { UserNav } from "@/components/layout/UserNav"
 import { api } from "@/lib/trpc"
 
 // Define the Group type based on the expected structure
@@ -169,7 +169,7 @@ export function ContactsSidebar() {
           </SidebarGroup>
         </SidebarContent>
         <SidebarFooter>
-          <NavUser />
+          <UserNav />
         </SidebarFooter>
         <SidebarRail />
       </Sidebar>

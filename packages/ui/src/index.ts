@@ -7,6 +7,7 @@ export * from './components/ui/metric-card';
 export * from './components/ui/contact-card';
 export * from './components/ui/timeline';
 export * from './components/ui/task-card';
+export * from './components/ui/loading-spinner';
 
 // Export utilities
 export * from './lib/utils';

@@ -20,7 +20,7 @@ import {
   fetchCurrentUser,
   updateUserPassword,
   mapAuthErrorMessage,
-} from '@/src/lib/auth/service';
+} from '@/lib/auth/service';
 
 // Constants
 const MIN_PASSWORD_LENGTH = 6;

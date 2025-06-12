@@ -1,0 +1,15 @@
+# Task ID: 253
+# Title: Update ClientProviders to include AuthProvider
+# Status: done
+# Dependencies: 247, 252
+# Priority: medium
+# Description: Update the ClientProviders component in apps/web/app/providers-client.tsx to include the new AuthProvider as the top-level provider
+# Details:
+1. Import AuthProvider from @codexcrm/auth package
+2. Wrap existing providers with AuthProvider as the outermost provider
+3. Ensure proper provider hierarchy with AuthProvider > TRPCReactProvider
+4. Maintain existing TanStack Query and other provider configurations
+5. Test that all providers work together correctly
+
+# Test Strategy:
+Verify AuthProvider is the top-level provider, all existing functionality works, tRPC and TanStack Query integration remains functional, and no provider conflicts occur

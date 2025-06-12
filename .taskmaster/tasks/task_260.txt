@@ -1,0 +1,19 @@
+# Task ID: 260
+# Title: Create AppSidebarController Component
+# Status: done
+# Dependencies: 259
+# Priority: high
+# Description: Create a new AppSidebarController.tsx component to manage the display of contextual sidebars based on the current route.
+# Details:
+1. Create a new file at apps/web/components/layout/AppSidebarController.tsx
+2. Use the usePathname hook to determine the current route
+3. Implement logic to decide which sidebar to render based on the route
+4. Import all potential sidebar components
+
+# Test Strategy:
+1. Test the component with various mocked pathname values
+2. Verify that the correct sidebar component is rendered for each route
+3. Test edge cases like unknown routes
+4. Ensure the component correctly handles nested routes
+5. Verify that the component updates when the pathname changes
+6. Test with a real router context to ensure integration with Next.js routing

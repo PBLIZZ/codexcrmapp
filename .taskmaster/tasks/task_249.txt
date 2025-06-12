@@ -1,0 +1,27 @@
+# Task ID: 249
+# Title: Migrate apps/web from src/ directory structure to root-level
+# Status: done
+# Dependencies: None
+# Priority: high
+# Description: Move all contents from apps/web/src to the root of apps/web directory following Next.js 15 App Router conventions
+# Details:
+1. Move apps/web/src to apps/web
+2. Move apps/web/src/lib to apps/web/lib
+3. Move any other directories from src/ to root level
+6. Remove empty src/ directory
+4. Ensure all internal imports still work after the move
+
+Directory structure after migration:
+```
+apps/web/
+├── app/
+├── components/
+├── lib/
+├── hooks/
+├── package.json
+├── tsconfig.json
+└── tailwind.config.js
+```
+
+# Test Strategy:
+Verify all files moved correctly, no broken imports exist, Next.js can find all files in new locations, and application builds successfully

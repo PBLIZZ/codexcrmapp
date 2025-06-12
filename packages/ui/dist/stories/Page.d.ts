@@ -1,4 +1,0 @@
-import * as React from 'react';
-import './page.css';
-export declare const Page: React.FC;
-//# sourceMappingURL=Page.d.ts.map

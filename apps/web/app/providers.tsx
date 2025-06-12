@@ -6,6 +6,7 @@ import { httpBatchLink } from '@trpc/client';
 import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
 import * as React from 'react';
 import superjson from 'superjson';
+import { AuthProvider } from '@codexcrm/auth'; // Import AuthProvider
 
 // Import the tRPC client from the correct location
 import { api, API_VERSION } from '@/lib/trpc';
@@ -37,6 +38,8 @@ function getBaseUrl() {
  * Provider component for tRPC and React Query
  */
 export function Providers({ children }: { children: React.ReactNode }) {
+  // AuthProvider should be placed here, wrapping other client-side providers if necessary,
+  // or directly wrapping children if it doesn't depend on them.
   // Create React Query client with better error handling
   const [queryClient] = React.useState<QueryClient>(
     () =>
@@ -116,8 +119,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
   });
 
   return (
-    <api.Provider client={trpcClient} queryClient={queryClient}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    </api.Provider>
+    <AuthProvider>
+      <api.Provider client={trpcClient} queryClient={queryClient}>
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      </api.Provider>
+    </AuthProvider>
   );
 }

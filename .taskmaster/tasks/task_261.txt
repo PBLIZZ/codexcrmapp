@@ -1,0 +1,20 @@
+# Task ID: 261
+# Title: Update ContactsSidebar Component
+# Status: pending
+# Dependencies: 259
+# Priority: medium
+# Description: Refactor the existing ContactsSidebar.tsx to conform to the new pattern, ensuring it's a self-contained component with its specific links and includes the UserNav component.
+# Details:
+1. Update the existing ContactsSidebar.tsx file
+2. Ensure it contains all contacts-specific navigation links
+3. Import and render the UserNav component at the bottom
+4. Make it a self-contained component with clear responsibilities
+
+# Test Strategy:
+1. Render the ContactsSidebar component
+2. Verify all contact-specific navigation links are present
+3. Test that the links have the correct href attributes
+4. Ensure the UserNav component is properly imported and rendered at the bottom
+5. Verify the sidebar has the correct dimensions and styling
+6. Test that the 'New' button is present and correctly positioned
+7. Check that the component is responsive and handles overflow correctly

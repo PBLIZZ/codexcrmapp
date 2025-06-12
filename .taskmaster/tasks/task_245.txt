@@ -1,0 +1,15 @@
+# Task ID: 245
+# Title: Create packages/config for shared constants
+# Status: done
+# Dependencies: None
+# Priority: high
+# Description: Create a new package at packages/config to house shared application constants including route paths and authentication-related constants
+# Details:
+1. Create packages/config directory structure with package.json, tsconfig.json, and index.ts
+2. Create paths.ts file exporting AUTH_PAGES array, SIGN_IN_PATH, and DASHBOARD_PATH constants
+3. Set up proper TypeScript configuration with module resolution
+4. Export all constants from index.ts for easy importing
+5. Use modern ES modules with proper type definitions
+
+# Test Strategy:
+Verify package can be imported in other packages, constants are properly typed and exported, and TypeScript compilation succeeds without errors

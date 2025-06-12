@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider, QueryCache, MutationCache } from '@ta
 import { httpBatchLink } from '@trpc/client';
 import React, { useEffect } from 'react';
 import superjson from 'superjson';
+import { AuthProvider } from '@codexcrm/auth';
 
 import { logDebugInfo } from '@/lib/debug-helper';
 import { api, API_VERSION } from '@/lib/trpc';
@@ -138,8 +139,10 @@ export default function ClientProviders({
   });
 
   return (
-    <api.Provider client={trpcClient} queryClient={queryClient}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    </api.Provider>
+    <AuthProvider>
+      <api.Provider client={trpcClient} queryClient={queryClient}>
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      </api.Provider>
+    </AuthProvider>
   );
 }

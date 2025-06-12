@@ -17,7 +17,7 @@ import {
 
 import { NavMain } from "@/components/nav-main"
 import { NavProjects } from "@/components/nav-projects"
-import { NavUser } from "@/components/layout/nav-user"
+import { UserNav } from "@/components/layout/UserNav"
 import {
   Sidebar,
   SidebarContent,
@@ -203,7 +203,7 @@ export function AppSidebar({
         <NavProjects projects={projectsData} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser />
+        <UserNav />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

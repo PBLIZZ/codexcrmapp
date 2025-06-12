@@ -1,30 +1,32 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ContactForm, ContactFormData } from '@/app/contacts/ContactForm';
 import { api } from '@/lib/trpc';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
-import { Alert, AlertCircle, AlertTitle, AlertDescription } from '@/components/ui/alert';
+// Correctly import AlertCircle from lucide-react
+import { ArrowLeft, AlertCircle } from 'lucide-react'; 
+// Import only the necessary components from your alert file
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
+// 1. Define the props type correctly and simply.
 interface EditContactPageProps {
-  params: Promise<{ contactId: string; }> | { contactId: string; }; // Allow both Promise and direct object for flexibility
+  params: {
+    contactId: string;
+  };
 }
 
-export default function EditContactPage({ params: paramsOrPromise }: EditContactPageProps) {
-  // Check if paramsOrPromise is a Promise and use React.use() if so, otherwise use directly.
-  // This handles cases where Next.js might provide it as a Promise or already resolved.
-  const params = (typeof (paramsOrPromise as Promise<unknown>)?.then === 'function') 
-    ? use(paramsOrPromise as Promise<{ contactId: string; }>) 
-    : paramsOrPromise as { contactId: string; };
-
+// 2. The component now accepts the simplified props type.
+export default function EditContactPage({ params }: EditContactPageProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  const contactId = params.contactId;
+  // 3. Directly access contactId from the simple params object. No `use()` hook needed here.
+  const { contactId } = params;
   const utils = api.useUtils();
+
   
   // Fetch contact data
   const { data: contact, isLoading, error: fetchError } = api.contacts.getById.useQuery(

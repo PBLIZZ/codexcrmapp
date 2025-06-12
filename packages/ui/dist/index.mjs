@@ -1,11 +1,60 @@
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage
-} from "./chunk-JGVXN6QQ.mjs";
-import {
-  cn
-} from "./chunk-V7CNWJT3.mjs";
+// src/components/ui/avatar.tsx
+import * as AvatarPrimitive from "@radix-ui/react-avatar";
+
+// src/lib/utils.ts
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+function cn(...inputs) {
+  return twMerge(clsx(inputs));
+}
+
+// src/components/ui/avatar.tsx
+import { jsx } from "react/jsx-runtime";
+function Avatar({
+  className,
+  ...props
+}) {
+  return /* @__PURE__ */ jsx(
+    AvatarPrimitive.Root,
+    {
+      "data-slot": "avatar",
+      className: cn(
+        "relative flex size-8 shrink-0 overflow-hidden rounded-full",
+        className
+      ),
+      ...props
+    }
+  );
+}
+function AvatarImage({
+  className,
+  ...props
+}) {
+  return /* @__PURE__ */ jsx(
+    AvatarPrimitive.Image,
+    {
+      "data-slot": "avatar-image",
+      className: cn("aspect-square size-full", className),
+      ...props
+    }
+  );
+}
+function AvatarFallback({
+  className,
+  ...props
+}) {
+  return /* @__PURE__ */ jsx(
+    AvatarPrimitive.Fallback,
+    {
+      "data-slot": "avatar-fallback",
+      className: cn(
+        "bg-muted flex size-full items-center justify-center rounded-full",
+        className
+      ),
+      ...props
+    }
+  );
+}
 
 // src/components/ui/themed-card.tsx
 import { forwardRef } from "react";
@@ -143,7 +192,7 @@ function initializeTheme() {
 }
 
 // src/components/core/ThemeProvider.tsx
-import { jsx, jsxs } from "react/jsx-runtime";
+import { jsx as jsx2, jsxs } from "react/jsx-runtime";
 var initialState = {
   theme: "system",
   setTheme: () => null,
@@ -192,7 +241,7 @@ function ThemeProvider({
     },
     isDarkMode: darkMode
   };
-  return /* @__PURE__ */ jsx(ThemeContext.Provider, { value, children });
+  return /* @__PURE__ */ jsx2(ThemeContext.Provider, { value, children });
 }
 var useTheme = () => {
   const context = useContext(ThemeContext);
@@ -203,7 +252,7 @@ var useTheme = () => {
 };
 function ThemeToggle() {
   const { theme, setTheme } = useTheme();
-  return /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsx2(
     "button",
     {
       onClick: () => setTheme(theme === "dark" ? "light" : "dark"),
@@ -223,18 +272,18 @@ function ThemeToggle() {
           strokeLinejoin: "round",
           className: "text-accent",
           children: [
-            /* @__PURE__ */ jsx("circle", { cx: "12", cy: "12", r: "5" }),
-            /* @__PURE__ */ jsx("line", { x1: "12", y1: "1", x2: "12", y2: "3" }),
-            /* @__PURE__ */ jsx("line", { x1: "12", y1: "21", x2: "12", y2: "23" }),
-            /* @__PURE__ */ jsx("line", { x1: "4.22", y1: "4.22", x2: "5.64", y2: "5.64" }),
-            /* @__PURE__ */ jsx("line", { x1: "18.36", y1: "18.36", x2: "19.78", y2: "19.78" }),
-            /* @__PURE__ */ jsx("line", { x1: "1", y1: "12", x2: "3", y2: "12" }),
-            /* @__PURE__ */ jsx("line", { x1: "21", y1: "12", x2: "23", y2: "12" }),
-            /* @__PURE__ */ jsx("line", { x1: "4.22", y1: "19.78", x2: "5.64", y2: "18.36" }),
-            /* @__PURE__ */ jsx("line", { x1: "18.36", y1: "5.64", x2: "19.78", y2: "4.22" })
+            /* @__PURE__ */ jsx2("circle", { cx: "12", cy: "12", r: "5" }),
+            /* @__PURE__ */ jsx2("line", { x1: "12", y1: "1", x2: "12", y2: "3" }),
+            /* @__PURE__ */ jsx2("line", { x1: "12", y1: "21", x2: "12", y2: "23" }),
+            /* @__PURE__ */ jsx2("line", { x1: "4.22", y1: "4.22", x2: "5.64", y2: "5.64" }),
+            /* @__PURE__ */ jsx2("line", { x1: "18.36", y1: "18.36", x2: "19.78", y2: "19.78" }),
+            /* @__PURE__ */ jsx2("line", { x1: "1", y1: "12", x2: "3", y2: "12" }),
+            /* @__PURE__ */ jsx2("line", { x1: "21", y1: "12", x2: "23", y2: "12" }),
+            /* @__PURE__ */ jsx2("line", { x1: "4.22", y1: "19.78", x2: "5.64", y2: "18.36" }),
+            /* @__PURE__ */ jsx2("line", { x1: "18.36", y1: "5.64", x2: "19.78", y2: "4.22" })
           ]
         }
-      ) : /* @__PURE__ */ jsx(
+      ) : /* @__PURE__ */ jsx2(
         "svg",
         {
           xmlns: "http://www.w3.org/2000/svg",
@@ -247,7 +296,7 @@ function ThemeToggle() {
           strokeLinecap: "round",
           strokeLinejoin: "round",
           className: "text-primary",
-          children: /* @__PURE__ */ jsx("path", { d: "M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" })
+          children: /* @__PURE__ */ jsx2("path", { d: "M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" })
         }
       )
     }
@@ -255,7 +304,7 @@ function ThemeToggle() {
 }
 
 // src/components/ui/themed-card.tsx
-import { jsx as jsx2 } from "react/jsx-runtime";
+import { jsx as jsx3 } from "react/jsx-runtime";
 var ThemedCard = forwardRef(
   ({
     className,
@@ -279,7 +328,7 @@ var ThemedCard = forwardRef(
     };
     const shadowClass = withShadow ? isDarkMode2 ? "shadow-md shadow-black/20" : "shadow-md shadow-black/10" : "";
     const hoverClass = withHover ? variant === "default" ? "hover:bg-muted/50 transition-colors" : variant === "primary" ? "hover:bg-primary/90 transition-colors" : variant === "accent" ? "hover:bg-accent/90 transition-colors" : "hover:bg-muted/10 transition-colors" : "";
-    return /* @__PURE__ */ jsx2(
+    return /* @__PURE__ */ jsx3(
       "div",
       {
         ref,
@@ -298,7 +347,7 @@ var ThemedCard = forwardRef(
 );
 ThemedCard.displayName = "ThemedCard";
 var ThemedCardHeader = forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ jsx2(
+  ({ className, ...props }, ref) => /* @__PURE__ */ jsx3(
     "div",
     {
       ref,
@@ -322,25 +371,25 @@ var ThemedCardTitle = forwardRef(
     );
     switch (level) {
       case 1:
-        return /* @__PURE__ */ jsx2("h1", { ref, className: titleClasses, ...props });
+        return /* @__PURE__ */ jsx3("h1", { ref, className: titleClasses, ...props });
       case 2:
-        return /* @__PURE__ */ jsx2("h2", { ref, className: titleClasses, ...props });
+        return /* @__PURE__ */ jsx3("h2", { ref, className: titleClasses, ...props });
       case 3:
-        return /* @__PURE__ */ jsx2("h3", { ref, className: titleClasses, ...props });
+        return /* @__PURE__ */ jsx3("h3", { ref, className: titleClasses, ...props });
       case 4:
-        return /* @__PURE__ */ jsx2("h4", { ref, className: titleClasses, ...props });
+        return /* @__PURE__ */ jsx3("h4", { ref, className: titleClasses, ...props });
       case 5:
-        return /* @__PURE__ */ jsx2("h5", { ref, className: titleClasses, ...props });
+        return /* @__PURE__ */ jsx3("h5", { ref, className: titleClasses, ...props });
       case 6:
-        return /* @__PURE__ */ jsx2("h6", { ref, className: titleClasses, ...props });
+        return /* @__PURE__ */ jsx3("h6", { ref, className: titleClasses, ...props });
       default:
-        return /* @__PURE__ */ jsx2("h3", { ref, className: titleClasses, ...props });
+        return /* @__PURE__ */ jsx3("h3", { ref, className: titleClasses, ...props });
     }
   }
 );
 ThemedCardTitle.displayName = "ThemedCardTitle";
 var ThemedCardDescription = forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ jsx2(
+  ({ className, ...props }, ref) => /* @__PURE__ */ jsx3(
     "p",
     {
       ref,
@@ -351,11 +400,11 @@ var ThemedCardDescription = forwardRef(
 );
 ThemedCardDescription.displayName = "ThemedCardDescription";
 var ThemedCardContent = forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ jsx2("div", { ref, className: cn("pt-0", className), ...props })
+  ({ className, ...props }, ref) => /* @__PURE__ */ jsx3("div", { ref, className: cn("pt-0", className), ...props })
 );
 ThemedCardContent.displayName = "ThemedCardContent";
 var ThemedCardFooter = forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ jsx2(
+  ({ className, ...props }, ref) => /* @__PURE__ */ jsx3(
     "div",
     {
       ref,
@@ -368,8 +417,8 @@ ThemedCardFooter.displayName = "ThemedCardFooter";
 
 // src/components/ui/metric-card.tsx
 import { forwardRef as forwardRef2 } from "react";
-import { Fragment, jsx as jsx3, jsxs as jsxs2 } from "react/jsx-runtime";
-var TrendUpIcon = () => /* @__PURE__ */ jsx3(
+import { Fragment, jsx as jsx4, jsxs as jsxs2 } from "react/jsx-runtime";
+var TrendUpIcon = () => /* @__PURE__ */ jsx4(
   "svg",
   {
     xmlns: "http://www.w3.org/2000/svg",
@@ -382,10 +431,10 @@ var TrendUpIcon = () => /* @__PURE__ */ jsx3(
     strokeLinecap: "round",
     strokeLinejoin: "round",
     className: "text-green-500",
-    children: /* @__PURE__ */ jsx3("path", { d: "m18 15-6-6-6 6" })
+    children: /* @__PURE__ */ jsx4("path", { d: "m18 15-6-6-6 6" })
   }
 );
-var TrendDownIcon = () => /* @__PURE__ */ jsx3(
+var TrendDownIcon = () => /* @__PURE__ */ jsx4(
   "svg",
   {
     xmlns: "http://www.w3.org/2000/svg",
@@ -398,10 +447,10 @@ var TrendDownIcon = () => /* @__PURE__ */ jsx3(
     strokeLinecap: "round",
     strokeLinejoin: "round",
     className: "text-red-500",
-    children: /* @__PURE__ */ jsx3("path", { d: "m6 9 6 6 6-6" })
+    children: /* @__PURE__ */ jsx4("path", { d: "m6 9 6 6 6-6" })
   }
 );
-var TrendNeutralIcon = () => /* @__PURE__ */ jsx3(
+var TrendNeutralIcon = () => /* @__PURE__ */ jsx4(
   "svg",
   {
     xmlns: "http://www.w3.org/2000/svg",
@@ -414,13 +463,13 @@ var TrendNeutralIcon = () => /* @__PURE__ */ jsx3(
     strokeLinecap: "round",
     strokeLinejoin: "round",
     className: "text-gray-500",
-    children: /* @__PURE__ */ jsx3("path", { d: "M5 12h14" })
+    children: /* @__PURE__ */ jsx4("path", { d: "M5 12h14" })
   }
 );
 var MetricCardSkeleton = ({ className }) => /* @__PURE__ */ jsxs2("div", { className: cn("animate-pulse space-y-3", className), children: [
-  /* @__PURE__ */ jsx3("div", { className: "h-4 w-1/3 rounded bg-muted" }),
-  /* @__PURE__ */ jsx3("div", { className: "h-8 w-2/3 rounded bg-muted" }),
-  /* @__PURE__ */ jsx3("div", { className: "h-4 w-1/4 rounded bg-muted" })
+  /* @__PURE__ */ jsx4("div", { className: "h-4 w-1/3 rounded bg-muted" }),
+  /* @__PURE__ */ jsx4("div", { className: "h-8 w-2/3 rounded bg-muted" }),
+  /* @__PURE__ */ jsx4("div", { className: "h-4 w-1/4 rounded bg-muted" })
 ] });
 var MetricCard = forwardRef2(
   ({
@@ -459,9 +508,9 @@ var MetricCard = forwardRef2(
       md: "text-2xl",
       lg: "text-3xl"
     };
-    const trendIcon = trend === "up" ? /* @__PURE__ */ jsx3(TrendUpIcon, {}) : trend === "down" ? /* @__PURE__ */ jsx3(TrendDownIcon, {}) : /* @__PURE__ */ jsx3(TrendNeutralIcon, {});
+    const trendIcon = trend === "up" ? /* @__PURE__ */ jsx4(TrendUpIcon, {}) : trend === "down" ? /* @__PURE__ */ jsx4(TrendDownIcon, {}) : /* @__PURE__ */ jsx4(TrendNeutralIcon, {});
     const trendColor = trend === "up" ? "text-green-500" : trend === "down" ? "text-red-500" : "text-gray-500";
-    return /* @__PURE__ */ jsx3(
+    return /* @__PURE__ */ jsx4(
       "div",
       {
         ref,
@@ -474,21 +523,21 @@ var MetricCard = forwardRef2(
           className
         ),
         ...props,
-        children: loading ? /* @__PURE__ */ jsx3(MetricCardSkeleton, {}) : /* @__PURE__ */ jsxs2(Fragment, { children: [
+        children: loading ? /* @__PURE__ */ jsx4(MetricCardSkeleton, {}) : /* @__PURE__ */ jsxs2(Fragment, { children: [
           /* @__PURE__ */ jsxs2("div", { className: "flex items-center justify-between", children: [
-            /* @__PURE__ */ jsx3("h3", { className: "text-sm font-medium text-muted-foreground", children: title }),
-            icon && /* @__PURE__ */ jsx3("div", { className: "h-5 w-5", children: icon })
+            /* @__PURE__ */ jsx4("h3", { className: "text-sm font-medium text-muted-foreground", children: title }),
+            icon && /* @__PURE__ */ jsx4("div", { className: "h-5 w-5", children: icon })
           ] }),
           /* @__PURE__ */ jsxs2("div", { className: "flex items-end justify-between", children: [
-            /* @__PURE__ */ jsx3("div", { className: cn("font-bold", valueSize[size]), children: value }),
+            /* @__PURE__ */ jsx4("div", { className: cn("font-bold", valueSize[size]), children: value }),
             trend && /* @__PURE__ */ jsxs2("div", { className: "flex items-center space-x-1", children: [
               trendIcon,
-              trendValue && /* @__PURE__ */ jsx3("span", { className: cn("text-sm font-medium", trendColor), children: trendValue })
+              trendValue && /* @__PURE__ */ jsx4("span", { className: cn("text-sm font-medium", trendColor), children: trendValue })
             ] })
           ] }),
-          trendLabel && /* @__PURE__ */ jsx3("p", { className: "text-xs text-muted-foreground", children: trendLabel }),
-          chart && /* @__PURE__ */ jsx3("div", { className: "mt-2", children: chart }),
-          footer && /* @__PURE__ */ jsx3("div", { className: "mt-2 pt-2 border-t border-border/50", children: footer })
+          trendLabel && /* @__PURE__ */ jsx4("p", { className: "text-xs text-muted-foreground", children: trendLabel }),
+          chart && /* @__PURE__ */ jsx4("div", { className: "mt-2", children: chart }),
+          footer && /* @__PURE__ */ jsx4("div", { className: "mt-2 pt-2 border-t border-border/50", children: footer })
         ] })
       }
     );
@@ -509,7 +558,7 @@ var SimpleLineChart = ({
     const y = 100 - (value - min) / range * 100;
     return `${x},${y}`;
   }).join(" ");
-  return /* @__PURE__ */ jsx3("div", { className: cn("w-full", className), style: { height }, children: /* @__PURE__ */ jsx3("svg", { width: "100%", height: "100%", viewBox: "0 0 100 100", preserveAspectRatio: "none", children: /* @__PURE__ */ jsx3(
+  return /* @__PURE__ */ jsx4("div", { className: cn("w-full", className), style: { height }, children: /* @__PURE__ */ jsx4("svg", { width: "100%", height: "100%", viewBox: "0 0 100 100", preserveAspectRatio: "none", children: /* @__PURE__ */ jsx4(
     "polyline",
     {
       points,
@@ -537,7 +586,7 @@ var ProgressIndicator = ({
     lg: "h-3"
   };
   return /* @__PURE__ */ jsxs2("div", { className: cn("w-full space-y-1", className), children: [
-    /* @__PURE__ */ jsx3("div", { className: cn("w-full rounded-full overflow-hidden", sizeClasses[size]), style: { backgroundColor }, children: /* @__PURE__ */ jsx3(
+    /* @__PURE__ */ jsx4("div", { className: cn("w-full rounded-full overflow-hidden", sizeClasses[size]), style: { backgroundColor }, children: /* @__PURE__ */ jsx4(
       "div",
       {
         className: "h-full rounded-full transition-all duration-300 ease-in-out",
@@ -545,8 +594,8 @@ var ProgressIndicator = ({
       }
     ) }),
     showValue && /* @__PURE__ */ jsxs2("div", { className: "flex justify-between text-xs text-muted-foreground", children: [
-      /* @__PURE__ */ jsx3("span", { children: value }),
-      /* @__PURE__ */ jsx3("span", { children: max })
+      /* @__PURE__ */ jsx4("span", { children: value }),
+      /* @__PURE__ */ jsx4("span", { children: max })
     ] })
   ] });
 };
@@ -566,7 +615,7 @@ var CircularProgress = ({
   const dash = percentage * circumference / 100;
   return /* @__PURE__ */ jsxs2("div", { className: cn("relative inline-flex items-center justify-center", className), children: [
     /* @__PURE__ */ jsxs2("svg", { width: size, height: size, viewBox: `0 0 ${size} ${size}`, children: [
-      /* @__PURE__ */ jsx3(
+      /* @__PURE__ */ jsx4(
         "circle",
         {
           cx: size / 2,
@@ -577,7 +626,7 @@ var CircularProgress = ({
           strokeWidth
         }
       ),
-      /* @__PURE__ */ jsx3(
+      /* @__PURE__ */ jsx4(
         "circle",
         {
           cx: size / 2,
@@ -594,7 +643,7 @@ var CircularProgress = ({
         }
       )
     ] }),
-    showValue && /* @__PURE__ */ jsx3("div", { className: "absolute inset-0 flex items-center justify-center", children: /* @__PURE__ */ jsxs2("span", { className: "text-xs font-medium", children: [
+    showValue && /* @__PURE__ */ jsx4("div", { className: "absolute inset-0 flex items-center justify-center", children: /* @__PURE__ */ jsxs2("span", { className: "text-xs font-medium", children: [
       Math.round(percentage),
       "%"
     ] }) })
@@ -603,7 +652,7 @@ var CircularProgress = ({
 
 // src/components/ui/contact-card.tsx
 import { forwardRef as forwardRef3 } from "react";
-import { Fragment as Fragment2, jsx as jsx4, jsxs as jsxs3 } from "react/jsx-runtime";
+import { Fragment as Fragment2, jsx as jsx5, jsxs as jsxs3 } from "react/jsx-runtime";
 var StatusIndicator = ({
   status,
   customColor,
@@ -616,7 +665,7 @@ var StatusIndicator = ({
     busy: "bg-red-500",
     custom: ""
   };
-  return /* @__PURE__ */ jsx4(
+  return /* @__PURE__ */ jsx5(
     "div",
     {
       className: cn(
@@ -657,15 +706,15 @@ var ContactAvatar = forwardRef3(
         style: borderColor ? { borderColor } : {},
         ...props,
         children: [
-          src ? /* @__PURE__ */ jsx4(
+          src ? /* @__PURE__ */ jsx5(
             "img",
             {
               src,
               alt,
               className: "h-full w-full object-cover"
             }
-          ) : /* @__PURE__ */ jsx4("div", { className: "h-full w-full flex items-center justify-center bg-primary/10 text-primary font-medium", children: initials || alt.charAt(0).toUpperCase() }),
-          status && /* @__PURE__ */ jsx4("div", { className: "absolute bottom-0 right-0 translate-y-[20%] translate-x-[20%]", children: /* @__PURE__ */ jsx4(StatusIndicator, { status, customColor: statusColor }) })
+          ) : /* @__PURE__ */ jsx5("div", { className: "h-full w-full flex items-center justify-center bg-primary/10 text-primary font-medium", children: initials || alt.charAt(0).toUpperCase() }),
+          status && /* @__PURE__ */ jsx5("div", { className: "absolute bottom-0 right-0 translate-y-[20%] translate-x-[20%]", children: /* @__PURE__ */ jsx5(StatusIndicator, { status, customColor: statusColor }) })
         ]
       }
     );
@@ -686,12 +735,12 @@ var ContactInfoItem = forwardRef3(
         className: cn("flex items-start space-x-2", className),
         ...props,
         children: [
-          icon && /* @__PURE__ */ jsx4("div", { className: "mt-0.5 text-muted-foreground", children: icon }),
+          icon && /* @__PURE__ */ jsx5("div", { className: "mt-0.5 text-muted-foreground", children: icon }),
           /* @__PURE__ */ jsxs3("div", { className: "flex-1 min-w-0", children: [
-            label && /* @__PURE__ */ jsx4("div", { className: "text-xs text-muted-foreground", children: label }),
-            /* @__PURE__ */ jsx4("div", { className: "text-sm truncate", children: value })
+            label && /* @__PURE__ */ jsx5("div", { className: "text-xs text-muted-foreground", children: label }),
+            /* @__PURE__ */ jsx5("div", { className: "text-sm truncate", children: value })
           ] }),
-          copyable && /* @__PURE__ */ jsx4(
+          copyable && /* @__PURE__ */ jsx5(
             "button",
             {
               onClick: handleCopy,
@@ -710,8 +759,8 @@ var ContactInfoItem = forwardRef3(
                   strokeLinecap: "round",
                   strokeLinejoin: "round",
                   children: [
-                    /* @__PURE__ */ jsx4("rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2" }),
-                    /* @__PURE__ */ jsx4("path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" })
+                    /* @__PURE__ */ jsx5("rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2" }),
+                    /* @__PURE__ */ jsx5("path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" })
                   ]
                 }
               )
@@ -721,7 +770,7 @@ var ContactInfoItem = forwardRef3(
       }
     );
     if (href) {
-      return /* @__PURE__ */ jsx4(
+      return /* @__PURE__ */ jsx5(
         "a",
         {
           href,
@@ -754,8 +803,8 @@ var ContactActionButton = forwardRef3(
         ),
         ...props,
         children: [
-          /* @__PURE__ */ jsx4("div", { className: "mb-1", children: icon }),
-          /* @__PURE__ */ jsx4("span", { className: "text-xs", children: label })
+          /* @__PURE__ */ jsx5("div", { className: "mb-1", children: icon }),
+          /* @__PURE__ */ jsx5("span", { className: "text-xs", children: label })
         ]
       }
     );
@@ -812,12 +861,12 @@ var ContactCard = forwardRef3(
         strokeLinecap: "round",
         strokeLinejoin: "round",
         children: [
-          /* @__PURE__ */ jsx4("rect", { width: "20", height: "16", x: "2", y: "4", rx: "2" }),
-          /* @__PURE__ */ jsx4("path", { d: "m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" })
+          /* @__PURE__ */ jsx5("rect", { width: "20", height: "16", x: "2", y: "4", rx: "2" }),
+          /* @__PURE__ */ jsx5("path", { d: "m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" })
         ]
       }
     );
-    const phoneIcon = /* @__PURE__ */ jsx4(
+    const phoneIcon = /* @__PURE__ */ jsx5(
       "svg",
       {
         xmlns: "http://www.w3.org/2000/svg",
@@ -829,7 +878,7 @@ var ContactCard = forwardRef3(
         strokeWidth: "2",
         strokeLinecap: "round",
         strokeLinejoin: "round",
-        children: /* @__PURE__ */ jsx4("path", { d: "M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" })
+        children: /* @__PURE__ */ jsx5("path", { d: "M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" })
       }
     );
     const mobileIcon = /* @__PURE__ */ jsxs3(
@@ -845,8 +894,8 @@ var ContactCard = forwardRef3(
         strokeLinecap: "round",
         strokeLinejoin: "round",
         children: [
-          /* @__PURE__ */ jsx4("rect", { width: "14", height: "20", x: "5", y: "2", rx: "2", ry: "2" }),
-          /* @__PURE__ */ jsx4("path", { d: "M12 18h.01" })
+          /* @__PURE__ */ jsx5("rect", { width: "14", height: "20", x: "5", y: "2", rx: "2", ry: "2" }),
+          /* @__PURE__ */ jsx5("path", { d: "M12 18h.01" })
         ]
       }
     );
@@ -863,8 +912,8 @@ var ContactCard = forwardRef3(
         strokeLinecap: "round",
         strokeLinejoin: "round",
         children: [
-          /* @__PURE__ */ jsx4("path", { d: "M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" }),
-          /* @__PURE__ */ jsx4("circle", { cx: "12", cy: "10", r: "3" })
+          /* @__PURE__ */ jsx5("path", { d: "M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" }),
+          /* @__PURE__ */ jsx5("circle", { cx: "12", cy: "10", r: "3" })
         ]
       }
     );
@@ -881,9 +930,9 @@ var ContactCard = forwardRef3(
         strokeLinecap: "round",
         strokeLinejoin: "round",
         children: [
-          /* @__PURE__ */ jsx4("circle", { cx: "12", cy: "12", r: "10" }),
-          /* @__PURE__ */ jsx4("path", { d: "M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" }),
-          /* @__PURE__ */ jsx4("path", { d: "M2 12h20" })
+          /* @__PURE__ */ jsx5("circle", { cx: "12", cy: "12", r: "10" }),
+          /* @__PURE__ */ jsx5("path", { d: "M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" }),
+          /* @__PURE__ */ jsx5("path", { d: "M2 12h20" })
         ]
       }
     );
@@ -900,14 +949,14 @@ var ContactCard = forwardRef3(
         strokeLinecap: "round",
         strokeLinejoin: "round",
         children: [
-          /* @__PURE__ */ jsx4("path", { d: "M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z" }),
-          /* @__PURE__ */ jsx4("path", { d: "M3 9V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4" }),
-          /* @__PURE__ */ jsx4("path", { d: "M9 22V12" }),
-          /* @__PURE__ */ jsx4("path", { d: "M15 22V12" })
+          /* @__PURE__ */ jsx5("path", { d: "M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z" }),
+          /* @__PURE__ */ jsx5("path", { d: "M3 9V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4" }),
+          /* @__PURE__ */ jsx5("path", { d: "M9 22V12" }),
+          /* @__PURE__ */ jsx5("path", { d: "M15 22V12" })
         ]
       }
     );
-    return /* @__PURE__ */ jsx4(
+    return /* @__PURE__ */ jsx5(
       "div",
       {
         ref,
@@ -921,7 +970,7 @@ var ContactCard = forwardRef3(
         ),
         ...props,
         children: layout === "horizontal" ? /* @__PURE__ */ jsxs3("div", { className: "flex", children: [
-          /* @__PURE__ */ jsx4("div", { className: cn("flex-shrink-0 p-4", sizeClasses[size]), children: avatar && /* @__PURE__ */ jsx4(
+          /* @__PURE__ */ jsx5("div", { className: cn("flex-shrink-0 p-4", sizeClasses[size]), children: avatar && /* @__PURE__ */ jsx5(
             ContactAvatar,
             {
               src: avatar.src,
@@ -934,15 +983,15 @@ var ContactCard = forwardRef3(
           ) }),
           /* @__PURE__ */ jsxs3("div", { className: "flex-1 p-4 min-w-0", children: [
             /* @__PURE__ */ jsxs3("div", { className: "space-y-1 mb-2", children: [
-              /* @__PURE__ */ jsx4("h3", { className: "font-medium truncate", children: name }),
-              title && /* @__PURE__ */ jsx4("p", { className: "text-sm text-muted-foreground truncate", children: title }),
+              /* @__PURE__ */ jsx5("h3", { className: "font-medium truncate", children: name }),
+              title && /* @__PURE__ */ jsx5("p", { className: "text-sm text-muted-foreground truncate", children: title }),
               company && /* @__PURE__ */ jsxs3("div", { className: "flex items-center text-sm text-muted-foreground", children: [
                 companyIcon,
-                /* @__PURE__ */ jsx4("span", { className: "ml-1 truncate", children: company })
+                /* @__PURE__ */ jsx5("span", { className: "ml-1 truncate", children: company })
               ] })
             ] }),
             contactInfo && /* @__PURE__ */ jsxs3("div", { className: "space-y-1 mb-3", children: [
-              contactInfo.email && /* @__PURE__ */ jsx4(
+              contactInfo.email && /* @__PURE__ */ jsx5(
                 ContactInfoItem,
                 {
                   icon: emailIcon,
@@ -951,7 +1000,7 @@ var ContactCard = forwardRef3(
                   copyable: true
                 }
               ),
-              contactInfo.phone && /* @__PURE__ */ jsx4(
+              contactInfo.phone && /* @__PURE__ */ jsx5(
                 ContactInfoItem,
                 {
                   icon: phoneIcon,
@@ -959,7 +1008,7 @@ var ContactCard = forwardRef3(
                   href: `tel:${contactInfo.phone}`
                 }
               ),
-              contactInfo.mobile && /* @__PURE__ */ jsx4(
+              contactInfo.mobile && /* @__PURE__ */ jsx5(
                 ContactInfoItem,
                 {
                   icon: mobileIcon,
@@ -968,7 +1017,7 @@ var ContactCard = forwardRef3(
                 }
               )
             ] }),
-            tags && tags.length > 0 && /* @__PURE__ */ jsx4("div", { className: "flex flex-wrap gap-1 mt-2", children: tags.map((tag, index) => /* @__PURE__ */ jsx4(
+            tags && tags.length > 0 && /* @__PURE__ */ jsx5("div", { className: "flex flex-wrap gap-1 mt-2", children: tags.map((tag, index) => /* @__PURE__ */ jsx5(
               "span",
               {
                 className: "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary",
@@ -977,10 +1026,10 @@ var ContactCard = forwardRef3(
               index
             )) })
           ] }),
-          actions && /* @__PURE__ */ jsx4("div", { className: "flex items-center p-4 border-l border-border", children: actions })
+          actions && /* @__PURE__ */ jsx5("div", { className: "flex items-center p-4 border-l border-border", children: actions })
         ] }) : /* @__PURE__ */ jsxs3(Fragment2, { children: [
           /* @__PURE__ */ jsxs3("div", { className: "flex items-center space-x-3", children: [
-            avatar && /* @__PURE__ */ jsx4(
+            avatar && /* @__PURE__ */ jsx5(
               ContactAvatar,
               {
                 src: avatar.src,
@@ -992,13 +1041,13 @@ var ContactCard = forwardRef3(
               }
             ),
             /* @__PURE__ */ jsxs3("div", { className: "min-w-0", children: [
-              /* @__PURE__ */ jsx4("h3", { className: "font-medium truncate", children: name }),
-              title && /* @__PURE__ */ jsx4("p", { className: "text-sm text-muted-foreground truncate", children: title }),
-              company && /* @__PURE__ */ jsx4("div", { className: "flex items-center text-sm text-muted-foreground", children: /* @__PURE__ */ jsx4("span", { className: "truncate", children: company }) })
+              /* @__PURE__ */ jsx5("h3", { className: "font-medium truncate", children: name }),
+              title && /* @__PURE__ */ jsx5("p", { className: "text-sm text-muted-foreground truncate", children: title }),
+              company && /* @__PURE__ */ jsx5("div", { className: "flex items-center text-sm text-muted-foreground", children: /* @__PURE__ */ jsx5("span", { className: "truncate", children: company }) })
             ] })
           ] }),
           contactInfo && /* @__PURE__ */ jsxs3("div", { className: "space-y-1", children: [
-            contactInfo.email && /* @__PURE__ */ jsx4(
+            contactInfo.email && /* @__PURE__ */ jsx5(
               ContactInfoItem,
               {
                 icon: emailIcon,
@@ -1007,7 +1056,7 @@ var ContactCard = forwardRef3(
                 copyable: true
               }
             ),
-            contactInfo.phone && /* @__PURE__ */ jsx4(
+            contactInfo.phone && /* @__PURE__ */ jsx5(
               ContactInfoItem,
               {
                 icon: phoneIcon,
@@ -1015,7 +1064,7 @@ var ContactCard = forwardRef3(
                 href: `tel:${contactInfo.phone}`
               }
             ),
-            contactInfo.mobile && /* @__PURE__ */ jsx4(
+            contactInfo.mobile && /* @__PURE__ */ jsx5(
               ContactInfoItem,
               {
                 icon: mobileIcon,
@@ -1023,7 +1072,7 @@ var ContactCard = forwardRef3(
                 href: `tel:${contactInfo.mobile}`
               }
             ),
-            contactInfo.address && /* @__PURE__ */ jsx4(
+            contactInfo.address && /* @__PURE__ */ jsx5(
               ContactInfoItem,
               {
                 icon: addressIcon,
@@ -1031,7 +1080,7 @@ var ContactCard = forwardRef3(
                 copyable: true
               }
             ),
-            contactInfo.website && /* @__PURE__ */ jsx4(
+            contactInfo.website && /* @__PURE__ */ jsx5(
               ContactInfoItem,
               {
                 icon: websiteIcon,
@@ -1039,7 +1088,7 @@ var ContactCard = forwardRef3(
                 href: contactInfo.website.startsWith("http") ? contactInfo.website : `https://${contactInfo.website}`
               }
             ),
-            Object.entries(contactInfo).filter(([key]) => !["email", "phone", "mobile", "address", "website"].includes(key)).map(([key, value]) => /* @__PURE__ */ jsx4(
+            Object.entries(contactInfo).filter(([key]) => !["email", "phone", "mobile", "address", "website"].includes(key)).map(([key, value]) => /* @__PURE__ */ jsx5(
               ContactInfoItem,
               {
                 label: key.charAt(0).toUpperCase() + key.slice(1),
@@ -1048,7 +1097,7 @@ var ContactCard = forwardRef3(
               key
             ))
           ] }),
-          tags && tags.length > 0 && /* @__PURE__ */ jsx4("div", { className: "flex flex-wrap gap-1", children: tags.map((tag, index) => /* @__PURE__ */ jsx4(
+          tags && tags.length > 0 && /* @__PURE__ */ jsx5("div", { className: "flex flex-wrap gap-1", children: tags.map((tag, index) => /* @__PURE__ */ jsx5(
             "span",
             {
               className: "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary",
@@ -1056,18 +1105,18 @@ var ContactCard = forwardRef3(
             },
             index
           )) }),
-          actions && /* @__PURE__ */ jsx4("div", { className: "flex flex-wrap gap-2", children: actions }),
-          footer && /* @__PURE__ */ jsx4("div", { className: "pt-2 border-t border-border/50", children: footer })
+          actions && /* @__PURE__ */ jsx5("div", { className: "flex flex-wrap gap-2", children: actions }),
+          footer && /* @__PURE__ */ jsx5("div", { className: "pt-2 border-t border-border/50", children: footer })
         ] })
       }
     );
   }
 );
 ContactCard.displayName = "ContactCard";
-var ContactCallButton = (props) => /* @__PURE__ */ jsx4(
+var ContactCallButton = (props) => /* @__PURE__ */ jsx5(
   ContactActionButton,
   {
-    icon: /* @__PURE__ */ jsx4(
+    icon: /* @__PURE__ */ jsx5(
       "svg",
       {
         xmlns: "http://www.w3.org/2000/svg",
@@ -1079,14 +1128,14 @@ var ContactCallButton = (props) => /* @__PURE__ */ jsx4(
         strokeWidth: "2",
         strokeLinecap: "round",
         strokeLinejoin: "round",
-        children: /* @__PURE__ */ jsx4("path", { d: "M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" })
+        children: /* @__PURE__ */ jsx5("path", { d: "M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" })
       }
     ),
     label: "Call",
     ...props
   }
 );
-var ContactEmailButton = (props) => /* @__PURE__ */ jsx4(
+var ContactEmailButton = (props) => /* @__PURE__ */ jsx5(
   ContactActionButton,
   {
     icon: /* @__PURE__ */ jsxs3(
@@ -1102,8 +1151,8 @@ var ContactEmailButton = (props) => /* @__PURE__ */ jsx4(
         strokeLinecap: "round",
         strokeLinejoin: "round",
         children: [
-          /* @__PURE__ */ jsx4("rect", { width: "20", height: "16", x: "2", y: "4", rx: "2" }),
-          /* @__PURE__ */ jsx4("path", { d: "m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" })
+          /* @__PURE__ */ jsx5("rect", { width: "20", height: "16", x: "2", y: "4", rx: "2" }),
+          /* @__PURE__ */ jsx5("path", { d: "m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" })
         ]
       }
     ),
@@ -1111,10 +1160,10 @@ var ContactEmailButton = (props) => /* @__PURE__ */ jsx4(
     ...props
   }
 );
-var ContactMessageButton = (props) => /* @__PURE__ */ jsx4(
+var ContactMessageButton = (props) => /* @__PURE__ */ jsx5(
   ContactActionButton,
   {
-    icon: /* @__PURE__ */ jsx4(
+    icon: /* @__PURE__ */ jsx5(
       "svg",
       {
         xmlns: "http://www.w3.org/2000/svg",
@@ -1126,7 +1175,7 @@ var ContactMessageButton = (props) => /* @__PURE__ */ jsx4(
         strokeWidth: "2",
         strokeLinecap: "round",
         strokeLinejoin: "round",
-        children: /* @__PURE__ */ jsx4("path", { d: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" })
+        children: /* @__PURE__ */ jsx5("path", { d: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" })
       }
     ),
     label: "Message",
@@ -1136,7 +1185,7 @@ var ContactMessageButton = (props) => /* @__PURE__ */ jsx4(
 
 // src/components/ui/timeline.tsx
 import { forwardRef as forwardRef4 } from "react";
-import { jsx as jsx5, jsxs as jsxs4 } from "react/jsx-runtime";
+import { jsx as jsx6, jsxs as jsxs4 } from "react/jsx-runtime";
 var Timeline = forwardRef4(
   ({ className, orientation = "vertical", compact = false, reverse = false, children, ...props }, ref) => {
     const orientationClasses = {
@@ -1145,7 +1194,7 @@ var Timeline = forwardRef4(
     };
     const spacingClasses = compact ? "space-y-2" : "space-y-6";
     const horizontalSpacingClasses = compact ? "space-x-4" : "space-x-12";
-    return /* @__PURE__ */ jsx5(
+    return /* @__PURE__ */ jsx6(
       "div",
       {
         ref,
@@ -1194,7 +1243,7 @@ var TimelineItem = forwardRef4(
           ...props,
           children: [
             /* @__PURE__ */ jsxs4("div", { className: "flex flex-col items-center mr-4", children: [
-              /* @__PURE__ */ jsx5(
+              /* @__PURE__ */ jsx6(
                 "div",
                 {
                   className: cn(
@@ -1215,15 +1264,15 @@ var TimelineItem = forwardRef4(
                       strokeLinecap: "round",
                       strokeLinejoin: "round",
                       children: [
-                        /* @__PURE__ */ jsx5("circle", { cx: "12", cy: "12", r: "10" }),
-                        /* @__PURE__ */ jsx5("path", { d: "m12 8 4 4-4 4" }),
-                        /* @__PURE__ */ jsx5("path", { d: "m8 12h8" })
+                        /* @__PURE__ */ jsx6("circle", { cx: "12", cy: "12", r: "10" }),
+                        /* @__PURE__ */ jsx6("path", { d: "m12 8 4 4-4 4" }),
+                        /* @__PURE__ */ jsx6("path", { d: "m8 12h8" })
                       ]
                     }
                   )
                 }
               ),
-              connector && /* @__PURE__ */ jsx5(
+              connector && /* @__PURE__ */ jsx6(
                 "div",
                 {
                   className: cn(
@@ -1236,7 +1285,7 @@ var TimelineItem = forwardRef4(
                 }
               )
             ] }),
-            /* @__PURE__ */ jsx5("div", { className: "flex-1 pb-6", children })
+            /* @__PURE__ */ jsx6("div", { className: "flex-1 pb-6", children })
           ]
         }
       );
@@ -1249,7 +1298,7 @@ var TimelineItem = forwardRef4(
         ...props,
         children: [
           /* @__PURE__ */ jsxs4("div", { className: "flex items-center mb-2", children: [
-            /* @__PURE__ */ jsx5(
+            /* @__PURE__ */ jsx6(
               "div",
               {
                 className: cn(
@@ -1270,15 +1319,15 @@ var TimelineItem = forwardRef4(
                     strokeLinecap: "round",
                     strokeLinejoin: "round",
                     children: [
-                      /* @__PURE__ */ jsx5("circle", { cx: "12", cy: "12", r: "10" }),
-                      /* @__PURE__ */ jsx5("path", { d: "m12 8 4 4-4 4" }),
-                      /* @__PURE__ */ jsx5("path", { d: "m8 12h8" })
+                      /* @__PURE__ */ jsx6("circle", { cx: "12", cy: "12", r: "10" }),
+                      /* @__PURE__ */ jsx6("path", { d: "m12 8 4 4-4 4" }),
+                      /* @__PURE__ */ jsx6("path", { d: "m8 12h8" })
                     ]
                   }
                 )
               }
             ),
-            connector && /* @__PURE__ */ jsx5(
+            connector && /* @__PURE__ */ jsx6(
               "div",
               {
                 className: cn(
@@ -1291,7 +1340,7 @@ var TimelineItem = forwardRef4(
               }
             )
           ] }),
-          /* @__PURE__ */ jsx5("div", { className: "ml-8", children })
+          /* @__PURE__ */ jsx6("div", { className: "ml-8", children })
         ]
       }
     );
@@ -1308,11 +1357,11 @@ var TimelineContent = forwardRef4(
         ...props,
         children: [
           /* @__PURE__ */ jsxs4("div", { className: "flex items-start justify-between", children: [
-            title && /* @__PURE__ */ jsx5("h4", { className: "font-medium", children: title }),
-            date && /* @__PURE__ */ jsx5("span", { className: "text-sm text-muted-foreground", children: date })
+            title && /* @__PURE__ */ jsx6("h4", { className: "font-medium", children: title }),
+            date && /* @__PURE__ */ jsx6("span", { className: "text-sm text-muted-foreground", children: date })
           ] }),
-          subtitle && /* @__PURE__ */ jsx5("p", { className: "text-sm text-muted-foreground", children: subtitle }),
-          children && /* @__PURE__ */ jsx5("div", { className: "mt-2", children })
+          subtitle && /* @__PURE__ */ jsx6("p", { className: "text-sm text-muted-foreground", children: subtitle }),
+          children && /* @__PURE__ */ jsx6("div", { className: "mt-2", children })
         ]
       }
     );
@@ -1328,9 +1377,9 @@ var TimelineSeparator = forwardRef4(
         className: cn("relative flex items-center py-4", className),
         ...props,
         children: [
-          /* @__PURE__ */ jsx5("div", { className: "flex-grow border-t border-border" }),
-          label && /* @__PURE__ */ jsx5("span", { className: "flex-shrink mx-4 text-sm font-medium text-muted-foreground", children: label }),
-          /* @__PURE__ */ jsx5("div", { className: "flex-grow border-t border-border" })
+          /* @__PURE__ */ jsx6("div", { className: "flex-grow border-t border-border" }),
+          label && /* @__PURE__ */ jsx6("span", { className: "flex-shrink mx-4 text-sm font-medium text-muted-foreground", children: label }),
+          /* @__PURE__ */ jsx6("div", { className: "flex-grow border-t border-border" })
         ]
       }
     );
@@ -1344,7 +1393,7 @@ var TimelineDot = forwardRef4(
       md: "w-3 h-3",
       lg: "w-4 h-4"
     };
-    return /* @__PURE__ */ jsx5(
+    return /* @__PURE__ */ jsx6(
       "div",
       {
         ref,
@@ -1365,7 +1414,7 @@ TimelineDot.displayName = "TimelineDot";
 
 // src/components/ui/task-card.tsx
 import { forwardRef as forwardRef5 } from "react";
-import { jsx as jsx6, jsxs as jsxs5 } from "react/jsx-runtime";
+import { jsx as jsx7, jsxs as jsxs5 } from "react/jsx-runtime";
 var PriorityBadge = forwardRef5(
   ({ className, priority, customColor, size = "md", ...props }, ref) => {
     const priorityColors = {
@@ -1387,7 +1436,7 @@ var PriorityBadge = forwardRef5(
       md: "text-xs px-2 py-1",
       lg: "text-sm px-2.5 py-1.5"
     };
-    return /* @__PURE__ */ jsx6(
+    return /* @__PURE__ */ jsx7(
       "div",
       {
         ref,
@@ -1428,7 +1477,7 @@ var StatusBadge = forwardRef5(
       md: "text-xs px-2 py-1",
       lg: "text-sm px-2.5 py-1.5"
     };
-    return /* @__PURE__ */ jsx6(
+    return /* @__PURE__ */ jsx7(
       "div",
       {
         ref,
@@ -1461,7 +1510,7 @@ var TaskProgress = forwardRef5(
         className: cn("space-y-1", className),
         ...props,
         children: [
-          /* @__PURE__ */ jsx6("div", { className: cn("w-full bg-muted rounded-full overflow-hidden", sizeClasses[size]), children: /* @__PURE__ */ jsx6(
+          /* @__PURE__ */ jsx7("div", { className: cn("w-full bg-muted rounded-full overflow-hidden", sizeClasses[size]), children: /* @__PURE__ */ jsx7(
             "div",
             {
               className: "bg-primary h-full rounded-full transition-all duration-300 ease-in-out",
@@ -1469,7 +1518,7 @@ var TaskProgress = forwardRef5(
             }
           ) }),
           showLabel && /* @__PURE__ */ jsxs5("div", { className: "flex justify-between items-center text-xs text-muted-foreground", children: [
-            /* @__PURE__ */ jsx6("span", { children: "Progress" }),
+            /* @__PURE__ */ jsx7("span", { children: "Progress" }),
             /* @__PURE__ */ jsxs5("span", { children: [
               Math.round(percentage),
               "%"
@@ -1520,14 +1569,14 @@ var DueDate = forwardRef5(
               strokeLinejoin: "round",
               className: "mr-1",
               children: [
-                /* @__PURE__ */ jsx6("rect", { width: "18", height: "18", x: "3", y: "4", rx: "2", ry: "2" }),
-                /* @__PURE__ */ jsx6("line", { x1: "16", x2: "16", y1: "2", y2: "6" }),
-                /* @__PURE__ */ jsx6("line", { x1: "8", x2: "8", y1: "2", y2: "6" }),
-                /* @__PURE__ */ jsx6("line", { x1: "3", x2: "21", y1: "10", y2: "10" })
+                /* @__PURE__ */ jsx7("rect", { width: "18", height: "18", x: "3", y: "4", rx: "2", ry: "2" }),
+                /* @__PURE__ */ jsx7("line", { x1: "16", x2: "16", y1: "2", y2: "6" }),
+                /* @__PURE__ */ jsx7("line", { x1: "8", x2: "8", y1: "2", y2: "6" }),
+                /* @__PURE__ */ jsx7("line", { x1: "3", x2: "21", y1: "10", y2: "10" })
               ]
             }
           ),
-          /* @__PURE__ */ jsx6("span", { children: formatDate(date) })
+          /* @__PURE__ */ jsx7("span", { children: formatDate(date) })
         ]
       }
     );
@@ -1549,17 +1598,17 @@ var Assignee = forwardRef5(
         className: cn("flex items-center space-x-2", className),
         ...props,
         children: [
-          /* @__PURE__ */ jsx6(
+          /* @__PURE__ */ jsx7(
             "div",
             {
               className: cn(
                 "rounded-full flex items-center justify-center bg-primary/10 text-primary",
                 sizeClasses[size]
               ),
-              children: avatar ? /* @__PURE__ */ jsx6("img", { src: avatar, alt: name, className: "h-full w-full rounded-full object-cover" }) : /* @__PURE__ */ jsx6("span", { children: initials })
+              children: avatar ? /* @__PURE__ */ jsx7("img", { src: avatar, alt: name, className: "h-full w-full rounded-full object-cover" }) : /* @__PURE__ */ jsx7("span", { children: initials })
             }
           ),
-          /* @__PURE__ */ jsx6("span", { className: "text-sm", children: name })
+          /* @__PURE__ */ jsx7("span", { className: "text-sm", children: name })
         ]
       }
     );
@@ -1614,19 +1663,19 @@ var TaskCard = forwardRef5(
         ...props,
         children: [
           /* @__PURE__ */ jsxs5("div", { className: "flex items-start justify-between", children: [
-            /* @__PURE__ */ jsx6("h3", { className: "font-medium", children: title }),
+            /* @__PURE__ */ jsx7("h3", { className: "font-medium", children: title }),
             /* @__PURE__ */ jsxs5("div", { className: "flex space-x-2", children: [
-              priority && /* @__PURE__ */ jsx6(PriorityBadge, { priority, size: "sm" }),
-              status && /* @__PURE__ */ jsx6(StatusBadge, { status, size: "sm" })
+              priority && /* @__PURE__ */ jsx7(PriorityBadge, { priority, size: "sm" }),
+              status && /* @__PURE__ */ jsx7(StatusBadge, { status, size: "sm" })
             ] })
           ] }),
-          description && /* @__PURE__ */ jsx6("p", { className: "text-sm text-muted-foreground", children: description }),
-          progress !== void 0 && /* @__PURE__ */ jsx6(TaskProgress, { value: progress, showLabel: true, size: "sm" }),
+          description && /* @__PURE__ */ jsx7("p", { className: "text-sm text-muted-foreground", children: description }),
+          progress !== void 0 && /* @__PURE__ */ jsx7(TaskProgress, { value: progress, showLabel: true, size: "sm" }),
           (assignee || dueDate) && /* @__PURE__ */ jsxs5("div", { className: "flex items-center justify-between text-sm", children: [
-            assignee && /* @__PURE__ */ jsx6(Assignee, { name: assignee.name, avatar: assignee.avatar, size: "sm" }),
-            dueDate && /* @__PURE__ */ jsx6(DueDate, { date: dueDate })
+            assignee && /* @__PURE__ */ jsx7(Assignee, { name: assignee.name, avatar: assignee.avatar, size: "sm" }),
+            dueDate && /* @__PURE__ */ jsx7(DueDate, { date: dueDate })
           ] }),
-          tags && tags.length > 0 && /* @__PURE__ */ jsx6("div", { className: "flex flex-wrap gap-1", children: tags.map((tag, index) => /* @__PURE__ */ jsx6(
+          tags && tags.length > 0 && /* @__PURE__ */ jsx7("div", { className: "flex flex-wrap gap-1", children: tags.map((tag, index) => /* @__PURE__ */ jsx7(
             "span",
             {
               className: "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary",
@@ -1634,8 +1683,8 @@ var TaskCard = forwardRef5(
             },
             index
           )) }),
-          children && /* @__PURE__ */ jsx6("div", { children }),
-          footer && /* @__PURE__ */ jsx6("div", { className: "pt-2 border-t border-border/50", children: footer })
+          children && /* @__PURE__ */ jsx7("div", { children }),
+          footer && /* @__PURE__ */ jsx7("div", { className: "pt-2 border-t border-border/50", children: footer })
         ]
       }
     );
@@ -1659,7 +1708,7 @@ var TaskList = forwardRef5(
       md: layout === "grid" ? "gap-4" : "space-y-4",
       lg: layout === "grid" ? "gap-6" : "space-y-6"
     };
-    return /* @__PURE__ */ jsx6(
+    return /* @__PURE__ */ jsx7(
       "div",
       {
         ref,
@@ -1670,18 +1719,38 @@ var TaskList = forwardRef5(
           className
         ),
         ...props,
-        children: tasks.map((task, index) => /* @__PURE__ */ jsx6(TaskCard, { ...task }, index))
+        children: tasks.map((task, index) => /* @__PURE__ */ jsx7(TaskCard, { ...task }, index))
       }
     );
   }
 );
 TaskList.displayName = "TaskList";
 
-// src/components/core/Button.tsx
+// src/components/ui/loading-spinner.tsx
 import * as React from "react";
+import { jsx as jsx8, jsxs as jsxs6 } from "react/jsx-runtime";
+var LoadingSpinner = React.forwardRef(({ className, ...props }, ref) => {
+  return /* @__PURE__ */ jsxs6(
+    "div",
+    {
+      ref,
+      role: "status",
+      className: cn("flex items-center justify-center", className),
+      ...props,
+      children: [
+        /* @__PURE__ */ jsx8("div", { className: "h-12 w-12 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" }),
+        /* @__PURE__ */ jsx8("span", { className: "sr-only", children: "Loading..." })
+      ]
+    }
+  );
+});
+LoadingSpinner.displayName = "LoadingSpinner";
+
+// src/components/core/Button.tsx
+import * as React2 from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
-import { jsx as jsx7 } from "react/jsx-runtime";
+import { jsx as jsx9 } from "react/jsx-runtime";
 var buttonVariants = cva(
   "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
@@ -1707,10 +1776,10 @@ var buttonVariants = cva(
     }
   }
 );
-var Button = React.forwardRef(
+var Button = React2.forwardRef(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
-    return /* @__PURE__ */ jsx7(
+    return /* @__PURE__ */ jsx9(
       Comp,
       {
         className: cn(buttonVariants({ variant, size, className })),
@@ -1724,15 +1793,15 @@ Button.displayName = "Button";
 
 // src/components/core/ThemeDemo.tsx
 import { useState as useState2 } from "react";
-import { jsx as jsx8, jsxs as jsxs6 } from "react/jsx-runtime";
+import { jsx as jsx10, jsxs as jsxs7 } from "react/jsx-runtime";
 function ThemeDemo({ className }) {
   const { theme, setTheme, isDarkMode: isDarkMode2 } = useTheme();
   const [activeTab, setActiveTab] = useState2("colors");
-  return /* @__PURE__ */ jsxs6("div", { className: cn("space-y-6", className), children: [
-    /* @__PURE__ */ jsxs6("div", { className: "flex items-center justify-between", children: [
-      /* @__PURE__ */ jsx8("h2", { className: "text-2xl font-bold", children: "Theme Demonstration" }),
-      /* @__PURE__ */ jsxs6("div", { className: "flex items-center space-x-2", children: [
-        /* @__PURE__ */ jsx8(
+  return /* @__PURE__ */ jsxs7("div", { className: cn("space-y-6", className), children: [
+    /* @__PURE__ */ jsxs7("div", { className: "flex items-center justify-between", children: [
+      /* @__PURE__ */ jsx10("h2", { className: "text-2xl font-bold", children: "Theme Demonstration" }),
+      /* @__PURE__ */ jsxs7("div", { className: "flex items-center space-x-2", children: [
+        /* @__PURE__ */ jsx10(
           "button",
           {
             onClick: () => setTheme("light"),
@@ -1743,7 +1812,7 @@ function ThemeDemo({ className }) {
             children: "Light"
           }
         ),
-        /* @__PURE__ */ jsx8(
+        /* @__PURE__ */ jsx10(
           "button",
           {
             onClick: () => setTheme("dark"),
@@ -1754,7 +1823,7 @@ function ThemeDemo({ className }) {
             children: "Dark"
           }
         ),
-        /* @__PURE__ */ jsx8(
+        /* @__PURE__ */ jsx10(
           "button",
           {
             onClick: () => setTheme("system"),
@@ -1767,8 +1836,8 @@ function ThemeDemo({ className }) {
         )
       ] })
     ] }),
-    /* @__PURE__ */ jsxs6("div", { className: "flex space-x-2 border-b", children: [
-      /* @__PURE__ */ jsx8(
+    /* @__PURE__ */ jsxs7("div", { className: "flex space-x-2 border-b", children: [
+      /* @__PURE__ */ jsx10(
         "button",
         {
           onClick: () => setActiveTab("colors"),
@@ -1779,7 +1848,7 @@ function ThemeDemo({ className }) {
           children: "Color Palette"
         }
       ),
-      /* @__PURE__ */ jsx8(
+      /* @__PURE__ */ jsx10(
         "button",
         {
           onClick: () => setActiveTab("components"),
@@ -1791,176 +1860,176 @@ function ThemeDemo({ className }) {
         }
       )
     ] }),
-    activeTab === "colors" && /* @__PURE__ */ jsxs6("div", { className: "space-y-6", children: [
-      /* @__PURE__ */ jsxs6("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx8("h3", { className: "text-lg font-medium", children: "Primary Colors (Teal)" }),
-        /* @__PURE__ */ jsx8("div", { className: "grid grid-cols-5 gap-2", children: [50, 100, 200, 300, 400, 500, 600, 700, 800, 900].map((shade) => /* @__PURE__ */ jsxs6("div", { className: "space-y-1.5", children: [
-          /* @__PURE__ */ jsx8(
+    activeTab === "colors" && /* @__PURE__ */ jsxs7("div", { className: "space-y-6", children: [
+      /* @__PURE__ */ jsxs7("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx10("h3", { className: "text-lg font-medium", children: "Primary Colors (Teal)" }),
+        /* @__PURE__ */ jsx10("div", { className: "grid grid-cols-5 gap-2", children: [50, 100, 200, 300, 400, 500, 600, 700, 800, 900].map((shade) => /* @__PURE__ */ jsxs7("div", { className: "space-y-1.5", children: [
+          /* @__PURE__ */ jsx10(
             "div",
             {
               className: `h-10 w-full rounded-md`,
               style: { backgroundColor: `var(--primary-${shade})` }
             }
           ),
-          /* @__PURE__ */ jsx8("div", { className: "text-xs", children: /* @__PURE__ */ jsxs6("div", { className: "font-medium", children: [
+          /* @__PURE__ */ jsx10("div", { className: "text-xs", children: /* @__PURE__ */ jsxs7("div", { className: "font-medium", children: [
             "Primary ",
             shade
           ] }) })
         ] }, `primary-${shade}`)) })
       ] }),
-      /* @__PURE__ */ jsxs6("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx8("h3", { className: "text-lg font-medium", children: "Accent Colors (Orange)" }),
-        /* @__PURE__ */ jsx8("div", { className: "grid grid-cols-5 gap-2", children: [50, 100, 200, 300, 400, 500, 600, 700, 800, 900].map((shade) => /* @__PURE__ */ jsxs6("div", { className: "space-y-1.5", children: [
-          /* @__PURE__ */ jsx8(
+      /* @__PURE__ */ jsxs7("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx10("h3", { className: "text-lg font-medium", children: "Accent Colors (Orange)" }),
+        /* @__PURE__ */ jsx10("div", { className: "grid grid-cols-5 gap-2", children: [50, 100, 200, 300, 400, 500, 600, 700, 800, 900].map((shade) => /* @__PURE__ */ jsxs7("div", { className: "space-y-1.5", children: [
+          /* @__PURE__ */ jsx10(
             "div",
             {
               className: `h-10 w-full rounded-md`,
               style: { backgroundColor: `var(--accent-${shade})` }
             }
           ),
-          /* @__PURE__ */ jsx8("div", { className: "text-xs", children: /* @__PURE__ */ jsxs6("div", { className: "font-medium", children: [
+          /* @__PURE__ */ jsx10("div", { className: "text-xs", children: /* @__PURE__ */ jsxs7("div", { className: "font-medium", children: [
             "Accent ",
             shade
           ] }) })
         ] }, `accent-${shade}`)) })
       ] }),
-      /* @__PURE__ */ jsxs6("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx8("h3", { className: "text-lg font-medium", children: "UI Colors" }),
-        /* @__PURE__ */ jsxs6("div", { className: "grid grid-cols-3 gap-2", children: [
-          /* @__PURE__ */ jsxs6("div", { className: "space-y-1.5", children: [
-            /* @__PURE__ */ jsx8(
+      /* @__PURE__ */ jsxs7("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx10("h3", { className: "text-lg font-medium", children: "UI Colors" }),
+        /* @__PURE__ */ jsxs7("div", { className: "grid grid-cols-3 gap-2", children: [
+          /* @__PURE__ */ jsxs7("div", { className: "space-y-1.5", children: [
+            /* @__PURE__ */ jsx10(
               "div",
               {
                 className: `h-10 w-full rounded-md`,
                 style: { backgroundColor: `var(--background)` }
               }
             ),
-            /* @__PURE__ */ jsx8("div", { className: "text-xs", children: /* @__PURE__ */ jsx8("div", { className: "font-medium", children: "Background" }) })
+            /* @__PURE__ */ jsx10("div", { className: "text-xs", children: /* @__PURE__ */ jsx10("div", { className: "font-medium", children: "Background" }) })
           ] }),
-          /* @__PURE__ */ jsxs6("div", { className: "space-y-1.5", children: [
-            /* @__PURE__ */ jsx8(
+          /* @__PURE__ */ jsxs7("div", { className: "space-y-1.5", children: [
+            /* @__PURE__ */ jsx10(
               "div",
               {
                 className: `h-10 w-full rounded-md`,
                 style: { backgroundColor: `var(--foreground)` }
               }
             ),
-            /* @__PURE__ */ jsx8("div", { className: "text-xs", children: /* @__PURE__ */ jsx8("div", { className: "font-medium", children: "Foreground" }) })
+            /* @__PURE__ */ jsx10("div", { className: "text-xs", children: /* @__PURE__ */ jsx10("div", { className: "font-medium", children: "Foreground" }) })
           ] }),
-          /* @__PURE__ */ jsxs6("div", { className: "space-y-1.5", children: [
-            /* @__PURE__ */ jsx8(
+          /* @__PURE__ */ jsxs7("div", { className: "space-y-1.5", children: [
+            /* @__PURE__ */ jsx10(
               "div",
               {
                 className: `h-10 w-full rounded-md`,
                 style: { backgroundColor: `var(--card)` }
               }
             ),
-            /* @__PURE__ */ jsx8("div", { className: "text-xs", children: /* @__PURE__ */ jsx8("div", { className: "font-medium", children: "Card" }) })
+            /* @__PURE__ */ jsx10("div", { className: "text-xs", children: /* @__PURE__ */ jsx10("div", { className: "font-medium", children: "Card" }) })
           ] }),
-          /* @__PURE__ */ jsxs6("div", { className: "space-y-1.5", children: [
-            /* @__PURE__ */ jsx8(
+          /* @__PURE__ */ jsxs7("div", { className: "space-y-1.5", children: [
+            /* @__PURE__ */ jsx10(
               "div",
               {
                 className: `h-10 w-full rounded-md`,
                 style: { backgroundColor: `var(--card-foreground)` }
               }
             ),
-            /* @__PURE__ */ jsx8("div", { className: "text-xs", children: /* @__PURE__ */ jsx8("div", { className: "font-medium", children: "Card Foreground" }) })
+            /* @__PURE__ */ jsx10("div", { className: "text-xs", children: /* @__PURE__ */ jsx10("div", { className: "font-medium", children: "Card Foreground" }) })
           ] }),
-          /* @__PURE__ */ jsxs6("div", { className: "space-y-1.5", children: [
-            /* @__PURE__ */ jsx8(
+          /* @__PURE__ */ jsxs7("div", { className: "space-y-1.5", children: [
+            /* @__PURE__ */ jsx10(
               "div",
               {
                 className: `h-10 w-full rounded-md`,
                 style: { backgroundColor: `var(--muted)` }
               }
             ),
-            /* @__PURE__ */ jsx8("div", { className: "text-xs", children: /* @__PURE__ */ jsx8("div", { className: "font-medium", children: "Muted" }) })
+            /* @__PURE__ */ jsx10("div", { className: "text-xs", children: /* @__PURE__ */ jsx10("div", { className: "font-medium", children: "Muted" }) })
           ] }),
-          /* @__PURE__ */ jsxs6("div", { className: "space-y-1.5", children: [
-            /* @__PURE__ */ jsx8(
+          /* @__PURE__ */ jsxs7("div", { className: "space-y-1.5", children: [
+            /* @__PURE__ */ jsx10(
               "div",
               {
                 className: `h-10 w-full rounded-md`,
                 style: { backgroundColor: `var(--muted-foreground)` }
               }
             ),
-            /* @__PURE__ */ jsx8("div", { className: "text-xs", children: /* @__PURE__ */ jsx8("div", { className: "font-medium", children: "Muted Foreground" }) })
+            /* @__PURE__ */ jsx10("div", { className: "text-xs", children: /* @__PURE__ */ jsx10("div", { className: "font-medium", children: "Muted Foreground" }) })
           ] })
         ] })
       ] })
     ] }),
-    activeTab === "components" && /* @__PURE__ */ jsxs6("div", { className: "space-y-8", children: [
-      /* @__PURE__ */ jsxs6("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx8("h3", { className: "text-lg font-medium", children: "Card Variants" }),
-        /* @__PURE__ */ jsxs6("div", { className: "grid grid-cols-2 gap-4", children: [
-          /* @__PURE__ */ jsxs6(ThemedCard, { children: [
-            /* @__PURE__ */ jsxs6(ThemedCardHeader, { children: [
-              /* @__PURE__ */ jsx8(ThemedCardTitle, { children: "Default Card" }),
-              /* @__PURE__ */ jsx8(ThemedCardDescription, { children: "This is a default card with no special styling" })
+    activeTab === "components" && /* @__PURE__ */ jsxs7("div", { className: "space-y-8", children: [
+      /* @__PURE__ */ jsxs7("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx10("h3", { className: "text-lg font-medium", children: "Card Variants" }),
+        /* @__PURE__ */ jsxs7("div", { className: "grid grid-cols-2 gap-4", children: [
+          /* @__PURE__ */ jsxs7(ThemedCard, { children: [
+            /* @__PURE__ */ jsxs7(ThemedCardHeader, { children: [
+              /* @__PURE__ */ jsx10(ThemedCardTitle, { children: "Default Card" }),
+              /* @__PURE__ */ jsx10(ThemedCardDescription, { children: "This is a default card with no special styling" })
             ] }),
-            /* @__PURE__ */ jsx8(ThemedCardContent, { children: /* @__PURE__ */ jsx8("p", { children: "Card content goes here" }) }),
-            /* @__PURE__ */ jsx8(ThemedCardFooter, { children: /* @__PURE__ */ jsx8("p", { className: "text-sm text-muted-foreground", children: "Last updated: Today" }) })
+            /* @__PURE__ */ jsx10(ThemedCardContent, { children: /* @__PURE__ */ jsx10("p", { children: "Card content goes here" }) }),
+            /* @__PURE__ */ jsx10(ThemedCardFooter, { children: /* @__PURE__ */ jsx10("p", { className: "text-sm text-muted-foreground", children: "Last updated: Today" }) })
           ] }),
-          /* @__PURE__ */ jsxs6(ThemedCard, { variant: "primary", children: [
-            /* @__PURE__ */ jsxs6(ThemedCardHeader, { children: [
-              /* @__PURE__ */ jsx8(ThemedCardTitle, { children: "Primary Card" }),
-              /* @__PURE__ */ jsx8(ThemedCardDescription, { children: "This card uses the primary color" })
+          /* @__PURE__ */ jsxs7(ThemedCard, { variant: "primary", children: [
+            /* @__PURE__ */ jsxs7(ThemedCardHeader, { children: [
+              /* @__PURE__ */ jsx10(ThemedCardTitle, { children: "Primary Card" }),
+              /* @__PURE__ */ jsx10(ThemedCardDescription, { children: "This card uses the primary color" })
             ] }),
-            /* @__PURE__ */ jsx8(ThemedCardContent, { children: /* @__PURE__ */ jsx8("p", { children: "Card content goes here" }) }),
-            /* @__PURE__ */ jsx8(ThemedCardFooter, { children: /* @__PURE__ */ jsx8("p", { className: "text-sm opacity-80", children: "Last updated: Today" }) })
+            /* @__PURE__ */ jsx10(ThemedCardContent, { children: /* @__PURE__ */ jsx10("p", { children: "Card content goes here" }) }),
+            /* @__PURE__ */ jsx10(ThemedCardFooter, { children: /* @__PURE__ */ jsx10("p", { className: "text-sm opacity-80", children: "Last updated: Today" }) })
           ] }),
-          /* @__PURE__ */ jsxs6(ThemedCard, { variant: "accent", children: [
-            /* @__PURE__ */ jsxs6(ThemedCardHeader, { children: [
-              /* @__PURE__ */ jsx8(ThemedCardTitle, { children: "Accent Card" }),
-              /* @__PURE__ */ jsx8(ThemedCardDescription, { children: "This card uses the accent color" })
+          /* @__PURE__ */ jsxs7(ThemedCard, { variant: "accent", children: [
+            /* @__PURE__ */ jsxs7(ThemedCardHeader, { children: [
+              /* @__PURE__ */ jsx10(ThemedCardTitle, { children: "Accent Card" }),
+              /* @__PURE__ */ jsx10(ThemedCardDescription, { children: "This card uses the accent color" })
             ] }),
-            /* @__PURE__ */ jsx8(ThemedCardContent, { children: /* @__PURE__ */ jsx8("p", { children: "Card content goes here" }) }),
-            /* @__PURE__ */ jsx8(ThemedCardFooter, { children: /* @__PURE__ */ jsx8("p", { className: "text-sm opacity-80", children: "Last updated: Today" }) })
+            /* @__PURE__ */ jsx10(ThemedCardContent, { children: /* @__PURE__ */ jsx10("p", { children: "Card content goes here" }) }),
+            /* @__PURE__ */ jsx10(ThemedCardFooter, { children: /* @__PURE__ */ jsx10("p", { className: "text-sm opacity-80", children: "Last updated: Today" }) })
           ] }),
-          /* @__PURE__ */ jsxs6(ThemedCard, { variant: "outline", withShadow: true, children: [
-            /* @__PURE__ */ jsxs6(ThemedCardHeader, { children: [
-              /* @__PURE__ */ jsx8(ThemedCardTitle, { children: "Outline Card with Shadow" }),
-              /* @__PURE__ */ jsx8(ThemedCardDescription, { children: "This card has an outline and shadow" })
+          /* @__PURE__ */ jsxs7(ThemedCard, { variant: "outline", withShadow: true, children: [
+            /* @__PURE__ */ jsxs7(ThemedCardHeader, { children: [
+              /* @__PURE__ */ jsx10(ThemedCardTitle, { children: "Outline Card with Shadow" }),
+              /* @__PURE__ */ jsx10(ThemedCardDescription, { children: "This card has an outline and shadow" })
             ] }),
-            /* @__PURE__ */ jsx8(ThemedCardContent, { children: /* @__PURE__ */ jsx8("p", { children: "Card content goes here" }) }),
-            /* @__PURE__ */ jsx8(ThemedCardFooter, { children: /* @__PURE__ */ jsx8("p", { className: "text-sm text-muted-foreground", children: "Last updated: Today" }) })
+            /* @__PURE__ */ jsx10(ThemedCardContent, { children: /* @__PURE__ */ jsx10("p", { children: "Card content goes here" }) }),
+            /* @__PURE__ */ jsx10(ThemedCardFooter, { children: /* @__PURE__ */ jsx10("p", { className: "text-sm text-muted-foreground", children: "Last updated: Today" }) })
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsxs6("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx8("h3", { className: "text-lg font-medium", children: "Card Sizes" }),
-        /* @__PURE__ */ jsxs6("div", { className: "grid grid-cols-3 gap-4", children: [
-          /* @__PURE__ */ jsxs6(ThemedCard, { size: "sm", children: [
-            /* @__PURE__ */ jsx8(ThemedCardHeader, { children: /* @__PURE__ */ jsx8(ThemedCardTitle, { children: "Small Card" }) }),
-            /* @__PURE__ */ jsx8(ThemedCardContent, { children: /* @__PURE__ */ jsx8("p", { children: "Compact content" }) })
+      /* @__PURE__ */ jsxs7("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx10("h3", { className: "text-lg font-medium", children: "Card Sizes" }),
+        /* @__PURE__ */ jsxs7("div", { className: "grid grid-cols-3 gap-4", children: [
+          /* @__PURE__ */ jsxs7(ThemedCard, { size: "sm", children: [
+            /* @__PURE__ */ jsx10(ThemedCardHeader, { children: /* @__PURE__ */ jsx10(ThemedCardTitle, { children: "Small Card" }) }),
+            /* @__PURE__ */ jsx10(ThemedCardContent, { children: /* @__PURE__ */ jsx10("p", { children: "Compact content" }) })
           ] }),
-          /* @__PURE__ */ jsxs6(ThemedCard, { size: "md", children: [
-            /* @__PURE__ */ jsx8(ThemedCardHeader, { children: /* @__PURE__ */ jsx8(ThemedCardTitle, { children: "Medium Card" }) }),
-            /* @__PURE__ */ jsx8(ThemedCardContent, { children: /* @__PURE__ */ jsx8("p", { children: "Standard content" }) })
+          /* @__PURE__ */ jsxs7(ThemedCard, { size: "md", children: [
+            /* @__PURE__ */ jsx10(ThemedCardHeader, { children: /* @__PURE__ */ jsx10(ThemedCardTitle, { children: "Medium Card" }) }),
+            /* @__PURE__ */ jsx10(ThemedCardContent, { children: /* @__PURE__ */ jsx10("p", { children: "Standard content" }) })
           ] }),
-          /* @__PURE__ */ jsxs6(ThemedCard, { size: "lg", children: [
-            /* @__PURE__ */ jsx8(ThemedCardHeader, { children: /* @__PURE__ */ jsx8(ThemedCardTitle, { children: "Large Card" }) }),
-            /* @__PURE__ */ jsx8(ThemedCardContent, { children: /* @__PURE__ */ jsx8("p", { children: "Spacious content" }) })
+          /* @__PURE__ */ jsxs7(ThemedCard, { size: "lg", children: [
+            /* @__PURE__ */ jsx10(ThemedCardHeader, { children: /* @__PURE__ */ jsx10(ThemedCardTitle, { children: "Large Card" }) }),
+            /* @__PURE__ */ jsx10(ThemedCardContent, { children: /* @__PURE__ */ jsx10("p", { children: "Spacious content" }) })
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsxs6("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx8("h3", { className: "text-lg font-medium", children: "Interactive Cards" }),
-        /* @__PURE__ */ jsxs6("div", { className: "grid grid-cols-2 gap-4", children: [
-          /* @__PURE__ */ jsxs6(ThemedCard, { withHover: true, children: [
-            /* @__PURE__ */ jsxs6(ThemedCardHeader, { children: [
-              /* @__PURE__ */ jsx8(ThemedCardTitle, { children: "Hover Effect" }),
-              /* @__PURE__ */ jsx8(ThemedCardDescription, { children: "This card has a hover effect" })
+      /* @__PURE__ */ jsxs7("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx10("h3", { className: "text-lg font-medium", children: "Interactive Cards" }),
+        /* @__PURE__ */ jsxs7("div", { className: "grid grid-cols-2 gap-4", children: [
+          /* @__PURE__ */ jsxs7(ThemedCard, { withHover: true, children: [
+            /* @__PURE__ */ jsxs7(ThemedCardHeader, { children: [
+              /* @__PURE__ */ jsx10(ThemedCardTitle, { children: "Hover Effect" }),
+              /* @__PURE__ */ jsx10(ThemedCardDescription, { children: "This card has a hover effect" })
             ] }),
-            /* @__PURE__ */ jsx8(ThemedCardContent, { children: /* @__PURE__ */ jsx8("p", { children: "Hover over me" }) })
+            /* @__PURE__ */ jsx10(ThemedCardContent, { children: /* @__PURE__ */ jsx10("p", { children: "Hover over me" }) })
           ] }),
-          /* @__PURE__ */ jsxs6(ThemedCard, { withHover: true, withShadow: true, children: [
-            /* @__PURE__ */ jsxs6(ThemedCardHeader, { children: [
-              /* @__PURE__ */ jsx8(ThemedCardTitle, { children: "Hover + Shadow" }),
-              /* @__PURE__ */ jsx8(ThemedCardDescription, { children: "This card has hover and shadow effects" })
+          /* @__PURE__ */ jsxs7(ThemedCard, { withHover: true, withShadow: true, children: [
+            /* @__PURE__ */ jsxs7(ThemedCardHeader, { children: [
+              /* @__PURE__ */ jsx10(ThemedCardTitle, { children: "Hover + Shadow" }),
+              /* @__PURE__ */ jsx10(ThemedCardDescription, { children: "This card has hover and shadow effects" })
             ] }),
-            /* @__PURE__ */ jsx8(ThemedCardContent, { children: /* @__PURE__ */ jsx8("p", { children: "Hover over me" }) })
+            /* @__PURE__ */ jsx10(ThemedCardContent, { children: /* @__PURE__ */ jsx10("p", { children: "Hover over me" }) })
           ] })
         ] })
       ] })
@@ -1970,7 +2039,7 @@ function ThemeDemo({ className }) {
 
 // src/components/core/MetricCardDemo.tsx
 import { useState as useState3 } from "react";
-import { jsx as jsx9, jsxs as jsxs7 } from "react/jsx-runtime";
+import { jsx as jsx11, jsxs as jsxs8 } from "react/jsx-runtime";
 function MetricCardDemo({ className }) {
   const [loading, setLoading] = useState3(false);
   const toggleLoading = () => {
@@ -1979,10 +2048,10 @@ function MetricCardDemo({ className }) {
   const lineData1 = [10, 15, 8, 12, 18, 15, 20, 25, 22, 30];
   const lineData2 = [20, 15, 25, 18, 15, 20, 18, 15, 20, 18];
   const lineData3 = [5, 10, 8, 15, 12, 15, 18, 20, 18, 25];
-  return /* @__PURE__ */ jsxs7("div", { className: cn("space-y-6", className), children: [
-    /* @__PURE__ */ jsxs7("div", { className: "flex items-center justify-between", children: [
-      /* @__PURE__ */ jsx9("h2", { className: "text-2xl font-bold", children: "Metric Cards" }),
-      /* @__PURE__ */ jsx9(
+  return /* @__PURE__ */ jsxs8("div", { className: cn("space-y-6", className), children: [
+    /* @__PURE__ */ jsxs8("div", { className: "flex items-center justify-between", children: [
+      /* @__PURE__ */ jsx11("h2", { className: "text-2xl font-bold", children: "Metric Cards" }),
+      /* @__PURE__ */ jsx11(
         "button",
         {
           onClick: toggleLoading,
@@ -1991,11 +2060,11 @@ function MetricCardDemo({ className }) {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxs7("div", { className: "space-y-6", children: [
-      /* @__PURE__ */ jsxs7("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx9("h3", { className: "text-lg font-medium", children: "Basic Metric Cards" }),
-        /* @__PURE__ */ jsxs7("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-4", children: [
-          /* @__PURE__ */ jsx9(
+    /* @__PURE__ */ jsxs8("div", { className: "space-y-6", children: [
+      /* @__PURE__ */ jsxs8("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx11("h3", { className: "text-lg font-medium", children: "Basic Metric Cards" }),
+        /* @__PURE__ */ jsxs8("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-4", children: [
+          /* @__PURE__ */ jsx11(
             MetricCard,
             {
               title: "Total Users",
@@ -2004,7 +2073,7 @@ function MetricCardDemo({ className }) {
               trendValue: "+12%",
               trendLabel: "vs last month",
               loading,
-              icon: /* @__PURE__ */ jsxs7(
+              icon: /* @__PURE__ */ jsxs8(
                 "svg",
                 {
                   xmlns: "http://www.w3.org/2000/svg",
@@ -2017,16 +2086,16 @@ function MetricCardDemo({ className }) {
                   strokeLinecap: "round",
                   strokeLinejoin: "round",
                   children: [
-                    /* @__PURE__ */ jsx9("path", { d: "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" }),
-                    /* @__PURE__ */ jsx9("circle", { cx: "9", cy: "7", r: "4" }),
-                    /* @__PURE__ */ jsx9("path", { d: "M22 21v-2a4 4 0 0 0-3-3.87" }),
-                    /* @__PURE__ */ jsx9("path", { d: "M16 3.13a4 4 0 0 1 0 7.75" })
+                    /* @__PURE__ */ jsx11("path", { d: "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" }),
+                    /* @__PURE__ */ jsx11("circle", { cx: "9", cy: "7", r: "4" }),
+                    /* @__PURE__ */ jsx11("path", { d: "M22 21v-2a4 4 0 0 0-3-3.87" }),
+                    /* @__PURE__ */ jsx11("path", { d: "M16 3.13a4 4 0 0 1 0 7.75" })
                   ]
                 }
               )
             }
           ),
-          /* @__PURE__ */ jsx9(
+          /* @__PURE__ */ jsx11(
             MetricCard,
             {
               title: "Revenue",
@@ -2035,7 +2104,7 @@ function MetricCardDemo({ className }) {
               trendValue: "+8.3%",
               trendLabel: "vs last month",
               loading,
-              icon: /* @__PURE__ */ jsx9(
+              icon: /* @__PURE__ */ jsx11(
                 "svg",
                 {
                   xmlns: "http://www.w3.org/2000/svg",
@@ -2047,12 +2116,12 @@ function MetricCardDemo({ className }) {
                   strokeWidth: "2",
                   strokeLinecap: "round",
                   strokeLinejoin: "round",
-                  children: /* @__PURE__ */ jsx9("path", { d: "M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" })
+                  children: /* @__PURE__ */ jsx11("path", { d: "M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" })
                 }
               )
             }
           ),
-          /* @__PURE__ */ jsx9(
+          /* @__PURE__ */ jsx11(
             MetricCard,
             {
               title: "Conversion Rate",
@@ -2061,7 +2130,7 @@ function MetricCardDemo({ className }) {
               trendValue: "-0.5%",
               trendLabel: "vs last month",
               loading,
-              icon: /* @__PURE__ */ jsxs7(
+              icon: /* @__PURE__ */ jsxs8(
                 "svg",
                 {
                   xmlns: "http://www.w3.org/2000/svg",
@@ -2074,9 +2143,9 @@ function MetricCardDemo({ className }) {
                   strokeLinecap: "round",
                   strokeLinejoin: "round",
                   children: [
-                    /* @__PURE__ */ jsx9("path", { d: "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" }),
-                    /* @__PURE__ */ jsx9("circle", { cx: "9", cy: "7", r: "4" }),
-                    /* @__PURE__ */ jsx9("polyline", { points: "16 11 18 13 22 9" })
+                    /* @__PURE__ */ jsx11("path", { d: "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" }),
+                    /* @__PURE__ */ jsx11("circle", { cx: "9", cy: "7", r: "4" }),
+                    /* @__PURE__ */ jsx11("polyline", { points: "16 11 18 13 22 9" })
                   ]
                 }
               )
@@ -2084,10 +2153,10 @@ function MetricCardDemo({ className }) {
           )
         ] })
       ] }),
-      /* @__PURE__ */ jsxs7("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx9("h3", { className: "text-lg font-medium", children: "Metric Cards with Charts" }),
-        /* @__PURE__ */ jsxs7("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: [
-          /* @__PURE__ */ jsx9(
+      /* @__PURE__ */ jsxs8("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx11("h3", { className: "text-lg font-medium", children: "Metric Cards with Charts" }),
+        /* @__PURE__ */ jsxs8("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: [
+          /* @__PURE__ */ jsx11(
             MetricCard,
             {
               title: "Website Traffic",
@@ -2095,10 +2164,10 @@ function MetricCardDemo({ className }) {
               trend: "up",
               trendValue: "+15%",
               loading,
-              chart: /* @__PURE__ */ jsx9(SimpleLineChart, { data: lineData1, color: "var(--primary)" })
+              chart: /* @__PURE__ */ jsx11(SimpleLineChart, { data: lineData1, color: "var(--primary)" })
             }
           ),
-          /* @__PURE__ */ jsx9(
+          /* @__PURE__ */ jsx11(
             MetricCard,
             {
               title: "Bounce Rate",
@@ -2106,15 +2175,15 @@ function MetricCardDemo({ className }) {
               trend: "down",
               trendValue: "-3%",
               loading,
-              chart: /* @__PURE__ */ jsx9(SimpleLineChart, { data: lineData2, color: "var(--accent)" })
+              chart: /* @__PURE__ */ jsx11(SimpleLineChart, { data: lineData2, color: "var(--accent)" })
             }
           )
         ] })
       ] }),
-      /* @__PURE__ */ jsxs7("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx9("h3", { className: "text-lg font-medium", children: "Metric Cards with Progress" }),
-        /* @__PURE__ */ jsxs7("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-4", children: [
-          /* @__PURE__ */ jsx9(
+      /* @__PURE__ */ jsxs8("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx11("h3", { className: "text-lg font-medium", children: "Metric Cards with Progress" }),
+        /* @__PURE__ */ jsxs8("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-4", children: [
+          /* @__PURE__ */ jsx11(
             MetricCard,
             {
               title: "Storage Used",
@@ -2122,10 +2191,10 @@ function MetricCardDemo({ className }) {
               trend: "neutral",
               trendLabel: "of 100 GB",
               loading,
-              chart: /* @__PURE__ */ jsx9(ProgressIndicator, { value: 45, max: 100, showValue: true, size: "md" })
+              chart: /* @__PURE__ */ jsx11(ProgressIndicator, { value: 45, max: 100, showValue: true, size: "md" })
             }
           ),
-          /* @__PURE__ */ jsx9(
+          /* @__PURE__ */ jsx11(
             MetricCard,
             {
               title: "Task Completion",
@@ -2133,10 +2202,10 @@ function MetricCardDemo({ className }) {
               trend: "up",
               trendValue: "+5%",
               loading,
-              chart: /* @__PURE__ */ jsx9(ProgressIndicator, { value: 75, max: 100, color: "var(--accent)", size: "md" })
+              chart: /* @__PURE__ */ jsx11(ProgressIndicator, { value: 75, max: 100, color: "var(--accent)", size: "md" })
             }
           ),
-          /* @__PURE__ */ jsx9(
+          /* @__PURE__ */ jsx11(
             MetricCard,
             {
               title: "CPU Usage",
@@ -2144,15 +2213,15 @@ function MetricCardDemo({ className }) {
               trend: "down",
               trendValue: "-12%",
               loading,
-              footer: /* @__PURE__ */ jsx9("div", { className: "flex justify-center", children: /* @__PURE__ */ jsx9(CircularProgress, { value: 28, showValue: true, size: 60 }) })
+              footer: /* @__PURE__ */ jsx11("div", { className: "flex justify-center", children: /* @__PURE__ */ jsx11(CircularProgress, { value: 28, showValue: true, size: 60 }) })
             }
           )
         ] })
       ] }),
-      /* @__PURE__ */ jsxs7("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx9("h3", { className: "text-lg font-medium", children: "Metric Card Variants" }),
-        /* @__PURE__ */ jsxs7("div", { className: "grid grid-cols-1 md:grid-cols-4 gap-4", children: [
-          /* @__PURE__ */ jsx9(
+      /* @__PURE__ */ jsxs8("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx11("h3", { className: "text-lg font-medium", children: "Metric Card Variants" }),
+        /* @__PURE__ */ jsxs8("div", { className: "grid grid-cols-1 md:grid-cols-4 gap-4", children: [
+          /* @__PURE__ */ jsx11(
             MetricCard,
             {
               title: "Default",
@@ -2161,7 +2230,7 @@ function MetricCardDemo({ className }) {
               loading
             }
           ),
-          /* @__PURE__ */ jsx9(
+          /* @__PURE__ */ jsx11(
             MetricCard,
             {
               title: "Primary",
@@ -2170,7 +2239,7 @@ function MetricCardDemo({ className }) {
               loading
             }
           ),
-          /* @__PURE__ */ jsx9(
+          /* @__PURE__ */ jsx11(
             MetricCard,
             {
               title: "Accent",
@@ -2179,7 +2248,7 @@ function MetricCardDemo({ className }) {
               loading
             }
           ),
-          /* @__PURE__ */ jsx9(
+          /* @__PURE__ */ jsx11(
             MetricCard,
             {
               title: "Outline",
@@ -2190,10 +2259,10 @@ function MetricCardDemo({ className }) {
           )
         ] })
       ] }),
-      /* @__PURE__ */ jsxs7("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx9("h3", { className: "text-lg font-medium", children: "Metric Card Sizes" }),
-        /* @__PURE__ */ jsxs7("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-4", children: [
-          /* @__PURE__ */ jsx9(
+      /* @__PURE__ */ jsxs8("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx11("h3", { className: "text-lg font-medium", children: "Metric Card Sizes" }),
+        /* @__PURE__ */ jsxs8("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-4", children: [
+          /* @__PURE__ */ jsx11(
             MetricCard,
             {
               title: "Small",
@@ -2202,7 +2271,7 @@ function MetricCardDemo({ className }) {
               loading
             }
           ),
-          /* @__PURE__ */ jsx9(
+          /* @__PURE__ */ jsx11(
             MetricCard,
             {
               title: "Medium",
@@ -2211,7 +2280,7 @@ function MetricCardDemo({ className }) {
               loading
             }
           ),
-          /* @__PURE__ */ jsx9(
+          /* @__PURE__ */ jsx11(
             MetricCard,
             {
               title: "Large",
@@ -2222,10 +2291,10 @@ function MetricCardDemo({ className }) {
           )
         ] })
       ] }),
-      /* @__PURE__ */ jsxs7("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx9("h3", { className: "text-lg font-medium", children: "Interactive Metric Cards" }),
-        /* @__PURE__ */ jsxs7("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: [
-          /* @__PURE__ */ jsx9(
+      /* @__PURE__ */ jsxs8("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx11("h3", { className: "text-lg font-medium", children: "Interactive Metric Cards" }),
+        /* @__PURE__ */ jsxs8("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: [
+          /* @__PURE__ */ jsx11(
             MetricCard,
             {
               title: "With Hover Effect",
@@ -2236,7 +2305,7 @@ function MetricCardDemo({ className }) {
               loading
             }
           ),
-          /* @__PURE__ */ jsx9(
+          /* @__PURE__ */ jsx11(
             MetricCard,
             {
               title: "With Shadow",
@@ -2255,7 +2324,7 @@ function MetricCardDemo({ className }) {
 
 // src/components/core/ContactCardDemo.tsx
 import { useState as useState4 } from "react";
-import { Fragment as Fragment3, jsx as jsx10, jsxs as jsxs8 } from "react/jsx-runtime";
+import { Fragment as Fragment3, jsx as jsx12, jsxs as jsxs9 } from "react/jsx-runtime";
 function ContactCardDemo({ className }) {
   const [layout, setLayout] = useState4("vertical");
   const contacts = [
@@ -2320,11 +2389,11 @@ function ContactCardDemo({ className }) {
       tags: ["Product", "Management"]
     }
   ];
-  return /* @__PURE__ */ jsxs8("div", { className: cn("space-y-6", className), children: [
-    /* @__PURE__ */ jsxs8("div", { className: "flex items-center justify-between", children: [
-      /* @__PURE__ */ jsx10("h2", { className: "text-2xl font-bold", children: "Contact Cards" }),
-      /* @__PURE__ */ jsxs8("div", { className: "flex items-center space-x-2", children: [
-        /* @__PURE__ */ jsx10(
+  return /* @__PURE__ */ jsxs9("div", { className: cn("space-y-6", className), children: [
+    /* @__PURE__ */ jsxs9("div", { className: "flex items-center justify-between", children: [
+      /* @__PURE__ */ jsx12("h2", { className: "text-2xl font-bold", children: "Contact Cards" }),
+      /* @__PURE__ */ jsxs9("div", { className: "flex items-center space-x-2", children: [
+        /* @__PURE__ */ jsx12(
           "button",
           {
             onClick: () => setLayout("vertical"),
@@ -2335,7 +2404,7 @@ function ContactCardDemo({ className }) {
             children: "Vertical"
           }
         ),
-        /* @__PURE__ */ jsx10(
+        /* @__PURE__ */ jsx12(
           "button",
           {
             onClick: () => setLayout("horizontal"),
@@ -2348,10 +2417,10 @@ function ContactCardDemo({ className }) {
         )
       ] })
     ] }),
-    /* @__PURE__ */ jsxs8("div", { className: "space-y-6", children: [
-      /* @__PURE__ */ jsxs8("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx10("h3", { className: "text-lg font-medium", children: "Basic Contact Cards" }),
-        /* @__PURE__ */ jsx10("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: contacts.map((contact, index) => /* @__PURE__ */ jsx10(
+    /* @__PURE__ */ jsxs9("div", { className: "space-y-6", children: [
+      /* @__PURE__ */ jsxs9("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx12("h3", { className: "text-lg font-medium", children: "Basic Contact Cards" }),
+        /* @__PURE__ */ jsx12("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: contacts.map((contact, index) => /* @__PURE__ */ jsx12(
           ContactCard,
           {
             name: contact.name,
@@ -2361,19 +2430,19 @@ function ContactCardDemo({ className }) {
             contactInfo: contact.contactInfo,
             tags: contact.tags,
             layout,
-            actions: /* @__PURE__ */ jsxs8(Fragment3, { children: [
-              /* @__PURE__ */ jsx10(ContactCallButton, { onClick: () => alert(`Calling ${contact.name}`) }),
-              /* @__PURE__ */ jsx10(ContactEmailButton, { onClick: () => alert(`Emailing ${contact.name}`) }),
-              /* @__PURE__ */ jsx10(ContactMessageButton, { onClick: () => alert(`Messaging ${contact.name}`) })
+            actions: /* @__PURE__ */ jsxs9(Fragment3, { children: [
+              /* @__PURE__ */ jsx12(ContactCallButton, { onClick: () => alert(`Calling ${contact.name}`) }),
+              /* @__PURE__ */ jsx12(ContactEmailButton, { onClick: () => alert(`Emailing ${contact.name}`) }),
+              /* @__PURE__ */ jsx12(ContactMessageButton, { onClick: () => alert(`Messaging ${contact.name}`) })
             ] })
           },
           index
         )) })
       ] }),
-      /* @__PURE__ */ jsxs8("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx10("h3", { className: "text-lg font-medium", children: "Contact Card Variants" }),
-        /* @__PURE__ */ jsxs8("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4", children: [
-          /* @__PURE__ */ jsx10(
+      /* @__PURE__ */ jsxs9("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx12("h3", { className: "text-lg font-medium", children: "Contact Card Variants" }),
+        /* @__PURE__ */ jsxs9("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4", children: [
+          /* @__PURE__ */ jsx12(
             ContactCard,
             {
               name: "Default Variant",
@@ -2384,7 +2453,7 @@ function ContactCardDemo({ className }) {
               layout
             }
           ),
-          /* @__PURE__ */ jsx10(
+          /* @__PURE__ */ jsx12(
             ContactCard,
             {
               name: "Primary Variant",
@@ -2395,7 +2464,7 @@ function ContactCardDemo({ className }) {
               layout
             }
           ),
-          /* @__PURE__ */ jsx10(
+          /* @__PURE__ */ jsx12(
             ContactCard,
             {
               name: "Accent Variant",
@@ -2406,7 +2475,7 @@ function ContactCardDemo({ className }) {
               layout
             }
           ),
-          /* @__PURE__ */ jsx10(
+          /* @__PURE__ */ jsx12(
             ContactCard,
             {
               name: "Outline Variant",
@@ -2419,10 +2488,10 @@ function ContactCardDemo({ className }) {
           )
         ] })
       ] }),
-      /* @__PURE__ */ jsxs8("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx10("h3", { className: "text-lg font-medium", children: "Contact Card Sizes" }),
-        /* @__PURE__ */ jsxs8("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-4", children: [
-          /* @__PURE__ */ jsx10(
+      /* @__PURE__ */ jsxs9("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx12("h3", { className: "text-lg font-medium", children: "Contact Card Sizes" }),
+        /* @__PURE__ */ jsxs9("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-4", children: [
+          /* @__PURE__ */ jsx12(
             ContactCard,
             {
               name: "Small Size",
@@ -2433,7 +2502,7 @@ function ContactCardDemo({ className }) {
               layout
             }
           ),
-          /* @__PURE__ */ jsx10(
+          /* @__PURE__ */ jsx12(
             ContactCard,
             {
               name: "Medium Size",
@@ -2444,7 +2513,7 @@ function ContactCardDemo({ className }) {
               layout
             }
           ),
-          /* @__PURE__ */ jsx10(
+          /* @__PURE__ */ jsx12(
             ContactCard,
             {
               name: "Large Size",
@@ -2457,10 +2526,10 @@ function ContactCardDemo({ className }) {
           )
         ] })
       ] }),
-      /* @__PURE__ */ jsxs8("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx10("h3", { className: "text-lg font-medium", children: "Interactive Contact Cards" }),
-        /* @__PURE__ */ jsxs8("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: [
-          /* @__PURE__ */ jsx10(
+      /* @__PURE__ */ jsxs9("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx12("h3", { className: "text-lg font-medium", children: "Interactive Contact Cards" }),
+        /* @__PURE__ */ jsxs9("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: [
+          /* @__PURE__ */ jsx12(
             ContactCard,
             {
               name: "Hover Effect",
@@ -2471,7 +2540,7 @@ function ContactCardDemo({ className }) {
               layout
             }
           ),
-          /* @__PURE__ */ jsx10(
+          /* @__PURE__ */ jsx12(
             ContactCard,
             {
               name: "With Shadow",
@@ -2484,29 +2553,29 @@ function ContactCardDemo({ className }) {
           )
         ] })
       ] }),
-      /* @__PURE__ */ jsxs8("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx10("h3", { className: "text-lg font-medium", children: "Contact Card Components" }),
-        /* @__PURE__ */ jsxs8("div", { className: "p-4 border border-border rounded-lg space-y-4", children: [
-          /* @__PURE__ */ jsxs8("div", { className: "space-y-2", children: [
-            /* @__PURE__ */ jsx10("h4", { className: "font-medium", children: "Contact Avatars" }),
-            /* @__PURE__ */ jsxs8("div", { className: "flex flex-wrap gap-4", children: [
-              /* @__PURE__ */ jsx10(ContactAvatar, { src: "https://randomuser.me/api/portraits/women/32.jpg", alt: "Jane Smith", size: "sm" }),
-              /* @__PURE__ */ jsx10(ContactAvatar, { src: "https://randomuser.me/api/portraits/men/44.jpg", alt: "John Doe", size: "md" }),
-              /* @__PURE__ */ jsx10(ContactAvatar, { initials: "SJ", size: "lg" }),
-              /* @__PURE__ */ jsx10(ContactAvatar, { initials: "MC", size: "xl" }),
-              /* @__PURE__ */ jsx10(ContactAvatar, { src: "https://randomuser.me/api/portraits/women/32.jpg", alt: "Jane Smith", status: "online", size: "md" }),
-              /* @__PURE__ */ jsx10(ContactAvatar, { src: "https://randomuser.me/api/portraits/men/44.jpg", alt: "John Doe", status: "busy", size: "md" }),
-              /* @__PURE__ */ jsx10(ContactAvatar, { initials: "SJ", status: "away", size: "md" }),
-              /* @__PURE__ */ jsx10(ContactAvatar, { initials: "MC", status: "offline", size: "md" })
+      /* @__PURE__ */ jsxs9("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx12("h3", { className: "text-lg font-medium", children: "Contact Card Components" }),
+        /* @__PURE__ */ jsxs9("div", { className: "p-4 border border-border rounded-lg space-y-4", children: [
+          /* @__PURE__ */ jsxs9("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsx12("h4", { className: "font-medium", children: "Contact Avatars" }),
+            /* @__PURE__ */ jsxs9("div", { className: "flex flex-wrap gap-4", children: [
+              /* @__PURE__ */ jsx12(ContactAvatar, { src: "https://randomuser.me/api/portraits/women/32.jpg", alt: "Jane Smith", size: "sm" }),
+              /* @__PURE__ */ jsx12(ContactAvatar, { src: "https://randomuser.me/api/portraits/men/44.jpg", alt: "John Doe", size: "md" }),
+              /* @__PURE__ */ jsx12(ContactAvatar, { initials: "SJ", size: "lg" }),
+              /* @__PURE__ */ jsx12(ContactAvatar, { initials: "MC", size: "xl" }),
+              /* @__PURE__ */ jsx12(ContactAvatar, { src: "https://randomuser.me/api/portraits/women/32.jpg", alt: "Jane Smith", status: "online", size: "md" }),
+              /* @__PURE__ */ jsx12(ContactAvatar, { src: "https://randomuser.me/api/portraits/men/44.jpg", alt: "John Doe", status: "busy", size: "md" }),
+              /* @__PURE__ */ jsx12(ContactAvatar, { initials: "SJ", status: "away", size: "md" }),
+              /* @__PURE__ */ jsx12(ContactAvatar, { initials: "MC", status: "offline", size: "md" })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs8("div", { className: "space-y-2", children: [
-            /* @__PURE__ */ jsx10("h4", { className: "font-medium", children: "Contact Info Items" }),
-            /* @__PURE__ */ jsxs8("div", { className: "space-y-2 max-w-md", children: [
-              /* @__PURE__ */ jsx10(
+          /* @__PURE__ */ jsxs9("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsx12("h4", { className: "font-medium", children: "Contact Info Items" }),
+            /* @__PURE__ */ jsxs9("div", { className: "space-y-2 max-w-md", children: [
+              /* @__PURE__ */ jsx12(
                 ContactInfoItem,
                 {
-                  icon: /* @__PURE__ */ jsxs8(
+                  icon: /* @__PURE__ */ jsxs9(
                     "svg",
                     {
                       xmlns: "http://www.w3.org/2000/svg",
@@ -2519,8 +2588,8 @@ function ContactCardDemo({ className }) {
                       strokeLinecap: "round",
                       strokeLinejoin: "round",
                       children: [
-                        /* @__PURE__ */ jsx10("rect", { width: "20", height: "16", x: "2", y: "4", rx: "2" }),
-                        /* @__PURE__ */ jsx10("path", { d: "m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" })
+                        /* @__PURE__ */ jsx12("rect", { width: "20", height: "16", x: "2", y: "4", rx: "2" }),
+                        /* @__PURE__ */ jsx12("path", { d: "m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" })
                       ]
                     }
                   ),
@@ -2530,10 +2599,10 @@ function ContactCardDemo({ className }) {
                   copyable: true
                 }
               ),
-              /* @__PURE__ */ jsx10(
+              /* @__PURE__ */ jsx12(
                 ContactInfoItem,
                 {
-                  icon: /* @__PURE__ */ jsx10(
+                  icon: /* @__PURE__ */ jsx12(
                     "svg",
                     {
                       xmlns: "http://www.w3.org/2000/svg",
@@ -2545,7 +2614,7 @@ function ContactCardDemo({ className }) {
                       strokeWidth: "2",
                       strokeLinecap: "round",
                       strokeLinejoin: "round",
-                      children: /* @__PURE__ */ jsx10("path", { d: "M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" })
+                      children: /* @__PURE__ */ jsx12("path", { d: "M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" })
                     }
                   ),
                   label: "Phone",
@@ -2555,16 +2624,16 @@ function ContactCardDemo({ className }) {
               )
             ] })
           ] }),
-          /* @__PURE__ */ jsxs8("div", { className: "space-y-2", children: [
-            /* @__PURE__ */ jsx10("h4", { className: "font-medium", children: "Contact Action Buttons" }),
-            /* @__PURE__ */ jsxs8("div", { className: "flex flex-wrap gap-2", children: [
-              /* @__PURE__ */ jsx10(ContactCallButton, {}),
-              /* @__PURE__ */ jsx10(ContactEmailButton, {}),
-              /* @__PURE__ */ jsx10(ContactMessageButton, {}),
-              /* @__PURE__ */ jsx10(
+          /* @__PURE__ */ jsxs9("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsx12("h4", { className: "font-medium", children: "Contact Action Buttons" }),
+            /* @__PURE__ */ jsxs9("div", { className: "flex flex-wrap gap-2", children: [
+              /* @__PURE__ */ jsx12(ContactCallButton, {}),
+              /* @__PURE__ */ jsx12(ContactEmailButton, {}),
+              /* @__PURE__ */ jsx12(ContactMessageButton, {}),
+              /* @__PURE__ */ jsx12(
                 ContactActionButton,
                 {
-                  icon: /* @__PURE__ */ jsxs8(
+                  icon: /* @__PURE__ */ jsxs9(
                     "svg",
                     {
                       xmlns: "http://www.w3.org/2000/svg",
@@ -2577,8 +2646,8 @@ function ContactCardDemo({ className }) {
                       strokeLinecap: "round",
                       strokeLinejoin: "round",
                       children: [
-                        /* @__PURE__ */ jsx10("path", { d: "M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" }),
-                        /* @__PURE__ */ jsx10("circle", { cx: "12", cy: "10", r: "3" })
+                        /* @__PURE__ */ jsx12("path", { d: "M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" }),
+                        /* @__PURE__ */ jsx12("circle", { cx: "12", cy: "10", r: "3" })
                       ]
                     }
                   ),
@@ -2586,10 +2655,10 @@ function ContactCardDemo({ className }) {
                   variant: "primary"
                 }
               ),
-              /* @__PURE__ */ jsx10(
+              /* @__PURE__ */ jsx12(
                 ContactActionButton,
                 {
-                  icon: /* @__PURE__ */ jsx10(
+                  icon: /* @__PURE__ */ jsx12(
                     "svg",
                     {
                       xmlns: "http://www.w3.org/2000/svg",
@@ -2601,7 +2670,7 @@ function ContactCardDemo({ className }) {
                       strokeWidth: "2",
                       strokeLinecap: "round",
                       strokeLinejoin: "round",
-                      children: /* @__PURE__ */ jsx10("path", { d: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" })
+                      children: /* @__PURE__ */ jsx12("path", { d: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" })
                     }
                   ),
                   label: "Chat",
@@ -2618,14 +2687,14 @@ function ContactCardDemo({ className }) {
 
 // src/components/core/TimelineDemo.tsx
 import { useState as useState5 } from "react";
-import { jsx as jsx11, jsxs as jsxs9 } from "react/jsx-runtime";
+import { jsx as jsx13, jsxs as jsxs10 } from "react/jsx-runtime";
 function TimelineDemo({ className }) {
   const [orientation, setOrientation] = useState5("vertical");
-  return /* @__PURE__ */ jsxs9("div", { className: cn("space-y-6", className), children: [
-    /* @__PURE__ */ jsxs9("div", { className: "flex items-center justify-between", children: [
-      /* @__PURE__ */ jsx11("h2", { className: "text-2xl font-bold", children: "Timeline Components" }),
-      /* @__PURE__ */ jsxs9("div", { className: "flex items-center space-x-2", children: [
-        /* @__PURE__ */ jsx11(
+  return /* @__PURE__ */ jsxs10("div", { className: cn("space-y-6", className), children: [
+    /* @__PURE__ */ jsxs10("div", { className: "flex items-center justify-between", children: [
+      /* @__PURE__ */ jsx13("h2", { className: "text-2xl font-bold", children: "Timeline Components" }),
+      /* @__PURE__ */ jsxs10("div", { className: "flex items-center space-x-2", children: [
+        /* @__PURE__ */ jsx13(
           "button",
           {
             onClick: () => setOrientation("vertical"),
@@ -2636,7 +2705,7 @@ function TimelineDemo({ className }) {
             children: "Vertical"
           }
         ),
-        /* @__PURE__ */ jsx11(
+        /* @__PURE__ */ jsx13(
           "button",
           {
             onClick: () => setOrientation("horizontal"),
@@ -2649,66 +2718,66 @@ function TimelineDemo({ className }) {
         )
       ] })
     ] }),
-    /* @__PURE__ */ jsxs9("div", { className: "space-y-8", children: [
-      /* @__PURE__ */ jsxs9("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx11("h3", { className: "text-lg font-medium", children: "Basic Timeline" }),
-        /* @__PURE__ */ jsx11("div", { className: "p-4 border border-border rounded-lg", children: /* @__PURE__ */ jsxs9(Timeline, { orientation, children: [
-          /* @__PURE__ */ jsx11(TimelineItem, { active: true, orientation, children: /* @__PURE__ */ jsx11(
+    /* @__PURE__ */ jsxs10("div", { className: "space-y-8", children: [
+      /* @__PURE__ */ jsxs10("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx13("h3", { className: "text-lg font-medium", children: "Basic Timeline" }),
+        /* @__PURE__ */ jsx13("div", { className: "p-4 border border-border rounded-lg", children: /* @__PURE__ */ jsxs10(Timeline, { orientation, children: [
+          /* @__PURE__ */ jsx13(TimelineItem, { active: true, orientation, children: /* @__PURE__ */ jsx13(
             TimelineContent,
             {
               title: "Project Created",
               subtitle: "Initial project setup and configuration",
               date: "June 1, 2025",
-              children: /* @__PURE__ */ jsx11("p", { className: "text-sm", children: "Created the project repository and set up the initial development environment." })
+              children: /* @__PURE__ */ jsx13("p", { className: "text-sm", children: "Created the project repository and set up the initial development environment." })
             }
           ) }),
-          /* @__PURE__ */ jsx11(TimelineItem, { active: true, orientation, children: /* @__PURE__ */ jsx11(
+          /* @__PURE__ */ jsx13(TimelineItem, { active: true, orientation, children: /* @__PURE__ */ jsx13(
             TimelineContent,
             {
               title: "Design Phase",
               subtitle: "UI/UX design and prototyping",
               date: "June 5, 2025",
-              children: /* @__PURE__ */ jsx11("p", { className: "text-sm", children: "Completed the design mockups and user flow diagrams." })
+              children: /* @__PURE__ */ jsx13("p", { className: "text-sm", children: "Completed the design mockups and user flow diagrams." })
             }
           ) }),
-          /* @__PURE__ */ jsx11(TimelineItem, { active: true, orientation, children: /* @__PURE__ */ jsx11(
+          /* @__PURE__ */ jsx13(TimelineItem, { active: true, orientation, children: /* @__PURE__ */ jsx13(
             TimelineContent,
             {
               title: "Development Started",
               subtitle: "Frontend and backend implementation",
               date: "June 10, 2025",
-              children: /* @__PURE__ */ jsx11("p", { className: "text-sm", children: "Started implementing the core features and functionality." })
+              children: /* @__PURE__ */ jsx13("p", { className: "text-sm", children: "Started implementing the core features and functionality." })
             }
           ) }),
-          /* @__PURE__ */ jsx11(TimelineItem, { orientation, children: /* @__PURE__ */ jsx11(
+          /* @__PURE__ */ jsx13(TimelineItem, { orientation, children: /* @__PURE__ */ jsx13(
             TimelineContent,
             {
               title: "Testing Phase",
               subtitle: "QA and user testing",
               date: "June 20, 2025",
-              children: /* @__PURE__ */ jsx11("p", { className: "text-sm", children: "Conducting comprehensive testing to ensure quality and reliability." })
+              children: /* @__PURE__ */ jsx13("p", { className: "text-sm", children: "Conducting comprehensive testing to ensure quality and reliability." })
             }
           ) }),
-          /* @__PURE__ */ jsx11(TimelineItem, { orientation, connector: false, children: /* @__PURE__ */ jsx11(
+          /* @__PURE__ */ jsx13(TimelineItem, { orientation, connector: false, children: /* @__PURE__ */ jsx13(
             TimelineContent,
             {
               title: "Deployment",
               subtitle: "Production release",
               date: "June 30, 2025",
-              children: /* @__PURE__ */ jsx11("p", { className: "text-sm", children: "Deploying the application to production environment." })
+              children: /* @__PURE__ */ jsx13("p", { className: "text-sm", children: "Deploying the application to production environment." })
             }
           ) })
         ] }) })
       ] }),
-      /* @__PURE__ */ jsxs9("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx11("h3", { className: "text-lg font-medium", children: "Timeline with Custom Icons" }),
-        /* @__PURE__ */ jsx11("div", { className: "p-4 border border-border rounded-lg", children: /* @__PURE__ */ jsxs9(Timeline, { orientation, children: [
-          /* @__PURE__ */ jsx11(
+      /* @__PURE__ */ jsxs10("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx13("h3", { className: "text-lg font-medium", children: "Timeline with Custom Icons" }),
+        /* @__PURE__ */ jsx13("div", { className: "p-4 border border-border rounded-lg", children: /* @__PURE__ */ jsxs10(Timeline, { orientation, children: [
+          /* @__PURE__ */ jsx13(
             TimelineItem,
             {
               orientation,
               active: true,
-              icon: /* @__PURE__ */ jsxs9(
+              icon: /* @__PURE__ */ jsxs10(
                 "svg",
                 {
                   xmlns: "http://www.w3.org/2000/svg",
@@ -2721,12 +2790,12 @@ function TimelineDemo({ className }) {
                   strokeLinecap: "round",
                   strokeLinejoin: "round",
                   children: [
-                    /* @__PURE__ */ jsx11("path", { d: "M12 5v14" }),
-                    /* @__PURE__ */ jsx11("path", { d: "M5 12h14" })
+                    /* @__PURE__ */ jsx13("path", { d: "M12 5v14" }),
+                    /* @__PURE__ */ jsx13("path", { d: "M5 12h14" })
                   ]
                 }
               ),
-              children: /* @__PURE__ */ jsx11(
+              children: /* @__PURE__ */ jsx13(
                 TimelineContent,
                 {
                   title: "Project Created",
@@ -2735,12 +2804,12 @@ function TimelineDemo({ className }) {
               )
             }
           ),
-          /* @__PURE__ */ jsx11(
+          /* @__PURE__ */ jsx13(
             TimelineItem,
             {
               orientation,
               active: true,
-              icon: /* @__PURE__ */ jsxs9(
+              icon: /* @__PURE__ */ jsxs10(
                 "svg",
                 {
                   xmlns: "http://www.w3.org/2000/svg",
@@ -2753,12 +2822,12 @@ function TimelineDemo({ className }) {
                   strokeLinecap: "round",
                   strokeLinejoin: "round",
                   children: [
-                    /* @__PURE__ */ jsx11("path", { d: "M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" }),
-                    /* @__PURE__ */ jsx11("polyline", { points: "14 2 14 8 20 8" })
+                    /* @__PURE__ */ jsx13("path", { d: "M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" }),
+                    /* @__PURE__ */ jsx13("polyline", { points: "14 2 14 8 20 8" })
                   ]
                 }
               ),
-              children: /* @__PURE__ */ jsx11(
+              children: /* @__PURE__ */ jsx13(
                 TimelineContent,
                 {
                   title: "Documentation",
@@ -2767,12 +2836,12 @@ function TimelineDemo({ className }) {
               )
             }
           ),
-          /* @__PURE__ */ jsx11(
+          /* @__PURE__ */ jsx13(
             TimelineItem,
             {
               orientation,
               active: true,
-              icon: /* @__PURE__ */ jsxs9(
+              icon: /* @__PURE__ */ jsxs10(
                 "svg",
                 {
                   xmlns: "http://www.w3.org/2000/svg",
@@ -2785,13 +2854,13 @@ function TimelineDemo({ className }) {
                   strokeLinecap: "round",
                   strokeLinejoin: "round",
                   children: [
-                    /* @__PURE__ */ jsx11("path", { d: "m18 16 4-4-4-4" }),
-                    /* @__PURE__ */ jsx11("path", { d: "m6 8-4 4 4 4" }),
-                    /* @__PURE__ */ jsx11("path", { d: "m14.5 4-5 16" })
+                    /* @__PURE__ */ jsx13("path", { d: "m18 16 4-4-4-4" }),
+                    /* @__PURE__ */ jsx13("path", { d: "m6 8-4 4 4 4" }),
+                    /* @__PURE__ */ jsx13("path", { d: "m14.5 4-5 16" })
                   ]
                 }
               ),
-              children: /* @__PURE__ */ jsx11(
+              children: /* @__PURE__ */ jsx13(
                 TimelineContent,
                 {
                   title: "Development",
@@ -2800,11 +2869,11 @@ function TimelineDemo({ className }) {
               )
             }
           ),
-          /* @__PURE__ */ jsx11(
+          /* @__PURE__ */ jsx13(
             TimelineItem,
             {
               orientation,
-              icon: /* @__PURE__ */ jsxs9(
+              icon: /* @__PURE__ */ jsxs10(
                 "svg",
                 {
                   xmlns: "http://www.w3.org/2000/svg",
@@ -2817,12 +2886,12 @@ function TimelineDemo({ className }) {
                   strokeLinecap: "round",
                   strokeLinejoin: "round",
                   children: [
-                    /* @__PURE__ */ jsx11("path", { d: "M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" }),
-                    /* @__PURE__ */ jsx11("path", { d: "m9 12 2 2 4-4" })
+                    /* @__PURE__ */ jsx13("path", { d: "M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" }),
+                    /* @__PURE__ */ jsx13("path", { d: "m9 12 2 2 4-4" })
                   ]
                 }
               ),
-              children: /* @__PURE__ */ jsx11(
+              children: /* @__PURE__ */ jsx13(
                 TimelineContent,
                 {
                   title: "Testing",
@@ -2831,12 +2900,12 @@ function TimelineDemo({ className }) {
               )
             }
           ),
-          /* @__PURE__ */ jsx11(
+          /* @__PURE__ */ jsx13(
             TimelineItem,
             {
               orientation,
               connector: false,
-              icon: /* @__PURE__ */ jsxs9(
+              icon: /* @__PURE__ */ jsxs10(
                 "svg",
                 {
                   xmlns: "http://www.w3.org/2000/svg",
@@ -2849,12 +2918,12 @@ function TimelineDemo({ className }) {
                   strokeLinecap: "round",
                   strokeLinejoin: "round",
                   children: [
-                    /* @__PURE__ */ jsx11("path", { d: "M22 11.08V12a10 10 0 1 1-5.93-9.14" }),
-                    /* @__PURE__ */ jsx11("polyline", { points: "22 4 12 14.01 9 11.01" })
+                    /* @__PURE__ */ jsx13("path", { d: "M22 11.08V12a10 10 0 1 1-5.93-9.14" }),
+                    /* @__PURE__ */ jsx13("polyline", { points: "22 4 12 14.01 9 11.01" })
                   ]
                 }
               ),
-              children: /* @__PURE__ */ jsx11(
+              children: /* @__PURE__ */ jsx13(
                 TimelineContent,
                 {
                   title: "Deployment",
@@ -2865,48 +2934,48 @@ function TimelineDemo({ className }) {
           )
         ] }) })
       ] }),
-      /* @__PURE__ */ jsxs9("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx11("h3", { className: "text-lg font-medium", children: "Timeline with Separators" }),
-        /* @__PURE__ */ jsx11("div", { className: "p-4 border border-border rounded-lg", children: /* @__PURE__ */ jsxs9(Timeline, { orientation, children: [
-          /* @__PURE__ */ jsx11(TimelineSeparator, { label: "Planning Phase" }),
-          /* @__PURE__ */ jsx11(TimelineItem, { active: true, orientation, children: /* @__PURE__ */ jsx11(
+      /* @__PURE__ */ jsxs10("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx13("h3", { className: "text-lg font-medium", children: "Timeline with Separators" }),
+        /* @__PURE__ */ jsx13("div", { className: "p-4 border border-border rounded-lg", children: /* @__PURE__ */ jsxs10(Timeline, { orientation, children: [
+          /* @__PURE__ */ jsx13(TimelineSeparator, { label: "Planning Phase" }),
+          /* @__PURE__ */ jsx13(TimelineItem, { active: true, orientation, children: /* @__PURE__ */ jsx13(
             TimelineContent,
             {
               title: "Requirements Gathering",
               date: "May 15, 2025"
             }
           ) }),
-          /* @__PURE__ */ jsx11(TimelineItem, { active: true, orientation, children: /* @__PURE__ */ jsx11(
+          /* @__PURE__ */ jsx13(TimelineItem, { active: true, orientation, children: /* @__PURE__ */ jsx13(
             TimelineContent,
             {
               title: "Project Scoping",
               date: "May 20, 2025"
             }
           ) }),
-          /* @__PURE__ */ jsx11(TimelineSeparator, { label: "Design Phase" }),
-          /* @__PURE__ */ jsx11(TimelineItem, { active: true, orientation, children: /* @__PURE__ */ jsx11(
+          /* @__PURE__ */ jsx13(TimelineSeparator, { label: "Design Phase" }),
+          /* @__PURE__ */ jsx13(TimelineItem, { active: true, orientation, children: /* @__PURE__ */ jsx13(
             TimelineContent,
             {
               title: "UI/UX Design",
               date: "June 1, 2025"
             }
           ) }),
-          /* @__PURE__ */ jsx11(TimelineItem, { active: true, orientation, children: /* @__PURE__ */ jsx11(
+          /* @__PURE__ */ jsx13(TimelineItem, { active: true, orientation, children: /* @__PURE__ */ jsx13(
             TimelineContent,
             {
               title: "Prototype Review",
               date: "June 10, 2025"
             }
           ) }),
-          /* @__PURE__ */ jsx11(TimelineSeparator, { label: "Implementation Phase" }),
-          /* @__PURE__ */ jsx11(TimelineItem, { orientation, children: /* @__PURE__ */ jsx11(
+          /* @__PURE__ */ jsx13(TimelineSeparator, { label: "Implementation Phase" }),
+          /* @__PURE__ */ jsx13(TimelineItem, { orientation, children: /* @__PURE__ */ jsx13(
             TimelineContent,
             {
               title: "Development",
               date: "June 15, 2025"
             }
           ) }),
-          /* @__PURE__ */ jsx11(TimelineItem, { orientation, connector: false, children: /* @__PURE__ */ jsx11(
+          /* @__PURE__ */ jsx13(TimelineItem, { orientation, connector: false, children: /* @__PURE__ */ jsx13(
             TimelineContent,
             {
               title: "Testing & Deployment",
@@ -2915,89 +2984,89 @@ function TimelineDemo({ className }) {
           ) })
         ] }) })
       ] }),
-      /* @__PURE__ */ jsxs9("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx11("h3", { className: "text-lg font-medium", children: "Timeline Variants" }),
-        /* @__PURE__ */ jsxs9("div", { className: "p-4 border border-border rounded-lg", children: [
-          /* @__PURE__ */ jsx11("h4", { className: "font-medium mb-3", children: "Compact Timeline" }),
-          /* @__PURE__ */ jsxs9(Timeline, { orientation, compact: true, children: [
-            /* @__PURE__ */ jsx11(TimelineItem, { active: true, orientation, children: /* @__PURE__ */ jsx11(TimelineContent, { title: "Step 1", date: "9:00 AM" }) }),
-            /* @__PURE__ */ jsx11(TimelineItem, { active: true, orientation, children: /* @__PURE__ */ jsx11(TimelineContent, { title: "Step 2", date: "10:30 AM" }) }),
-            /* @__PURE__ */ jsx11(TimelineItem, { active: true, orientation, children: /* @__PURE__ */ jsx11(TimelineContent, { title: "Step 3", date: "12:00 PM" }) }),
-            /* @__PURE__ */ jsx11(TimelineItem, { orientation, children: /* @__PURE__ */ jsx11(TimelineContent, { title: "Step 4", date: "2:30 PM" }) }),
-            /* @__PURE__ */ jsx11(TimelineItem, { orientation, connector: false, children: /* @__PURE__ */ jsx11(TimelineContent, { title: "Step 5", date: "4:00 PM" }) })
+      /* @__PURE__ */ jsxs10("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx13("h3", { className: "text-lg font-medium", children: "Timeline Variants" }),
+        /* @__PURE__ */ jsxs10("div", { className: "p-4 border border-border rounded-lg", children: [
+          /* @__PURE__ */ jsx13("h4", { className: "font-medium mb-3", children: "Compact Timeline" }),
+          /* @__PURE__ */ jsxs10(Timeline, { orientation, compact: true, children: [
+            /* @__PURE__ */ jsx13(TimelineItem, { active: true, orientation, children: /* @__PURE__ */ jsx13(TimelineContent, { title: "Step 1", date: "9:00 AM" }) }),
+            /* @__PURE__ */ jsx13(TimelineItem, { active: true, orientation, children: /* @__PURE__ */ jsx13(TimelineContent, { title: "Step 2", date: "10:30 AM" }) }),
+            /* @__PURE__ */ jsx13(TimelineItem, { active: true, orientation, children: /* @__PURE__ */ jsx13(TimelineContent, { title: "Step 3", date: "12:00 PM" }) }),
+            /* @__PURE__ */ jsx13(TimelineItem, { orientation, children: /* @__PURE__ */ jsx13(TimelineContent, { title: "Step 4", date: "2:30 PM" }) }),
+            /* @__PURE__ */ jsx13(TimelineItem, { orientation, connector: false, children: /* @__PURE__ */ jsx13(TimelineContent, { title: "Step 5", date: "4:00 PM" }) })
           ] }),
-          /* @__PURE__ */ jsx11("h4", { className: "font-medium mt-6 mb-3", children: "Dashed Connector" }),
-          /* @__PURE__ */ jsxs9(Timeline, { orientation, children: [
-            /* @__PURE__ */ jsx11(TimelineItem, { active: true, orientation, connectorStyle: "dashed", children: /* @__PURE__ */ jsx11(TimelineContent, { title: "Task 1", date: "Monday" }) }),
-            /* @__PURE__ */ jsx11(TimelineItem, { active: true, orientation, connectorStyle: "dashed", children: /* @__PURE__ */ jsx11(TimelineContent, { title: "Task 2", date: "Tuesday" }) }),
-            /* @__PURE__ */ jsx11(TimelineItem, { orientation, connectorStyle: "dashed", children: /* @__PURE__ */ jsx11(TimelineContent, { title: "Task 3", date: "Wednesday" }) }),
-            /* @__PURE__ */ jsx11(TimelineItem, { orientation, connectorStyle: "dashed", connector: false, children: /* @__PURE__ */ jsx11(TimelineContent, { title: "Task 4", date: "Thursday" }) })
+          /* @__PURE__ */ jsx13("h4", { className: "font-medium mt-6 mb-3", children: "Dashed Connector" }),
+          /* @__PURE__ */ jsxs10(Timeline, { orientation, children: [
+            /* @__PURE__ */ jsx13(TimelineItem, { active: true, orientation, connectorStyle: "dashed", children: /* @__PURE__ */ jsx13(TimelineContent, { title: "Task 1", date: "Monday" }) }),
+            /* @__PURE__ */ jsx13(TimelineItem, { active: true, orientation, connectorStyle: "dashed", children: /* @__PURE__ */ jsx13(TimelineContent, { title: "Task 2", date: "Tuesday" }) }),
+            /* @__PURE__ */ jsx13(TimelineItem, { orientation, connectorStyle: "dashed", children: /* @__PURE__ */ jsx13(TimelineContent, { title: "Task 3", date: "Wednesday" }) }),
+            /* @__PURE__ */ jsx13(TimelineItem, { orientation, connectorStyle: "dashed", connector: false, children: /* @__PURE__ */ jsx13(TimelineContent, { title: "Task 4", date: "Thursday" }) })
           ] }),
-          /* @__PURE__ */ jsx11("h4", { className: "font-medium mt-6 mb-3", children: "Colored Timeline" }),
-          /* @__PURE__ */ jsxs9(Timeline, { orientation, children: [
-            /* @__PURE__ */ jsx11(
+          /* @__PURE__ */ jsx13("h4", { className: "font-medium mt-6 mb-3", children: "Colored Timeline" }),
+          /* @__PURE__ */ jsxs10(Timeline, { orientation, children: [
+            /* @__PURE__ */ jsx13(
               TimelineItem,
               {
                 active: true,
                 orientation,
                 iconBackground: "#4CAF50",
                 connectorColor: "#4CAF50",
-                children: /* @__PURE__ */ jsx11(TimelineContent, { title: "Success", date: "Completed" })
+                children: /* @__PURE__ */ jsx13(TimelineContent, { title: "Success", date: "Completed" })
               }
             ),
-            /* @__PURE__ */ jsx11(
+            /* @__PURE__ */ jsx13(
               TimelineItem,
               {
                 active: true,
                 orientation,
                 iconBackground: "#2196F3",
                 connectorColor: "#2196F3",
-                children: /* @__PURE__ */ jsx11(TimelineContent, { title: "Info", date: "In Progress" })
+                children: /* @__PURE__ */ jsx13(TimelineContent, { title: "Info", date: "In Progress" })
               }
             ),
-            /* @__PURE__ */ jsx11(
+            /* @__PURE__ */ jsx13(
               TimelineItem,
               {
                 orientation,
                 iconBackground: "#FFC107",
                 connectorColor: "#FFC107",
-                children: /* @__PURE__ */ jsx11(TimelineContent, { title: "Warning", date: "Pending" })
+                children: /* @__PURE__ */ jsx13(TimelineContent, { title: "Warning", date: "Pending" })
               }
             ),
-            /* @__PURE__ */ jsx11(
+            /* @__PURE__ */ jsx13(
               TimelineItem,
               {
                 orientation,
                 iconBackground: "#F44336",
                 connectorColor: "#F44336",
                 connector: false,
-                children: /* @__PURE__ */ jsx11(TimelineContent, { title: "Error", date: "Failed" })
+                children: /* @__PURE__ */ jsx13(TimelineContent, { title: "Error", date: "Failed" })
               }
             )
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsxs9("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx11("h3", { className: "text-lg font-medium", children: "Timeline Components" }),
-        /* @__PURE__ */ jsxs9("div", { className: "p-4 border border-border rounded-lg space-y-4", children: [
-          /* @__PURE__ */ jsxs9("div", { children: [
-            /* @__PURE__ */ jsx11("h4", { className: "font-medium mb-2", children: "Timeline Dots" }),
-            /* @__PURE__ */ jsxs9("div", { className: "flex items-center space-x-4", children: [
-              /* @__PURE__ */ jsx11(TimelineDot, { size: "sm" }),
-              /* @__PURE__ */ jsx11(TimelineDot, { size: "md" }),
-              /* @__PURE__ */ jsx11(TimelineDot, { size: "lg" }),
-              /* @__PURE__ */ jsx11(TimelineDot, { size: "md", active: true }),
-              /* @__PURE__ */ jsx11(TimelineDot, { size: "md", variant: "outlined" }),
-              /* @__PURE__ */ jsx11(TimelineDot, { size: "md", variant: "outlined", active: true }),
-              /* @__PURE__ */ jsx11(TimelineDot, { size: "md", color: "#4CAF50" }),
-              /* @__PURE__ */ jsx11(TimelineDot, { size: "md", color: "#F44336" }),
-              /* @__PURE__ */ jsx11(TimelineDot, { size: "md", variant: "outlined", color: "#2196F3" })
+      /* @__PURE__ */ jsxs10("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx13("h3", { className: "text-lg font-medium", children: "Timeline Components" }),
+        /* @__PURE__ */ jsxs10("div", { className: "p-4 border border-border rounded-lg space-y-4", children: [
+          /* @__PURE__ */ jsxs10("div", { children: [
+            /* @__PURE__ */ jsx13("h4", { className: "font-medium mb-2", children: "Timeline Dots" }),
+            /* @__PURE__ */ jsxs10("div", { className: "flex items-center space-x-4", children: [
+              /* @__PURE__ */ jsx13(TimelineDot, { size: "sm" }),
+              /* @__PURE__ */ jsx13(TimelineDot, { size: "md" }),
+              /* @__PURE__ */ jsx13(TimelineDot, { size: "lg" }),
+              /* @__PURE__ */ jsx13(TimelineDot, { size: "md", active: true }),
+              /* @__PURE__ */ jsx13(TimelineDot, { size: "md", variant: "outlined" }),
+              /* @__PURE__ */ jsx13(TimelineDot, { size: "md", variant: "outlined", active: true }),
+              /* @__PURE__ */ jsx13(TimelineDot, { size: "md", color: "#4CAF50" }),
+              /* @__PURE__ */ jsx13(TimelineDot, { size: "md", color: "#F44336" }),
+              /* @__PURE__ */ jsx13(TimelineDot, { size: "md", variant: "outlined", color: "#2196F3" })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs9("div", { children: [
-            /* @__PURE__ */ jsx11("h4", { className: "font-medium mb-2", children: "Timeline Separators" }),
-            /* @__PURE__ */ jsx11(TimelineSeparator, { label: "Phase 1" }),
-            /* @__PURE__ */ jsx11(TimelineSeparator, {})
+          /* @__PURE__ */ jsxs10("div", { children: [
+            /* @__PURE__ */ jsx13("h4", { className: "font-medium mb-2", children: "Timeline Separators" }),
+            /* @__PURE__ */ jsx13(TimelineSeparator, { label: "Phase 1" }),
+            /* @__PURE__ */ jsx13(TimelineSeparator, {})
           ] })
         ] })
       ] })
@@ -3007,7 +3076,7 @@ function TimelineDemo({ className }) {
 
 // src/components/core/TaskCardDemo.tsx
 import { useState as useState6 } from "react";
-import { jsx as jsx12, jsxs as jsxs10 } from "react/jsx-runtime";
+import { jsx as jsx14, jsxs as jsxs11 } from "react/jsx-runtime";
 function TaskCardDemo({ className }) {
   const [layout, setLayout] = useState6("grid");
   const [columns, setColumns] = useState6(2);
@@ -3087,12 +3156,12 @@ function TaskCardDemo({ className }) {
       tags: ["Documentation"]
     }
   ];
-  return /* @__PURE__ */ jsxs10("div", { className: cn("space-y-6", className), children: [
-    /* @__PURE__ */ jsxs10("div", { className: "flex items-center justify-between", children: [
-      /* @__PURE__ */ jsx12("h2", { className: "text-2xl font-bold", children: "Task Cards" }),
-      /* @__PURE__ */ jsxs10("div", { className: "flex items-center space-x-2", children: [
-        /* @__PURE__ */ jsxs10("div", { className: "flex items-center space-x-1 mr-4", children: [
-          /* @__PURE__ */ jsx12(
+  return /* @__PURE__ */ jsxs11("div", { className: cn("space-y-6", className), children: [
+    /* @__PURE__ */ jsxs11("div", { className: "flex items-center justify-between", children: [
+      /* @__PURE__ */ jsx14("h2", { className: "text-2xl font-bold", children: "Task Cards" }),
+      /* @__PURE__ */ jsxs11("div", { className: "flex items-center space-x-2", children: [
+        /* @__PURE__ */ jsxs11("div", { className: "flex items-center space-x-1 mr-4", children: [
+          /* @__PURE__ */ jsx14(
             "button",
             {
               onClick: () => setLayout("grid"),
@@ -3100,7 +3169,7 @@ function TaskCardDemo({ className }) {
                 "p-1 rounded-md",
                 layout === "grid" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
               ),
-              children: /* @__PURE__ */ jsxs10(
+              children: /* @__PURE__ */ jsxs11(
                 "svg",
                 {
                   xmlns: "http://www.w3.org/2000/svg",
@@ -3113,16 +3182,16 @@ function TaskCardDemo({ className }) {
                   strokeLinecap: "round",
                   strokeLinejoin: "round",
                   children: [
-                    /* @__PURE__ */ jsx12("rect", { width: "7", height: "7", x: "3", y: "3", rx: "1" }),
-                    /* @__PURE__ */ jsx12("rect", { width: "7", height: "7", x: "14", y: "3", rx: "1" }),
-                    /* @__PURE__ */ jsx12("rect", { width: "7", height: "7", x: "14", y: "14", rx: "1" }),
-                    /* @__PURE__ */ jsx12("rect", { width: "7", height: "7", x: "3", y: "14", rx: "1" })
+                    /* @__PURE__ */ jsx14("rect", { width: "7", height: "7", x: "3", y: "3", rx: "1" }),
+                    /* @__PURE__ */ jsx14("rect", { width: "7", height: "7", x: "14", y: "3", rx: "1" }),
+                    /* @__PURE__ */ jsx14("rect", { width: "7", height: "7", x: "14", y: "14", rx: "1" }),
+                    /* @__PURE__ */ jsx14("rect", { width: "7", height: "7", x: "3", y: "14", rx: "1" })
                   ]
                 }
               )
             }
           ),
-          /* @__PURE__ */ jsx12(
+          /* @__PURE__ */ jsx14(
             "button",
             {
               onClick: () => setLayout("list"),
@@ -3130,7 +3199,7 @@ function TaskCardDemo({ className }) {
                 "p-1 rounded-md",
                 layout === "list" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
               ),
-              children: /* @__PURE__ */ jsxs10(
+              children: /* @__PURE__ */ jsxs11(
                 "svg",
                 {
                   xmlns: "http://www.w3.org/2000/svg",
@@ -3143,19 +3212,19 @@ function TaskCardDemo({ className }) {
                   strokeLinecap: "round",
                   strokeLinejoin: "round",
                   children: [
-                    /* @__PURE__ */ jsx12("line", { x1: "8", x2: "21", y1: "6", y2: "6" }),
-                    /* @__PURE__ */ jsx12("line", { x1: "8", x2: "21", y1: "12", y2: "12" }),
-                    /* @__PURE__ */ jsx12("line", { x1: "8", x2: "21", y1: "18", y2: "18" }),
-                    /* @__PURE__ */ jsx12("line", { x1: "3", x2: "3.01", y1: "6", y2: "6" }),
-                    /* @__PURE__ */ jsx12("line", { x1: "3", x2: "3.01", y1: "12", y2: "12" }),
-                    /* @__PURE__ */ jsx12("line", { x1: "3", x2: "3.01", y1: "18", y2: "18" })
+                    /* @__PURE__ */ jsx14("line", { x1: "8", x2: "21", y1: "6", y2: "6" }),
+                    /* @__PURE__ */ jsx14("line", { x1: "8", x2: "21", y1: "12", y2: "12" }),
+                    /* @__PURE__ */ jsx14("line", { x1: "8", x2: "21", y1: "18", y2: "18" }),
+                    /* @__PURE__ */ jsx14("line", { x1: "3", x2: "3.01", y1: "6", y2: "6" }),
+                    /* @__PURE__ */ jsx14("line", { x1: "3", x2: "3.01", y1: "12", y2: "12" }),
+                    /* @__PURE__ */ jsx14("line", { x1: "3", x2: "3.01", y1: "18", y2: "18" })
                   ]
                 }
               )
             }
           )
         ] }),
-        layout === "grid" && /* @__PURE__ */ jsx12("div", { className: "flex items-center space-x-1", children: [1, 2, 3, 4].map((col) => /* @__PURE__ */ jsx12(
+        layout === "grid" && /* @__PURE__ */ jsx14("div", { className: "flex items-center space-x-1", children: [1, 2, 3, 4].map((col) => /* @__PURE__ */ jsx14(
           "button",
           {
             onClick: () => setColumns(col),
@@ -3169,10 +3238,10 @@ function TaskCardDemo({ className }) {
         )) })
       ] })
     ] }),
-    /* @__PURE__ */ jsxs10("div", { className: "space-y-8", children: [
-      /* @__PURE__ */ jsxs10("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx12("h3", { className: "text-lg font-medium", children: "Task List" }),
-        /* @__PURE__ */ jsx12(
+    /* @__PURE__ */ jsxs11("div", { className: "space-y-8", children: [
+      /* @__PURE__ */ jsxs11("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx14("h3", { className: "text-lg font-medium", children: "Task List" }),
+        /* @__PURE__ */ jsx14(
           TaskList,
           {
             tasks,
@@ -3182,10 +3251,10 @@ function TaskCardDemo({ className }) {
           }
         )
       ] }),
-      /* @__PURE__ */ jsxs10("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx12("h3", { className: "text-lg font-medium", children: "Task Card Variants" }),
-        /* @__PURE__ */ jsxs10("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4", children: [
-          /* @__PURE__ */ jsx12(
+      /* @__PURE__ */ jsxs11("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx14("h3", { className: "text-lg font-medium", children: "Task Card Variants" }),
+        /* @__PURE__ */ jsxs11("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4", children: [
+          /* @__PURE__ */ jsx14(
             TaskCard,
             {
               title: "Default Variant",
@@ -3196,7 +3265,7 @@ function TaskCardDemo({ className }) {
               variant: "default"
             }
           ),
-          /* @__PURE__ */ jsx12(
+          /* @__PURE__ */ jsx14(
             TaskCard,
             {
               title: "Primary Variant",
@@ -3207,7 +3276,7 @@ function TaskCardDemo({ className }) {
               variant: "primary"
             }
           ),
-          /* @__PURE__ */ jsx12(
+          /* @__PURE__ */ jsx14(
             TaskCard,
             {
               title: "Accent Variant",
@@ -3218,7 +3287,7 @@ function TaskCardDemo({ className }) {
               variant: "accent"
             }
           ),
-          /* @__PURE__ */ jsx12(
+          /* @__PURE__ */ jsx14(
             TaskCard,
             {
               title: "Outline Variant",
@@ -3231,10 +3300,10 @@ function TaskCardDemo({ className }) {
           )
         ] })
       ] }),
-      /* @__PURE__ */ jsxs10("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx12("h3", { className: "text-lg font-medium", children: "Task Card Sizes" }),
-        /* @__PURE__ */ jsxs10("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-4", children: [
-          /* @__PURE__ */ jsx12(
+      /* @__PURE__ */ jsxs11("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx14("h3", { className: "text-lg font-medium", children: "Task Card Sizes" }),
+        /* @__PURE__ */ jsxs11("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-4", children: [
+          /* @__PURE__ */ jsx14(
             TaskCard,
             {
               title: "Small Size",
@@ -3244,7 +3313,7 @@ function TaskCardDemo({ className }) {
               size: "sm"
             }
           ),
-          /* @__PURE__ */ jsx12(
+          /* @__PURE__ */ jsx14(
             TaskCard,
             {
               title: "Medium Size",
@@ -3254,7 +3323,7 @@ function TaskCardDemo({ className }) {
               size: "md"
             }
           ),
-          /* @__PURE__ */ jsx12(
+          /* @__PURE__ */ jsx14(
             TaskCard,
             {
               title: "Large Size",
@@ -3266,10 +3335,10 @@ function TaskCardDemo({ className }) {
           )
         ] })
       ] }),
-      /* @__PURE__ */ jsxs10("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx12("h3", { className: "text-lg font-medium", children: "Interactive Task Cards" }),
-        /* @__PURE__ */ jsxs10("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: [
-          /* @__PURE__ */ jsx12(
+      /* @__PURE__ */ jsxs11("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx14("h3", { className: "text-lg font-medium", children: "Interactive Task Cards" }),
+        /* @__PURE__ */ jsxs11("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: [
+          /* @__PURE__ */ jsx14(
             TaskCard,
             {
               title: "With Hover Effect",
@@ -3279,7 +3348,7 @@ function TaskCardDemo({ className }) {
               withHover: true
             }
           ),
-          /* @__PURE__ */ jsx12(
+          /* @__PURE__ */ jsx14(
             TaskCard,
             {
               title: "With Shadow",
@@ -3291,54 +3360,54 @@ function TaskCardDemo({ className }) {
           )
         ] })
       ] }),
-      /* @__PURE__ */ jsxs10("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx12("h3", { className: "text-lg font-medium", children: "Task Card Components" }),
-        /* @__PURE__ */ jsxs10("div", { className: "p-4 border border-border rounded-lg space-y-4", children: [
-          /* @__PURE__ */ jsxs10("div", { className: "space-y-2", children: [
-            /* @__PURE__ */ jsx12("h4", { className: "font-medium", children: "Priority Badges" }),
-            /* @__PURE__ */ jsxs10("div", { className: "flex flex-wrap gap-2", children: [
-              /* @__PURE__ */ jsx12(PriorityBadge, { priority: "low" }),
-              /* @__PURE__ */ jsx12(PriorityBadge, { priority: "medium" }),
-              /* @__PURE__ */ jsx12(PriorityBadge, { priority: "high" }),
-              /* @__PURE__ */ jsx12(PriorityBadge, { priority: "urgent" }),
-              /* @__PURE__ */ jsx12(PriorityBadge, { priority: "custom", customColor: "#9c27b0" })
+      /* @__PURE__ */ jsxs11("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx14("h3", { className: "text-lg font-medium", children: "Task Card Components" }),
+        /* @__PURE__ */ jsxs11("div", { className: "p-4 border border-border rounded-lg space-y-4", children: [
+          /* @__PURE__ */ jsxs11("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsx14("h4", { className: "font-medium", children: "Priority Badges" }),
+            /* @__PURE__ */ jsxs11("div", { className: "flex flex-wrap gap-2", children: [
+              /* @__PURE__ */ jsx14(PriorityBadge, { priority: "low" }),
+              /* @__PURE__ */ jsx14(PriorityBadge, { priority: "medium" }),
+              /* @__PURE__ */ jsx14(PriorityBadge, { priority: "high" }),
+              /* @__PURE__ */ jsx14(PriorityBadge, { priority: "urgent" }),
+              /* @__PURE__ */ jsx14(PriorityBadge, { priority: "custom", customColor: "#9c27b0" })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs10("div", { className: "space-y-2", children: [
-            /* @__PURE__ */ jsx12("h4", { className: "font-medium", children: "Status Badges" }),
-            /* @__PURE__ */ jsxs10("div", { className: "flex flex-wrap gap-2", children: [
-              /* @__PURE__ */ jsx12(StatusBadge, { status: "todo" }),
-              /* @__PURE__ */ jsx12(StatusBadge, { status: "in-progress" }),
-              /* @__PURE__ */ jsx12(StatusBadge, { status: "review" }),
-              /* @__PURE__ */ jsx12(StatusBadge, { status: "done" }),
-              /* @__PURE__ */ jsx12(StatusBadge, { status: "blocked" }),
-              /* @__PURE__ */ jsx12(StatusBadge, { status: "custom", customColor: "#ff9800" })
+          /* @__PURE__ */ jsxs11("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsx14("h4", { className: "font-medium", children: "Status Badges" }),
+            /* @__PURE__ */ jsxs11("div", { className: "flex flex-wrap gap-2", children: [
+              /* @__PURE__ */ jsx14(StatusBadge, { status: "todo" }),
+              /* @__PURE__ */ jsx14(StatusBadge, { status: "in-progress" }),
+              /* @__PURE__ */ jsx14(StatusBadge, { status: "review" }),
+              /* @__PURE__ */ jsx14(StatusBadge, { status: "done" }),
+              /* @__PURE__ */ jsx14(StatusBadge, { status: "blocked" }),
+              /* @__PURE__ */ jsx14(StatusBadge, { status: "custom", customColor: "#ff9800" })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs10("div", { className: "space-y-2", children: [
-            /* @__PURE__ */ jsx12("h4", { className: "font-medium", children: "Task Progress" }),
-            /* @__PURE__ */ jsxs10("div", { className: "space-y-2 max-w-md", children: [
-              /* @__PURE__ */ jsx12(TaskProgress, { value: 25, showLabel: true }),
-              /* @__PURE__ */ jsx12(TaskProgress, { value: 50, showLabel: true }),
-              /* @__PURE__ */ jsx12(TaskProgress, { value: 75, showLabel: true }),
-              /* @__PURE__ */ jsx12(TaskProgress, { value: 100, showLabel: true })
+          /* @__PURE__ */ jsxs11("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsx14("h4", { className: "font-medium", children: "Task Progress" }),
+            /* @__PURE__ */ jsxs11("div", { className: "space-y-2 max-w-md", children: [
+              /* @__PURE__ */ jsx14(TaskProgress, { value: 25, showLabel: true }),
+              /* @__PURE__ */ jsx14(TaskProgress, { value: 50, showLabel: true }),
+              /* @__PURE__ */ jsx14(TaskProgress, { value: 75, showLabel: true }),
+              /* @__PURE__ */ jsx14(TaskProgress, { value: 100, showLabel: true })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs10("div", { className: "space-y-2", children: [
-            /* @__PURE__ */ jsx12("h4", { className: "font-medium", children: "Due Dates" }),
-            /* @__PURE__ */ jsxs10("div", { className: "flex flex-wrap gap-4", children: [
-              /* @__PURE__ */ jsx12(DueDate, { date: "2025-06-30" }),
-              /* @__PURE__ */ jsx12(DueDate, { date: "2025-05-15", isPastDue: true }),
-              /* @__PURE__ */ jsx12(DueDate, { date: "2025-06-30", showIcon: false })
+          /* @__PURE__ */ jsxs11("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsx14("h4", { className: "font-medium", children: "Due Dates" }),
+            /* @__PURE__ */ jsxs11("div", { className: "flex flex-wrap gap-4", children: [
+              /* @__PURE__ */ jsx14(DueDate, { date: "2025-06-30" }),
+              /* @__PURE__ */ jsx14(DueDate, { date: "2025-05-15", isPastDue: true }),
+              /* @__PURE__ */ jsx14(DueDate, { date: "2025-06-30", showIcon: false })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs10("div", { className: "space-y-2", children: [
-            /* @__PURE__ */ jsx12("h4", { className: "font-medium", children: "Assignees" }),
-            /* @__PURE__ */ jsxs10("div", { className: "flex flex-wrap gap-4", children: [
-              /* @__PURE__ */ jsx12(Assignee, { name: "John Doe", avatar: "https://randomuser.me/api/portraits/men/44.jpg" }),
-              /* @__PURE__ */ jsx12(Assignee, { name: "Jane Smith" }),
-              /* @__PURE__ */ jsx12(Assignee, { name: "Michael Chen", size: "sm" }),
-              /* @__PURE__ */ jsx12(Assignee, { name: "Sarah Johnson", size: "lg" })
+          /* @__PURE__ */ jsxs11("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsx14("h4", { className: "font-medium", children: "Assignees" }),
+            /* @__PURE__ */ jsxs11("div", { className: "flex flex-wrap gap-4", children: [
+              /* @__PURE__ */ jsx14(Assignee, { name: "John Doe", avatar: "https://randomuser.me/api/portraits/men/44.jpg" }),
+              /* @__PURE__ */ jsx14(Assignee, { name: "Jane Smith" }),
+              /* @__PURE__ */ jsx14(Assignee, { name: "Michael Chen", size: "sm" }),
+              /* @__PURE__ */ jsx14(Assignee, { name: "Sarah Johnson", size: "lg" })
             ] })
           ] })
         ] })
@@ -3362,6 +3431,7 @@ export {
   ContactInfoItem,
   ContactMessageButton,
   DueDate,
+  LoadingSpinner,
   MetricCard,
   MetricCardDemo,
   PriorityBadge,
@@ -3397,3 +3467,4 @@ export {
   toggleDarkMode,
   useTheme
 };
+//# sourceMappingURL=index.mjs.map
