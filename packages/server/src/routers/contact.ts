@@ -43,7 +43,7 @@ export const contactRouter = router({
     .input(
       z.object({
         search: z.string().optional(),
-        groupId: z.string().uuid().optional(),
+        groupId: z.string().optional(), // Remove UUID validation to handle all group ID formats
       })
     )
     .query(async ({ ctx, input }) => {
@@ -54,11 +54,46 @@ export const contactRouter = router({
       let query = ctx.supabaseUser.from('contacts');
 
       if (input.groupId) {
-        query = query
-          .select('*, group_members!inner(group_id)')
-          .eq('group_members.group_id', input.groupId);
+        console.log('Filtering contacts by groupId:', input.groupId);
+        
+        try {
+          // Use a join to filter contacts that belong to the specified group
+          const { data: memberContactIds, error: memberError } = await ctx.supabaseUser
+            .from('group_members')
+            .select('contact_id')
+            .eq('group_id', input.groupId);
+            
+          if (memberError) {
+            console.error('Error fetching group members:', memberError);
+            throw new TRPCError({
+              code: 'INTERNAL_SERVER_ERROR',
+              message: 'Failed to fetch group members',
+              cause: memberError,
+            });
+          }
+          
+          console.log('Found member contact IDs:', memberContactIds);
+          
+          // If we have contact IDs, filter the contacts query by those IDs
+          if (memberContactIds && memberContactIds.length > 0) {
+            const contactIds = memberContactIds.map((item: { contact_id: string }) => item.contact_id);
+            console.log('Filtering contacts by IDs:', contactIds);
+            query = query.select('*').in('id', contactIds);
+          } else {
+            console.log('No contacts in group, returning empty array');
+            // If no contacts in the group, return empty array early
+            return [];
+          }
+        } catch (error) {
+          console.error('Error in group filtering:', error);
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'Failed to filter contacts by group',
+            cause: error,
+          });
+        }
       } else {
-        query = query.select('*, group_members!left(group_id)');
+        query = query.select('*');
       }
 
       query = query.order('created_at', { ascending: false });

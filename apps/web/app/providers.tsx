@@ -4,44 +4,146 @@ import type { AppRouter } from '@codexcrm/server/src/root';
 import { QueryClient, QueryClientProvider, QueryCache, MutationCache } from '@tanstack/react-query';
 import { httpBatchLink } from '@trpc/client';
 import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
-import * as React from 'react';
+import {
+  createContext,
+  useState,
+  useEffect,
+  ReactNode,
+  use, // React 19 hook
+} from 'react';
 import superjson from 'superjson';
-import { AuthProvider } from '@codexcrm/auth'; // Import AuthProvider
+import type { User } from '@supabase/supabase-js';
+import { createClient } from '@/lib/supabase/client';
 
-// Import the tRPC client from the correct location
 import { api, API_VERSION } from '@/lib/trpc';
 
-// Export types for inputs and outputs
-
-// Export the api client as trpc for backward compatibility
+// Export types for the entire app
 export const trpc = api;
 export type RouterInputs = inferRouterInputs<AppRouter>;
-export type RouterOutputs = inferRouterOutputs<AppRouter>;
+export type RouterOutputs = inferRouterInputs<AppRouter>;
+
+// ========================
+// AUTH PROVIDER (All in one file)
+// ========================
+
+// Auth context type
+type AuthContextType = {
+  user: User | null;
+  isLoading: boolean;
+};
+
+// Create the context
+export const AuthContext = createContext<AuthContextType | null>(null);
+
+// Create a single Supabase client instance
+const supabase = createClient();
 
 /**
- * Helper to get the base URL for API requests depending on environment
+ * AuthProvider component that manages client-side authentication state
+ */
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const getInitialSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('Error getting session:', error);
+        }
+        
+        setUser(session?.user ?? null);
+      } catch (error) {
+        console.error('Auth initialization error:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    getInitialSession();
+
+    // Listen for auth state changes
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        console.log('Auth state change:', event, session?.user?.id);
+        setUser(session?.user ?? null);
+        setIsLoading(false);
+      }
+    );
+
+    return () => {
+      authListener?.subscription.unsubscribe();
+    };
+  }, []);
+
+  const value: AuthContextType = { 
+    user, 
+    isLoading
+  };
+
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+/**
+ * Custom hook to access auth context using React 19's use() hook
+ */
+export function useAuth(): AuthContextType {
+  const context = use(AuthContext);
+  if (context === null) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+}
+
+/**
+ * Hook to get the current user (convenience hook)
+ */
+export function useUser(): User | null {
+  const { user } = useAuth();
+  return user;
+}
+
+/**
+ * Hook to check if auth is loading
+ */
+export function useAuthLoading(): boolean {
+  const { isLoading } = useAuth();
+  return isLoading;
+}
+
+// ========================
+// MAIN PROVIDERS
+// ========================
+
+/**
+ * Helper to get the base URL for API requests
  */
 function getBaseUrl() {
-  // In the browser, we use an absolute URL without domain to avoid CORS issues
   if (typeof window !== 'undefined') {
-    // Make sure we return the absolute path from the root
     return window.location.origin;
   }
-  // SSR should use vercel url
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-
-  // Dev SSR should use localhost
   return 'http://localhost:3008';
 }
 
 /**
- * Provider component for tRPC and React Query
+ * Main Providers component that wraps the entire app
  */
-export function Providers({ children }: { children: React.ReactNode }) {
-  // AuthProvider should be placed here, wrapping other client-side providers if necessary,
-  // or directly wrapping children if it doesn't depend on them.
-  // Create React Query client with better error handling
-  const [queryClient] = React.useState<QueryClient>(
+export function Providers({ 
+  children, 
+  cookies 
+}: { 
+  children: React.ReactNode;
+  cookies: string;
+}) {
+  // Create React Query client
+  const [queryClient] = useState<QueryClient>(
     () =>
       new QueryClient({
         queryCache: new QueryCache({
@@ -62,17 +164,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
           mutations: {},
         },
       })
-  ); // Type assertion to avoid version compatibility issues
+  );
 
-  // Force reset the cache on component mount to avoid stale references
-  // React.useEffect(() => {
-  //   // Clear all queries on initial load to prevent stale cache issues
-  //   // queryClient.clear(); // <-- Commented out: Likely causing issues with mutation updates
-  //   // console.warn('React Query cache cleared');
-  // }, [queryClient]);
-
-  // Create tRPC client with better error handling
-  const [trpcClient] = React.useState(() => {
+  // Create tRPC client
+  const [trpcClient] = useState(() => {
     const baseUrl = getBaseUrl();
     console.warn(
       `Creating new tRPC client (version: ${API_VERSION}) with baseUrl: ${baseUrl}`
@@ -82,12 +177,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
       links: [
         httpBatchLink({
           transformer: superjson,
-          // Ensure we have a proper absolute URL
           url: `${baseUrl}/api/trpc`,
 
-          // Custom fetch handler for debugging
           fetch: (input, init) => {
-            // Log request details
             const inputUrl =
               typeof input === 'string'
                 ? input
@@ -96,22 +188,20 @@ export function Providers({ children }: { children: React.ReactNode }) {
                   : String(input);
             console.warn('tRPC fetch request to:', inputUrl);
 
-            // Use the standard fetch API
             return fetch(input, {
               ...init,
-              credentials: 'include', // Include cookies for auth
+              credentials: 'include',
             });
           },
 
-          // Add headers for cache busting and debugging
           headers: () => ({
             'Cache-Control': 'no-cache, no-store, must-revalidate',
             Pragma: 'no-cache',
             Expires: '0',
             'x-trpc-source': 'react',
             'x-trpc-version': `${API_VERSION}`,
-            // Add additional debug header
             'x-debug-url': 'true',
+            cookie: cookies, // This is the key fix - passing cookies to tRPC
           }),
         }),
       ],
@@ -121,7 +211,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <AuthProvider>
       <api.Provider client={trpcClient} queryClient={queryClient}>
-        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+        <QueryClientProvider client={queryClient}>
+          {children}
+        </QueryClientProvider>
       </api.Provider>
     </AuthProvider>
   );

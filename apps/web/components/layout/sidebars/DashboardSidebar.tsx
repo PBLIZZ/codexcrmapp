@@ -54,7 +54,7 @@ const quickLinksData: NavItem[] = [
       },
       {
         title: "Create Group",
-        url: "/contacts/groups/new",
+        url: "/contacts/groups/create", // Updated to use the new full-page form
       },
       {
         title: "Add Task",

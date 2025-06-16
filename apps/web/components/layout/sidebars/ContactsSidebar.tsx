@@ -1,13 +1,13 @@
 "use client"
 
-import { useState } from "react"
-import { Users, UserPlus, Upload } from "lucide-react"
+import { Users, UserPlus, Upload, Plus } from "lucide-react" // Added Plus for consistency if needed, though GroupCreateDialog brings its own
+import { GroupCreateDialog } from "@/components/groups/GroupCreateDialog";
 import { UserNav } from "@/components/layout/UserNav"
 import { api } from "@/lib/trpc"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import * as React from "react"
-import { usePathname, useSearchParams, useRouter } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Badge } from "@/components/ui/badge"
 
 import {
@@ -32,52 +32,33 @@ interface Group {
   contactCount?: number
 }
 
-interface ContactsSidebarProps extends React.ComponentProps<typeof Sidebar> {
-  selectedGroupId?: string | null;
-  onGroupSelect?: (groupId: string | null) => void;
-}
+interface ContactsSidebarProps extends React.ComponentProps<typeof Sidebar> {}
 
-export function ContactsSidebar({ 
-  selectedGroupId, 
-  onGroupSelect,
-  ...props 
-}: ContactsSidebarProps) {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+export function ContactsSidebar(props: ContactsSidebarProps) {
   const router = useRouter();
-  const utils = api.useUtils();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
   
-  const [isGroupsOpen, setIsGroupsOpen] = useState(true);
-  const [isAddContactModalOpen, setIsAddContactModalOpen] = useState(false);
+  // This is the correct way to get the active group ID for styling
+  const selectedGroupId = searchParams.get('group');
   
-  // Fetch contacts for count
-  const { data: contacts = [] } = api.contacts.list.useQuery(
-    {
-      search: "",
-      groupId: undefined,
-    },
-    {
-      staleTime: 30000,
-      refetchOnWindowFocus: false,
-    }
-  );
-  
-  const totalContacts = contacts.length;
-
   // Fetch groups data with contact counts
   const { data: groupsData = [] } = api.groups.list.useQuery(undefined, {
-    staleTime: 30000,
-    refetchOnWindowFocus: false,
+    staleTime: 60000,
   });
 
   const groups: Group[] = groupsData as Group[];
 
   // Handler for group selection
   const handleGroupSelect = (groupId: string) => {
-    if (onGroupSelect) {
-      onGroupSelect(groupId);
-    }
+    router.push(`/contacts?group=${groupId}`);
   };
+
+  // Handler for selecting "All Contacts"
+  const handleAllContactsSelect = () => {
+    router.push('/contacts');
+  };
+  
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -103,11 +84,13 @@ export function ContactsSidebar({
           <SidebarMenu>
             {/* All Contacts link */}
             <SidebarMenuItem>
-              <SidebarMenuButton asChild>
-                <Link href="/contacts" className="flex items-center w-full">
-                  <Users className="w-4 h-4 mr-3" />
-                  <span className="font-medium">Contacts</span>
-                </Link>
+              <SidebarMenuButton 
+                onClick={handleAllContactsSelect}
+                isActive={pathname === '/contacts' && !selectedGroupId}
+                tooltip="All Contacts"
+              >
+                <Users className="w-4 h-4 mr-3" />
+                All Contacts
               </SidebarMenuButton>
             </SidebarMenuItem>
             {/* Groups link */}
@@ -127,7 +110,16 @@ export function ContactsSidebar({
                   <span className="font-medium">Import Contacts</span>
                 </Link>
               </SidebarMenuButton>
+              
             </SidebarMenuItem>
+            <SidebarMenuItem>
+              <GroupCreateDialog 
+                triggerButtonLabel="Create Group"
+                triggerButtonVariant="ghost" 
+                triggerButtonClassName="w-full justify-start text-sm font-medium px-2 py-1.5"
+              />
+            </SidebarMenuItem>
+
           </SidebarMenu>
         </SidebarGroup>
 
@@ -143,14 +135,13 @@ export function ContactsSidebar({
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
-            {/* Create Group link */}
+            {/* Create Group Dialog Trigger */}
             <SidebarMenuItem>
-              <SidebarMenuButton asChild>
-                <Link href="/contacts/groups/new" className="flex items-center w-full">
-                  <UserPlus />
-                  <span>Create Group</span>
-                </Link>
-              </SidebarMenuButton>
+              <GroupCreateDialog 
+                triggerButtonLabel="Create Group"
+                triggerButtonVariant="ghost" 
+                triggerButtonClassName="w-full justify-start text-sm font-medium px-2 py-1.5" // Classes to mimic SidebarMenuButton
+              />
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
@@ -162,21 +153,17 @@ export function ContactsSidebar({
             {groups?.map((group: Group) => (
               <SidebarMenuItem key={group.id}>
                 <SidebarMenuButton 
-                  asChild 
+                  onClick={() => handleGroupSelect(group.id)}
                   isActive={selectedGroupId === group.id}
+                  className="justify-between w-full"
                 >
-                  <button
-                    onClick={() => handleGroupSelect(group.id)}
-                    className="flex items-center justify-between w-full"
-                  >
-                    <div className="flex items-center">
-                      <span className="mr-2">{group.emoji || '📁'}</span>
-                      <span>{group.name}</span>
-                    </div>
+                  <div className="flex items-center gap-2 overflow-hidden">
+                    <span className="flex-shrink-0">{group.emoji || '📁'}</span>
+                    <span className="truncate">{group.name}</span>
+                  </div>
                     <Badge variant="secondary" className="ml-auto">
                       {group.contactCount || group.memberCount || 0}
                     </Badge>
-                  </button>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}

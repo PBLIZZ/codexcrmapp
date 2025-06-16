@@ -4,7 +4,26 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 // Import hooks and constants from your shared packages
-import { useAuth } from '@codexcrm/auth';
+import { useAuth } from '@/app/Providers';
+import { AUTH_PAGES, DASHBOARD_PATH, LOG_IN_PATH } from '@codexcrm/config';
+
+// Import UI components
+import { LoadingSpinner } from '@codexcrm/ui';
+import MainLayout from '@/components/layout/MainLayout'; 
+/**
+ * AppContent - The Client-Side Brains of the Layout
+ *
+ * This component is rendered within the server-side RootLayout. It is responsible for:
+ * 1. Consuming the authentication state from `useAuth`.
+ * 2. Showing a loading spinner while the auth state is being determined.
+ * 3. Handling routing logic:
+ *    - Redirecting unauthenticated users from pro'use client';
+
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+
+// Import hooks and constants from your shared packages
+import { useAuth } from '@/app/Providers';
 import { AUTH_PAGES, DASHBOARD_PATH, LOG_IN_PATH } from '@codexcrm/config';
 
 // Import UI components

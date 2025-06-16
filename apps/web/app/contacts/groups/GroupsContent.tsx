@@ -1,24 +1,21 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query'; // For cache invalidation directly
 import {
-  Plus,
-  Edit,
   Trash2,
   Loader2,
   AlertCircle,
   Users,
   Folder,
   UserPlus,
+  Edit,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
 import { toast } from 'sonner'; // For notifications
-import * as z from 'zod';
 
 import { BulkContactSelector } from '@/components/groups/BulkContactSelector';
+import { GroupCreateDialog } from '@/components/groups/GroupCreateDialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -44,23 +41,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea'; // If using for description
 import { api } from '@/lib/trpc';
 
-// --- Zod Schema for Form Validation (should match backend) ---
-const groupFormSchema = z.object({
-  name: z.string().min(1, 'Group name is required').max(100, 'Name too long'),
-  description: z
-    .string()
-    .max(500, 'Description too long')
-    .optional()
-    .nullable(),
-  emoji: z
-    .string()
-    .max(2, 'Emoji should be 1-2 characters')
-    .or(z.literal(''))
-    .nullable()
-    .optional()
-    .transform((val) => (val === '' ? null : val)),
-});
-type GroupFormData = z.infer<typeof groupFormSchema>;
+
 
 // --- Interface for Group Data (matching what `api.groups.list` returns) ---
 interface Group {
@@ -74,8 +55,7 @@ interface Group {
 }
 
 export function GroupsContent() {
-  const [isFormDialogOpen, setIsFormDialogOpen] = useState(false);
-  const [editingGroup, setEditingGroup] = useState<Group | null>(null); // Store full group object for editing
+  // Group state management is now handled by GroupCreateDialog component
 
   const [isContactSelectorOpen, setIsContactSelectorOpen] = useState(false);
   const [selectedGroupForContacts, setSelectedGroupForContacts] = useState<{
@@ -86,22 +66,7 @@ export function GroupsContent() {
   const queryClient = useQueryClient(); // For direct cache invalidation
   const router = useRouter();
 
-  // --- React Hook Form ---
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-    formState: { errors, isSubmitting: isFormSubmittingRHF }, // isSubmitting from RHF
-  } = useForm<GroupFormData>({
-    resolver: zodResolver(groupFormSchema),
-    defaultValues: {
-      name: '',
-      description: '',
-      emoji: '👍',
-    },
-  });
+
 
   // --- tRPC Queries and Mutations ---
   const {
@@ -111,22 +76,6 @@ export function GroupsContent() {
     refetch: refetchGroups,
   } = api.groups.list.useQuery(undefined, {
     // staleTime: 5 * 60 * 1000, // 5 minutes
-  });
-
-  const saveGroupMutation = api.groups.save.useMutation({
-    onSuccess: (savedGroup) => {
-      toast.success(editingGroup ? 'Group updated!' : 'Group created!', {
-        description: `"${savedGroup.name}" has been saved.`,
-      });
-      queryClient.invalidateQueries({ queryKey: [['groups', 'list']] }); // Correct way to invalidate
-      // refetchGroups(); // Alternatively, directly refetch
-      setIsFormDialogOpen(false);
-    },
-    onError: (error) => {
-      toast.error('Failed to save group', {
-        description: error.message,
-      });
-    },
   });
 
   const deleteGroupMutation = api.groups.delete.useMutation({
@@ -140,35 +89,9 @@ export function GroupsContent() {
   });
 
   // --- Event Handlers ---
-  const handleOpenNewGroupDialog = () => {
-    setEditingGroup(null);
-    reset({
-      // Reset form to defaults
-      name: '',
-      description: '',
-      emoji: '👍',
-    });
-    setIsFormDialogOpen(true);
-  };
+  // Edit group dialog handling is now managed by the GroupCreateDialog component
 
-  const handleOpenEditGroupDialog = (group: Group) => {
-    setEditingGroup(group);
-    reset({
-      // Populate form with existing group data
-      name: group.name,
-      description: group.description || '',
-      emoji: group.emoji || '👍',
-    });
-    setIsFormDialogOpen(true);
-  };
 
-  const onFormSubmit: SubmitHandler<GroupFormData> = (formData) => {
-    const payload = {
-      ...formData,
-      id: editingGroup?.id, // Add id if we are editing
-    };
-    saveGroupMutation.mutate(payload);
-  };
 
   const handleDeleteGroup = (groupId: string, groupName: string) => {
     if (
@@ -188,13 +111,8 @@ export function GroupsContent() {
     setIsContactSelectorOpen(true);
   };
 
-  // --- Effect to reset form when dialog closes ---
-  useEffect(() => {
-    if (!isFormDialogOpen) {
-      setEditingGroup(null);
-      reset(); // Reset RHF state
-    }
-  }, [isFormDialogOpen, reset]);
+  // Effect to handle any necessary cleanup
+  // (Form reset logic has been moved to GroupCreateForm component)
 
   // --- Render Logic ---
   if (isLoadingGroups) {
@@ -224,12 +142,10 @@ export function GroupsContent() {
             Manage Groups
           </h1>
         </div>
-        <Button
-          onClick={handleOpenNewGroupDialog}
-          className="bg-purple-500 hover:bg-purple-600 text-white"
-        >
-          <Plus className="mr-2 h-5 w-5" /> Create New Group
-        </Button>
+        <GroupCreateDialog 
+          triggerButtonLabel="Create New Group"
+          triggerButtonClassName="bg-purple-500 hover:bg-purple-600 text-white"
+        />
       </div>
 
       {/* Groups Grid */}
@@ -242,12 +158,10 @@ export function GroupsContent() {
           <p className="text-gray-500 mb-6">
             Get started by creating your first group.
           </p>
-          <Button
-            onClick={handleOpenNewGroupDialog}
-            className="bg-purple-500 hover:bg-purple-600 text-white"
-          >
-            <Plus className="mr-2 h-4 w-4" /> Create Group
-          </Button>
+          <GroupCreateDialog
+            triggerButtonLabel="Create Group"
+            triggerButtonClassName="bg-purple-500 hover:bg-purple-600 text-white"
+          />
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -293,17 +207,23 @@ export function GroupsContent() {
 
                   {/* Edit and Delete buttons - side by side on all screens */}
                   <div className="flex gap-2 w-full">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation(); // Prevent card click
-                        handleOpenEditGroupDialog(group);
-                      }}
-                      className="flex-1 justify-center"
-                    >
-                      <Edit className="mr-1.5 h-3.5 w-3.5" /> Edit
-                    </Button>
+                    <GroupCreateDialog
+                      triggerButtonLabel="Edit"
+                      triggerButtonVariant="outline"
+                      triggerButtonClassName="flex-1 justify-center"
+                      group={group}
+                      isEditMode={true}
+                      customTrigger={
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={(e) => e.stopPropagation()} // Prevent card click
+                          className="flex-1 justify-center"
+                        >
+                          <Edit className="mr-1.5 h-3.5 w-3.5" /> Edit
+                        </Button>
+                      }
+                    />
                     <Button
                       variant="destructive"
                       size="sm"
@@ -335,105 +255,7 @@ export function GroupsContent() {
         </div>
       )}
 
-      {/* Dialog for Create/Edit Group Form */}
-      <Dialog open={isFormDialogOpen} onOpenChange={setIsFormDialogOpen}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-semibold text-gray-800">
-              {editingGroup ? 'Edit Group' : 'Create New Group'}
-            </DialogTitle>
-            {editingGroup && (
-              <DialogDescription>
-                Update the details for the group: {editingGroup.name}
-              </DialogDescription>
-            )}
-          </DialogHeader>
-
-          <form
-            onSubmit={handleSubmit(onFormSubmit)}
-            className="space-y-4 py-4"
-          >
-            {/* Top row: Emoji, Group Name, Color Picker */}
-            <div className="flex gap-3 items-end">
-              {/* Emoji Picker */}
-              <div className="flex-shrink-0">
-                <Label htmlFor="emoji" className="text-sm font-medium">
-                  Emoji
-                </Label>
-                <Input
-                  id="emoji"
-                  {...register('emoji')}
-                  placeholder="📁"
-                  className="w-16 h-10 text-center text-lg mt-1"
-                  maxLength={2}
-                />
-              </div>
-
-              {/* Group Name */}
-              <div className="flex-grow">
-                <Label htmlFor="name" className="text-sm font-medium">
-                  Group Name *
-                </Label>
-                <Input
-                  id="name"
-                  {...register('name')}
-                  placeholder="Enter group name..."
-                  className={`mt-1 ${errors.name ? 'border-red-500' : ''}`}
-                />
-                {errors.name && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.name.message}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Description */}
-            <div>
-              <Label htmlFor="description" className="text-sm font-medium">
-                Description (Optional)
-              </Label>
-              <Textarea
-                id="description"
-                {...register('description')}
-                placeholder="Add a description for this group..."
-                rows={3}
-                className="mt-1 resize-none"
-                maxLength={500}
-              />
-              {errors.description && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.description.message}
-                </p>
-              )}
-            </div>
-
-            <DialogFooter className="pt-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setIsFormDialogOpen(false)}
-                disabled={saveGroupMutation.isPending || isFormSubmittingRHF}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                disabled={saveGroupMutation.isPending || isFormSubmittingRHF}
-                className="bg-purple-500 hover:bg-purple-600 text-white"
-              >
-                {saveGroupMutation.isPending || isFormSubmittingRHF ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : editingGroup ? (
-                  'Save Changes'
-                ) : (
-                  'Create Group'
-                )}
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
+      {/* Dialog for Create/Edit Group Form is now handled by the GroupCreateDialog component */}
 
       {/* Bulk Contact Selector Dialog */}
       {selectedGroupForContacts && (

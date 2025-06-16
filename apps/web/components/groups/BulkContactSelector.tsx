@@ -50,12 +50,20 @@ export function BulkContactSelector({
     groupId,
   });
 
+  // Get TRPC utils for cache invalidation
+  const utils = api.useUtils();
+
   // Add contacts to group mutation
   const addContactsMutation = api.groups.addContact.useMutation({
     onSuccess: () => {
       toast.success(
         `Added ${selectedContactIds.length} contact(s) to ${groupName}`
       );
+      
+      // Invalidate relevant queries to refresh the UI
+      utils.groups.list.invalidate(); // Refresh group list (for contact counts)
+      utils.groups.getContacts.invalidate({ groupId }); // Refresh contacts in this group
+      
       setSelectedContactIds([]);
       onClose();
     },
