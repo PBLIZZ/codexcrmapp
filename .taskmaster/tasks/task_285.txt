@@ -1,0 +1,25 @@
+# Task ID: 285
+# Title: Scan Monorepo File System for Code Files and Directory Structure
+# Status: pending
+# Dependencies: None
+# Priority: medium
+# Description: Run CLI commands to collect file paths matching specified patterns and aggregate into a JSON report with focus on CodexApp core components.
+# Details:
+Execute `find . -type f -name '*.tsx'` and `find app -type f -name 'page.tsx'` commands to gather file paths. Aggregate results into a JSON file with keys for each file pattern. Priority focus on the 8 main sections: Dashboard, Contacts, Tasks, Messages, Calendar, Marketing, Analytics, Settings. Also prioritize core components: layout.tsx, appcontent.tsx, mainlayout.tsx, appsidebarcontroller.tsx, omnibot.tsx, mainsectionnav.tsx, and section sidebars (contactssection, settingssidebar, etc.). The JSON should include arrays of file paths for each pattern with special categorization for business-critical vs generic components.
+
+# Test Strategy:
+Confirm the JSON report contains a verified list of files by comparing with manual `find` command results. Ensure counts match and core application components are properly categorized.
+
+# Subtasks:
+## 1. Run CLI command for TSX files discovery [pending]
+### Dependencies: None
+### Description: Execute find commands to collect all TSX file paths
+### Details:
+Run `find . -type f -name '*.tsx'` and `find app -type f -name 'page.tsx'` to collect file paths
+
+## 2. Aggregate results into JSON with CodexApp categorization [pending]
+### Dependencies: 285.1
+### Description: Process file paths and categorize by application section and component criticality
+### Details:
+Aggregate results into a JSON file with keys for each file pattern, special focus on the 8 main sections and core components
+

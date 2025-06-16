@@ -1,0 +1,1035 @@
+{
+  "monorepo_scan_results": {
+    "timestamp": "2025-06-15T19:26:18.677Z",
+    "task_id": "285",
+    "scan_summary": {
+      "total_tsx_files": 225,
+      "total_page_files": 19,
+      "total_layout_files": 2,
+      "core_directories": 8,
+      "sidebar_components": 8
+    },
+    "naming_violations": [
+      {
+        "file": "./packages/ui/@codexcrm/ui/components/ui/sonner.tsx",
+        "rule": "PascalCase for React components",
+        "current": "sonner.tsx",
+        "expected": "Sonner.tsx"
+      },
+      {
+        "file": "./packages/ui/.storybook/react19-decorator.tsx",
+        "rule": "PascalCase for React components",
+        "current": "react19-decorator.tsx",
+        "expected": "React19-decorator.tsx"
+      },
+      {
+        "file": "./packages/ui/src/components/ui/responsive-demo.tsx",
+        "rule": "PascalCase for React components",
+        "current": "responsive-demo.tsx",
+        "expected": "Responsive-demo.tsx"
+      },
+      {
+        "file": "./packages/ui/src/components/ui/contact-card.tsx",
+        "rule": "PascalCase for React components",
+        "current": "contact-card.tsx",
+        "expected": "Contact-card.tsx"
+      },
+      {
+        "file": "./packages/ui/src/components/ui/metric-card.tsx",
+        "rule": "PascalCase for React components",
+        "current": "metric-card.tsx",
+        "expected": "Metric-card.tsx"
+      },
+      {
+        "file": "./packages/ui/src/components/ui/loading-spinner.tsx",
+        "rule": "PascalCase for React components",
+        "current": "loading-spinner.tsx",
+        "expected": "Loading-spinner.tsx"
+      },
+      {
+        "file": "./packages/ui/src/components/ui/responsive-layout.tsx",
+        "rule": "PascalCase for React components",
+        "current": "responsive-layout.tsx",
+        "expected": "Responsive-layout.tsx"
+      },
+      {
+        "file": "./packages/ui/src/components/ui/timeline.tsx",
+        "rule": "PascalCase for React components",
+        "current": "timeline.tsx",
+        "expected": "Timeline.tsx"
+      },
+      {
+        "file": "./packages/ui/src/components/ui/task-card.tsx",
+        "rule": "PascalCase for React components",
+        "current": "task-card.tsx",
+        "expected": "Task-card.tsx"
+      },
+      {
+        "file": "./packages/ui/src/components/ui/avatar.tsx",
+        "rule": "PascalCase for React components",
+        "current": "avatar.tsx",
+        "expected": "Avatar.tsx"
+      },
+      {
+        "file": "./packages/ui/src/components/ui/themed-card.tsx",
+        "rule": "PascalCase for React components",
+        "current": "themed-card.tsx",
+        "expected": "Themed-card.tsx"
+      },
+      {
+        "file": "./apps/web/app/providers.tsx",
+        "rule": "PascalCase for React components",
+        "current": "providers.tsx",
+        "expected": "Providers.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/theme-provider.tsx",
+        "rule": "PascalCase for React components",
+        "current": "theme-provider.tsx",
+        "expected": "Theme-provider.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/aspect-ratio.tsx",
+        "rule": "PascalCase for React components",
+        "current": "aspect-ratio.tsx",
+        "expected": "Aspect-ratio.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/alert-dialog.tsx",
+        "rule": "PascalCase for React components",
+        "current": "alert-dialog.tsx",
+        "expected": "Alert-dialog.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/use-mobile.tsx",
+        "rule": "PascalCase for React components",
+        "current": "use-mobile.tsx",
+        "expected": "Use-mobile.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/pagination.tsx",
+        "rule": "PascalCase for React components",
+        "current": "pagination.tsx",
+        "expected": "Pagination.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/tabs.tsx",
+        "rule": "PascalCase for React components",
+        "current": "tabs.tsx",
+        "expected": "Tabs.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/card.tsx",
+        "rule": "PascalCase for React components",
+        "current": "card.tsx",
+        "expected": "Card.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/slider.tsx",
+        "rule": "PascalCase for React components",
+        "current": "slider.tsx",
+        "expected": "Slider.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/popover.tsx",
+        "rule": "PascalCase for React components",
+        "current": "popover.tsx",
+        "expected": "Popover.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/progress.tsx",
+        "rule": "PascalCase for React components",
+        "current": "progress.tsx",
+        "expected": "Progress.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/toaster.tsx",
+        "rule": "PascalCase for React components",
+        "current": "toaster.tsx",
+        "expected": "Toaster.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/input-otp.tsx",
+        "rule": "PascalCase for React components",
+        "current": "input-otp.tsx",
+        "expected": "Input-otp.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/chart.tsx",
+        "rule": "PascalCase for React components",
+        "current": "chart.tsx",
+        "expected": "Chart.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/hover-card.tsx",
+        "rule": "PascalCase for React components",
+        "current": "hover-card.tsx",
+        "expected": "Hover-card.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/sheet.tsx",
+        "rule": "PascalCase for React components",
+        "current": "sheet.tsx",
+        "expected": "Sheet.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/scroll-area.tsx",
+        "rule": "PascalCase for React components",
+        "current": "scroll-area.tsx",
+        "expected": "Scroll-area.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/resizable.tsx",
+        "rule": "PascalCase for React components",
+        "current": "resizable.tsx",
+        "expected": "Resizable.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/label.tsx",
+        "rule": "PascalCase for React components",
+        "current": "label.tsx",
+        "expected": "Label.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/sonner.tsx",
+        "rule": "PascalCase for React components",
+        "current": "sonner.tsx",
+        "expected": "Sonner.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/navigation-menu.tsx",
+        "rule": "PascalCase for React components",
+        "current": "navigation-menu.tsx",
+        "expected": "Navigation-menu.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/accordion.tsx",
+        "rule": "PascalCase for React components",
+        "current": "accordion.tsx",
+        "expected": "Accordion.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/drawer.tsx",
+        "rule": "PascalCase for React components",
+        "current": "drawer.tsx",
+        "expected": "Drawer.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/tooltip.tsx",
+        "rule": "PascalCase for React components",
+        "current": "tooltip.tsx",
+        "expected": "Tooltip.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/alert.tsx",
+        "rule": "PascalCase for React components",
+        "current": "alert.tsx",
+        "expected": "Alert.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/switch.tsx",
+        "rule": "PascalCase for React components",
+        "current": "switch.tsx",
+        "expected": "Switch.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/calendar.tsx",
+        "rule": "PascalCase for React components",
+        "current": "calendar.tsx",
+        "expected": "Calendar.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/breadcrumb.tsx",
+        "rule": "PascalCase for React components",
+        "current": "breadcrumb.tsx",
+        "expected": "Breadcrumb.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/radio-group.tsx",
+        "rule": "PascalCase for React components",
+        "current": "radio-group.tsx",
+        "expected": "Radio-group.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/command.tsx",
+        "rule": "PascalCase for React components",
+        "current": "command.tsx",
+        "expected": "Command.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/toggle-group.tsx",
+        "rule": "PascalCase for React components",
+        "current": "toggle-group.tsx",
+        "expected": "Toggle-group.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/avatar.tsx",
+        "rule": "PascalCase for React components",
+        "current": "avatar.tsx",
+        "expected": "Avatar.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/menubar.tsx",
+        "rule": "PascalCase for React components",
+        "current": "menubar.tsx",
+        "expected": "Menubar.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/dialog.tsx",
+        "rule": "PascalCase for React components",
+        "current": "dialog.tsx",
+        "expected": "Dialog.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/badge.tsx",
+        "rule": "PascalCase for React components",
+        "current": "badge.tsx",
+        "expected": "Badge.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/sidebar.tsx",
+        "rule": "PascalCase for React components",
+        "current": "sidebar.tsx",
+        "expected": "Sidebar.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/table.tsx",
+        "rule": "PascalCase for React components",
+        "current": "table.tsx",
+        "expected": "Table.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/separator.tsx",
+        "rule": "PascalCase for React components",
+        "current": "separator.tsx",
+        "expected": "Separator.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/button.tsx",
+        "rule": "PascalCase for React components",
+        "current": "button.tsx",
+        "expected": "Button.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/toggle.tsx",
+        "rule": "PascalCase for React components",
+        "current": "toggle.tsx",
+        "expected": "Toggle.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/toast.tsx",
+        "rule": "PascalCase for React components",
+        "current": "toast.tsx",
+        "expected": "Toast.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/checkbox.tsx",
+        "rule": "PascalCase for React components",
+        "current": "checkbox.tsx",
+        "expected": "Checkbox.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/collapsible.tsx",
+        "rule": "PascalCase for React components",
+        "current": "collapsible.tsx",
+        "expected": "Collapsible.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/dropdown-menu.tsx",
+        "rule": "PascalCase for React components",
+        "current": "dropdown-menu.tsx",
+        "expected": "Dropdown-menu.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/select.tsx",
+        "rule": "PascalCase for React components",
+        "current": "select.tsx",
+        "expected": "Select.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/textarea.tsx",
+        "rule": "PascalCase for React components",
+        "current": "textarea.tsx",
+        "expected": "Textarea.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/input.tsx",
+        "rule": "PascalCase for React components",
+        "current": "input.tsx",
+        "expected": "Input.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/skeleton.tsx",
+        "rule": "PascalCase for React components",
+        "current": "skeleton.tsx",
+        "expected": "Skeleton.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/context-menu.tsx",
+        "rule": "PascalCase for React components",
+        "current": "context-menu.tsx",
+        "expected": "Context-menu.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/form.tsx",
+        "rule": "PascalCase for React components",
+        "current": "form.tsx",
+        "expected": "Form.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/carousel.tsx",
+        "rule": "PascalCase for React components",
+        "current": "carousel.tsx",
+        "expected": "Carousel.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/team-switcher.tsx",
+        "rule": "PascalCase for React components",
+        "current": "team-switcher.tsx",
+        "expected": "Team-switcher.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/nav-main.tsx",
+        "rule": "PascalCase for React components",
+        "current": "nav-main.tsx",
+        "expected": "Nav-main.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/nav-user.tsx",
+        "rule": "PascalCase for React components",
+        "current": "nav-user.tsx",
+        "expected": "Nav-user.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/app-sidebar.tsx",
+        "rule": "PascalCase for React components",
+        "current": "app-sidebar.tsx",
+        "expected": "App-sidebar.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/components/nav-projects.tsx",
+        "rule": "PascalCase for React components",
+        "current": "nav-projects.tsx",
+        "expected": "Nav-projects.tsx"
+      },
+      {
+        "file": "./apps/web/components/shadcn-blocks/sidebar-07/hooks/use-mobile.tsx",
+        "rule": "PascalCase for React components",
+        "current": "use-mobile.tsx",
+        "expected": "Use-mobile.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/image-upload.tsx",
+        "rule": "PascalCase for React components",
+        "current": "image-upload.tsx",
+        "expected": "Image-upload.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/tabs.tsx",
+        "rule": "PascalCase for React components",
+        "current": "tabs.tsx",
+        "expected": "Tabs.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/card.tsx",
+        "rule": "PascalCase for React components",
+        "current": "card.tsx",
+        "expected": "Card.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/popover.tsx",
+        "rule": "PascalCase for React components",
+        "current": "popover.tsx",
+        "expected": "Popover.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/sheet.tsx",
+        "rule": "PascalCase for React components",
+        "current": "sheet.tsx",
+        "expected": "Sheet.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/label.tsx",
+        "rule": "PascalCase for React components",
+        "current": "label.tsx",
+        "expected": "Label.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/sonner.tsx",
+        "rule": "PascalCase for React components",
+        "current": "sonner.tsx",
+        "expected": "Sonner.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/tooltip.tsx",
+        "rule": "PascalCase for React components",
+        "current": "tooltip.tsx",
+        "expected": "Tooltip.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/alert.tsx",
+        "rule": "PascalCase for React components",
+        "current": "alert.tsx",
+        "expected": "Alert.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/csv-upload.tsx",
+        "rule": "PascalCase for React components",
+        "current": "csv-upload.tsx",
+        "expected": "Csv-upload.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/calendar.tsx",
+        "rule": "PascalCase for React components",
+        "current": "calendar.tsx",
+        "expected": "Calendar.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/breadcrumb.tsx",
+        "rule": "PascalCase for React components",
+        "current": "breadcrumb.tsx",
+        "expected": "Breadcrumb.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/command.tsx",
+        "rule": "PascalCase for React components",
+        "current": "command.tsx",
+        "expected": "Command.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/avatar.tsx",
+        "rule": "PascalCase for React components",
+        "current": "avatar.tsx",
+        "expected": "Avatar.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/avatar-image.tsx",
+        "rule": "PascalCase for React components",
+        "current": "avatar-image.tsx",
+        "expected": "Avatar-image.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/dialog.tsx",
+        "rule": "PascalCase for React components",
+        "current": "dialog.tsx",
+        "expected": "Dialog.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/badge.tsx",
+        "rule": "PascalCase for React components",
+        "current": "badge.tsx",
+        "expected": "Badge.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/sidebar.tsx",
+        "rule": "PascalCase for React components",
+        "current": "sidebar.tsx",
+        "expected": "Sidebar.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/table.tsx",
+        "rule": "PascalCase for React components",
+        "current": "table.tsx",
+        "expected": "Table.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/separator.tsx",
+        "rule": "PascalCase for React components",
+        "current": "separator.tsx",
+        "expected": "Separator.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/button.tsx",
+        "rule": "PascalCase for React components",
+        "current": "button.tsx",
+        "expected": "Button.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/checkbox.tsx",
+        "rule": "PascalCase for React components",
+        "current": "checkbox.tsx",
+        "expected": "Checkbox.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/collapsible.tsx",
+        "rule": "PascalCase for React components",
+        "current": "collapsible.tsx",
+        "expected": "Collapsible.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/dropdown-menu.tsx",
+        "rule": "PascalCase for React components",
+        "current": "dropdown-menu.tsx",
+        "expected": "Dropdown-menu.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/select.tsx",
+        "rule": "PascalCase for React components",
+        "current": "select.tsx",
+        "expected": "Select.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/textarea.tsx",
+        "rule": "PascalCase for React components",
+        "current": "textarea.tsx",
+        "expected": "Textarea.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/input.tsx",
+        "rule": "PascalCase for React components",
+        "current": "input.tsx",
+        "expected": "Input.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/skeleton.tsx",
+        "rule": "PascalCase for React components",
+        "current": "skeleton.tsx",
+        "expected": "Skeleton.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/form.tsx",
+        "rule": "PascalCase for React components",
+        "current": "form.tsx",
+        "expected": "Form.tsx"
+      },
+      {
+        "file": "./apps/web/components/ui/carousel.tsx",
+        "rule": "PascalCase for React components",
+        "current": "carousel.tsx",
+        "expected": "Carousel.tsx"
+      },
+      {
+        "file": "./apps/web/components/customized/dropdown-menu/dropdown-menu-02.tsx",
+        "rule": "PascalCase for React components",
+        "current": "dropdown-menu-02.tsx",
+        "expected": "Dropdown-menu-02.tsx"
+      },
+      {
+        "file": "./apps/web/components/customized/table/table-06.tsx",
+        "rule": "PascalCase for React components",
+        "current": "table-06.tsx",
+        "expected": "Table-06.tsx"
+      },
+      {
+        "file": "./apps/web/provider.tsx",
+        "rule": "PascalCase for React components",
+        "current": "provider.tsx",
+        "expected": "Provider.tsx"
+      }
+    ],
+    "file_analysis": {
+      "dashboard": [
+        "./apps/web/app/dashboard/DashboardContent.tsx",
+        "./apps/web/app/dashboard/components/DashboardWidgets.tsx",
+        "./apps/web/app/dashboard/DashboardClient.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/app/dashboard/page.tsx",
+        "./apps/web/components/dashboard/daily-inspiration/DailyInspirationCard.tsx",
+        "./apps/web/components/dashboard/calendar-preview/CalendarPreview.tsx",
+        "./apps/web/components/dashboard/business-metrics/BusinessMetricsCard.tsx",
+        "./apps/web/components/dashboard/ai-client-insights/AiClientInsights.tsx",
+        "./apps/web/components/dashboard/quick-actions/QuickActions.tsx",
+        "./apps/web/components/dashboard/ai-task-panel/AiTaskPanel.tsx",
+        "./apps/web/components/dashboard/therapist-check-in/TherapistCheckIn.tsx"
+      ],
+      "contacts": [
+        "./packages/ui/src/components/ui/contact-card.tsx",
+        "./packages/ui/src/components/core/ContactCardDemo.tsx",
+        "./packages/ui/src/stories/ContactCard.stories.tsx",
+        "./apps/web/app/contacts/ContactsContent.tsx",
+        "./apps/web/app/contacts/ContactList.tsx",
+        "./apps/web/app/contacts/[contactId]/ContactTimeline.tsx",
+        "./apps/web/app/contacts/[contactId]/ContactDetailView.tsx",
+        "./apps/web/app/contacts/[contactId]/edit/page.tsx",
+        "./apps/web/app/contacts/[contactId]/ContactGroupsSection.tsx",
+        "./apps/web/app/contacts/[contactId]/page.tsx",
+        "./apps/web/app/contacts/ContactGroupTags.tsx",
+        "./apps/web/app/contacts/groups/ContactGroupsPage.tsx",
+        "./apps/web/app/contacts/groups/GroupsContent.tsx",
+        "./apps/web/app/contacts/groups/[groupId]/page.tsx",
+        "./apps/web/app/contacts/groups/GroupContactsList.tsx",
+        "./apps/web/app/contacts/groups/page.tsx",
+        "./apps/web/app/contacts/ContactsMainContent.tsx",
+        "./apps/web/app/contacts/ColumnSelector.tsx",
+        "./apps/web/app/contacts/ContactsTable.tsx",
+        "./apps/web/app/contacts/EnhancedContactList.tsx",
+        "./apps/web/app/contacts/ContactForm.tsx",
+        "./apps/web/app/contacts/ContactsTableClient.tsx",
+        "./apps/web/app/contacts/ContactsLayout.tsx",
+        "./apps/web/app/contacts/new/page.tsx",
+        "./apps/web/app/contacts/FormComponents.tsx",
+        "./apps/web/app/contacts/import/csv-upload-test/page.tsx",
+        "./apps/web/app/contacts/import/page.tsx",
+        "./apps/web/app/contacts/ContactGroupManager.tsx",
+        "./apps/web/app/contacts/page.tsx",
+        "./apps/web/components/layout/sidebars/ContactsSidebar.tsx",
+        "./apps/web/components/contacts/ContactsWidgets.tsx",
+        "./apps/web/components/contacts/ContactsTable.tsx",
+        "./apps/web/components/contacts/AddContactModal.tsx"
+      ],
+      "tasks": [
+        "./packages/ui/src/components/ui/task-card.tsx",
+        "./packages/ui/src/components/core/TaskCardDemo.tsx",
+        "./packages/ui/src/stories/TaskCard.stories.tsx",
+        "./apps/web/app/tasks/CategoryViews.tsx",
+        "./apps/web/app/tasks/TaskCard.tsx",
+        "./apps/web/app/tasks/VirtualizedTaskList.tsx",
+        "./apps/web/app/tasks/ThingsTaskCard.tsx",
+        "./apps/web/app/tasks/TasksTableClient.tsx",
+        "./apps/web/app/tasks/TaskDetailView.tsx",
+        "./apps/web/app/tasks/TaskColumn.tsx",
+        "./apps/web/app/tasks/DraggableTaskList.tsx",
+        "./apps/web/app/tasks/BreadcrumbNavigation.tsx",
+        "./apps/web/app/tasks/KeyboardShortcuts.tsx",
+        "./apps/web/app/tasks/TaskForm.tsx",
+        "./apps/web/app/tasks/TaskBoard.tsx",
+        "./apps/web/app/tasks/page.tsx",
+        "./apps/web/components/tasks/TasksWidgets.tsx",
+        "./apps/web/components/layout/sidebars/TasksSidebar.tsx"
+      ],
+      "messages": [
+        "./apps/web/components/layout/sidebars/MessagesSidebar.tsx"
+      ],
+      "calendar": [
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/calendar.tsx",
+        "./apps/web/components/ui/calendar.tsx",
+        "./apps/web/components/layout/sidebars/CalendarSidebar.tsx"
+      ],
+      "marketing": [
+        "./apps/web/app/marketing/components/MarketingWidgets.tsx",
+        "./apps/web/app/marketing/components/widgets/LeadMagnetStudio.tsx",
+        "./apps/web/app/marketing/components/widgets/MembershipLoyalty.tsx",
+        "./apps/web/app/marketing/components/widgets/ContentCalendar.tsx",
+        "./apps/web/app/marketing/components/widgets/QuizCreator.tsx",
+        "./apps/web/app/marketing/components/widgets/EmailMarketing.tsx",
+        "./apps/web/app/marketing/components/widgets/CreatorStudio.tsx",
+        "./apps/web/app/marketing/page.tsx",
+        "./apps/web/components/layout/sidebars/MarketingSidebar.tsx"
+      ],
+      "analytics": [
+        "./apps/web/components/layout/sidebars/AnalyticsSidebar.tsx"
+      ],
+      "settings": [
+        "./apps/web/components/layout/sidebars/SettingsSidebar.tsx"
+      ],
+      "auth": [
+        "./apps/web/app/(auth)/sign-up/confirmation/page.tsx",
+        "./apps/web/app/(auth)/sign-up/page.tsx",
+        "./apps/web/app/(auth)/log-in/page.tsx",
+        "./apps/web/app/(auth)/forgot-password/page.tsx",
+        "./apps/web/app/(auth)/reset-password/ResetPasswordContent.tsx",
+        "./apps/web/app/(auth)/reset-password/page.tsx",
+        "./apps/web/components/auth/OneTapComponent.tsx"
+      ],
+      "ui": [
+        "./packages/ui/@codexcrm/ui/components/ui/sonner.tsx",
+        "./packages/ui/.storybook/react19-decorator.tsx",
+        "./packages/ui/src/components/ui/responsive-demo.tsx",
+        "./packages/ui/src/components/ui/metric-card.tsx",
+        "./packages/ui/src/components/ui/loading-spinner.tsx",
+        "./packages/ui/src/components/ui/responsive-layout.tsx",
+        "./packages/ui/src/components/ui/timeline.tsx",
+        "./packages/ui/src/components/ui/avatar.tsx",
+        "./packages/ui/src/components/ui/themed-card.tsx",
+        "./packages/ui/src/components/core/ThemeDemo.tsx",
+        "./packages/ui/src/components/core/TimelineDemo.tsx",
+        "./packages/ui/src/components/core/MetricCardDemo.tsx",
+        "./packages/ui/src/components/core/ThemeProvider.tsx",
+        "./packages/ui/src/components/core/Button.tsx",
+        "./packages/ui/src/stories/MetricCard.stories.tsx",
+        "./packages/ui/src/stories/ThemedCard.stories.tsx",
+        "./packages/ui/src/stories/ResponsiveLayout.stories.tsx",
+        "./packages/ui/src/stories/ResponsiveDemo.stories.tsx",
+        "./packages/ui/src/stories/Timeline.stories.tsx",
+        "./packages/ui/src/stories/Header.tsx",
+        "./packages/ui/src/stories/Button.tsx",
+        "./packages/ui/src/stories/Page.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/aspect-ratio.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/alert-dialog.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/use-mobile.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/pagination.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/tabs.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/card.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/slider.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/popover.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/progress.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/toaster.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/input-otp.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/chart.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/hover-card.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/sheet.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/scroll-area.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/resizable.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/label.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/sonner.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/navigation-menu.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/accordion.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/drawer.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/tooltip.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/alert.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/switch.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/breadcrumb.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/radio-group.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/command.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/toggle-group.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/avatar.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/menubar.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/dialog.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/badge.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/sidebar.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/table.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/separator.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/button.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/toggle.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/toast.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/checkbox.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/collapsible.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/dropdown-menu.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/select.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/textarea.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/input.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/skeleton.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/context-menu.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/form.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/carousel.tsx",
+        "./apps/web/components/ui/image-upload.tsx",
+        "./apps/web/components/ui/tabs.tsx",
+        "./apps/web/components/ui/card.tsx",
+        "./apps/web/components/ui/popover.tsx",
+        "./apps/web/components/ui/sheet.tsx",
+        "./apps/web/components/ui/label.tsx",
+        "./apps/web/components/ui/sonner.tsx",
+        "./apps/web/components/ui/tooltip.tsx",
+        "./apps/web/components/ui/alert.tsx",
+        "./apps/web/components/ui/csv-upload.tsx",
+        "./apps/web/components/ui/breadcrumb.tsx",
+        "./apps/web/components/ui/command.tsx",
+        "./apps/web/components/ui/avatar.tsx",
+        "./apps/web/components/ui/avatar-image.tsx",
+        "./apps/web/components/ui/dialog.tsx",
+        "./apps/web/components/ui/badge.tsx",
+        "./apps/web/components/ui/sidebar.tsx",
+        "./apps/web/components/ui/table.tsx",
+        "./apps/web/components/ui/separator.tsx",
+        "./apps/web/components/ui/button.tsx",
+        "./apps/web/components/ui/checkbox.tsx",
+        "./apps/web/components/ui/collapsible.tsx",
+        "./apps/web/components/ui/dropdown-menu.tsx",
+        "./apps/web/components/ui/select.tsx",
+        "./apps/web/components/ui/textarea.tsx",
+        "./apps/web/components/ui/input.tsx",
+        "./apps/web/components/ui/skeleton.tsx",
+        "./apps/web/components/ui/form.tsx",
+        "./apps/web/components/ui/carousel.tsx"
+      ],
+      "layout": [
+        "./apps/web/app/layout.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/app/layout.tsx",
+        "./apps/web/components/layout/AppContent.tsx",
+        "./apps/web/components/layout/ProjectLinksNav.tsx",
+        "./apps/web/components/layout/SidebarNavLink.tsx",
+        "./apps/web/components/layout/UserNav.tsx",
+        "./apps/web/components/layout/SidebarGroupLink.tsx",
+        "./apps/web/components/layout/MainSectionNav.tsx",
+        "./apps/web/components/layout/MainLayout.tsx",
+        "./apps/web/components/layout/OmniBotFloat.tsx",
+        "./apps/web/components/layout/sidebars/DashboardSidebar.tsx",
+        "./apps/web/components/layout/QuickLinksNav.tsx",
+        "./apps/web/components/layout/Header.tsx",
+        "./apps/web/components/layout/AppSidebarController.tsx",
+        "./apps/web/components/layout/MobileMenu.tsx"
+      ],
+      "other": [
+        "./apps/web/app/docs/page.tsx",
+        "./apps/web/app/GlobalError.tsx",
+        "./apps/web/app/ProvidersClient.tsx",
+        "./apps/web/app/account/page.tsx",
+        "./apps/web/app/page.tsx",
+        "./apps/web/app/providers.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/theme-provider.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/team-switcher.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/nav-main.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/nav-user.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/app-sidebar.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/components/nav-projects.tsx",
+        "./apps/web/components/shadcn-blocks/sidebar-07/hooks/use-mobile.tsx",
+        "./apps/web/components/TeamSwitcher.tsx",
+        "./apps/web/components/NavUser.tsx",
+        "./apps/web/components/SupabaseProvider.tsx",
+        "./apps/web/components/groups/CreateGroupDialog.tsx",
+        "./apps/web/components/groups/QuickCreateGroupButton.tsx",
+        "./apps/web/components/groups/BulkContactSelector.tsx",
+        "./apps/web/components/NavMain.tsx",
+        "./apps/web/components/omni-bot/OmniBot.tsx",
+        "./apps/web/components/customized/TailwindTestCard.tsx",
+        "./apps/web/components/customized/dropdown-menu/dropdown-menu-02.tsx",
+        "./apps/web/components/customized/ShadcnCalendarTest.tsx",
+        "./apps/web/components/customized/table/table-06.tsx",
+        "./apps/web/components/NavProjects.tsx",
+        "./apps/web/provider.tsx"
+      ]
+    },
+    "codex_app_core_sections": {
+      "dashboard": {
+        "file_count": 11,
+        "files": [
+          "./apps/web/app/dashboard/DashboardContent.tsx",
+          "./apps/web/app/dashboard/components/DashboardWidgets.tsx",
+          "./apps/web/app/dashboard/DashboardClient.tsx",
+          "./apps/web/components/shadcn-blocks/sidebar-07/app/dashboard/page.tsx",
+          "./apps/web/components/dashboard/daily-inspiration/DailyInspirationCard.tsx",
+          "./apps/web/components/dashboard/calendar-preview/CalendarPreview.tsx",
+          "./apps/web/components/dashboard/business-metrics/BusinessMetricsCard.tsx",
+          "./apps/web/components/dashboard/ai-client-insights/AiClientInsights.tsx",
+          "./apps/web/components/dashboard/quick-actions/QuickActions.tsx",
+          "./apps/web/components/dashboard/ai-task-panel/AiTaskPanel.tsx"
+        ],
+        "total_files": 11
+      },
+      "contacts": {
+        "file_count": 33,
+        "files": [
+          "./packages/ui/src/components/ui/contact-card.tsx",
+          "./packages/ui/src/components/core/ContactCardDemo.tsx",
+          "./packages/ui/src/stories/ContactCard.stories.tsx",
+          "./apps/web/app/contacts/ContactsContent.tsx",
+          "./apps/web/app/contacts/ContactList.tsx",
+          "./apps/web/app/contacts/[contactId]/ContactTimeline.tsx",
+          "./apps/web/app/contacts/[contactId]/ContactDetailView.tsx",
+          "./apps/web/app/contacts/[contactId]/edit/page.tsx",
+          "./apps/web/app/contacts/[contactId]/ContactGroupsSection.tsx",
+          "./apps/web/app/contacts/[contactId]/page.tsx"
+        ],
+        "total_files": 33
+      },
+      "tasks": {
+        "file_count": 18,
+        "files": [
+          "./packages/ui/src/components/ui/task-card.tsx",
+          "./packages/ui/src/components/core/TaskCardDemo.tsx",
+          "./packages/ui/src/stories/TaskCard.stories.tsx",
+          "./apps/web/app/tasks/CategoryViews.tsx",
+          "./apps/web/app/tasks/TaskCard.tsx",
+          "./apps/web/app/tasks/VirtualizedTaskList.tsx",
+          "./apps/web/app/tasks/ThingsTaskCard.tsx",
+          "./apps/web/app/tasks/TasksTableClient.tsx",
+          "./apps/web/app/tasks/TaskDetailView.tsx",
+          "./apps/web/app/tasks/TaskColumn.tsx"
+        ],
+        "total_files": 18
+      },
+      "messages": {
+        "file_count": 1,
+        "files": [
+          "./apps/web/components/layout/sidebars/MessagesSidebar.tsx"
+        ],
+        "total_files": 1
+      },
+      "calendar": {
+        "file_count": 3,
+        "files": [
+          "./apps/web/components/shadcn-blocks/sidebar-07/components/ui/calendar.tsx",
+          "./apps/web/components/ui/calendar.tsx",
+          "./apps/web/components/layout/sidebars/CalendarSidebar.tsx"
+        ],
+        "total_files": 3
+      },
+      "marketing": {
+        "file_count": 9,
+        "files": [
+          "./apps/web/app/marketing/components/MarketingWidgets.tsx",
+          "./apps/web/app/marketing/components/widgets/LeadMagnetStudio.tsx",
+          "./apps/web/app/marketing/components/widgets/MembershipLoyalty.tsx",
+          "./apps/web/app/marketing/components/widgets/ContentCalendar.tsx",
+          "./apps/web/app/marketing/components/widgets/QuizCreator.tsx",
+          "./apps/web/app/marketing/components/widgets/EmailMarketing.tsx",
+          "./apps/web/app/marketing/components/widgets/CreatorStudio.tsx",
+          "./apps/web/app/marketing/page.tsx",
+          "./apps/web/components/layout/sidebars/MarketingSidebar.tsx"
+        ],
+        "total_files": 9
+      },
+      "analytics": {
+        "file_count": 1,
+        "files": [
+          "./apps/web/components/layout/sidebars/AnalyticsSidebar.tsx"
+        ],
+        "total_files": 1
+      },
+      "settings": {
+        "file_count": 1,
+        "files": [
+          "./apps/web/components/layout/sidebars/SettingsSidebar.tsx"
+        ],
+        "total_files": 1
+      },
+      "auth": {
+        "file_count": 7,
+        "files": [
+          "./apps/web/app/(auth)/sign-up/confirmation/page.tsx",
+          "./apps/web/app/(auth)/sign-up/page.tsx",
+          "./apps/web/app/(auth)/log-in/page.tsx",
+          "./apps/web/app/(auth)/forgot-password/page.tsx",
+          "./apps/web/app/(auth)/reset-password/ResetPasswordContent.tsx",
+          "./apps/web/app/(auth)/reset-password/page.tsx",
+          "./apps/web/components/auth/OneTapComponent.tsx"
+        ],
+        "total_files": 7
+      },
+      "ui": {
+        "file_count": 99,
+        "files": [
+          "./packages/ui/@codexcrm/ui/components/ui/sonner.tsx",
+          "./packages/ui/.storybook/react19-decorator.tsx",
+          "./packages/ui/src/components/ui/responsive-demo.tsx",
+          "./packages/ui/src/components/ui/metric-card.tsx",
+          "./packages/ui/src/components/ui/loading-spinner.tsx",
+          "./packages/ui/src/components/ui/responsive-layout.tsx",
+          "./packages/ui/src/components/ui/timeline.tsx",
+          "./packages/ui/src/components/ui/avatar.tsx",
+          "./packages/ui/src/components/ui/themed-card.tsx",
+          "./packages/ui/src/components/core/ThemeDemo.tsx"
+        ],
+        "total_files": 99
+      },
+      "layout": {
+        "file_count": 15,
+        "files": [
+          "./apps/web/app/layout.tsx",
+          "./apps/web/components/shadcn-blocks/sidebar-07/app/layout.tsx",
+          "./apps/web/components/layout/AppContent.tsx",
+          "./apps/web/components/layout/ProjectLinksNav.tsx",
+          "./apps/web/components/layout/SidebarNavLink.tsx",
+          "./apps/web/components/layout/UserNav.tsx",
+          "./apps/web/components/layout/SidebarGroupLink.tsx",
+          "./apps/web/components/layout/MainSectionNav.tsx",
+          "./apps/web/components/layout/MainLayout.tsx",
+          "./apps/web/components/layout/OmniBotFloat.tsx"
+        ],
+        "total_files": 15
+      },
+      "other": {
+        "file_count": 27,
+        "files": [
+          "./apps/web/app/docs/page.tsx",
+          "./apps/web/app/GlobalError.tsx",
+          "./apps/web/app/ProvidersClient.tsx",
+          "./apps/web/app/account/page.tsx",
+          "./apps/web/app/page.tsx",
+          "./apps/web/app/providers.tsx",
+          "./apps/web/components/shadcn-blocks/sidebar-07/components/theme-provider.tsx",
+          "./apps/web/components/shadcn-blocks/sidebar-07/components/team-switcher.tsx",
+          "./apps/web/components/shadcn-blocks/sidebar-07/components/nav-main.tsx",
+          "./apps/web/components/shadcn-blocks/sidebar-07/components/nav-user.tsx"
+        ],
+        "total_files": 27
+      }
+    },
+    "core_layout_components": {},
+    "additional_components": {},
+    "authentication_pages": {},
+    "ui_components": {},
+    "providers_and_global": {},
+    "packages_ui_library": {},
+    "file_system_structure": {}
+  }
+}

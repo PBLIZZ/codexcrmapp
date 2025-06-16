@@ -20,7 +20,8 @@ import { useState, useEffect } from 'react';
 import { ColumnSelector } from './ColumnSelector';
 import { ContactForm, ContactFormData } from './ContactForm';
 import { GroupsProvider } from '@/app/contacts/ContactGroupManager';
-import type { Tables } from '@codexcrm/db';
+import type { Database } from '@codexcrm/db';
+type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row'];
 type DBContact = Tables<'contacts'>;
 import {
   EnhancedContactList,
@@ -225,7 +226,7 @@ export function ContactsContent({
       notes: contact.notes ?? '',
       last_contacted_at: formatDateForInput(contact.last_contacted_at),
       enrichment_status: contact.enrichment_status ?? '',
-      enriched_data: contact.enriched_data ?? null,
+      enriched_data: contact.enriched_data ? contact.enriched_data as Record<string, unknown> : null,
     };
 
     setFormData(formData);

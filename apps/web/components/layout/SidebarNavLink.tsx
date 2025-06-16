@@ -1,6 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+import type { Route } from 'next';
+import { createRoute } from '@/lib/utils/routes';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
@@ -19,7 +21,7 @@ export function SidebarNavLink({ isCollapsed, href, title, icon, isActive, badge
       <Tooltip>
         <TooltipTrigger asChild>
           <Link
-            href={href}
+            href={href as Route}
             className={cn(
               'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
               isActive && 'bg-muted text-primary'

@@ -1,14 +1,22 @@
 'use client';
 
+import * as React from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '@codexcrm/auth';
 
-import { Home, Users, CheckSquare, Calendar, MessageSquare, BarChart } from 'lucide-react';
+import { Home, Users, CheckSquare, Calendar, MessageSquare, BarChart, LucideIcon } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { MobileMenu } from './MobileMenu';
 
-const mainNavItems = [
+type NavItem = {
+  title: string;
+  href: string;
+  icon: LucideIcon;
+};
+
+const mainNavItems: NavItem[] = [
     { title: 'Dashboard', href: '/dashboard', icon: Home },
     { title: 'Contacts', href: '/contacts', icon: Users },
     { title: 'Tasks', href: '/tasks', icon: CheckSquare },
@@ -24,8 +32,8 @@ export function Header() {
   if (isLoading) {
     // Skeleton loader for when auth state is being determined
     return (
-      <header className="sticky top-0 z-40 border-b bg-white">
-        <div className="container mx-auto flex h-16 items-center px-4">
+      <header className="sticky top-0 z-40 w-full border-b bg-white">
+        <div className="flex h-16 items-center px-4 w-full">
           <Skeleton className="h-8 w-36" />
         </div>
       </header>
@@ -33,45 +41,38 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b bg-white shadow-sm">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+    <header className="sticky top-0 z-40 w-full border-b bg-white shadow-sm">
+      <div className="flex h-16 items-center px-4 w-full">
         
-        {/* LEFT-SIDE GROUP: Contains logo and desktop navigation */}
-        <div className="flex items-center gap-6">
-          
-          {/* Logo */}
-          <Link href="/" className="flex shrink-0 items-center gap-2">
-            <img src="/images/logo.png" alt="OmniCRM Logo" className="h-8" />
-            <div className="hidden sm:flex flex-col">
-              <span className="text-xl font-bold text-teal-800">OmniCRM</span>
-              <span className="text-xs text-gray-600">by Omnipotency ai</span>
-            </div>
-          </Link>
+        {/* Logo */}
+        <Link href="/" className="flex shrink-0 items-center gap-2 mr-6">
+          <Image src="/images/logo.png" alt="OmniCRM Logo" width={32} height={32} className="h-8 w-auto" />
+          <div className="hidden sm:flex flex-col">
+            <span className="text-xl font-bold text-teal-800">OmniCRM</span>
+            <span className="text-xs text-gray-600">by Omnipotency ai</span>
+          </div>
+        </Link>
 
-          {/* Desktop Navigation (Icons only on 'md', text appears on 'lg') */}
-          <nav className="hidden md:flex items-center gap-2 lg:gap-4">
-            {mainNavItems.map((item) => {
-              const isActive = pathname.startsWith(item.href);
-              return (
-                <Link 
-                  key={item.href} 
-                  href={item.href} 
-                  className={`flex items-center gap-2 text-sm font-medium rounded-md px-3 py-1.5 transition-colors ${isActive ? `bg-teal-400 text-teal-800 shadow-sm` : `text-gray-600 hover:bg-gray-100`}`}
-                  title={item.title}
-                >
-                  <item.icon className="h-5 w-5" />
-                  <span className="hidden lg:inline">{item.title}</span>
-                </Link>
-              );
-            })}
-          </nav>
-        </div>
+        {/* Desktop Navigation - Takes up all available space */}
+        <nav className="hidden md:flex items-center justify-center flex-1 gap-4 lg:gap-8">
+          {mainNavItems.map((item) => {
+            const isActive = pathname.startsWith(item.href);
+            return (
+              <Link
+                key={item.href}
+                href={{ pathname: item.href }}
+                className={`flex items-center gap-2 text-sm font-medium rounded-md px-3 py-1.5 transition-colors ${isActive ? `bg-teal-400 text-teal-800 shadow-sm` : `text-gray-600 hover:bg-gray-100`}`}
+                title={item.title}
+              >
+                {React.createElement(item.icon, { className: "h-5 w-5" })}
+                <span className="hidden lg:inline">{item.title}</span>
+              </Link>
+            );
+          })}
+        </nav>
 
-        {/* RIGHT-SIDE: This now ONLY contains the mobile menu trigger. */}
-        {/* On md screens and up, this div is hidden. */}
-        {/* On small screens, the desktop nav is hidden, and this appears. */}
-        {/* `justify-between` pushes this to the far right, which is what we want. */}
-        <div className="md:hidden">
+        {/* Mobile Menu - Right aligned */}
+        <div className="md:hidden ml-auto">
           <MobileMenu />
         </div>
         

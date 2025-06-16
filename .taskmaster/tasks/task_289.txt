@@ -1,0 +1,25 @@
+# Task ID: 289
+# Title: Establish a Performance Baseline for the Current Monorepo Build
+# Status: pending
+# Dependencies: None
+# Priority: medium
+# Description: Build the Next.js application with profiling to capture baseline performance metrics focusing on core user journey scenarios.
+# Details:
+Run `npx next build --profile` to generate performance metrics (build time, bundle size, TTI). Extract and structure the profiling data into a JSON baseline report with special focus on critical user scenarios: authentication flow (login → dashboard redirect), sidebar navigation responsiveness, protected page loading, main section transitions (Dashboard → Contacts → Tasks, etc.), and core component rendering (AppSidebarController, MainLayout, Omnibot). Include metrics for nested routing performance and toast notification responsiveness.
+
+# Test Strategy:
+Confirm the JSON report includes key metrics with core user journey benchmarks. Ensure baseline values are recorded for authentication flow and main section navigation, stored securely for future comparison.
+
+# Subtasks:
+## 1. Execute Next.js build with user journey profiling [pending]
+### Dependencies: None
+### Description: Run profiling build with focus on authentication and navigation scenarios
+### Details:
+Execute `npx next build --profile` and capture performance logs with user journey scenario focus
+
+## 2. Structure application-focused baseline report [pending]
+### Dependencies: 289.1
+### Description: Extract and organize profiling data with core user flow performance metrics
+### Details:
+Extract and structure profiling data into JSON baseline report with application-specific metrics
+

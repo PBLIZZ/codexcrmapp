@@ -1,0 +1,25 @@
+# Task ID: 298
+# Title: Run Comprehensive Automated Test Suite
+# Status: pending
+# Dependencies: 293, 294, 295, 296, 297
+# Priority: high
+# Description: Execute the test suite and generate coverage report with focus on core application logic validation.
+# Details:
+Run `npx jest --coverage` to execute tests and generate coverage report in JSON with special validation for core application logic: authentication flow integrity, protected page access control, sidebar navigation functionality, main section routing accuracy, toast notification system reliability, and user session management. Ensure all critical user journeys are tested, authentication rules are validated, and edge cases for protected/unprotected page transitions are covered. Validate test coverage meets thresholds (≥90%) with higher requirements (≥95%) for authentication and session management code.
+
+# Test Strategy:
+Check that all tests pass with special validation for core application logic. Coverage thresholds must be met with enhanced requirements for authentication and session operations. Inspect the JSON coverage report for core component completeness.
+
+# Subtasks:
+## 1. Execute test suite with core application logic focus [pending]
+### Dependencies: None
+### Description: Run comprehensive tests with emphasis on authentication and navigation critical paths
+### Details:
+Run test suite using designated test runner with core application logic validation
+
+## 2. Generate and validate application-focused coverage report [pending]
+### Dependencies: 298.1
+### Description: Create coverage report with core application component analysis
+### Details:
+Generate and validate test coverage report with core component focus and enhanced thresholds
+

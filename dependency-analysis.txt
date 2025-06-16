@@ -1,0 +1,889 @@
+Processed 276 files (1.5s) (25 warnings)
+
+../../packages/auth/src/index.ts
+  provider.tsx
+../../packages/config/src/index.ts
+  ../../packages/config/src/paths.ts
+../../packages/config/src/paths.ts
+../../packages/db/src/database.types.ts
+../../packages/db/src/index.ts
+  ../../packages/db/src/database.types.ts
+  ../../packages/db/src/models/index.ts
+  ../../packages/db/src/repositories/index.ts
+  ../../packages/db/src/utils/db-helpers.ts
+../../packages/db/src/models/Checklist.ts
+../../packages/db/src/models/Heading.ts
+../../packages/db/src/models/Project.ts
+../../packages/db/src/models/ProjectTag.ts
+../../packages/db/src/models/Tag.ts
+../../packages/db/src/models/Task.ts
+../../packages/db/src/models/TaskDependency.ts
+../../packages/db/src/models/TaskTag.ts
+../../packages/db/src/models/index.ts
+  ../../packages/db/src/models/Checklist.ts
+  ../../packages/db/src/models/Heading.ts
+  ../../packages/db/src/models/Project.ts
+  ../../packages/db/src/models/ProjectTag.ts
+  ../../packages/db/src/models/Tag.ts
+  ../../packages/db/src/models/Task.ts
+  ../../packages/db/src/models/TaskDependency.ts
+  ../../packages/db/src/models/TaskTag.ts
+../../packages/db/src/repositories/ai-actions-repository.ts
+  ../../packages/db/src/database.types.ts
+  ../../packages/db/src/utils/db-helpers.ts
+../../packages/db/src/repositories/checklists-repository.ts
+  ../../packages/db/src/database.types.ts
+  ../../packages/db/src/models/index.ts
+../../packages/db/src/repositories/contacts-repository.ts
+  ../../packages/db/src/database.types.ts
+  ../../packages/db/src/utils/db-helpers.ts
+../../packages/db/src/repositories/headings-repository.ts
+  ../../packages/db/src/database.types.ts
+  ../../packages/db/src/models/index.ts
+../../packages/db/src/repositories/index.ts
+  ../../packages/db/src/repositories/ai-actions-repository.ts
+  ../../packages/db/src/repositories/checklists-repository.ts
+  ../../packages/db/src/repositories/contacts-repository.ts
+  ../../packages/db/src/repositories/headings-repository.ts
+  ../../packages/db/src/repositories/projects-repository.ts
+  ../../packages/db/src/repositories/sessions-repository.ts
+  ../../packages/db/src/repositories/tags-repository.ts
+  ../../packages/db/src/repositories/task-dependencies-repository.ts
+  ../../packages/db/src/repositories/tasks-repository.ts
+../../packages/db/src/repositories/projects-repository.ts
+  ../../packages/db/src/database.types.ts
+  ../../packages/db/src/models/index.ts
+../../packages/db/src/repositories/sessions-repository.ts
+  ../../packages/db/src/database.types.ts
+  ../../packages/db/src/utils/db-helpers.ts
+../../packages/db/src/repositories/tags-repository.ts
+  ../../packages/db/src/database.types.ts
+  ../../packages/db/src/models/index.ts
+../../packages/db/src/repositories/task-dependencies-repository.ts
+  ../../packages/db/src/database.types.ts
+  ../../packages/db/src/models/index.ts
+../../packages/db/src/repositories/tasks-repository.ts
+  ../../packages/db/src/database.types.ts
+  ../../packages/db/src/models/index.ts
+../../packages/db/src/utils/db-helpers.ts
+  ../../packages/db/src/database.types.ts
+../../packages/server/src/context.ts
+  ../../packages/server/src/supabaseAdmin.ts
+../../packages/server/src/index.ts
+  ../../packages/server/src/context.ts
+  ../../packages/server/src/root.ts
+  ../../packages/server/src/trpc.ts
+../../packages/server/src/root.ts
+  ../../packages/server/src/routers/ai-action.ts
+  ../../packages/server/src/routers/contact.ts
+  ../../packages/server/src/routers/dashboard.ts
+  ../../packages/server/src/routers/group.ts
+  ../../packages/server/src/routers/note.ts
+  ../../packages/server/src/routers/session.ts
+  ../../packages/server/src/routers/storage.ts
+  ../../packages/server/src/routers/task.ts
+  ../../packages/server/src/trpc.ts
+../../packages/server/src/routers/ai-action.ts
+  ../../packages/db/src/index.ts
+  ../../packages/server/src/trpc.ts
+../../packages/server/src/routers/contact.ts
+  ../../packages/server/src/supabaseAdmin.ts
+  ../../packages/server/src/trpc.ts
+../../packages/server/src/routers/dashboard.ts
+  ../../packages/server/src/trpc.ts
+../../packages/server/src/routers/group.ts
+  ../../packages/server/src/trpc.ts
+../../packages/server/src/routers/note.ts
+  ../../packages/server/src/trpc.ts
+../../packages/server/src/routers/session.ts
+  ../../packages/db/src/index.ts
+  ../../packages/server/src/trpc.ts
+../../packages/server/src/routers/storage.ts
+  ../../packages/server/src/trpc.ts
+../../packages/server/src/routers/task.ts
+  ../../packages/db/src/models/index.ts
+  ../../packages/db/src/repositories/tasks-repository.ts
+  ../../packages/server/src/trpc.ts
+../../packages/server/src/supabaseAdmin.ts
+../../packages/server/src/trpc.ts
+  ../../packages/server/src/context.ts
+../../packages/server/src/utils/openapi.ts
+  ../../packages/server/src/context.ts
+  ../../packages/server/src/root.ts
+../../packages/ui/dist/index.js
+.next/types/cache-life.d.ts
+.next/types/link.d.ts
+app/(auth)/forgot-password/page.tsx
+  components/ui/button.tsx
+  components/ui/card.tsx
+  components/ui/input.tsx
+  lib/supabase/client.ts
+app/(auth)/log-in/page.tsx
+  components/auth/OneTapComponent.tsx
+  components/ui/button.tsx
+  components/ui/card.tsx
+  components/ui/input.tsx
+  lib/supabase/client.ts
+app/(auth)/reset-password/ResetPasswordContent.tsx
+  components/ui/button.tsx
+  components/ui/card.tsx
+  components/ui/input.tsx
+  components/ui/label.tsx
+  lib/supabase/client.ts
+app/(auth)/reset-password/page.tsx
+  app/(auth)/reset-password/ResetPasswordContent.tsx
+  components/ui/card.tsx
+app/(auth)/sign-up/confirmation/page.tsx
+app/(auth)/sign-up/page.tsx
+  components/auth/OneTapComponent.tsx
+  components/ui/button.tsx
+  components/ui/card.tsx
+  components/ui/input.tsx
+  lib/supabase/client.ts
+app/account/page.tsx
+  components/ui/button.tsx
+  components/ui/card.tsx
+  components/ui/input.tsx
+  components/ui/label.tsx
+  components/ui/separator.tsx
+  lib/auth/service.ts
+app/actions/contact-actions.ts
+  app/contacts/ContactForm.tsx
+app/api/auth/[...supabase]/route.ts
+app/api/auth/callback/route.ts
+app/api/auth/logout/route.ts
+app/api/docs/openapi/route.ts
+  ../../packages/server/src/utils/openapi.ts
+app/api/docs/swagger/route.ts
+app/api/sentry-example-api/route.ts
+app/api/trpc/[trpc]/route.ts
+  ../../packages/server/src/index.ts
+app/contacts/ColumnSelector.tsx
+  components/ui/checkbox.tsx
+  components/ui/label.tsx
+app/contacts/ContactForm.tsx
+  components/ui/image-upload.tsx
+  lib/trpc.ts
+app/contacts/ContactGroupManager.tsx
+  components/ui/alert.tsx
+  components/ui/badge.tsx
+  components/ui/button.tsx
+  components/ui/dialog.tsx
+  components/ui/select.tsx
+  lib/trpc.ts
+app/contacts/ContactGroupTags.tsx
+  components/ui/badge.tsx
+  lib/trpc.ts
+app/contacts/ContactList.tsx
+  app/contacts/ContactGroupManager.tsx
+  components/ui/avatar-image.tsx
+  components/ui/badge.tsx
+  components/ui/button.tsx
+  components/ui/dropdown-menu.tsx
+  lib/trpc.ts
+  lib/utils.ts
+app/contacts/ContactsContent.tsx
+  ../../packages/db/src/index.ts
+  app/contacts/ColumnSelector.tsx
+  app/contacts/ContactForm.tsx
+  app/contacts/ContactGroupManager.tsx
+  app/contacts/EnhancedContactList.tsx
+  components/contacts/AddContactModal.tsx
+  components/ui/button.tsx
+  components/ui/dropdown-menu.tsx
+  components/ui/input.tsx
+  lib/dateUtils.ts
+  lib/trpc.ts
+app/contacts/ContactsLayout.tsx
+  app/contacts/ContactsMainContent.tsx
+app/contacts/ContactsMainContent.tsx
+  app/contacts/ColumnSelector.tsx
+  app/contacts/ContactForm.tsx
+  app/contacts/ContactsTable.tsx
+  components/contacts/AddContactModal.tsx
+  components/ui/button.tsx
+  components/ui/card.tsx
+  components/ui/dropdown-menu.tsx
+  components/ui/input.tsx
+  lib/trpc.ts
+app/contacts/ContactsTable.tsx
+  components/ui/avatar.tsx
+  components/ui/badge.tsx
+  components/ui/button.tsx
+  components/ui/checkbox.tsx
+  components/ui/dialog.tsx
+  components/ui/dropdown-menu.tsx
+  components/ui/select.tsx
+  lib/trpc.ts
+  lib/utils.ts
+app/contacts/ContactsTableClient.tsx
+  app/contacts/ContactsTable.tsx
+app/contacts/EnhancedContactList.tsx
+  app/contacts/ContactGroupManager.tsx
+  components/ui/avatar-image.tsx
+  components/ui/badge.tsx
+  components/ui/button.tsx
+  components/ui/checkbox.tsx
+  components/ui/dialog.tsx
+  components/ui/dropdown-menu.tsx
+  components/ui/input.tsx
+  components/ui/label.tsx
+  components/ui/separator.tsx
+  components/ui/tooltip.tsx
+  lib/trpc.ts
+  lib/utils.ts
+app/contacts/[contactId]/ContactDetailView.tsx
+  app/contacts/[contactId]/ContactGroupsSection.tsx
+  app/contacts/[contactId]/ContactTimeline.tsx
+  components/ui/alert.tsx
+  components/ui/avatar-image.tsx
+  components/ui/badge.tsx
+  components/ui/button.tsx
+  components/ui/dialog.tsx
+  components/ui/tabs.tsx
+  components/ui/textarea.tsx
+  lib/dateUtils.ts
+  lib/trpc.ts
+app/contacts/[contactId]/ContactGroupsSection.tsx
+  components/ui/badge.tsx
+  components/ui/button.tsx
+  components/ui/dialog.tsx
+  components/ui/select.tsx
+  components/ui/separator.tsx
+  lib/trpc.ts
+  lib/utils.ts
+app/contacts/[contactId]/ContactTimeline.tsx
+  ../../packages/ui/dist/index.js
+  components/ui/badge.tsx
+  components/ui/button.tsx
+  components/ui/card.tsx
+  components/ui/skeleton.tsx
+  lib/trpc.ts
+app/contacts/[contactId]/edit/page.tsx
+  app/contacts/ContactForm.tsx
+  components/ui/alert.tsx
+  components/ui/button.tsx
+  lib/trpc.ts
+app/contacts/[contactId]/page.tsx
+  app/contacts/[contactId]/ContactDetailView.tsx
+  components/ui/skeleton.tsx
+app/contacts/form-components.tsx
+app/contacts/form-config.ts
+app/contacts/groups/ContactGroupsPage.tsx
+  components/ui/alert.tsx
+  components/ui/badge.tsx
+  components/ui/button.tsx
+  components/ui/card.tsx
+  components/ui/dialog.tsx
+  components/ui/input.tsx
+  components/ui/label.tsx
+  components/ui/separator.tsx
+  components/ui/tabs.tsx
+  lib/trpc.ts
+app/contacts/groups/GroupContactsList.tsx
+  app/contacts/ContactList.tsx
+  components/ui/alert.tsx
+  components/ui/badge.tsx
+  components/ui/button.tsx
+  components/ui/dialog.tsx
+  components/ui/select.tsx
+  lib/trpc.ts
+app/contacts/groups/GroupsContent.tsx
+  components/groups/BulkContactSelector.tsx
+  components/ui/alert.tsx
+  components/ui/badge.tsx
+  components/ui/button.tsx
+  components/ui/card.tsx
+  components/ui/dialog.tsx
+  components/ui/input.tsx
+  components/ui/label.tsx
+  components/ui/textarea.tsx
+  lib/trpc.ts
+app/contacts/groups/[groupId]/page.tsx
+  app/contacts/ContactsContent.tsx
+app/contacts/groups/page.tsx
+  app/contacts/groups/GroupsContent.tsx
+app/contacts/import/csv-upload-test/page.tsx
+  ../../packages/server/src/root.ts
+  components/ui/button.tsx
+  components/ui/csv-upload.tsx
+  lib/csv-utils.ts
+  lib/trpc.ts
+app/contacts/import/page.tsx
+  components/ui/button.tsx
+  components/ui/card.tsx
+  components/ui/input.tsx
+  components/ui/label.tsx
+  lib/trpc.ts
+app/contacts/new/page.tsx
+  app/contacts/ContactForm.tsx
+  components/ui/button.tsx
+  lib/trpc.ts
+app/contacts/page.tsx
+  app/contacts/ContactsTable.tsx
+  app/contacts/ContactsTableClient.tsx
+  components/contacts/ContactsWidgets.tsx
+  components/ui/skeleton.tsx
+  lib/supabase/server.ts
+app/dashboard/DashboardClient.tsx
+  app/dashboard/DashboardContent.tsx
+  components/omni-bot/OmniBot.tsx
+  components/ui/alert.tsx
+  components/ui/skeleton.tsx
+app/dashboard/DashboardContent.tsx
+  components/dashboard/ai-task-panel/AiTaskPanel.tsx
+  components/dashboard/business-metrics/BusinessMetricsCard.tsx
+  components/dashboard/calendar-preview/CalendarPreview.tsx
+  components/dashboard/quick-actions/QuickActions.tsx
+app/dashboard/components/DashboardWidgets.tsx
+  components/dashboard/ai-client-insights/AiClientInsights.tsx
+  components/dashboard/ai-task-panel/AiTaskPanel.tsx
+  components/dashboard/business-metrics/BusinessMetricsCard.tsx
+  components/dashboard/calendar-preview/CalendarPreview.tsx
+  components/dashboard/daily-inspiration/DailyInspirationCard.tsx
+  components/dashboard/quick-actions/QuickActions.tsx
+  components/dashboard/therapist-check-in/TherapistCheckIn.tsx
+app/docs/page.tsx
+app/global-error.tsx
+app/globals.css
+app/layout.tsx
+  app/globals.css
+  app/providers.tsx
+  app/theme.css
+  components/layout/AppContent.tsx
+app/marketing/components/MarketingWidgets.tsx
+  app/marketing/components/widgets/ContentCalendar.tsx
+  app/marketing/components/widgets/CreatorStudio.tsx
+  app/marketing/components/widgets/EmailMarketing.tsx
+  app/marketing/components/widgets/LeadMagnetStudio.tsx
+  app/marketing/components/widgets/MembershipLoyalty.tsx
+  app/marketing/components/widgets/QuizCreator.tsx
+  components/ui/tabs.tsx
+app/marketing/components/widgets/ContentCalendar.tsx
+  components/ui/button.tsx
+  components/ui/card.tsx
+  components/ui/input.tsx
+app/marketing/components/widgets/CreatorStudio.tsx
+  components/ui/button.tsx
+  components/ui/card.tsx
+  components/ui/input.tsx
+app/marketing/components/widgets/EmailMarketing.tsx
+  components/ui/button.tsx
+  components/ui/card.tsx
+  components/ui/input.tsx
+app/marketing/components/widgets/LeadMagnetStudio.tsx
+  components/ui/button.tsx
+  components/ui/card.tsx
+  components/ui/input.tsx
+  components/ui/textarea.tsx
+app/marketing/components/widgets/MembershipLoyalty.tsx
+  components/ui/button.tsx
+  components/ui/card.tsx
+  components/ui/input.tsx
+app/marketing/components/widgets/QuizCreator.tsx
+  components/ui/button.tsx
+  components/ui/card.tsx
+  components/ui/input.tsx
+  components/ui/textarea.tsx
+app/marketing/page.tsx
+  app/marketing/components/MarketingWidgets.tsx
+app/page.tsx
+  app/dashboard/components/DashboardWidgets.tsx
+app/providers-client.tsx
+  ../../packages/auth/src/index.ts
+  ../../packages/server/src/root.ts
+  lib/debug-helper.ts
+  lib/trpc.ts
+app/providers.tsx
+  ../../packages/auth/src/index.ts
+  ../../packages/server/src/root.ts
+  lib/trpc.ts
+app/tasks/BreadcrumbNavigation.tsx
+app/tasks/CategoryViews.tsx
+  app/tasks/TaskCard.tsx
+  app/tasks/VirtualizedTaskList.tsx
+  components/ui/button.tsx
+app/tasks/DraggableTaskList.tsx
+  app/tasks/TaskCard.tsx
+  app/tasks/VirtualizedTaskList.tsx
+app/tasks/KeyboardShortcuts.tsx
+app/tasks/TaskAdapter.ts
+  ../../packages/db/src/models/Task.ts
+  app/tasks/TaskCard.tsx
+app/tasks/TaskBoard.tsx
+  app/tasks/TaskCard.tsx
+  app/tasks/TaskColumn.tsx
+  lib/trpc.ts
+app/tasks/TaskCard.tsx
+  ../../packages/db/src/models/index.ts
+  components/ui/badge.tsx
+  components/ui/button.tsx
+  components/ui/card.tsx
+  components/ui/dropdown-menu.tsx
+  lib/utils.ts
+app/tasks/TaskColumn.tsx
+  app/tasks/TaskCard.tsx
+app/tasks/TaskDetailView.tsx
+  app/tasks/TaskCard.tsx
+  components/ui/badge.tsx
+  components/ui/button.tsx
+  components/ui/card.tsx
+  components/ui/separator.tsx
+app/tasks/TaskForm.tsx
+  ../../packages/db/src/models/Task.ts
+  ../../packages/server/src/root.ts
+  components/ui/button.tsx
+  components/ui/calendar.tsx
+  components/ui/form.tsx
+  components/ui/input.tsx
+  components/ui/popover.tsx
+  components/ui/select.tsx
+  components/ui/textarea.tsx
+  lib/utils.ts
+app/tasks/TasksTableClient.tsx
+  app/tasks/TaskCard.tsx
+  components/ui/button.tsx
+  components/ui/card.tsx
+  components/ui/input.tsx
+  components/ui/select.tsx
+  components/ui/tabs.tsx
+  lib/trpc/client.ts
+  lib/utils/routes.ts
+app/tasks/ThingsTaskCard.tsx
+  app/tasks/TaskCard.tsx
+  components/ui/badge.tsx
+  components/ui/button.tsx
+  components/ui/dropdown-menu.tsx
+app/tasks/VirtualizedTaskList.tsx
+  app/tasks/TaskCard.tsx
+  app/tasks/ThingsTaskCard.tsx
+app/tasks/page.tsx
+  ../../packages/db/src/models/Task.ts
+  app/tasks/CategoryViews.tsx
+  app/tasks/DraggableTaskList.tsx
+  app/tasks/KeyboardShortcuts.tsx
+  app/tasks/TaskDetailView.tsx
+  app/tasks/TaskForm.tsx
+  app/tasks/TasksTableClient.tsx
+  app/tasks/ThingsTaskCard.tsx
+  components/tasks/TasksWidgets.tsx
+  components/ui/skeleton.tsx
+  lib/supabase/server.ts
+app/theme.css
+components/SupabaseProvider.tsx
+components/auth/OneTapComponent.tsx
+  lib/supabase/client.ts
+components/contacts/AddContactModal.tsx
+  components/ui/alert.tsx
+  components/ui/button.tsx
+  components/ui/dialog.tsx
+  components/ui/input.tsx
+  components/ui/label.tsx
+  lib/trpc.ts
+  lib/utils.ts
+components/contacts/ContactsTable.tsx
+  components/ui/button.tsx
+  components/ui/input.tsx
+  lib/trpc.ts
+components/contacts/ContactsWidgets.tsx
+  components/ui/card.tsx
+  lib/trpc.ts
+components/customized/ShadcnCalendarTest.tsx
+  components/ui/calendar.tsx
+components/customized/TailwindTestCard.tsx
+components/customized/dropdown-menu/dropdown-menu-02.tsx
+  components/ui/avatar.tsx
+  components/ui/dropdown-menu.tsx
+components/customized/table/table-06.tsx
+  components/ui/table.tsx
+components/dashboard/ai-client-insights/AiClientInsights.tsx
+  components/ui/button.tsx
+  components/ui/card.tsx
+  components/ui/carousel.tsx
+components/dashboard/ai-task-panel/AiTaskPanel.tsx
+  components/ui/alert.tsx
+  components/ui/badge.tsx
+  components/ui/button.tsx
+  components/ui/card.tsx
+  components/ui/tabs.tsx
+  lib/trpc.ts
+components/dashboard/business-metrics/BusinessMetricsCard.tsx
+  components/ui/alert.tsx
+  components/ui/button.tsx
+  components/ui/card.tsx
+  lib/trpc.ts
+components/dashboard/calendar-preview/CalendarPreview.tsx
+  components/ui/alert.tsx
+  components/ui/badge.tsx
+  components/ui/button.tsx
+  components/ui/card.tsx
+  lib/trpc.ts
+components/dashboard/daily-inspiration/DailyInspirationCard.tsx
+  components/ui/button.tsx
+  components/ui/card.tsx
+components/dashboard/quick-actions/QuickActions.tsx
+  components/ui/button.tsx
+  components/ui/card.tsx
+components/dashboard/therapist-check-in/TherapistCheckIn.tsx
+  components/ui/button.tsx
+  components/ui/card.tsx
+components/groups/BulkContactSelector.tsx
+  components/ui/avatar.tsx
+  components/ui/button.tsx
+  components/ui/checkbox.tsx
+  components/ui/dialog.tsx
+  components/ui/input.tsx
+  lib/trpc.ts
+components/groups/CreateGroupDialog.tsx
+  components/ui/button.tsx
+  components/ui/dialog.tsx
+  components/ui/input.tsx
+  lib/trpc.ts
+components/groups/QuickCreateGroupButton.tsx
+  components/ui/button.tsx
+  components/ui/input.tsx
+  components/ui/label.tsx
+  components/ui/popover.tsx
+  lib/supabase/client.ts
+  lib/trpc.ts
+components/layout/AppContent.tsx
+  ../../packages/auth/src/index.ts
+  ../../packages/config/src/index.ts
+  ../../packages/ui/dist/index.js
+  components/layout/MainLayout.tsx
+components/layout/AppSidebarController.tsx
+  components/layout/sidebars/AnalyticsSidebar.tsx
+  components/layout/sidebars/CalendarSidebar.tsx
+  components/layout/sidebars/ContactsSidebar.tsx
+  components/layout/sidebars/DashboardSidebar.tsx
+  components/layout/sidebars/MarketingSidebar.tsx
+  components/layout/sidebars/MessagesSidebar.tsx
+  components/layout/sidebars/SettingsSidebar.tsx
+  components/layout/sidebars/TasksSidebar.tsx
+  components/ui/skeleton.tsx
+components/layout/Header.tsx
+  ../../packages/auth/src/index.ts
+  components/layout/MobileMenu.tsx
+  components/ui/skeleton.tsx
+components/layout/MainLayout.tsx
+  components/layout/AppSidebarController.tsx
+  components/layout/MainSectionNav.tsx
+  components/layout/OmniBotFloat.tsx
+  components/ui/breadcrumb.tsx
+  components/ui/separator.tsx
+  components/ui/sidebar.tsx
+components/layout/MainSectionNav.tsx
+components/layout/MobileMenu.tsx
+  components/ui/button.tsx
+  components/ui/sheet.tsx
+  lib/utils.ts
+  lib/utils/routes.ts
+components/layout/OmniBotFloat.tsx
+  components/omni-bot/OmniBot.tsx
+  components/ui/button.tsx
+  components/ui/sheet.tsx
+  lib/utils.ts
+components/layout/ProjectLinksNav.tsx
+  components/ui/dropdown-menu.tsx
+  components/ui/sidebar.tsx
+components/layout/QuickLinksNav.tsx
+  components/ui/collapsible.tsx
+  components/ui/sidebar.tsx
+components/layout/SidebarGroupLink.tsx
+  lib/utils.ts
+components/layout/SidebarNavLink.tsx
+  components/ui/tooltip.tsx
+  lib/utils.ts
+  lib/utils/routes.ts
+components/layout/UserNav.tsx
+  ../../packages/auth/src/index.ts
+  components/ui/avatar.tsx
+  components/ui/dropdown-menu.tsx
+  components/ui/sidebar.tsx
+  components/ui/skeleton.tsx
+  lib/supabase/client.ts
+components/layout/sidebars/AnalyticsSidebar.tsx
+components/layout/sidebars/CalendarSidebar.tsx
+components/layout/sidebars/ContactsSidebar.tsx
+  components/layout/UserNav.tsx
+  components/ui/badge.tsx
+  components/ui/sidebar.tsx
+  lib/trpc.ts
+  lib/utils.ts
+components/layout/sidebars/DashboardSidebar.tsx
+  components/layout/ProjectLinksNav.tsx
+  components/layout/QuickLinksNav.tsx
+  components/layout/UserNav.tsx
+  components/ui/sidebar.tsx
+components/layout/sidebars/MarketingSidebar.tsx
+components/layout/sidebars/MessagesSidebar.tsx
+components/layout/sidebars/SettingsSidebar.tsx
+  components/layout/UserNav.tsx
+  components/ui/sidebar.tsx
+  lib/utils.ts
+components/layout/sidebars/TasksSidebar.tsx
+  components/layout/UserNav.tsx
+  components/ui/sidebar.tsx
+  lib/utils/routes.ts
+components/nav-main.tsx
+  components/ui/collapsible.tsx
+  components/ui/sidebar.tsx
+components/nav-projects.tsx
+  components/ui/dropdown-menu.tsx
+  components/ui/sidebar.tsx
+components/nav-user.tsx
+  components/ui/avatar.tsx
+  components/ui/dropdown-menu.tsx
+  components/ui/sidebar.tsx
+components/omni-bot/OmniBot.tsx
+  components/ui/button.tsx
+  components/ui/input.tsx
+components/shadcn-blocks/sidebar-07/app/dashboard/page.tsx
+  components/ui/breadcrumb.tsx
+  components/ui/separator.tsx
+  components/ui/sidebar.tsx
+components/shadcn-blocks/sidebar-07/app/globals.css
+components/shadcn-blocks/sidebar-07/app/layout.tsx
+  components/shadcn-blocks/sidebar-07/app/globals.css
+components/shadcn-blocks/sidebar-07/components/app-sidebar.tsx
+  components/nav-main.tsx
+  components/nav-projects.tsx
+  components/nav-user.tsx
+  components/team-switcher.tsx
+  components/ui/sidebar.tsx
+components/shadcn-blocks/sidebar-07/components/nav-main.tsx
+  components/ui/collapsible.tsx
+  components/ui/sidebar.tsx
+components/shadcn-blocks/sidebar-07/components/nav-projects.tsx
+  components/ui/dropdown-menu.tsx
+  components/ui/sidebar.tsx
+components/shadcn-blocks/sidebar-07/components/nav-user.tsx
+  components/ui/avatar.tsx
+  components/ui/dropdown-menu.tsx
+  components/ui/sidebar.tsx
+components/shadcn-blocks/sidebar-07/components/team-switcher.tsx
+  components/ui/dropdown-menu.tsx
+  components/ui/sidebar.tsx
+components/shadcn-blocks/sidebar-07/components/theme-provider.tsx
+components/shadcn-blocks/sidebar-07/components/ui/accordion.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/alert-dialog.tsx
+  components/ui/button.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/alert.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/aspect-ratio.tsx
+components/shadcn-blocks/sidebar-07/components/ui/avatar.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/badge.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/breadcrumb.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/button.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/calendar.tsx
+  components/ui/button.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/card.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/carousel.tsx
+  components/ui/button.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/chart.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/checkbox.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/collapsible.tsx
+components/shadcn-blocks/sidebar-07/components/ui/command.tsx
+  components/ui/dialog.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/context-menu.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/dialog.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/drawer.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/dropdown-menu.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/form.tsx
+  components/ui/label.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/hover-card.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/input-otp.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/input.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/label.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/menubar.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/navigation-menu.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/pagination.tsx
+  components/ui/button.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/popover.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/progress.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/radio-group.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/resizable.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/scroll-area.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/select.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/separator.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/sheet.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/sidebar.tsx
+  components/ui/button.tsx
+  components/ui/input.tsx
+  components/ui/separator.tsx
+  components/ui/sheet.tsx
+  components/ui/skeleton.tsx
+  components/ui/tooltip.tsx
+  hooks/use-mobile.ts
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/skeleton.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/slider.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/sonner.tsx
+components/shadcn-blocks/sidebar-07/components/ui/switch.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/table.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/tabs.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/textarea.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/toast.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/toaster.tsx
+components/shadcn-blocks/sidebar-07/components/ui/toggle-group.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/toggle.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/tooltip.tsx
+  lib/utils.ts
+components/shadcn-blocks/sidebar-07/components/ui/use-mobile.tsx
+components/shadcn-blocks/sidebar-07/components/ui/use-toast.ts
+components/shadcn-blocks/sidebar-07/hooks/use-mobile.tsx
+components/shadcn-blocks/sidebar-07/hooks/use-toast.ts
+components/shadcn-blocks/sidebar-07/lib/utils.ts
+components/shadcn-blocks/sidebar-07/tailwind.config.ts
+components/tasks/TasksWidgets.tsx
+  ../../packages/db/src/models/Task.ts
+  components/ui/button.tsx
+  components/ui/card.tsx
+  lib/trpc/client.ts
+  lib/utils/routes.ts
+components/team-switcher.tsx
+  components/ui/dropdown-menu.tsx
+  components/ui/sidebar.tsx
+components/ui/alert.tsx
+  lib/utils.ts
+components/ui/avatar-image.tsx
+  lib/trpc.ts
+components/ui/avatar.tsx
+  lib/utils.ts
+components/ui/badge.tsx
+  lib/utils.ts
+components/ui/breadcrumb.tsx
+  lib/utils.ts
+components/ui/button.tsx
+  lib/utils.ts
+components/ui/calendar.tsx
+  components/ui/button.tsx
+  lib/utils.ts
+components/ui/card.tsx
+  lib/utils.ts
+components/ui/carousel.tsx
+  components/shadcn-blocks/sidebar-07/components/ui/carousel.tsx
+  components/ui/button.tsx
+  lib/utils.ts
+components/ui/checkbox.tsx
+  lib/utils.ts
+components/ui/collapsible.tsx
+components/ui/command.tsx
+  components/ui/dialog.tsx
+  lib/utils.ts
+components/ui/csv-upload.tsx
+components/ui/dialog.tsx
+  lib/utils.ts
+components/ui/dropdown-menu.tsx
+  lib/utils.ts
+components/ui/form.tsx
+  components/ui/label.tsx
+  lib/utils.ts
+components/ui/image-upload.tsx
+  lib/trpc.ts
+components/ui/input.tsx
+  lib/utils.ts
+components/ui/label.tsx
+  lib/utils.ts
+components/ui/popover.tsx
+  lib/utils.ts
+components/ui/select.tsx
+  lib/utils.ts
+components/ui/separator.tsx
+  lib/utils.ts
+components/ui/sheet.tsx
+  lib/utils.ts
+components/ui/sidebar.tsx
+  components/ui/button.tsx
+  components/ui/input.tsx
+  components/ui/separator.tsx
+  components/ui/sheet.tsx
+  components/ui/skeleton.tsx
+  components/ui/tooltip.tsx
+  hooks/use-mobile.ts
+  lib/utils.ts
+components/ui/skeleton.tsx
+  lib/utils.ts
+components/ui/sonner.tsx
+components/ui/table.tsx
+  lib/utils.ts
+components/ui/tabs.tsx
+  lib/utils.ts
+components/ui/textarea.tsx
+  lib/utils.ts
+components/ui/tooltip.tsx
+  lib/utils.ts
+google.d.ts
+hooks/use-mobile.ts
+instrumentation-client.ts
+instrumentation.ts
+  sentry.edge.config.ts
+  sentry.server.config.ts
+lib/auth/service.ts
+  lib/supabase/client.ts
+lib/csv-utils.ts
+lib/dateUtils.ts
+lib/debug-helper.ts
+lib/supabase/client.ts
+lib/supabase/server.ts
+  ../../packages/db/src/index.ts
+lib/supabase/utils.ts
+  ../../packages/db/src/index.ts
+  lib/supabase/client.ts
+lib/trpc.ts
+  ../../packages/server/src/root.ts
+  app/providers.tsx
+  lib/trpc/client.ts
+lib/trpc/client.ts
+  ../../packages/server/src/root.ts
+lib/utils.ts
+lib/utils/routes.ts
+middleware.ts
+next-env.d.ts
+next.config.ts
+provider.tsx
+  lib/supabase/client.ts
+sentry.edge.config.ts
+sentry.server.config.ts
+

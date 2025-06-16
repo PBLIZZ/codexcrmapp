@@ -1,7 +1,60 @@
 import { withSentryConfig } from '@sentry/nextjs';
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  // Move serverComponentsExternalPackages to the new location
+  serverExternalPackages: [
+    '@prisma/client',
+    'bcryptjs',
+  ],
+  
+  // Configure Turbopack (moved from experimental.turbo)
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
+      },
+    },
+  },
+  
+  experimental: {
+    // Remove deprecated settings that have been moved
+    // serverComponentsExternalPackages: [], // Moved to serverExternalPackages
+    // turbo: {}, // Moved to turbopack
+    
+    // Keep other experimental features if needed
+    typedRoutes: true,
+  },
+  
+  // Ensure API routes work properly with TRPC
+  async rewrites() {
+    return [
+      {
+        source: '/api/trpc/:path*',
+        destination: '/api/trpc/:path*',
+      },
+    ];
+  },
+  
+  // Configure webpack for better compatibility
+  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+    // Handle externals for server-side
+    if (isServer) {
+      config.externals.push('@prisma/client');
+    }
+    
+    return config;
+  },
+  
+  // Ensure proper transpilation of packages
+  transpilePackages: [
+    '@trpc/client',
+    '@trpc/server',
+    '@trpc/react-query',
+    '@trpc/next',
+  ],
+};
 
 export default withSentryConfig(nextConfig, {
   // For all available options, see:

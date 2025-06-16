@@ -33,7 +33,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "types/**/*.d.ts"
-  ],
+, "components/layout/DashboardSidebar.tsx.bac"  ],
   "exclude": [
     "node_modules"
   ]

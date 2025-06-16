@@ -1,115 +1,134 @@
 'use client';
 
 // React/Next.js hooks
-import {
-  AlertCircle,
-  ArrowLeft,
-  Building,
-  Calendar,
-  Edit,
-  Mail,
-  Phone,
-  Trash2,
-  User,
-  Briefcase,
-  Clock,
-  CheckCircle,
-  XCircle,
-  Tag,
-  Plus,
-  Sparkles,
-} from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useTransition } from 'react';
 
-// Third-party libraries
-import { ContactGroupsSection } from './ContactGroupsSection';
-import { ContactTimeline } from './ContactTimeline';
+// Lucide React Icons
+import {
+  AlertCircle, ArrowLeft, Briefcase, Building, Calendar, CheckCircle, Clock,
+  Edit, ExternalLink, Globe, Home, Link as LinkIcon, Mail, MapPin, Phone,
+  Plus, Sparkles, Tag, Trash2, User
+} from 'lucide-react';
 
+// Shadcn/ui and local components
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AvatarImage as CustomAvatarImage } from '@/components/ui/avatar-image';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'; // Only used for delete dialog
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
+  Dialog, DialogContent, DialogDescription, DialogFooter,
+  DialogHeader, DialogTitle
+} from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-// Local Utilities
-import {
-  formatDateTime,
-} from '@/lib/dateUtils';
+import { Textarea } from '@/components/ui/textarea'; // For inline notes
+import { toast } from 'sonner';
+
+// Utilities and API
+import { formatDateTime } from '@/lib/dateUtils';
 import { api } from '@/lib/trpc';
+import { ContactGroupsSection } from './ContactGroupsSection';
+import { ContactTimeline } from './ContactTimeline';
 
-// Local Components
-
-// Define tab values as constants for maintainability
-const TABS = {
-  NOTES: 'notes',
-  TASKS: 'tasks',
-  TIMELINE: 'timeline',
-} as const;
-
+const TABS = { NOTES: 'notes', TASKS: 'tasks', TIMELINE: 'timeline' } as const;
 type TabValue = (typeof TABS)[keyof typeof TABS];
 
-// Constants for enrichment status values
-const ENRICHMENT_STATUS = {
-  COMPLETED: 'completed',
-  PENDING: 'pending',
-  FAILED: 'failed',
-} as const;
-
-
 /**
- * ContactDetailView Component
- *
- * Displays and manages a single contact's details, including viewing, editing, and deleting.
- * Uses tRPC for data fetching and mutations.
+ * NotesEditSection Component
+ * A self-contained component for inline note editing, using 'sonner' for notifications.
  */
+function NotesEditSection({ contactId, initialNotes }: { contactId: string; initialNotes: string | null }) {
+  const utils = api.useUtils();
+  const [isEditing, setIsEditing] = useState(false);
+  const [notes, setNotes] = useState(initialNotes || '');
+  const [isPending, startTransition] = useTransition();
+
+  // You will need to create this new mutation in your tRPC router.
+  // It should take `{ contactId: string, notes: string }` and update the contact.
+  const updateNotesMutation = api.contacts.updateNotes.useMutation({
+    onSuccess: async () => {
+      // Using sonner's success method
+      toast.success("Notes Updated", { description: "Your changes have been saved." });
+      await utils.contacts.getById.invalidate({ contactId });
+      setIsEditing(false);
+    },
+    onError: (error) => {
+      // Using sonner's error method
+      toast.error("Update Failed", { description: `Failed to update notes: ${error.message}` });
+    },
+  });
+
+  const handleSave = () => {
+    startTransition(() => {
+      updateNotesMutation.mutate({ contactId, notes });
+    });
+  };
+
+  const handleCancel = () => {
+    setNotes(initialNotes || '');
+    setIsEditing(false);
+  };
+
+  return (
+    <div>
+      <div className="flex flex-row items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold text-gray-800">Contact Notes</h3>
+        {!isEditing && (
+          <Button size="sm" variant="outline" onClick={() => setIsEditing(true)}>
+            <Edit className="mr-2 h-4 w-4" /> Edit Notes
+          </Button>
+        )}
+      </div>
+
+      {isEditing ? (
+        <div className="space-y-4">
+          <Textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Add notes about this contact..."
+            rows={8}
+            className="w-full"
+          />
+          <div className="flex justify-end gap-2">
+            <Button variant="ghost" onClick={handleCancel} disabled={isPending}>Cancel</Button>
+            <Button onClick={handleSave} disabled={isPending}>
+              {isPending ? "Saving..." : "Save Notes"}
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <>
+          {initialNotes ? (
+            <div className="prose max-w-none text-gray-700 whitespace-pre-wrap p-4 bg-gray-50 rounded-md border">
+              {initialNotes}
+            </div>
+          ) : (
+            <div className="text-center py-16 bg-gray-50 rounded-lg">
+              <User className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-800">No notes yet</h3>
+              <p className="text-gray-500 mt-1">Click "Edit Notes" to add important details.</p>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+
 export function ContactDetailView({ contactId }: { contactId: string }) {
   const router = useRouter();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<TabValue>(TABS.NOTES);
 
-  const utils = api.useUtils();
-
-  // Fetch client data
-  const {
-    data: contact,
-    isLoading,
-    error: queryError, // Renamed to avoid conflict with other error states if any
-  } = api.contacts.getById.useQuery(
-    { contactId }, // Use contactId consistently
-    {
-      enabled: !!contactId,
-      retry: 1,
-    }
+  const { data: contact, isLoading, error: queryError } = api.contacts.getById.useQuery(
+    { contactId }, { enabled: !!contactId, retry: 1 }
   );
 
-  useEffect(() => {
-    if (queryError) {
-      console.error('Error fetching contact:', queryError);
-    }
-  }, [queryError]);
-
-  // Delete mutation
   const deleteMutation = api.contacts.delete.useMutation({
     onSuccess: () => {
-      router.push('/contacts');
+        toast.success("Contact Deleted");
+        router.push('/contacts');
     },
     onError: (error) => {
       setDeleteError(`Failed to delete contact: ${error.message}`);
@@ -117,34 +136,29 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
     },
   });
 
-
   const handleDeleteContact = () => {
-    deleteMutation.mutate({ contactId: contact.id });
+    if (contact?.id) deleteMutation.mutate({ contactId: contact.id });
   };
 
-  // Loading state
   if (isLoading) {
     return (
-      <div className="container mx-auto py-8 px-4">
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-        </div>
+      <div className="flex justify-center items-center h-96">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-800"></div>
       </div>
     );
   }
 
-  // Error state
   if (queryError || !contact) {
     return (
       <div className="container mx-auto py-8 px-4">
-        <Alert variant="destructive" className="max-w-4xl mx-auto">
+        <Alert variant="destructive" className="max-w-2xl mx-auto">
           <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
+          <AlertTitle>Error Loading Contact</AlertTitle>
           <AlertDescription>
-            {queryError ? queryError.message : 'Contact not found'}
+            {queryError ? queryError.message : 'The requested contact could not be found.'}
           </AlertDescription>
         </Alert>
-        <div className="flex justify-center mt-8">
+        <div className="text-center mt-6">
           <Button variant="outline" onClick={() => router.push('/contacts')}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Contacts
@@ -155,165 +169,125 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      {/* Delete Error Alert */}
-      {deleteError && (
-        <Alert variant="destructive" className="mb-6">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>{deleteError}</AlertDescription>
-        </Alert>
-      )}
-
-      {/* Header with navigation and actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <Button variant="outline" onClick={() => router.push('/contacts')}>
+    <div className="container mx-auto py-8 px-4 space-y-8">
+      {/* Header with Back Navigation */}
+      <div>
+        <Button variant="ghost" onClick={() => router.push('/contacts')} className="text-gray-600 hover:text-gray-900 mb-4">
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Contacts
+          All Contacts
         </Button>
-        <div className="flex space-x-2">
-          <Button variant="outline" onClick={() => router.push(`/contacts/${contactId}/edit`)}>
-            <Edit className="mr-2 h-4 w-4" />
-            Edit Contact
+        {deleteError && (
+          <Alert variant="destructive" className="mb-6">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>{deleteError}</AlertDescription>
+          </Alert>
+        )}
+      </div>
+
+      {/* Contact Header with Title and Action Buttons */}
+      <div className="bg-teal-800 text-white px-6 py-3 flex justify-between items-center rounded-t-lg shadow-md">
+        <h2 className="text-xl font-semibold flex items-center">
+          <User className="h-5 w-5 mr-3" />
+          Contact Details
+        </h2>
+        <div className="flex items-center gap-x-2">
+          <Button variant="ghost" className="text-white hover:bg-teal-700/50" onClick={() => router.push(`/contacts/${contactId}/edit`)}>
+            <Edit className="mr-2 h-4 w-4" /> Edit Contact
           </Button>
-          <Button variant="outline" className="bg-purple-50 text-purple-700 hover:bg-purple-100 hover:text-purple-800">
-            <Sparkles className="mr-2 h-4 w-4" />
-            Enrich Contact
+          <Button variant="outline" className="bg-transparent text-white border-white hover:bg-teal-700/50">
+            <Sparkles className="mr-2 h-4 w-4" /> Enrich Contact
           </Button>
-          <Button
-            variant="destructive"
-            onClick={() => setIsDeleteDialogOpen(true)}
-          >
-            <Trash2 className="mr-2 h-4 w-4" />
-            Delete
+          <Button variant="destructive" className="bg-red-600 hover:bg-red-700" onClick={() => setIsDeleteDialogOpen(true)}>
+            <Trash2 className="mr-2 h-4 w-4" /> Delete
           </Button>
         </div>
       </div>
 
-      {/* Contact Profile Card */}
-      <Card className="mb-8 overflow-hidden">
-        {/* Hero Banner - Reduced height */}
-        <div className="bg-gradient-to-r from-blue-500 to-purple-600 h-16 relative">
-          {/* Status Badge - Positioned in top right */}
-          {contact.enrichment_status && (
-            <div className="absolute top-4 right-4">
-              <Badge
-                className="text-sm px-3 py-1"
-                variant={
-                  contact.enrichment_status === ENRICHMENT_STATUS.COMPLETED
-                    ? 'default'
-                    : contact.enrichment_status === ENRICHMENT_STATUS.PENDING
-                      ? 'outline'
-                      : contact.enrichment_status === ENRICHMENT_STATUS.FAILED
-                        ? 'destructive'
-                        : 'secondary'
-                }
-              >
-                {contact.enrichment_status === ENRICHMENT_STATUS.COMPLETED ? (
-                  <CheckCircle className="mr-1 h-3 w-3" />
-                ) : contact.enrichment_status === ENRICHMENT_STATUS.PENDING ? (
-                  <Clock className="mr-1 h-3 w-3" />
-                ) : contact.enrichment_status === ENRICHMENT_STATUS.FAILED ? (
-                  <XCircle className="mr-1 h-3 w-3" />
-                ) : null}
-                {contact.enrichment_status &&
-                  contact.enrichment_status.charAt(0).toUpperCase() +
-                    contact.enrichment_status.slice(1)}
-              </Badge>
-            </div>
-          )}
-        </div>
-
-        <CardContent className="pt-4">
-          <div className="flex flex-col md:flex-row gap-6 mb-6">
-            {/* Avatar Section */}
-            <div className="flex flex-col items-center">
+      {/* Main Content with Three-Column Layout */}
+      <div className="bg-white shadow-lg rounded-b-lg border border-gray-200 p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8">
+          {/* === COLUMN 1: PRIMARY INFO === */}
+          <div className="space-y-6 lg:pr-8">
+            <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
               <CustomAvatarImage
                 src={contact.profile_image_url}
                 alt={contact.full_name || 'Contact'}
                 size="xl"
-                className="h-24 w-24 border-4 border-white shadow-lg"
+                className="h-28 w-28 mb-4 shadow-lg border-4 border-white"
               />
+              <h1 className="text-3xl font-bold text-gray-900">{contact.full_name}</h1>
+              {contact.job_title && <p className="text-lg text-gray-500">{contact.job_title}</p>}
             </div>
 
-            {/* Main Info Column */}
-            <div className="flex-1">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Left Column - Basic Contact Info */}
-                <div>
-                  <h1 className="text-2xl font-bold mb-2">{contact.full_name}</h1>
-                  <div className="space-y-2">
-                    {contact.email && (
-                      <div className="flex items-center">
-                        <Mail className="h-4 w-4 mr-2 text-muted-foreground" />
-                        <a
-                          href={`mailto:${contact.email}`}
-                          className="text-blue-600 hover:underline"
-                        >
-                          {contact.email}
-                        </a>
-                      </div>
-                    )}
-
-                    {contact.phone && (
-                      <div className="flex items-center">
-                        <Phone className="h-4 w-4 mr-2 text-muted-foreground" />
-                        <a
-                          href={`tel:${contact.phone}`}
-                          className="text-blue-600 hover:underline"
-                        >
-                          {contact.phone}
-                        </a>
-                      </div>
-                    )}
-
-                    {contact.job_title && (
-                      <div className="flex items-center">
-                        <Briefcase className="h-4 w-4 mr-2 text-muted-foreground" />
-                        <span>{contact.job_title}</span>
-                      </div>
-                    )}
-
-                    {contact.company_name && (
-                      <div className="flex items-center">
-                        <Building className="h-4 w-4 mr-2 text-muted-foreground" />
-                        <span>{contact.company_name}</span>
-                      </div>
-                    )}
-                    
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {contact.source && (
-                        <Badge variant="outline" className="flex items-center gap-1">
-                          <Tag className="h-3 w-3" />
-                          {contact.source}
-                        </Badge>
-                      )}
-                      {contact.last_contacted_at && (
-                        <Badge
-                          variant="secondary"
-                          className="flex items-center gap-1"
-                        >
-                          <Clock className="h-3 w-3" />
-                          Last contact: {formatDateTime(contact.last_contacted_at)}
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
+            <div className="space-y-4 pt-4 border-t border-gray-200">
+              <h3 className="text-base font-semibold text-gray-800">Contact & Professional</h3>
+              <div className="space-y-3">
+                <div className="flex items-center">
+                  <Mail className="h-4 w-4 mr-3 text-gray-400" />
+                  <a href={`mailto:${contact.email}`} className="text-teal-700 hover:underline">{contact.email}</a>
                 </div>
-                
-                {/* Right Column - AI Enriched Data */}
-                {contact.enriched_data && Object.keys(contact.enriched_data).length > 0 && (
-                  <div className="bg-purple-50 p-3 rounded-md border border-purple-100">
-                    <h3 className="text-sm font-medium text-purple-800 flex items-center mb-2">
-                      <Sparkles className="h-4 w-4 mr-1" />
-                      AI Enriched Data
-                    </h3>
-                    <div className="space-y-2 text-sm">
-                      {Object.entries(contact.enriched_data as Record<string, any>).map(([key, value]) => (
-                        <div key={key}>
-                          <span className="font-medium text-purple-700">{key.replace(/_/g, ' ')}:</span>{' '}
-                          <span className="text-gray-700">{typeof value === 'string' ? value : JSON.stringify(value)}</span>
-                        </div>
+                {contact.phone && (
+                  <div className="flex items-center">
+                    <Phone className="h-4 w-4 mr-3 text-gray-400" />
+                    <span>{contact.phone}</span>
+                    {contact.phone_country_code && <span className="text-gray-500 ml-1">({contact.phone_country_code})</span>}
+                  </div>
+                )}
+                {contact.company_name && (
+                  <div className="flex items-center">
+                    <Building className="h-4 w-4 mr-3 text-gray-400" />
+                    <span>{contact.company_name}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* === COLUMN 2: LOCATION & ONLINE PRESENCE === */}
+          <div className="space-y-6 pt-6 md:pt-0 lg:px-8 lg:border-l lg:border-r border-gray-200">
+            {contact.address_street || contact.address_city || contact.address_postal_code || contact.address_country ? (
+              <div className="space-y-4">
+                <h3 className="text-base font-semibold text-gray-800">Location</h3>
+                <div className="space-y-3">
+                  {contact.address_street && (
+                    <div className="flex items-center">
+                      <Home className="h-4 w-4 mr-3 text-gray-400" />
+                      <span>{contact.address_street}</span>
+                    </div>
+                  )}
+                  {contact.address_city && (
+                    <div className="flex items-center">
+                      <MapPin className="h-4 w-4 mr-3 text-gray-400" />
+                      <span>{contact.address_city}</span>
+                      {contact.address_postal_code && <span className="ml-1">{contact.address_postal_code}</span>}
+                    </div>
+                  )}
+                  {contact.address_country && (
+                    <div className="flex items-center">
+                      <Globe className="h-4 w-4 mr-3 text-gray-400" />
+                      <span>{contact.address_country}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : null}
+
+            <div className="space-y-4 pt-4 border-t border-gray-200">
+              <h3 className="text-base font-semibold text-gray-800">Online Presence</h3>
+              <div className="space-y-3">
+                {contact.website && (
+                  <div className="flex items-center">
+                    <ExternalLink className="h-4 w-4 mr-3 text-gray-400" />
+                    <a href={contact.website} target="_blank" rel="noopener noreferrer" className="text-teal-700 hover:underline">{contact.website}</a>
+                  </div>
+                )}
+                {contact.social_handles && contact.social_handles.length > 0 && (
+                  <div className="flex items-start">
+                    <LinkIcon className="h-4 w-4 mr-3 text-gray-400 mt-1" />
+                    <div className="flex flex-col">
+                      {contact.social_handles.map((handle: string, index: number) => (
+                        <span key={index} className="text-gray-700">{handle}</span>
                       ))}
                     </div>
                   </div>
@@ -321,145 +295,121 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
 
-      {/* Tabs for different sections */}
-      <Tabs
-        value={activeTab}
-        onValueChange={(value) => setActiveTab(value as TabValue)}
-        className="w-full"
-      >
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value={TABS.NOTES}>Notes</TabsTrigger>
-          <TabsTrigger value={TABS.TASKS}>Tasks</TabsTrigger>
-          <TabsTrigger value={TABS.TIMELINE}>Timeline</TabsTrigger>
-        </TabsList>
-
-        {/* Notes Tab */}
-        <TabsContent value={TABS.NOTES}>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <div>
-                <CardTitle>Notes</CardTitle>
-                <CardDescription>
-                  Important information and observations about this client
-                </CardDescription>
+          {/* === COLUMN 3: CRM & TAGS === */}
+          <div className="space-y-6 pt-6 lg:pt-0 lg:pl-8">
+            <div className="space-y-4">
+              <h3 className="text-base font-semibold text-gray-800">CRM Data</h3>
+              <div className="space-y-3">
+                {contact.tags && contact.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {contact.tags.map((tag: string, index: number) => (
+                      <Badge key={index} variant="secondary" className="flex items-center gap-1">
+                        <Tag className="h-3 w-3" />{tag}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+                {contact.source && (
+                  <div className="flex items-center">
+                    <Briefcase className="h-4 w-4 mr-3 text-gray-400" />
+                    <span>Source: <Badge variant="outline">{contact.source}</Badge></span>
+                  </div>
+                )}
+                {contact.last_contacted_at && (
+                  <div className="flex items-center">
+                    <Clock className="h-4 w-4 mr-3 text-gray-400" />
+                    <span>Last contact: {formatDateTime(contact.last_contacted_at)}</span>
+                  </div>
+                )}
+                {contact.enrichment_status && (
+                  <div className="flex items-start">
+                    <Sparkles className="h-4 w-4 mr-3 text-gray-400 mt-1" />
+                    <div>
+                      <div className="flex items-center">
+                        <span className="mr-2">Enrichment:</span>
+                        <Badge
+                          className="text-sm"
+                          variant={contact.enrichment_status === 'completed' ? 'default' : 'destructive'}
+                        >
+                          {contact.enrichment_status === 'completed' ? (
+                            <><CheckCircle className="mr-1 h-3 w-3" /> Completed</>
+                          ) : (
+                            <><AlertCircle className="mr-1 h-3 w-3" /> {contact.enrichment_status}</>
+                          )}
+                        </Badge>
+                      </div>
+                      {contact.enriched_data && (
+                        <div className="mt-2 text-sm bg-gray-50 p-2 rounded-md">
+                          {Object.entries(contact.enriched_data || {}).map(([key, value]) => (
+                            <div key={key} className="flex items-start mb-1">
+                              <span className="font-medium mr-1">{key}:</span>
+                              <span>{typeof value === 'string' ? value : JSON.stringify(value)}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => router.push(`/contacts/${contactId}/edit`)}
-              >
-                <Edit className="mr-2 h-4 w-4" />
-                Edit Notes
-              </Button>
-            </CardHeader>
-            <CardContent>
-              {contact.notes ? (
-                <div className="prose max-w-none bg-muted/30 p-4 rounded-md">
-                  <p className="whitespace-pre-wrap">{contact.notes}</p>
-                </div>
-              ) : (
-                <div className="text-center py-12">
-                  <User className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-medium">No notes yet</h3>
-                  <p className="text-muted-foreground mt-1">
-                    Click the Edit button to add notes about this contact.
-                  </p>
-                  <Button
-                    className="mt-4"
-                    onClick={() => router.push(`/contacts/${contactId}/edit`)}
-                  >
-                    <Edit className="mr-2 h-4 w-4" />
-                    Add Notes
-                  </Button>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
+            </div>
+          </div>
+        </div>
+      </div>
 
-        {/* Tasks Tab */}
-        <TabsContent value={TABS.TASKS}>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <div>
-                <CardTitle>Tasks</CardTitle>
-                <CardDescription>
-                  Upcoming and completed tasks related to this contact
-                </CardDescription>
-              </div>
-              <Button variant="outline" size="sm" disabled>
-                <Plus className="mr-2 h-4 w-4" />
-                Add Task
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-12">
-                <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-medium">
-                  Task Management Coming Soon
-                </h3>
-                <p className="text-muted-foreground mt-1">
-                  This feature will be available in a future update.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+      {/* --- Tab Structure --- */}
+      <div className="bg-white shadow-lg rounded-lg border border-gray-200 mt-8">
+        <Tabs defaultValue={TABS.NOTES} className="w-full">
+          <TabsList className="grid w-full grid-cols-3 bg-teal-50/50 rounded-t-lg">
+            <TabsTrigger value={TABS.NOTES}>Notes</TabsTrigger>
+            <TabsTrigger value={TABS.TASKS}>Tasks</TabsTrigger>
+            <TabsTrigger value={TABS.TIMELINE}>Timeline</TabsTrigger>
+          </TabsList>
+          
+          <div className="min-h-[400px]">
+            <TabsContent value={TABS.NOTES} className="p-6">
+              <NotesEditSection contactId={contact.id} initialNotes={contact.notes} />
+            </TabsContent>
 
-        {/* Timeline Tab */}
-        <TabsContent value={TABS.TIMELINE} className="space-y-6">
-          <ContactTimeline contactId={contactId} />
-        </TabsContent>
-      </Tabs>
+            <TabsContent value={TABS.TASKS} className="p-6">
+              <div className="flex flex-row items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-800">Tasks</h3>
+                <Button size="sm" variant="outline" disabled>
+                  <Plus className="mr-2 h-4 w-4" /> Add Task
+                </Button>
+              </div>
+              <div className="text-center py-16 bg-gray-50 rounded-lg">
+                <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-800">Task Management Coming Soon</h3>
+                <p className="text-gray-500 mt-1">This feature will be available in a future update.</p>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value={TABS.TIMELINE} className="p-6">
+              <ContactTimeline contactId={contactId} />
+            </TabsContent>
+          </div>
+        </Tabs>
+      </div>
 
       {/* Groups Section */}
-      <div className="mt-8">
+      <div className="bg-white shadow-lg rounded-lg border border-gray-200 mt-8 p-6">
         <ContactGroupsSection contactId={contactId} />
       </div>
 
-
       {/* Delete Confirmation Dialog */}
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>Delete Contact</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete this contact? This action cannot
-              be undone.
-            </DialogDescription>
+            <DialogDescription>Are you sure you want to delete this contact? This action cannot be undone.</DialogDescription>
           </DialogHeader>
-          <div className="py-4">
-            <p className="text-sm text-muted-foreground">
-              This will permanently delete{' '}
-              <span className="font-semibold">{contact.full_name}</span> and all
-              associated data.
-            </p>
-          </div>
+          <p className="text-sm text-muted-foreground">This will permanently delete <span className="font-semibold">{contact.full_name}</span>.</p>
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setIsDeleteDialogOpen(false)}
-              disabled={deleteMutation.isPending}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={handleDeleteContact}
-              disabled={deleteMutation.isPending}
-            >
-              {deleteMutation.isPending ? (
-                <>
-                  <div className="animate-spin mr-2 h-4 w-4 border-2 border-current border-t-transparent rounded-full"></div>
-                  Deleting...
-                </>
-              ) : (
-                <>Delete Contact</>
-              )}
+            <Button type="button" variant="outline" onClick={() => setIsDeleteDialogOpen(false)} disabled={deleteMutation.isPending}>Cancel</Button>
+            <Button variant="destructive" onClick={handleDeleteContact} disabled={deleteMutation.isPending}>
+              {deleteMutation.isPending ? 'Deleting...' : 'Delete Contact'}
             </Button>
           </DialogFooter>
         </DialogContent>

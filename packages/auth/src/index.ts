@@ -7,6 +7,6 @@
  */
 
 // Re-export from the new location in apps/web
-export { AuthProvider, useAuth } from '@/provider';
+export { AuthProvider, useAuth } from '@/Provider';
 // If AuthContext needs to be exported directly for some advanced use cases:
 // export { AuthContext } from '@/provider';

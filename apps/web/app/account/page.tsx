@@ -27,7 +27,7 @@ const MIN_PASSWORD_LENGTH = 6;
 const ROUTES = {
   signIn: '/log-in',
   dashboard: '/dashboard',
-};
+} as const;
 
 // Message state management with useReducer
 type MessageState = {

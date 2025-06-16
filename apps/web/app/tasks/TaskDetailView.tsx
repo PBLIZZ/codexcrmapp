@@ -66,7 +66,7 @@ export function TaskDetailView({
   })() : null;
   
   // Set up swipe handlers for mobile
-  const swipeHandlers = useSwipeable({
+  const { ref: swipeRef, ...swipeHandlers } = useSwipeable({
     onSwipedLeft: () => {
       // Swipe left to delete
       setShowDeleteConfirm(true);
@@ -164,7 +164,13 @@ export function TaskDetailView({
           
           {/* Swipeable content area */}
           <div 
-            ref={swipeableRef}
+            ref={(node) => {
+              swipeableRef.current = node;
+              // Attach swipeable's ref as well
+              if (typeof swipeRef === 'function') {
+                swipeRef(node);
+              }
+            }}
             {...swipeHandlers}
             className="touch-pan-y"
           >
