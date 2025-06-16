@@ -240,7 +240,7 @@ export const groupRouter = router({
         {
           group_id: input.groupId,
           contact_id: input.contactId,
-          user_id: ctx.user.id,
+          // user_id field removed as it doesn't exist in the table schema
         },
       ]);
 

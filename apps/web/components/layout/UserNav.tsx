@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuth } from '@codexcrm/auth';
+import { useAuth } from '@/app/Providers';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 

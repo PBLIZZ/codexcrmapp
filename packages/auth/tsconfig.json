@@ -5,8 +5,8 @@
     "declaration": true,
     "declarationMap": true,
     "composite": true,
-    "rootDir": "../.."
+    "rootDir": "src"
   },
-  "include": ["src", "../../apps/web/Provider.tsx"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
 }

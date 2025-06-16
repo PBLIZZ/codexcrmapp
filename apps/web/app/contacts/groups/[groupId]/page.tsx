@@ -1,7 +1,7 @@
 // apps/web/app/groups/[groupId]/page.tsx
 // Server component for group-specific contacts view
 // Authentication handled by middleware
-import { ContactsContent } from '@/app/contacts/ContactsContent';
+import { ContactsView } from '@/app/contacts/ContactsView';
 
 interface GroupDetailPageProps {
   params: Promise<{ groupId: string }>;
@@ -12,5 +12,5 @@ export default async function GroupDetailPage(
 ) {
   const params = await props.params;
   // Render the contacts view pre-filtered to the given group
-  return <ContactsContent initialGroupId={params.groupId} />;
+  return <ContactsView initialGroupId={params.groupId} />;
 }
