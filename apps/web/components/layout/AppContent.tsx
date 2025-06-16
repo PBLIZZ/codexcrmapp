@@ -9,9 +9,7 @@ import { AUTH_PAGES, DASHBOARD_PATH, LOG_IN_PATH } from '@codexcrm/config';
 
 // Import UI components
 import { LoadingSpinner } from '@codexcrm/ui';
-import { MainLayout } from './MainLayout'; // Assumes MainLayout is in the same directory
-import { SidebarProvider } from '@/components/ui/sidebar';
-
+import MainLayout from '@/components/layout/MainLayout'; 
 /**
  * AppContent - The Client-Side Brains of the Layout
  *
@@ -30,7 +28,8 @@ export function AppContent({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   // 2. Determine the type of page based on the current path
-  const isAuthPage = AUTH_PAGES.includes(pathname);
+  // Check if the current path is in the AUTH_PAGES array
+  const isAuthPage = (AUTH_PAGES as readonly string[]).includes(pathname);
   
   // Any page that is NOT an auth page is considered a protected page
   const isProtectedPage = !isAuthPage;
@@ -45,7 +44,7 @@ export function AppContent({ children }: { children: React.ReactNode }) {
     // Scenario 1: User is logged in but is on an authentication page (e.g., /log-in).
     // Redirect them to the main application dashboard.
     if (user && isAuthPage) {
-      router.replace(DASHBOARD_PATH);
+      router.replace('/');
     }
 
     // Scenario 2: User is not logged in and is trying to access a protected page.
@@ -67,9 +66,7 @@ export function AppContent({ children }: { children: React.ReactNode }) {
   // The `user` object is now available to any component inside MainLayout via the `useAuth()` hook.
   if (user && isProtectedPage) {
     return (
-      <SidebarProvider>
         <MainLayout>{children}</MainLayout>
-      </SidebarProvider>
     );
   }
 

@@ -2,6 +2,8 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import type { Route } from 'next';
+import { createRoute } from '@/lib/utils/routes';
 import * as React from 'react';
 
 // UI and Icon Imports
@@ -56,7 +58,7 @@ export function MobileMenu() {
             {mainNavItems.map((item) => (
               <SheetClose asChild key={item.href}>
                 <Link
-                  href={item.href}
+                  href={item.href as Route}
                   className={cn(
                     'flex items-center gap-3 rounded-md px-3 py-2 text-lg font-medium transition-colors', // Made text slightly larger for mobile tap targets
                     pathname.startsWith(item.href)

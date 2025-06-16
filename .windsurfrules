@@ -7,12 +7,15 @@ You are an expert full-stack developer focused on producing clear, readable, and
 **Your immediate focus is to help complete Sprint 1 tasks, primarily by resolving the existing build errors (`Module not found`, TypeScript issues) and getting the initial `clientRouter` tRPC endpoint fully wired and functional.** Implement fixes incrementally and verify them. Do NOT introduce new features or large refactors until the build is stable.
 
 ## Technical Preferences & Practices
-1.  **Component Architecture:**
-    *   **Favor Server Components:** Use React Server Components (RSCs) by default for data fetching, routing logic, and non-interactive UI.
-    *   **Isolate Client Components:** Use `'use client'` directives *only* when necessary (for hooks like `useState`, `useEffect`, event handlers, or libraries requiring browser APIs like TanStack Query's `useQuery`). Keep Client Components small and push them down the component tree (pass data down as props from Server Components).
-    *   **Naming:** Use **PascalCase** for component file names AND function/variable names (e.g., `ClientTable.tsx`, `function ClientTable() {}`). **Do NOT use kebab-case.**
-    *   **Exports:** Prefer **named exports** for components (`export function MyComponent...`).
-2.  **Data Fetching & Handling:**
+
+### Component Architecture
+
+*   **Favor Server Components:** Use React Server Components (RSCs) by default for data fetching, routing logic, and non-interactive UI.
+*   **Isolate Client Components:** Use `'use client'` directives *only* when necessary (for hooks like `useState`, `useEffect`, event handlers, or libraries requiring browser APIs like TanStack Query's `useQuery`). Keep Client Components small and push them down the component tree (pass data down as props from Server Components).
+*   **Naming:** Use **PascalCase** for component file names AND function/variable names (e.g., `ClientTable.tsx`, `function ClientTable() {}`). **Do NOT use kebab-case.**
+*   **Exports:** Prefer **named exports** for components (`export function MyComponent...`).
+
+### Data Fetching & Handling
     *   **Server-Side:** Fetch data directly in Server Components using Supabase client helpers (e.g., from `@/lib/auth/actions.ts`) or via Server Actions.
     *   **Client-Side:** Use **TanStack Query v5 hooks** integrated with **tRPC** (`api.routerName.procedureName.useQuery()`, `useMutation()`) for fetching/mutating data interactively in Client Components.
     *   **Form Mutations:** For forms that trigger mutations, use Server Actions. In the Client Component containing the form, use the new React 19 hooks to manage state:
@@ -20,68 +23,205 @@ You are an expert full-stack developer focused on producing clear, readable, and
         *   `useFormStatus` to disable buttons or show spinners while the form is submitting.
         *   `useOptimistic` for instantaneous UI updates while the mutation is in flight. 
 
-        Example:
-        // in a Server Action file: actions.ts
-        'use server';
-        import { z } from 'zod';
+### Server Actions Example
 
-        export async function updateUser(previousState: any, formData: FormData) {
-          const schema = z.object({ name: z.string().min(1) });
-          const validated = schema.safeParse({ name: formData.get('name') });
-  
-          if (!validated.success) {
-            return { message: 'Name is required.' };
-          }
-  
-          // ... database logic to update user ...
-  
-          return { message: 'User updated successfully!' };
-        }
+* Server Action (actions.ts)
+```typescript
+'use server';
+import { z } from 'zod';
 
-        // in a Client Component file: UpdateUserForm.tsx
-        'use client';
-        import { useActionState } from 'react';
-        import { useFormStatus } from 'react-dom';
-        import { updateUser } from './actions';
+export async function updateUser(previousState: any, formData: FormData) {
+  const schema = z.object({ name: z.string().min(1) });
+  const validated = schema.safeParse({ name: formData.get('name') });
 
-        function SubmitButton() {
-          const { pending } = useFormStatus();
-          return <button type="submit" disabled={pending}>{pending ? 'Saving...' : 'Save'}</button>;
-        }
+  if (!validated.success) {
+    return { message: 'Name is required.' };
+  }
 
-        export function UpdateUserForm() {
-          const [state, formAction] = useActionState(updateUser, { message: null });
-  
-          return (
-            <form action={formAction}>
-              <input type="text" name="name" />
-              <SubmitButton />
-              {state?.message && <p>{state.message}</p>}
-            </form>
-          );
-        }
+  // ... database logic to update user ...
 
-    *   **Loading/Error States:** Always implement clear loading and error states for client-side data fetching.
-        * Use isPending for the initial data load (e.g., show a skeleton placeholder).
-        * Use isFetching for background refetches (e.g., show a subtle loading spinner).
-        * Use isError to display a user-friendly error message with a retry option. 
-    *   **Validation:** Use **Zod** for data validation, especially for tRPC inputs and potentially form inputs.
-3.  **Styling & UI:**
-    *   Use **Tailwind CSS** utility classes for all styling. Follow configuration in `apps/web/tailwind.config.ts`.
-    *   Utilize **Shadcn UI** components (`import { Button } from '@/components/ui/button'`, etc.) for the UI library. Follow its usage patterns.
-    *   Use semantic HTML elements (`<nav>`, `<main>`, `<article>`, `<button>`, etc.).
-4.  **TypeScript:**
-    *   Adhere strictly to TypeScript (`strict: true`). Avoid `any`.
-    *   Use explicit types/interfaces. Prefer `type` for object shapes/functions, `interface` for declaration merging needs.
-    *   Do not use `enum`; use string literal unions or `as const` objects.
-5.  **General Coding:**
-    *   Write functional, declarative code. Avoid classes.
-    *   Prioritize readability and maintainability.
-    *   Be explicit (e.g., `isLoading` boolean variables).
-    *   Structure component files logically (e.g., main export, types, sub-components, helpers).
+  return { message: 'User updated successfully!' };
+}
+```
+
+### Client Component (UpdateUserForm.tsx)
+
+```typescript
+'use client';
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
+    import { updateUser } from './actions';
+
+    function SubmitButton() {
+      const { pending } = useFormStatus();
+      return <button type="submit" disabled={pending}>{pending ? 'Saving...' : 'Save'}</button>;
+    }
+
+    export function UpdateUserForm() {
+      const [state, formAction] = useActionState(updateUser, { message: null });
+
+      return (
+        <form action={formAction}>
+          <input type="text" name="name" />
+          <SubmitButton />
+          {state?.message && <p>{state.message}</p>}
+        </form>
+      );
+    }
+```
+
+### Styling & UI
+
+*   Use **Tailwind CSS** utility classes for all styling. Follow configuration in `apps/web/tailwind.config.ts`.
+*   Utilize **Shadcn UI** components (`import { Button } from '@/components/ui/button'`, etc.) for the UI library. Follow its usage patterns.
+*   Use semantic HTML elements (`<nav>`, `<main>`, `<article>`, `<button>`, etc.).
+
+### TypeScript
+
+*   Adhere strictly to TypeScript (`strict: true`). Avoid `any`.
+*   Use explicit types/interfaces. Prefer `type` for object shapes/functions, `interface` for declaration merging needs.
+*   Do not use `enum`; use string literal unions or `as const` objects.
+
+### General Coding
+
+*   Write functional, declarative code. Avoid classes.
+*   Prioritize readability and maintainability.
+*   Be explicit (e.g., `isLoading` boolean variables).
+*   Structure component files logically (e.g., main export, types, sub-components, helpers).
     *   Implement requested functionality completely. Do not leave `// TODO` comments or placeholders or memories to deal with supposed unrelated issues later.  Either fix them now or create or update a task in taskmaster to capture the taskl correctly and give it a high priority. 
     *   Do not leave any code that is not used or that is not needed unless specifically asked to.
     *   Do not comment out code that is causing a lint error or a build error. Instead, fix underlying issue.
+
+## Error Handling
+
+These examples should be used as guidance when configuring Sentry functionality within a project.
+
+  # Exception Catching
+
+  * Use `Sentry.captureException(error)` to capture an exception and log the error in Sentry.
+  * Use this in try catch blocks or areas where exceptions are expected
+
+  # Tracing Examples
+
+  * Spans should be created for meaningful actions within an applications like button clicks, API calls, and function calls
+  * Use the `Sentry.startSpan` function to create a span
+  * Child spans can exist within a parent span
+
+  ## Custom Span instrumentation in component actions
+
+  * The `name` and `op` properties should be meaninful for the activities in the call.
+  * Attach attributes based on relevant information and metrics from the request
+
+  ```javascript
+  function TestComponent() {
+    const handleTestButtonClick = () => {
+      // Create a transaction/span to measure performance
+      Sentry.startSpan(
+        {
+          op: "ui.click",
+          name: "Test Button Click",
+        },
+        (span) => {
+          const value = "some config";
+          const metric = "some metric";
+
+          // Metrics can be added to the span
+          span.setAttribute("config", value);
+          span.setAttribute("metric", metric);
+
+          doSomething();
+        },
+      );
+    };
+
+    return (
+      <button type="button" onClick={handleTestButtonClick}>
+        Test Sentry
+      </button>
+    );
+  }
+  ```
+
+  ## Custom span instrumentation in API calls
+
+  The `name` and `op` properties should be meaninful for the activities in the call.
+  Attach attributes based on relevant information and metrics from the request
+
+  ```javascript
+  async function fetchUserData(userId) {
+    return Sentry.startSpan(
+      {
+        op: "http.client",
+        name: `GET /api/users/${userId}`,
+      },
+      async () => {
+        const response = await fetch(`/api/users/${userId}`);
+        const data = await response.json();
+        return data;
+      },
+    );
+  }
+  ```
+
+  # Logs
+
+  Where logs are used, ensure Sentry is imported using `import * as Sentry from "@sentry/nextjs"`
+  Enable logging in Sentry using `Sentry.init({ _experiments: { enableLogs: true } })`
+  Reference the logger using `const { logger } = Sentry`
+  Sentry offers a consoleLoggingIntegration that can be used to log specific console error types automatically without instrumenting the individual logger calls
+
+  ## Configuration
+
+  In NextJS the client side Sentry initialization is in `instrumentation-client.ts`, the server initialization is in `sentry.edge.config.ts` and the edge initialization is in `sentry.server.config.ts`
+  Initialization does not need to be repeated in other files, it only needs to happen the files mentioned above. You should use `import * as Sentry from "@sentry/nextjs"` to reference Sentry functionality
+
+  ### Baseline
+
+  ```javascript
+  import * as Sentry from "@sentry/nextjs";
+
+  Sentry.init({
+    dsn: "https://examplePublicKey@o0.ingest.sentry.io/0",
+
+    _experiments: {
+      enableLogs: true,
+    },
+  });
+  ```
+
+  ### Logger Integration
+
+  ```javascript
+  Sentry.init({
+    dsn: "https://examplePublicKey@o0.ingest.sentry.io/0",
+    integrations: [
+      // send console.log, console.error, and console.warn calls as logs to Sentry
+      Sentry.consoleLoggingIntegration({ levels: ["log", "error", "warn"] }),
+    ],
+  });
+  ```
+
+  ## Logger Examples
+
+  `logger.fmt` is a template literal function that should be used to bring variables into the structured logs.
+
+  ```javascript
+  logger.trace("Starting database connection", { database: "users" });
+  logger.debug(logger.fmt`Cache miss for user: ${userId}`);
+  logger.info("Updated profile", { profileId: 345 });
+  logger.warn("Rate limit reached for endpoint", {
+    endpoint: "/api/results/",
+    isEnterprise: false,
+  });
+  logger.error("Failed to process payment", {
+    orderId: "order_123",
+    amount: 99.99,
+  });
+  logger.fatal("Database connection pool exhausted", {
+    database: "users",
+    activeConnections: 100,
+  });
+  ```
 
 ## Interaction Style
 -   Reference specific file names (`apps/web/app/page.tsx`, `packages/server/src/router/client.ts`) when discussing changes.

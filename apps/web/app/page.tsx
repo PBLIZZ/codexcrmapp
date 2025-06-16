@@ -1,16 +1,21 @@
+import { DashboardWidgets } from './dashboard/components/DashboardWidgets';
+
 /**
- * Home Page - Entry Point of the Application
- * 
- * This is the first page that gets loaded when a user visits the root URL of the application.
- * Instead of rendering content, it automatically redirects to the dashboard page.
- * This follows the pattern of having a central dashboard as the main interface after login.
- * 
- * Date: June 11, 2025
+ * The primary page for the application, serving as the main dashboard.
+ *
+ * This Server Component defines the content for the root URL ('/'). It is responsible
+ * for orchestrating the layout of the main dashboard widgets.
  */
+export default function DashboardPage() {
 
-import { redirect } from 'next/navigation';
-
-export default function Home() {
-  // Redirect to the dashboard
-  redirect('/dashboard');
+  return (
+    // This root div will fill the <SidebarInset> area provided by MainLayout.
+    <div className="flex flex-col h-full">
+      {/* The <main> tag contains the primary content for this page. */}
+      <main className="flex-1 overflow-y-auto p-4 md:p-6">
+        {/* Render the container for all dashboard widgets. */}
+        <DashboardWidgets />
+      </main>
+    </div>
+  );
 }

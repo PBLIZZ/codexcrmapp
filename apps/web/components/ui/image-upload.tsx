@@ -241,7 +241,7 @@ export function ImageUpload({
                 </div>
               ) : (
                 <Image
-                  src={previewUrl}
+                  src={previewUrl?.startsWith('/') || previewUrl?.startsWith('http') ? previewUrl : `/${previewUrl}`}
                   alt="Contact avatar"
                   fill
                   style={{ objectFit: 'cover' }}

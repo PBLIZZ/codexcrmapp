@@ -133,7 +133,7 @@ export function ResetPasswordContent() {
 
         // Redirect after a short delay
         setTimeout(() => {
-          router.push('/sign-in');
+          router.push('/log-in');
         }, 3000);
       }
     } catch (err) {
@@ -212,7 +212,7 @@ export function ResetPasswordContent() {
                 Please check your email for a password reset link, or request a
                 new one.
               </p>
-              <Link href="/sign-in" className="text-blue-600 hover:underline">
+              <Link href="/log-in" className="text-blue-600 hover:underline">
                 Return to sign in
               </Link>
             </div>
@@ -221,7 +221,7 @@ export function ResetPasswordContent() {
 
         <CardFooter className="flex justify-center">
           <Link
-            href="/sign-in"
+            href="/log-in"
             className="text-sm text-gray-500 hover:underline"
           >
             Return to sign in

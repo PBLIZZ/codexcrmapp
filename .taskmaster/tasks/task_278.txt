@@ -1,0 +1,37 @@
+# Task ID: 278
+# Title: Create DashboardSidebar.tsx using Demo Content
+# Status: done
+# Dependencies: 277
+# Priority: medium
+# Description: Create the specific sidebar for the Dashboard section using placeholder navigation components that were downloaded with the sidebar-07 block.
+# Details:
+1. Create a new file at `apps/web/components/layout/sidebars/DashboardSidebar.tsx`
+2. Import the necessary components from ui/sidebar.tsx: `SidebarHeader`, `SidebarContent`, and `SidebarFooter`
+3. Import the placeholder navigation components: `NavMain` and `NavProjects`
+4. Structure the component as follows:
+```tsx
+export function DashboardSidebar() {
+  return (
+    <>
+      <SidebarHeader>
+        {/* Brand logo/name */}
+        <SidebarTrigger />
+      </SidebarHeader>
+      <SidebarContent>
+        <NavMain />
+        <NavProjects />
+      </SidebarContent>
+      <SidebarFooter>
+        <UserNav />
+      </SidebarFooter>
+    </>
+  );
+}
+```
+5. Ensure the component is exported properly for use in the AppSidebarController
+
+# Test Strategy:
+1. Verify that the DashboardSidebar component renders without errors
+2. Check that all imported components (NavMain, NavProjects, etc.) display correctly
+3. Test the sidebar's responsiveness and interaction with the SidebarTrigger
+4. Ensure the UserNav component in the footer functions as expected

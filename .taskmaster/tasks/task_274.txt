@@ -1,0 +1,11 @@
+# Task ID: 274
+# Title: Implement Shared Constants and Configuration Package
+# Status: pending
+# Dependencies: 266
+# Priority: medium
+# Description: Create centralized configuration package with consistent naming for paths, constants, and shared values
+# Details:
+Create @codexcrm/config package with shared constants: AUTH_PAGES, DASHBOARD_PATH, LOG_IN_PATH, API_ENDPOINTS. Use SCREAMING_SNAKE_CASE for constants and camelCase for configuration objects. Setup proper TypeScript exports and imports. Create environment-specific configurations. Implement validation for configuration values using Zod. Setup monorepo workspace configuration in package.json. Create proper tsconfig.json path aliases for easy imports across packages.
+
+# Test Strategy:
+Test imports of shared constants across different packages. Verify TypeScript path resolution works correctly. Test environment-specific configuration loading. Validate configuration values with Zod schemas.

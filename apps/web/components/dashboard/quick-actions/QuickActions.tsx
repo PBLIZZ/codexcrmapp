@@ -25,56 +25,56 @@ export function QuickActions({ className }: QuickActionsProps) {
     {
       title: 'Add Contact',
       icon: UserPlus,
-      href: '/contacts?new=true',
+      href: { pathname: '/contacts', query: { new: 'true' } } as const,
       color: 'text-blue-600',
       bgColor: 'bg-blue-50',
     },
     {
       title: 'Schedule Session',
       icon: Calendar,
-      href: '/calendar/new',
+      href: { pathname: '/calendar/new' } as const,
       color: 'text-purple-600',
       bgColor: 'bg-purple-50',
     },
     {
       title: 'Create Note',
       icon: FileText,
-      href: '/notes/new',
+      href: { pathname: '/notes/new' } as const,
       color: 'text-amber-600',
       bgColor: 'bg-amber-50',
     },
     {
       title: 'Send Message',
       icon: MessageSquare,
-      href: '/messages/new',
+      href: { pathname: '/messages/new' } as const,
       color: 'text-green-600',
       bgColor: 'bg-green-50',
     },
     {
       title: 'Create Group',
       icon: Users,
-      href: '/groups/new',
+      href: { pathname: '/groups/new' } as const,
       color: 'text-teal-600',
       bgColor: 'bg-teal-50',
     },
     {
       title: 'View Reports',
       icon: BarChart,
-      href: '/reports',
+      href: { pathname: '/reports' } as const,
       color: 'text-indigo-600',
       bgColor: 'bg-indigo-50',
     },
     {
       title: 'Bulk Email',
       icon: Send,
-      href: '/email/new',
+      href: { pathname: '/email/new' } as const,
       color: 'text-rose-600',
       bgColor: 'bg-rose-50',
     },
     {
       title: 'Settings',
       icon: Settings,
-      href: '/settings',
+      href: { pathname: '/settings' } as const,
       color: 'text-gray-600',
       bgColor: 'bg-gray-50',
     },
@@ -108,7 +108,7 @@ export function QuickActions({ className }: QuickActionsProps) {
         
         <div className="mt-4">
           <Button variant="outline" className="w-full" asChild>
-            <Link href="/actions">
+            <Link href={{ pathname: '/actions' }}>
               <PlusCircle className="mr-2 h-4 w-4" />
               View All Actions
             </Link>

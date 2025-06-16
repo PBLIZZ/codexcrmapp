@@ -153,7 +153,7 @@ export function BusinessMetricsCard({ className }: BusinessMetricsCardProps) {
         </CardContent>
         <CardFooter>
           <Button variant="outline" size="sm" className="w-full" asChild>
-            <Link href="/calendar">
+            <Link href={{ pathname: '/calendar' }}>
               View Calendar
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
@@ -192,7 +192,7 @@ export function BusinessMetricsCard({ className }: BusinessMetricsCardProps) {
         </CardContent>
         <CardFooter>
           <Button variant="outline" size="sm" className="w-full" asChild>
-            <Link href="/contacts?risk=high">
+            <Link href={{ pathname: '/contacts', query: { risk: 'high' } }}>
               View At-Risk Customers
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
@@ -240,7 +240,7 @@ export function BusinessMetricsCard({ className }: BusinessMetricsCardProps) {
         </CardContent>
         <CardFooter>
           <Button variant="outline" size="sm" className="w-full" asChild>
-            <Link href="/goals">
+            <Link href={{ pathname: '/goals' }}>
               Manage Goals
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>

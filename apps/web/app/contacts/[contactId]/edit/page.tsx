@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { use, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ContactForm, ContactFormData } from '@/app/contacts/ContactForm';
 import { api } from '@/lib/trpc';
@@ -10,21 +10,22 @@ import { ArrowLeft, AlertCircle } from 'lucide-react';
 // Import only the necessary components from your alert file
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
-// 1. Define the props type correctly and simply.
+// Define the props type with proper typing for Next.js 15+
 interface EditContactPageProps {
-  params: {
+  params: Promise<{
     contactId: string;
-  };
+  }>;
 }
 
-// 2. The component now accepts the simplified props type.
+// The component now accepts the props type
 export default function EditContactPage({ params }: EditContactPageProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  // 3. Directly access contactId from the simple params object. No `use()` hook needed here.
-  const { contactId } = params;
+  // Use the contactId directly from params
+  // In Next.js 15+, this is the recommended approach
+  const { contactId } = use(params);
   const utils = api.useUtils();
 
   

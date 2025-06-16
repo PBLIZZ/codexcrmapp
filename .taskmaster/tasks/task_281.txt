@@ -1,0 +1,209 @@
+# Task ID: 281
+# Title: Implement the 5 Dashboard Widget Components
+# Status: done
+# Dependencies: 280
+# Priority: high
+# Description: Create the five individual, self-contained widget components for the dashboard: AiClientInsights, DailyInspirationCard, TherapistCheckIn, UpcomingAppointments, and KeyMetrics.
+# Details:
+1. Create a new folder at `apps/web/app/dashboard/components/widgets/`
+2. Create the following component files:
+
+**AiClientInsights.tsx:**
+```tsx
+'use client';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+// Mock data - replace with actual API call later
+const mockInsights = [
+  { id: 1, title: 'Client Engagement', content: 'Sarah has missed 2 consecutive appointments. Consider reaching out.' },
+  { id: 2, title: 'Treatment Progress', content: 'Alex has shown significant improvement in anxiety symptoms over the last month.' },
+];
+
+export function AiClientInsights() {
+  return (
+    <Card className="h-full">
+      <CardHeader>
+        <CardTitle>AI Client Insights</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Carousel>
+          <CarouselContent>
+            {mockInsights.map((insight) => (
+              <CarouselItem key={insight.id}>
+                <div className="p-1">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-sm font-medium">{insight.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent>{insight.content}</CardContent>
+                  </Card>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+**DailyInspirationCard.tsx:**
+```tsx
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+export function DailyInspirationCard() {
+  return (
+    <Card className="h-full bg-primary/10">
+      <CardHeader>
+        <CardTitle>Daily Inspiration</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col items-center justify-center space-y-4">
+        <blockquote className="text-lg italic text-center">
+          "The good life is a process, not a state of being. It is a direction, not a destination."
+        </blockquote>
+        <cite className="font-medium">— Carl Rogers</cite>
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+**TherapistCheckIn.tsx:**
+```tsx
+'use client';
+import { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+
+export function TherapistCheckIn() {
+  const [mood, setMood] = useState<string | null>(null);
+  const [connections, setConnections] = useState<number | null>(null);
+  
+  return (
+    <Card className="h-full">
+      <CardHeader>
+        <CardTitle>Daily Check-In</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div>
+          <p className="mb-2 font-medium">How are you feeling today?</p>
+          <div className="flex space-x-2">
+            {['Great', 'Good', 'Okay', 'Stressed'].map((option) => (
+              <Button 
+                key={option} 
+                variant={mood === option ? 'default' : 'outline'}
+                onClick={() => setMood(option)}
+                size="sm"
+              >
+                {option}
+              </Button>
+            ))}
+          </div>
+        </div>
+        
+        <div>
+          <p className="mb-2 font-medium">Client connections today:</p>
+          <div className="flex space-x-2">
+            {[0, 1, 2, 3, '4+'].map((option) => (
+              <Button 
+                key={option.toString()} 
+                variant={connections === option ? 'default' : 'outline'}
+                onClick={() => setConnections(typeof option === 'string' ? 4 : option)}
+                size="sm"
+              >
+                {option}
+              </Button>
+            ))}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+**UpcomingAppointments.tsx:**
+```tsx
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+// Mock data - replace with actual API call later
+const mockAppointments = [
+  { id: 1, client: 'Emma Thompson', time: '10:00 AM', type: 'Initial Consultation' },
+  { id: 2, client: 'James Wilson', time: '11:30 AM', type: 'Follow-up' },
+  { id: 3, client: 'Sophia Garcia', time: '2:15 PM', type: 'Therapy Session' },
+];
+
+export function UpcomingAppointments() {
+  return (
+    <Card className="h-full">
+      <CardHeader>
+        <CardTitle>Today's Appointments</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {mockAppointments.map((appointment) => (
+            <div key={appointment.id} className="flex justify-between items-center border-b pb-2">
+              <div>
+                <p className="font-medium">{appointment.client}</p>
+                <p className="text-sm text-muted-foreground">{appointment.type}</p>
+              </div>
+              <div className="text-right">
+                <p className="font-medium">{appointment.time}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+**KeyMetrics.tsx:**
+```tsx
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+// Mock data - replace with actual API call later
+const mockMetrics = [
+  { id: 1, label: 'Weekly Revenue', value: '$2,850', change: '+12%' },
+  { id: 2, label: 'Client Retention', value: '94%', change: '+2%' },
+  { id: 3, label: 'New Clients', value: '6', change: 'Same' },
+];
+
+export function KeyMetrics() {
+  return (
+    <Card className="h-full">
+      <CardHeader>
+        <CardTitle>Key Metrics</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {mockMetrics.map((metric) => (
+            <div key={metric.id} className="flex justify-between items-center">
+              <p className="text-muted-foreground">{metric.label}</p>
+              <div className="text-right">
+                <p className="font-medium text-lg">{metric.value}</p>
+                <p className={`text-xs ${metric.change.includes('+') ? 'text-green-500' : 'text-muted-foreground'}`}>
+                  {metric.change}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+# Test Strategy:
+1. Verify that each widget component renders correctly and matches the design requirements
+2. Test the interactive components (TherapistCheckIn buttons, AiClientInsights carousel) to ensure they function properly
+3. Check that the mock data is displayed correctly in each widget
+4. Verify responsive behavior of each widget on different screen sizes
+5. Test accessibility features like keyboard navigation for interactive elements
+6. Ensure that the components are properly exported and can be imported by the DashboardWidgets container

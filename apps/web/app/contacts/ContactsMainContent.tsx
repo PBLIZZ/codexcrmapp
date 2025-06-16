@@ -5,8 +5,6 @@ import {
   Search,
   SlidersHorizontal,
   Plus,
-  Download,
-  Upload,
   Filter
 } from 'lucide-react';
 import { api } from '@/lib/trpc';

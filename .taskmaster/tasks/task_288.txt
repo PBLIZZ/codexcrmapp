@@ -1,0 +1,25 @@
+# Task ID: 288
+# Title: Identify and Report Dead Code in the Monorepo
+# Status: pending
+# Dependencies: None
+# Priority: medium
+# Description: Run ESLint to detect unused variables and functions with focus on deprecated features and unused business logic across the 8 main sections.
+# Details:
+Execute `npx eslint **/*.tsx --rule 'no-unused-vars: error'` to capture dead code warnings. Parse the ESLint output into a JSON report with file paths, line numbers, and dead code segments. Special focus on identifying unused utility functions, deprecated authentication methods, obsolete sidebar components, unused dashboard widgets, and deprecated notification/toast implementations. Categorize dead code by application section and business impact.
+
+# Test Strategy:
+Validate the report logs unused variables/functions with application context. Check known deprecated authentication and notification features to ensure detection. Verify business logic categorization accuracy.
+
+# Subtasks:
+## 1. Run ESLint with application section focus [pending]
+### Dependencies: None
+### Description: Execute ESLint and capture output with focus on core business logic components
+### Details:
+Run ESLint with no-unused-vars rule and capture output, prioritizing main application sections
+
+## 2. Parse output with business impact categorization [pending]
+### Dependencies: 288.1
+### Description: Structure ESLint output into JSON with application section and business logic assessment
+### Details:
+Parse ESLint output into structured JSON with business impact categories by application section
+

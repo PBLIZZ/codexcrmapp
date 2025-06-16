@@ -19,7 +19,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { TaskCard, Task } from './TaskCard';
+import { TaskCard, Task, TaskStatus } from './TaskCard';
 import { TaskColumn } from './TaskColumn';
 import { api } from '@/lib/trpc';
 
@@ -199,8 +199,8 @@ export function TaskBoard({ initialTasks, selectedCategory }: TaskBoardProps) {
           }));
         
         if (tasksToUpdate.length > 0) {
-          // Update positions in the database
-          updatePositionsMutation.mutate({ tasks: tasksToUpdate });
+          // Update positions in the database - pass array directly
+          updatePositionsMutation.mutate(tasksToUpdate);
         }
       }
     } else {
@@ -234,8 +234,8 @@ export function TaskBoard({ initialTasks, selectedCategory }: TaskBoardProps) {
         
         const tasksToUpdate = [...activeContainerTasks, ...overContainerTasks];
         if (tasksToUpdate.length > 0) {
-          // Update positions in the database
-          updatePositionsMutation.mutate({ tasks: tasksToUpdate });
+          // Update positions in the database - pass array directly
+          updatePositionsMutation.mutate(tasksToUpdate);
         }
       }
     }
@@ -257,16 +257,21 @@ export function TaskBoard({ initialTasks, selectedCategory }: TaskBoardProps) {
     return tasks.findIndex(task => task && task.id === id);
   };
 
-  const getStatusFromContainer = (container: string) => {
-    switch (container) {
-      case 'todo':
-        return 'todo';
-      case 'in-progress':
-        return 'in-progress';
-      case 'done':
-        return 'done';
-      default:
-        return 'todo';
+  const getStatusFromContainer = (containerId: string): TaskStatus => {
+    switch (containerId) {
+      case 'todo': return TaskStatus.TODO;
+      case 'in-progress': return TaskStatus.IN_PROGRESS;
+      case 'done': return TaskStatus.DONE;
+      default: return TaskStatus.TODO;
+    }
+  };
+
+  const getContainerFromStatus = (status: TaskStatus): string => {
+    switch (status) {
+      case TaskStatus.TODO: return 'todo';
+      case TaskStatus.IN_PROGRESS: return 'in-progress';
+      case TaskStatus.DONE: return 'done';
+      default: return 'todo';
     }
   };
 
@@ -294,12 +299,27 @@ export function TaskBoard({ initialTasks, selectedCategory }: TaskBoardProps) {
     return [...otherTasks, ...updatedContainerTasks];
   };
 
-  const updatePositionsInContainers = (tasks: Task[], containers: (string | null)[]) => {
-    let updatedTasks = [...tasks];
+  const updatePositionsInContainers = (tasks: Task[], containerIds: string[]) => {
+    const updatedTasks = [...tasks];
     
-    containers.forEach(container => {
-      if (container) {
-        updatedTasks = updatePositionsInContainer(updatedTasks, container);
+    // For each container, update the positions of its tasks
+    containerIds.forEach(containerId => {
+      const containerTasks = getTasksInContainer(updatedTasks, containerId);
+      const sortedContainerTasks = [...containerTasks].sort((a, b) => a.position - b.position);
+      
+      // Update positions
+      sortedContainerTasks.forEach((task, index) => {
+        const taskIndex = updatedTasks.findIndex(t => t.id === task.id);
+        if (taskIndex !== -1) {
+          updatedTasks[taskIndex] = {
+            ...updatedTasks[taskIndex],
+            position: index + 1
+          };
+        }
+      });
+      if (containerId) {
+        // Use the existing container tasks that were already sorted
+        // No need to call updatePositionsInContainer again
       }
     });
     
@@ -328,7 +348,7 @@ export function TaskBoard({ initialTasks, selectedCategory }: TaskBoardProps) {
     }
   };
 
-  const handleStatusChange = (taskId: string, newStatus: string) => {
+  const handleStatusChange = (taskId: string, newStatus: TaskStatus) => {
     if (!taskId || !newStatus) return;
     
     try {

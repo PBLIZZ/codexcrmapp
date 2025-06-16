@@ -1,0 +1,49 @@
+# Task ID: 283
+# Title: Create Marketing Placeholder Page
+# Status: done
+# Dependencies: 282
+# Priority: low
+# Description: Create the placeholder page for the new Marketing section with a 'Coming Soon' message and a brief preview of future marketing features.
+# Details:
+1. Create a new file at `apps/web/app/marketing/page.tsx`
+2. Import the necessary components including PageHeader
+3. Structure the component as follows:
+```tsx
+import { PageHeader } from '@/components/layout/PageHeader';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+
+export default function MarketingPage() {
+  return (
+    <>
+      <PageHeader breadcrumbs={[{ label: 'Marketing' }]} />
+      <main className="p-4 md:p-6">
+        <Card className="max-w-3xl mx-auto">
+          <CardHeader>
+            <CardTitle>Marketing Hub</CardTitle>
+            <CardDescription>Coming Soon</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p>The Marketing Hub will provide tools to help grow your practice, including:</p>
+            <ul className="list-disc pl-6 space-y-2">
+              <li>Email campaign management</li>
+              <li>Social media scheduling</li>
+              <li>Content creation tools</li>
+              <li>Client acquisition analytics</li>
+              <li>Referral program management</li>
+            </ul>
+            <p className="text-muted-foreground italic mt-6">This section is currently under development and will be available in a future update.</p>
+          </CardContent>
+        </Card>
+      </main>
+    </>
+  );
+}
+```
+4. Ensure the page is properly configured as a Next.js server component
+
+# Test Strategy:
+1. Verify that the Marketing page renders correctly at the /marketing route
+2. Check that the PageHeader displays the correct breadcrumb
+3. Ensure the 'Coming Soon' message and feature preview are displayed correctly
+4. Test navigation to and from the Marketing page to confirm routing is working correctly
+5. Verify the page layout is responsive across different screen sizes

@@ -233,7 +233,7 @@ export function CalendarPreview({ className }: CalendarPreviewProps) {
       </CardContent>
       <CardFooter>
         <Button variant="outline" className="w-full" asChild>
-          <Link href="/calendar">
+          <Link href={{ pathname: '/calendar' }}>
             View Full Calendar
             <ArrowRight className="ml-2 h-4 w-4" />
           </Link>

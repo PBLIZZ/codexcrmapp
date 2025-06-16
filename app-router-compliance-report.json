@@ -1,0 +1,516 @@
+{
+  "timestamp": "2025-06-15T16:59:45.026Z",
+  "task_id": "287",
+  "next_js_version": "15",
+  "app_router_compliance": {
+    "overall_score": {
+      "score": 77,
+      "totalChecks": 31,
+      "passedChecks": 24,
+      "failedChecks": 7
+    },
+    "structure_compliance": {
+      "rootLayout": {
+        "exists": true,
+        "path": "apps/web/app/layout.tsx",
+        "status": "COMPLIANT"
+      },
+      "rootPage": {
+        "exists": true,
+        "path": "apps/web/app/page.tsx",
+        "status": "COMPLIANT"
+      },
+      "globalError": {
+        "exists": true,
+        "path": "apps/web/app/global-error.tsx",
+        "status": "COMPLIANT"
+      },
+      "routeCompliance": [
+        {
+          "route": "/forgot-password",
+          "path": "apps/web/app/(auth)/forgot-password",
+          "hasPage": true,
+          "hasLayout": false,
+          "hasLoading": false,
+          "hasError": false,
+          "files": [
+            "page.tsx"
+          ],
+          "subdirectories": [],
+          "status": "COMPLIANT"
+        },
+        {
+          "route": "/log-in",
+          "path": "apps/web/app/(auth)/log-in",
+          "hasPage": true,
+          "hasLayout": false,
+          "hasLoading": false,
+          "hasError": false,
+          "files": [
+            "page.tsx"
+          ],
+          "subdirectories": [],
+          "status": "COMPLIANT"
+        },
+        {
+          "route": "/reset-password",
+          "path": "apps/web/app/(auth)/reset-password",
+          "hasPage": true,
+          "hasLayout": false,
+          "hasLoading": false,
+          "hasError": false,
+          "files": [
+            "ResetPasswordContent.tsx",
+            "page.tsx"
+          ],
+          "subdirectories": [],
+          "status": "COMPLIANT"
+        },
+        {
+          "route": "/sign-up",
+          "path": "apps/web/app/(auth)/sign-up",
+          "hasPage": true,
+          "hasLayout": false,
+          "hasLoading": false,
+          "hasError": false,
+          "files": [
+            "page.tsx"
+          ],
+          "subdirectories": [
+            "confirmation"
+          ],
+          "status": "COMPLIANT"
+        },
+        {
+          "route": "/sign-up/confirmation",
+          "path": "apps/web/app/(auth)/sign-up/confirmation",
+          "hasPage": true,
+          "hasLayout": false,
+          "hasLoading": false,
+          "hasError": false,
+          "files": [
+            "page.tsx"
+          ],
+          "subdirectories": [],
+          "status": "COMPLIANT"
+        },
+        {
+          "route": "/account",
+          "path": "apps/web/app/account",
+          "hasPage": true,
+          "hasLayout": false,
+          "hasLoading": false,
+          "hasError": false,
+          "files": [
+            "page.tsx"
+          ],
+          "subdirectories": [],
+          "status": "COMPLIANT"
+        },
+        {
+          "route": "/contacts",
+          "path": "apps/web/app/contacts",
+          "hasPage": true,
+          "hasLayout": false,
+          "hasLoading": false,
+          "hasError": false,
+          "files": [
+            "ColumnSelector.tsx",
+            "ContactForm.tsx",
+            "ContactGroupManager.tsx",
+            "ContactGroupTags.tsx",
+            "ContactList.tsx",
+            "ContactsContent.tsx",
+            "ContactsLayout.tsx",
+            "ContactsMainContent.tsx",
+            "ContactsTable.tsx",
+            "ContactsTableClient.tsx",
+            "EnhancedContactList.tsx",
+            "form-components.tsx",
+            "page.tsx"
+          ],
+          "subdirectories": [
+            "[contactId]",
+            "groups",
+            "import",
+            "new"
+          ],
+          "status": "COMPLIANT"
+        },
+        {
+          "route": "/contacts/[contactId]",
+          "path": "apps/web/app/contacts/[contactId]",
+          "hasPage": true,
+          "hasLayout": false,
+          "hasLoading": false,
+          "hasError": false,
+          "files": [
+            "ContactDetailView.tsx",
+            "ContactGroupsSection.tsx",
+            "ContactTimeline.tsx",
+            "page.tsx"
+          ],
+          "subdirectories": [
+            "edit"
+          ],
+          "status": "COMPLIANT"
+        },
+        {
+          "route": "/contacts/[contactId]/edit",
+          "path": "apps/web/app/contacts/[contactId]/edit",
+          "hasPage": true,
+          "hasLayout": false,
+          "hasLoading": false,
+          "hasError": false,
+          "files": [
+            "page.tsx"
+          ],
+          "subdirectories": [],
+          "status": "COMPLIANT"
+        },
+        {
+          "route": "/contacts/groups",
+          "path": "apps/web/app/contacts/groups",
+          "hasPage": true,
+          "hasLayout": false,
+          "hasLoading": false,
+          "hasError": false,
+          "files": [
+            "ContactGroupsPage.tsx",
+            "GroupContactsList.tsx",
+            "GroupsContent.tsx",
+            "page.tsx"
+          ],
+          "subdirectories": [
+            "[groupId]"
+          ],
+          "status": "COMPLIANT"
+        },
+        {
+          "route": "/contacts/groups/[groupId]",
+          "path": "apps/web/app/contacts/groups/[groupId]",
+          "hasPage": true,
+          "hasLayout": false,
+          "hasLoading": false,
+          "hasError": false,
+          "files": [
+            "page.tsx"
+          ],
+          "subdirectories": [],
+          "status": "COMPLIANT"
+        },
+        {
+          "route": "/contacts/import",
+          "path": "apps/web/app/contacts/import",
+          "hasPage": true,
+          "hasLayout": false,
+          "hasLoading": false,
+          "hasError": false,
+          "files": [
+            "page.tsx"
+          ],
+          "subdirectories": [
+            "csv-upload-test"
+          ],
+          "status": "COMPLIANT"
+        },
+        {
+          "route": "/contacts/import/csv-upload-test",
+          "path": "apps/web/app/contacts/import/csv-upload-test",
+          "hasPage": true,
+          "hasLayout": false,
+          "hasLoading": false,
+          "hasError": false,
+          "files": [
+            "page.tsx"
+          ],
+          "subdirectories": [],
+          "status": "COMPLIANT"
+        },
+        {
+          "route": "/contacts/new",
+          "path": "apps/web/app/contacts/new",
+          "hasPage": true,
+          "hasLayout": false,
+          "hasLoading": false,
+          "hasError": false,
+          "files": [
+            "page.tsx"
+          ],
+          "subdirectories": [],
+          "status": "COMPLIANT"
+        },
+        {
+          "route": "/docs",
+          "path": "apps/web/app/docs",
+          "hasPage": true,
+          "hasLayout": false,
+          "hasLoading": false,
+          "hasError": false,
+          "files": [
+            "page.tsx"
+          ],
+          "subdirectories": [],
+          "status": "COMPLIANT"
+        },
+        {
+          "route": "/marketing",
+          "path": "apps/web/app/marketing",
+          "hasPage": true,
+          "hasLayout": false,
+          "hasLoading": false,
+          "hasError": false,
+          "files": [
+            "page.tsx"
+          ],
+          "subdirectories": [
+            "components"
+          ],
+          "status": "COMPLIANT"
+        },
+        {
+          "route": "/tasks",
+          "path": "apps/web/app/tasks",
+          "hasPage": true,
+          "hasLayout": false,
+          "hasLoading": false,
+          "hasError": false,
+          "files": [
+            "BreadcrumbNavigation.tsx",
+            "CategoryViews.tsx",
+            "DraggableTaskList.tsx",
+            "KeyboardShortcuts.tsx",
+            "TaskBoard.tsx",
+            "TaskCard.tsx",
+            "TaskColumn.tsx",
+            "TaskDetailView.tsx",
+            "TaskForm.tsx",
+            "TasksTableClient.tsx",
+            "ThingsTaskCard.tsx",
+            "VirtualizedTaskList.tsx",
+            "page.tsx"
+          ],
+          "subdirectories": [],
+          "status": "COMPLIANT"
+        }
+      ]
+    },
+    "auth_flow_compliance": {
+      "unprotectedAuthRoutes": [],
+      "protectedMainRoutes": [
+        {
+          "path": "apps/web/app/account",
+          "routePath": "/account",
+          "hasPage": true,
+          "hasLayout": false,
+          "hasLoading": false,
+          "hasAuthProtection": true,
+          "compliance": "COMPLIANT"
+        },
+        {
+          "path": "apps/web/app/contacts",
+          "routePath": "/contacts",
+          "hasPage": true,
+          "hasLayout": false,
+          "hasLoading": false,
+          "hasAuthProtection": false,
+          "compliance": "NEEDS_REVIEW"
+        },
+        {
+          "path": "apps/web/app/contacts/[contactId]",
+          "routePath": "/contacts/[contactId]",
+          "hasPage": true,
+          "hasLayout": false,
+          "hasLoading": false,
+          "hasAuthProtection": false,
+          "compliance": "NEEDS_REVIEW"
+        },
+        {
+          "path": "apps/web/app/contacts/[contactId]/edit",
+          "routePath": "/contacts/[contactId]/edit",
+          "hasPage": true,
+          "hasLayout": false,
+          "hasLoading": false,
+          "hasAuthProtection": false,
+          "compliance": "NEEDS_REVIEW"
+        },
+        {
+          "path": "apps/web/app/contacts/groups",
+          "routePath": "/contacts/groups",
+          "hasPage": true,
+          "hasLayout": false,
+          "hasLoading": false,
+          "hasAuthProtection": true,
+          "compliance": "COMPLIANT"
+        },
+        {
+          "path": "apps/web/app/contacts/groups/[groupId]",
+          "routePath": "/contacts/groups/[groupId]",
+          "hasPage": true,
+          "hasLayout": false,
+          "hasLoading": false,
+          "hasAuthProtection": true,
+          "compliance": "COMPLIANT"
+        },
+        {
+          "path": "apps/web/app/contacts/import",
+          "routePath": "/contacts/import",
+          "hasPage": true,
+          "hasLayout": false,
+          "hasLoading": false,
+          "hasAuthProtection": false,
+          "compliance": "NEEDS_REVIEW"
+        },
+        {
+          "path": "apps/web/app/contacts/import/csv-upload-test",
+          "routePath": "/contacts/import/csv-upload-test",
+          "hasPage": true,
+          "hasLayout": false,
+          "hasLoading": false,
+          "hasAuthProtection": false,
+          "compliance": "NEEDS_REVIEW"
+        },
+        {
+          "path": "apps/web/app/contacts/new",
+          "routePath": "/contacts/new",
+          "hasPage": true,
+          "hasLayout": false,
+          "hasLoading": false,
+          "hasAuthProtection": false,
+          "compliance": "NEEDS_REVIEW"
+        },
+        {
+          "path": "apps/web/app/marketing",
+          "routePath": "/marketing",
+          "hasPage": true,
+          "hasLayout": false,
+          "hasLoading": false,
+          "hasAuthProtection": true,
+          "compliance": "COMPLIANT"
+        },
+        {
+          "path": "apps/web/app/tasks",
+          "routePath": "/tasks",
+          "hasPage": true,
+          "hasLayout": false,
+          "hasLoading": false,
+          "hasAuthProtection": false,
+          "compliance": "NEEDS_REVIEW"
+        }
+      ],
+      "authRedirectsPresent": false,
+      "loadingStatesPresent": false
+    },
+    "nested_routing_compliance": {
+      "/contacts": {
+        "expected": [
+          "/contacts/groups",
+          "/contacts/[contactId]",
+          "/contacts/import"
+        ],
+        "actual": [
+          "/contacts/[contactId]",
+          "/contacts/[contactId]/edit",
+          "/contacts/groups",
+          "/contacts/groups/[groupId]",
+          "/contacts/import",
+          "/contacts/import/csv-upload-test",
+          "/contacts/new"
+        ],
+        "parentHasPage": true,
+        "nestedCompliance": [
+          {
+            "route": "/contacts/[contactId]",
+            "hasPage": true,
+            "hasLayout": false,
+            "status": "COMPLIANT"
+          },
+          {
+            "route": "/contacts/[contactId]/edit",
+            "hasPage": true,
+            "hasLayout": false,
+            "status": "COMPLIANT"
+          },
+          {
+            "route": "/contacts/groups",
+            "hasPage": true,
+            "hasLayout": false,
+            "status": "COMPLIANT"
+          },
+          {
+            "route": "/contacts/groups/[groupId]",
+            "hasPage": true,
+            "hasLayout": false,
+            "status": "COMPLIANT"
+          },
+          {
+            "route": "/contacts/import",
+            "hasPage": true,
+            "hasLayout": false,
+            "status": "COMPLIANT"
+          },
+          {
+            "route": "/contacts/import/csv-upload-test",
+            "hasPage": true,
+            "hasLayout": false,
+            "status": "COMPLIANT"
+          },
+          {
+            "route": "/contacts/new",
+            "hasPage": true,
+            "hasLayout": false,
+            "status": "COMPLIANT"
+          }
+        ]
+      },
+      "/tasks": {
+        "expected": [],
+        "actual": [],
+        "parentHasPage": true,
+        "nestedCompliance": []
+      },
+      "/messages": {
+        "expected": [],
+        "actual": [],
+        "parentHasPage": false,
+        "nestedCompliance": []
+      },
+      "/marketing": {
+        "expected": [],
+        "actual": [],
+        "parentHasPage": true,
+        "nestedCompliance": []
+      },
+      "/settings": {
+        "expected": [],
+        "actual": [],
+        "parentHasPage": false,
+        "nestedCompliance": []
+      }
+    },
+    "directories_analyzed": 19,
+    "summary": {
+      "total_routes": 19,
+      "compliant_routes": 17,
+      "missing_pages": 0,
+      "protected_routes_count": 11,
+      "auth_routes_count": 0
+    },
+    "recommendations": [
+      {
+        "priority": "HIGH",
+        "issue": "Protected routes may lack authentication guards",
+        "action": "Review and implement proper auth protection",
+        "affected_routes": [
+          "/contacts",
+          "/contacts/[contactId]",
+          "/contacts/[contactId]/edit",
+          "/contacts/import",
+          "/contacts/import/csv-upload-test",
+          "/contacts/new",
+          "/tasks"
+        ]
+      }
+    ]
+  }
+}

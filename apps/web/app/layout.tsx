@@ -25,9 +25,9 @@ import './globals.css';
 import './theme.css';
 
 // Providers and Components
-import { Providers } from './providers';
-import { AppContent } from '../components/layout/AppContent'; // The new client logic component
-import { Toaster } from '@/components/ui/sonner';
+import { Providers } from './Providers';
+import { AppContent } from '@/components/layout/AppContent'; // The new client logic component
+import { Toaster, toast } from 'sonner';
 
 // Third-party tools
 import { StagewiseToolbar } from '@stagewise/toolbar-next';

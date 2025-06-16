@@ -1,0 +1,25 @@
+# Task ID: 293
+# Title: Execute Automated Code Fixes for Naming Convention Violations
+# Status: pending
+# Dependencies: 286
+# Priority: medium
+# Description: Automatically rename files to comply with naming conventions prioritizing core navigation and authentication components.
+# Details:
+Use the Markdown violations report (Task 286) to identify files with priority on core application components: authentication flow, sidebar navigation (AppSidebarController, section sidebars), main layout components, and the 8 main section entry points. Run an automated renaming script that applies regex-based renames to make file names match `^[A-Z][a-zA-Z0-9]+\.tsx$`. Ensure component naming reflects functionality (ContactsSection, TasksSidebar, DashboardLayout, etc.). Log all changes in JSON with business impact assessment and update import statements across the codebase.
+
+# Test Strategy:
+Re-run the file scanner (Task 285) to confirm updated file names conform and maintain application context. Check that all violations are resolved and component names reflect their functionality within the application.
+
+# Subtasks:
+## 1. Run automated renaming with application context [pending]
+### Dependencies: None
+### Description: Execute renaming script prioritizing core application component functionality naming
+### Details:
+Run automated renaming script with regex-based renames and application context
+
+## 2. Perform file system diff with component verification [pending]
+### Dependencies: 293.1
+### Description: Validate naming changes and component functionality appropriateness
+### Details:
+Perform file system diff to confirm updated names conform and reflect component function
+

@@ -2,7 +2,7 @@ import { protectedProcedure, router } from '../trpc';
 import { z } from 'zod';
 import { TasksRepository } from '@codexcrm/db/src/repositories/tasks-repository';
 import { TRPCError } from '@trpc/server';
-import { TaskStatus, TaskCategory, TaskPriority } from '@codexcrm/db/src/models';
+import { TaskStatus, TaskCategory, TaskPriority, type TaskCreate, type TaskUpdate } from '@codexcrm/db/src/models';
 
 export const taskRouter = router({
   list: protectedProcedure
@@ -51,7 +51,22 @@ export const taskRouter = router({
         throw new TRPCError({ code: 'UNAUTHORIZED' });
       }
       const tasksRepo = new TasksRepository(ctx.supabaseUser);
-      return tasksRepo.create({ ...input, user_id: ctx.user.id });
+      const taskInput: TaskCreate = {
+        title: input.title, // from input, required
+        notes: input.notes, // from input, optional
+        status: input.status ?? TaskStatus.TODO, // from input (optional) or default
+        priority: input.priority ?? TaskPriority.NONE, // from input (optional) or default
+        category: input.category ?? TaskCategory.INBOX, // from input (optional) or default
+        due_date: input.dueDate, // from input, optional (camelCase from tRPC input)
+        project_id: input.projectId, // from input, optional (camelCase from tRPC input)
+        contact_id: input.contactId, // from input, optional (camelCase from tRPC input)
+        
+        user_id: ctx.user.id, // from context
+        is_repeating: false, // default for TaskCreate
+        position: 0, // default for TaskCreate (based on TaskModel.create logic)
+        // repeat_rule, heading_id, id are truly optional in TaskCreate and not in input, so can be omitted
+      };
+      return tasksRepo.create(taskInput);
     }),
 
   update: protectedProcedure
@@ -75,7 +90,20 @@ export const taskRouter = router({
         throw new TRPCError({ code: 'UNAUTHORIZED' });
       }
       const tasksRepo = new TasksRepository(ctx.supabaseUser);
-      return tasksRepo.update(input);
+      const { id, dueDate, completionDate, contactId, projectId, headingId, ...restOfInput } = input;
+
+      const taskDataForUpdate: TaskUpdate = {
+        id,
+        ...restOfInput, // Properties like title, notes, status, priority, category, position, is_repeating
+        // Conditionally add snake_case properties if their camelCase counterparts are present
+        ...(dueDate !== undefined && { due_date: dueDate }),
+        ...(completionDate !== undefined && { completion_date: completionDate }),
+        ...(contactId !== undefined && { contact_id: contactId }),
+        ...(projectId !== undefined && { project_id: projectId }),
+        ...(headingId !== undefined && { heading_id: headingId }),
+      };
+
+      return tasksRepo.update(taskDataForUpdate);
     }),
 
   softDelete: protectedProcedure
@@ -191,6 +219,10 @@ export const taskRouter = router({
     }
     const tasksRepo = new TasksRepository(ctx.supabaseUser);
     return tasksRepo.getCategoryCounts(ctx.user.id);
+  }),
+
+  getCategories: protectedProcedure.query(async () => {
+    return Object.values(TaskCategory);
   }),
 
   getTasksByContactId: protectedProcedure

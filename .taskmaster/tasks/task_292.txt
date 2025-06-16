@@ -1,0 +1,25 @@
+# Task ID: 292
+# Title: Map Inter-module Dependencies Within the Monorepo
+# Status: pending
+# Dependencies: None
+# Priority: medium
+# Description: Generate a dependency graph and JSON map of module dependencies with application workflow visualization.
+# Details:
+Run `npx madge --json .` to generate a JSON dependency map. Convert the JSON to Graphviz DOT format for visualization with special highlighting of core application workflow dependencies: authentication flow (login → dashboard → protected pages), sidebar navigation dependencies (AppSidebarController → section sidebars), main layout component relationships, and cross-section data flow. Include application-specific dependency categorization and critical path identification for user journey continuity. Output both JSON and DOT files with workflow annotations.
+
+# Test Strategy:
+Confirm the JSON map lists correct dependencies with application workflow context. Run `npx madge --json .` and compare output. Check that the DOT file is valid and includes application workflow visualization.
+
+# Subtasks:
+## 1. Execute madge with application workflow focus [pending]
+### Dependencies: None
+### Description: Generate JSON dependency mapping with core user journey context
+### Details:
+Execute madge to generate JSON dependency mapping with application workflow identification
+
+## 2. Convert to DOT format with workflow visualization [pending]
+### Dependencies: 292.1
+### Description: Create Graphviz visualization highlighting core application workflows
+### Details:
+Convert JSON output to Graphviz DOT format with application workflow annotations
+

@@ -1,0 +1,33 @@
+# Task ID: 279
+# Title: Create the Dashboard Page Entry Point
+# Status: done
+# Dependencies: 278
+# Priority: high
+# Description: Create the main server component for the dashboard route (/), which will serve as the application's homepage, replacing the old redirect logic.
+# Details:
+1. Create or update `apps/web/app/page.tsx`
+2. Import the necessary components including PageHeader and the new DashboardWidgets component
+3. Structure the component as follows:
+```tsx
+import { PageHeader } from '@/components/layout/PageHeader';
+import { DashboardWidgets } from '@/app/dashboard/components/DashboardWidgets';
+
+export default function DashboardPage() {
+  return (
+    <>
+      <PageHeader breadcrumbs={[{ label: 'Dashboard' }]} />
+      <main className="p-4 md:p-6">
+        <DashboardWidgets />
+      </main>
+    </>
+  );
+}
+```
+4. Ensure the page is properly configured as a Next.js server component
+5. Remove any old redirect logic that was previously used for the homepage
+
+# Test Strategy:
+1. Verify that the dashboard page renders correctly at the root URL (/)
+2. Check that the PageHeader displays the correct breadcrumb
+3. Ensure the DashboardWidgets component is properly imported and rendered
+4. Test navigation to and from the dashboard page to confirm routing is working correctly

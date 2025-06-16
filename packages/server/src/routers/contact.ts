@@ -249,4 +249,60 @@ export const contactRouter = router({
       }
       return { success: true, contactId: input.contactId };
     }),
+
+  // Update just the notes field of a contact
+  updateNotes: protectedProcedure
+    .input(z.object({
+      contactId: z.string().uuid(),
+      notes: z.string()
+    }))
+    .mutation(async ({ input, ctx }) => {
+      if (!ctx.user) {
+        throw new TRPCError({ code: 'UNAUTHORIZED' });
+      }
+
+      const { contactId, notes } = input;
+      
+      try {
+        // Verify the contact belongs to the user
+        const { data: existingContact, error: fetchError } = await ctx.supabaseAdmin
+          .from('contacts')
+          .select('id')
+          .eq('id', contactId)
+          .eq('user_id', ctx.user.id)
+          .single();
+
+        if (fetchError || !existingContact) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Contact not found or you do not have permission to update it',
+          });
+        }
+
+        // Update only the notes field
+        const { error: updateError } = await ctx.supabaseAdmin
+          .from('contacts')
+          .update({ notes, updated_at: new Date() })
+          .eq('id', contactId)
+          .eq('user_id', ctx.user.id);
+
+        if (updateError) {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: `Failed to update contact notes: ${updateError.message}`,
+          });
+        }
+
+        return { success: true };
+      } catch (error) {
+        if (error instanceof TRPCError) {
+          throw error;
+        }
+        console.error('Unhandled error in updateNotes procedure:', error);
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to update contact notes due to an unexpected error',
+        });
+      }
+    }),
 });
