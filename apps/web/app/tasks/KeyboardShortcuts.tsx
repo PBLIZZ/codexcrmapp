@@ -45,10 +45,10 @@ export function KeyboardShortcuts({
             e.preventDefault();
             onToggleSearch();
             break;
-          case 'b':
-            e.preventDefault();
-            onToggleSidebar();
-            break;
+          // case 'b': - Removed to avoid conflict with global sidebar toggle
+          //   e.preventDefault();
+          //   onToggleSidebar();
+          //   break;
           case '?':
             e.preventDefault();
             setHelpVisible(true);

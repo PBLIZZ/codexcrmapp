@@ -25,9 +25,9 @@ export declare const taskRouter: import("@trpc/server/dist/unstable-core-do-not-
         input: {
             title: string;
             priority?: TaskPriority | undefined;
-            notes?: string | undefined;
             status?: TaskStatus | undefined;
             contactId?: string | null | undefined;
+            notes?: string | undefined;
             is_repeating?: boolean | undefined;
             position?: number | undefined;
             category?: TaskCategory | undefined;
@@ -43,9 +43,9 @@ export declare const taskRouter: import("@trpc/server/dist/unstable-core-do-not-
         input: {
             id: string;
             priority?: TaskPriority | undefined;
-            notes?: string | undefined;
             status?: TaskStatus | undefined;
             contactId?: string | null | undefined;
+            notes?: string | undefined;
             title?: string | undefined;
             is_repeating?: boolean | undefined;
             position?: number | undefined;
@@ -142,6 +142,11 @@ export declare const taskRouter: import("@trpc/server/dist/unstable-core-do-not-
     getCategoryCounts: import("@trpc/server").TRPCQueryProcedure<{
         input: void;
         output: Record<string, number>;
+        meta: object;
+    }>;
+    getCategories: import("@trpc/server").TRPCQueryProcedure<{
+        input: void;
+        output: TaskCategory[];
         meta: object;
     }>;
     getTasksByContactId: import("@trpc/server").TRPCQueryProcedure<{

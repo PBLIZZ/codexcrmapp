@@ -1,5 +1,6 @@
 import { appRouter, createContext } from '@codexcrm/server';
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
+import type { AnyRouter } from '@trpc/server';
 import superjson from 'superjson';
 
 /**
@@ -43,7 +44,7 @@ export const GET = async (req: Request) => {
     const response = await fetchRequestHandler({
       endpoint: TRPC_ENDPOINT,
       req,
-      router: appRouter,
+      router: appRouter as unknown as AnyRouter,
       // Pass the request object to createContext with proper error handling
       createContext: async () => {
         try {

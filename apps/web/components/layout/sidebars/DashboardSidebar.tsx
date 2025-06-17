@@ -195,7 +195,7 @@ export function DashboardSidebar({ ...props }: React.ComponentProps<typeof Sideb
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 font-semibold">
             <img src="/images/logo.png" alt="OmniCRM Logo" className="h-7" />
-            <div className="flex flex-col">
+            <div className="flex flex-col group-data-[collapsible=icon]:hidden">
               <span>OmniCRM</span>
               <span className="text-xs">
                 by{' '}

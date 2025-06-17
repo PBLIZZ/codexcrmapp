@@ -5,7 +5,6 @@ import { GroupCreateDialog } from "@/components/groups/GroupCreateDialog";
 import { UserNav } from "@/components/layout/UserNav"
 import { api } from "@/lib/trpc"
 import Link from "next/link"
-import { cn } from "@/lib/utils"
 import * as React from "react"
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Badge } from "@/components/ui/badge"
@@ -28,6 +27,7 @@ interface Group {
   id: string
   name: string
   emoji?: string
+  color?: string
   memberCount?: number
   contactCount?: number
 }
@@ -41,6 +41,11 @@ export function ContactsSidebar(props: ContactsSidebarProps) {
   
   // This is the correct way to get the active group ID for styling
   const selectedGroupId = searchParams.get('group');
+  
+  // Fetch total contacts count
+  const { data: totalContactsData } = api.contacts.getTotalContactsCount.useQuery(undefined, {
+    staleTime: 60000,
+  });
   
   // Fetch groups data with contact counts
   const { data: groupsData = [] } = api.groups.list.useQuery(undefined, {
@@ -66,7 +71,7 @@ export function ContactsSidebar(props: ContactsSidebarProps) {
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 font-semibold">
             <img src="/images/logo.png" alt="OmniCRM Logo" className="h-7" />
-            <div className="flex flex-col">
+            <div className="flex flex-col group-data-[collapsible=icon]:hidden">
               <span>OmniCRM</span>
               <span className="text-xs">
                 by{' '}
@@ -88,9 +93,17 @@ export function ContactsSidebar(props: ContactsSidebarProps) {
                 onClick={handleAllContactsSelect}
                 isActive={pathname === '/contacts' && !selectedGroupId}
                 tooltip="All Contacts"
+                className="justify-between w-full"
               >
-                <Users className="w-4 h-4 mr-3" />
-                All Contacts
+                <div className="flex items-center gap-3">
+                  <Users className="w-4 h-4" />
+                  <span>All Contacts</span>
+                </div>
+                {typeof totalContactsData?.count === 'number' && (
+                  <Badge variant="secondary" className="h-5 flex-shrink-0">
+                    {totalContactsData.count}
+                  </Badge>
+                )}
               </SidebarMenuButton>
             </SidebarMenuItem>
             {/* Groups link */}
@@ -112,6 +125,15 @@ export function ContactsSidebar(props: ContactsSidebarProps) {
               </SidebarMenuButton>
               
             </SidebarMenuItem>
+            {/* Add Contact */}
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link href="/contacts/new" className="flex items-center w-full">
+                  <UserPlus className="w-4 h-4 mr-2" />
+                  <span className="font-medium">Add Contact</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
             <SidebarMenuItem>
               <GroupCreateDialog 
                 triggerButtonLabel="Create Group"
@@ -127,22 +149,7 @@ export function ContactsSidebar(props: ContactsSidebarProps) {
         <SidebarGroup>
           <SidebarGroupLabel>Quick Actions</SidebarGroupLabel>
           <SidebarMenu>
-            {/* Manage Groups link */}
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild size="sm">
-                <Link href={"/contacts/groups"} className="flex items-center w-full">
-                  <span>Manage Groups</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            {/* Create Group Dialog Trigger */}
-            <SidebarMenuItem>
-              <GroupCreateDialog 
-                triggerButtonLabel="Create Group"
-                triggerButtonVariant="ghost" 
-                triggerButtonClassName="w-full justify-start text-sm font-medium px-2 py-1.5" // Classes to mimic SidebarMenuButton
-              />
-            </SidebarMenuItem>
+            {/* Add other quick actions here if needed */}
           </SidebarMenu>
         </SidebarGroup>
 
@@ -159,9 +166,17 @@ export function ContactsSidebar(props: ContactsSidebarProps) {
                 >
                   <div className="flex items-center gap-2 overflow-hidden">
                     <span className="flex-shrink-0">{group.emoji || '📁'}</span>
-                    <span className="truncate">{group.name}</span>
+                    <span className="truncate group-data-[collapsible=icon]:hidden">{group.name}</span>
                   </div>
-                    <Badge variant="secondary" className="ml-auto">
+                    <Badge 
+                      variant="secondary" 
+                      className="ml-auto group-data-[collapsible=icon]:hidden"
+                      style={group.color ? {
+                        borderColor: group.color,
+                        backgroundColor: `${group.color}20`, // 20% opacity background
+                        color: group.color
+                      } : {}}
+                    >
                       {group.contactCount || group.memberCount || 0}
                     </Badge>
                 </SidebarMenuButton>

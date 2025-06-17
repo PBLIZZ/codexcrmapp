@@ -19,8 +19,8 @@ export declare const sessionBaseSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     contact_id: string;
     session_time: string;
-    notes?: string | null | undefined;
     status?: string | null | undefined;
+    notes?: string | null | undefined;
     session_type?: string | null | undefined;
     follow_up_needed?: boolean | null | undefined;
     duration_minutes?: number | null | undefined;
@@ -36,8 +36,8 @@ export declare const sessionBaseSchema: z.ZodObject<{
 }, {
     contact_id: string;
     session_time: string;
-    notes?: string | null | undefined;
     status?: string | null | undefined;
+    notes?: string | null | undefined;
     session_type?: string | null | undefined;
     follow_up_needed?: boolean | null | undefined;
     duration_minutes?: number | null | undefined;
@@ -71,8 +71,8 @@ export declare const sessionCreateSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     contact_id: string;
     session_time: string;
-    notes?: string | null | undefined;
     status?: string | null | undefined;
+    notes?: string | null | undefined;
     session_type?: string | null | undefined;
     follow_up_needed?: boolean | null | undefined;
     duration_minutes?: number | null | undefined;
@@ -88,8 +88,8 @@ export declare const sessionCreateSchema: z.ZodObject<{
 }, {
     contact_id: string;
     session_time: string;
-    notes?: string | null | undefined;
     status?: string | null | undefined;
+    notes?: string | null | undefined;
     session_type?: string | null | undefined;
     follow_up_needed?: boolean | null | undefined;
     duration_minutes?: number | null | undefined;
@@ -124,8 +124,8 @@ export declare const sessionUpdateSchema: z.ZodObject<{
     id: z.ZodString;
 }, "strip", z.ZodTypeAny, {
     id: string;
-    notes?: string | null | undefined;
     status?: string | null | undefined;
+    notes?: string | null | undefined;
     contact_id?: string | undefined;
     session_time?: string | undefined;
     session_type?: string | null | undefined;
@@ -142,8 +142,8 @@ export declare const sessionUpdateSchema: z.ZodObject<{
     ai_insights?: any;
 }, {
     id: string;
-    notes?: string | null | undefined;
     status?: string | null | undefined;
+    notes?: string | null | undefined;
     contact_id?: string | undefined;
     session_time?: string | undefined;
     session_type?: string | null | undefined;
@@ -248,8 +248,8 @@ export declare const SessionSchemas: {
     }, "strip", z.ZodTypeAny, {
         contact_id: string;
         session_time: string;
-        notes?: string | null | undefined;
         status?: string | null | undefined;
+        notes?: string | null | undefined;
         session_type?: string | null | undefined;
         follow_up_needed?: boolean | null | undefined;
         duration_minutes?: number | null | undefined;
@@ -265,8 +265,8 @@ export declare const SessionSchemas: {
     }, {
         contact_id: string;
         session_time: string;
-        notes?: string | null | undefined;
         status?: string | null | undefined;
+        notes?: string | null | undefined;
         session_type?: string | null | undefined;
         follow_up_needed?: boolean | null | undefined;
         duration_minutes?: number | null | undefined;
@@ -300,8 +300,8 @@ export declare const SessionSchemas: {
     }, "strip", z.ZodTypeAny, {
         contact_id: string;
         session_time: string;
-        notes?: string | null | undefined;
         status?: string | null | undefined;
+        notes?: string | null | undefined;
         session_type?: string | null | undefined;
         follow_up_needed?: boolean | null | undefined;
         duration_minutes?: number | null | undefined;
@@ -317,8 +317,8 @@ export declare const SessionSchemas: {
     }, {
         contact_id: string;
         session_time: string;
-        notes?: string | null | undefined;
         status?: string | null | undefined;
+        notes?: string | null | undefined;
         session_type?: string | null | undefined;
         follow_up_needed?: boolean | null | undefined;
         duration_minutes?: number | null | undefined;
@@ -353,8 +353,8 @@ export declare const SessionSchemas: {
         id: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         id: string;
-        notes?: string | null | undefined;
         status?: string | null | undefined;
+        notes?: string | null | undefined;
         contact_id?: string | undefined;
         session_time?: string | undefined;
         session_type?: string | null | undefined;
@@ -371,8 +371,8 @@ export declare const SessionSchemas: {
         ai_insights?: any;
     }, {
         id: string;
-        notes?: string | null | undefined;
         status?: string | null | undefined;
+        notes?: string | null | undefined;
         contact_id?: string | undefined;
         session_time?: string | undefined;
         session_type?: string | null | undefined;

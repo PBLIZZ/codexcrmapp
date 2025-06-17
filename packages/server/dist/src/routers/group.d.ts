@@ -28,7 +28,6 @@ export declare const groupRouter: import("@trpc/server/dist/unstable-core-do-not
             name: string;
             id?: string | undefined;
             description?: string | null | undefined;
-            color?: string | null | undefined;
             emoji?: string | null | undefined;
         };
         output: any;
@@ -49,7 +48,13 @@ export declare const groupRouter: import("@trpc/server/dist/unstable-core-do-not
             groupId: string;
             contactId: string;
         };
-        output: any;
+        output: {
+            success: boolean;
+            message: string;
+        } | {
+            success: boolean;
+            message?: undefined;
+        };
         meta: object;
     }>;
     removeContact: import("@trpc/server").TRPCMutationProcedure<{

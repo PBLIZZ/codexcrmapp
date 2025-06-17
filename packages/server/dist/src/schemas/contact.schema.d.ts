@@ -228,15 +228,15 @@ export declare const contactFilterSchema: z.ZodObject<{
     source: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     search?: string | undefined;
+    groupId?: string | undefined;
     tags?: string[] | undefined;
     source?: string | undefined;
-    groupId?: string | undefined;
     journeyStage?: string | undefined;
 }, {
     search?: string | undefined;
+    groupId?: string | undefined;
     tags?: string[] | undefined;
     source?: string | undefined;
-    groupId?: string | undefined;
     journeyStage?: string | undefined;
 }>;
 export declare const contactProfileSchema: z.ZodObject<{
@@ -627,15 +627,15 @@ export declare const ContactSchemas: {
         source: z.ZodOptional<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
         search?: string | undefined;
+        groupId?: string | undefined;
         tags?: string[] | undefined;
         source?: string | undefined;
-        groupId?: string | undefined;
         journeyStage?: string | undefined;
     }, {
         search?: string | undefined;
+        groupId?: string | undefined;
         tags?: string[] | undefined;
         source?: string | undefined;
-        groupId?: string | undefined;
         journeyStage?: string | undefined;
     }>;
     profile: z.ZodObject<{
