@@ -47,73 +47,93 @@ export const contactRouter = router({
       })
     )
     .query(async ({ ctx, input }) => {
-      if (!ctx.user) {
+      const { search, groupId } = input;
+      const userId = ctx.user?.id;
+
+      if (!userId) {
         throw new TRPCError({ code: 'UNAUTHORIZED' });
       }
 
-      let query = ctx.supabaseUser.from('contacts');
+      // If a groupId is provided, we start from group_members and expand contacts.
+      // This is the most efficient way to filter by group.
+      if (groupId) {
+        // First, get the contact IDs that belong to this group
+        const { data: groupMembers, error: memberError } = await ctx.supabaseUser
+          .from('group_members')
+          .select('contact_id')
+          .eq('group_id', groupId);
 
-      if (input.groupId) {
-        console.log('Filtering contacts by groupId:', input.groupId);
-        
-        try {
-          // Use a join to filter contacts that belong to the specified group
-          const { data: memberContactIds, error: memberError } = await ctx.supabaseUser
-            .from('group_members')
-            .select('contact_id')
-            .eq('group_id', input.groupId);
-            
-          if (memberError) {
-            console.error('Error fetching group members:', memberError);
-            throw new TRPCError({
-              code: 'INTERNAL_SERVER_ERROR',
-              message: 'Failed to fetch group members',
-              cause: memberError,
-            });
-          }
-          
-          console.log('Found member contact IDs:', memberContactIds);
-          
-          // If we have contact IDs, filter the contacts query by those IDs
-          if (memberContactIds && memberContactIds.length > 0) {
-            const contactIds = memberContactIds.map((item: { contact_id: string }) => item.contact_id);
-            console.log('Filtering contacts by IDs:', contactIds);
-            query = query.select('*').in('id', contactIds);
-          } else {
-            console.log('No contacts in group, returning empty array');
-            // If no contacts in the group, return empty array early
-            return [];
-          }
-        } catch (error) {
-          console.error('Error in group filtering:', error);
+        if (memberError) {
+          console.error("Error fetching group members:", memberError);
           throw new TRPCError({
             code: 'INTERNAL_SERVER_ERROR',
-            message: 'Failed to filter contacts by group',
-            cause: error,
+            message: `Failed to retrieve group members: ${memberError.message}`,
           });
         }
-      } else {
-        query = query.select('*');
+
+        // If no contacts in the group, return empty array
+        if (!groupMembers || groupMembers.length === 0) {
+          return [];
+        }
+
+        // Extract contact IDs
+        const contactIds = groupMembers.map((member: { contact_id: string }) => member.contact_id);
+
+        // Now query contacts with both group filtering (via IDs) and search
+        let contactsQuery = ctx.supabaseUser
+          .from('contacts')
+          .select('*')
+          .in('id', contactIds);
+
+        // Add search filter if provided
+        if (search) {
+          contactsQuery = contactsQuery.or(
+            `full_name.ilike.%${search}%,email.ilike.%${search}%`
+          );
+        }
+
+        // Add ordering
+        contactsQuery = contactsQuery.order('created_at', { ascending: false });
+
+        // Execute the query
+        const { data: contacts, error } = await contactsQuery;
+
+        if (error) {
+          console.error("Error fetching contacts for group:", error);
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: `Failed to retrieve contacts for group: ${error.message}`,
+          });
+        }
+
+        return contacts || [];
       }
 
-      query = query.order('created_at', { ascending: false });
+      // If no groupId is provided, we query the contacts table directly.
+      else {
+        let query = ctx.supabaseUser.from('contacts').select('*');
 
-      if (input.search) {
-        query = query.or(
-          `full_name.ilike.%${input.search}%,email.ilike.%${input.search}%`
-        );
+        // Conditionally add the search filter
+        if (search) {
+          query = query.or(
+            `full_name.ilike.%${search}%,email.ilike.%${search}%`
+          );
+        }
+
+        // Add default ordering
+        query = query.order('created_at', { ascending: false });
+
+        const { data: contacts, error } = await query;
+
+        if (error) {
+          console.error("Error fetching all contacts:", error);
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: `Failed to retrieve contacts: ${error.message}`,
+          });
+        }
+        return contacts || [];
       }
-
-      const { data, error } = await query;
-
-      if (error) {
-        console.error('Error fetching contacts (RLS scope):', error);
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to fetch contacts',
-        });
-      }
-      return data || [];
     }),
   // Fetch a single contact by ID
   getById: protectedProcedure
@@ -340,4 +360,26 @@ export const contactRouter = router({
         });
       }
     }),
+
+  // Get total count of contacts for the authenticated user
+  getTotalContactsCount: protectedProcedure.query(async ({ ctx }) => {
+    if (!ctx.user) {
+      throw new TRPCError({ code: 'UNAUTHORIZED' });
+    }
+    
+    // Use count with head: true for efficiency - doesn't return the body, just the count
+    const { count, error } = await ctx.supabaseUser
+      .from('contacts')
+      .select('*', { count: 'exact', head: true });
+
+    if (error) {
+      console.error("Failed to get total contact count:", error);
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Could not retrieve contact count.',
+      });
+    }
+    
+    return { count: count ?? 0 };
+  }),
 });

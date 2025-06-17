@@ -61,6 +61,23 @@ export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-i
             };
             meta: object;
         }>;
+        updateNotes: import("@trpc/server").TRPCMutationProcedure<{
+            input: {
+                contactId: string;
+                notes: string;
+            };
+            output: {
+                success: boolean;
+            };
+            meta: object;
+        }>;
+        getTotalContactsCount: import("@trpc/server").TRPCQueryProcedure<{
+            input: void;
+            output: {
+                count: any;
+            };
+            meta: object;
+        }>;
     }>>;
     groups: import("@trpc/server/dist/unstable-core-do-not-import").BuiltRouter<{
         ctx: import("./context").Context;
@@ -92,7 +109,6 @@ export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-i
                 name: string;
                 id?: string | undefined;
                 description?: string | null | undefined;
-                color?: string | null | undefined;
                 emoji?: string | null | undefined;
             };
             output: any;
@@ -113,7 +129,13 @@ export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-i
                 groupId: string;
                 contactId: string;
             };
-            output: any;
+            output: {
+                success: boolean;
+                message: string;
+            } | {
+                success: boolean;
+                message?: undefined;
+            };
             meta: object;
         }>;
         removeContact: import("@trpc/server").TRPCMutationProcedure<{
@@ -208,8 +230,8 @@ export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-i
                 contact_id: string;
                 session_time: string;
                 id?: string | undefined;
-                notes?: string | null | undefined;
                 status?: string | null | undefined;
+                notes?: string | null | undefined;
                 session_type?: string | null | undefined;
                 follow_up_needed?: boolean | null | undefined;
                 duration_minutes?: number | null | undefined;
@@ -229,8 +251,8 @@ export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-i
         update: import("@trpc/server").TRPCMutationProcedure<{
             input: {
                 id: string;
-                notes?: string | null | undefined;
                 status?: string | null | undefined;
+                notes?: string | null | undefined;
                 contact_id?: string | undefined;
                 session_time?: string | undefined;
                 session_type?: string | null | undefined;
@@ -536,9 +558,9 @@ export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-i
             input: {
                 title: string;
                 priority?: import("@codexcrm/db").TaskPriority | undefined;
-                notes?: string | undefined;
                 status?: import("@codexcrm/db").TaskStatus | undefined;
                 contactId?: string | null | undefined;
+                notes?: string | undefined;
                 is_repeating?: boolean | undefined;
                 position?: number | undefined;
                 category?: import("@codexcrm/db").TaskCategory | undefined;
@@ -554,9 +576,9 @@ export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-i
             input: {
                 id: string;
                 priority?: import("@codexcrm/db").TaskPriority | undefined;
-                notes?: string | undefined;
                 status?: import("@codexcrm/db").TaskStatus | undefined;
                 contactId?: string | null | undefined;
+                notes?: string | undefined;
                 title?: string | undefined;
                 is_repeating?: boolean | undefined;
                 position?: number | undefined;
@@ -653,6 +675,11 @@ export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-i
         getCategoryCounts: import("@trpc/server").TRPCQueryProcedure<{
             input: void;
             output: Record<string, number>;
+            meta: object;
+        }>;
+        getCategories: import("@trpc/server").TRPCQueryProcedure<{
+            input: void;
+            output: import("@codexcrm/db").TaskCategory[];
             meta: object;
         }>;
         getTasksByContactId: import("@trpc/server").TRPCQueryProcedure<{

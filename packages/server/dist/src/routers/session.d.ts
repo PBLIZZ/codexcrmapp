@@ -34,8 +34,8 @@ export declare const sessionRouter: import("@trpc/server/dist/unstable-core-do-n
             contact_id: string;
             session_time: string;
             id?: string | undefined;
-            notes?: string | null | undefined;
             status?: string | null | undefined;
+            notes?: string | null | undefined;
             session_type?: string | null | undefined;
             follow_up_needed?: boolean | null | undefined;
             duration_minutes?: number | null | undefined;
@@ -55,8 +55,8 @@ export declare const sessionRouter: import("@trpc/server/dist/unstable-core-do-n
     update: import("@trpc/server").TRPCMutationProcedure<{
         input: {
             id: string;
-            notes?: string | null | undefined;
             status?: string | null | undefined;
+            notes?: string | null | undefined;
             contact_id?: string | undefined;
             session_time?: string | undefined;
             session_type?: string | null | undefined;

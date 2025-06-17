@@ -55,4 +55,21 @@ export declare const contactRouter: import("@trpc/server/dist/unstable-core-do-n
         };
         meta: object;
     }>;
+    updateNotes: import("@trpc/server").TRPCMutationProcedure<{
+        input: {
+            contactId: string;
+            notes: string;
+        };
+        output: {
+            success: boolean;
+        };
+        meta: object;
+    }>;
+    getTotalContactsCount: import("@trpc/server").TRPCQueryProcedure<{
+        input: void;
+        output: {
+            count: any;
+        };
+        meta: object;
+    }>;
 }>>;

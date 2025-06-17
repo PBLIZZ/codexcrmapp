@@ -469,10 +469,10 @@ export function ContactsTable({
               >
                 <div
                   className="flex items-center cursor-pointer"
-                  onClick={() => onSortChange('name')}
+                  onClick={() => onSortChange('full_name')}
                 >
                   Name
-                  {sortField === 'name' && (
+                  {sortField === 'full_name' && (
                     <span className="ml-1 flex items-center">
                       {sortDirection === 'asc' ? (
                         <ArrowUp className="h-3 w-3" />

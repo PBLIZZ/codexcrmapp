@@ -38,34 +38,59 @@ export const contactRouter = router({
     list: protectedProcedure
         .input(z.object({
         search: z.string().optional(),
-        groupId: z.string().uuid().optional(),
+        groupId: z.string().optional(), // Remove UUID validation to handle all group ID formats
     }))
         .query(async ({ ctx, input }) => {
-        if (!ctx.user) {
+        const { search, groupId } = input;
+        const userId = ctx.user?.id;
+        if (!userId) {
             throw new TRPCError({ code: 'UNAUTHORIZED' });
         }
-        let query = ctx.supabaseUser.from('contacts');
-        if (input.groupId) {
-            query = query
-                .select('*, group_members!inner(group_id)')
-                .eq('group_members.group_id', input.groupId);
+        // If a groupId is provided, we start from group_members and expand contacts.
+        // This is the most efficient way to filter by group.
+        if (groupId) {
+            // Start building the query from the join table
+            let query = ctx.supabaseUser
+                .from('group_members')
+                .select('contacts(*)') // Expand all columns from the related 'contacts' table
+                .eq('group_id', groupId); // Filter by the specific group
+            // Conditionally add the search filter
+            if (search) {
+                // Note: The column names in the 'or' filter must be prefixed with the foreign table name.
+                query = query.or(`contacts.full_name.ilike.%${search}%,contacts.email.ilike.%${search}%`);
+            }
+            // Execute the query
+            const { data: groupMembers, error } = await query;
+            if (error) {
+                console.error("Error fetching contacts for group:", error);
+                throw new TRPCError({
+                    code: 'INTERNAL_SERVER_ERROR',
+                    message: `Failed to retrieve contacts for group: ${error.message}`,
+                });
+            }
+            // The result is an array of { contacts: { ... } }. We need to flatten it.
+            const contacts = groupMembers?.map((member) => member.contacts).filter(Boolean) || [];
+            return contacts;
         }
+        // If no groupId is provided, we query the contacts table directly.
         else {
-            query = query.select('*, group_members!left(group_id)');
+            let query = ctx.supabaseUser.from('contacts').select('*');
+            // Conditionally add the search filter
+            if (search) {
+                query = query.or(`full_name.ilike.%${search}%,email.ilike.%${search}%`);
+            }
+            // Add default ordering
+            query = query.order('created_at', { ascending: false });
+            const { data: contacts, error } = await query;
+            if (error) {
+                console.error("Error fetching all contacts:", error);
+                throw new TRPCError({
+                    code: 'INTERNAL_SERVER_ERROR',
+                    message: `Failed to retrieve contacts: ${error.message}`,
+                });
+            }
+            return contacts || [];
         }
-        query = query.order('created_at', { ascending: false });
-        if (input.search) {
-            query = query.or(`full_name.ilike.%${input.search}%,email.ilike.%${input.search}%`);
-        }
-        const { data, error } = await query;
-        if (error) {
-            console.error('Error fetching contacts (RLS scope):', error);
-            throw new TRPCError({
-                code: 'INTERNAL_SERVER_ERROR',
-                message: 'Failed to fetch contacts',
-            });
-        }
-        return data || [];
     }),
     // Fetch a single contact by ID
     getById: protectedProcedure
@@ -220,5 +245,73 @@ export const contactRouter = router({
             });
         }
         return { success: true, contactId: input.contactId };
+    }),
+    // Update just the notes field of a contact
+    updateNotes: protectedProcedure
+        .input(z.object({
+        contactId: z.string().uuid(),
+        notes: z.string()
+    }))
+        .mutation(async ({ input, ctx }) => {
+        if (!ctx.user) {
+            throw new TRPCError({ code: 'UNAUTHORIZED' });
+        }
+        const { contactId, notes } = input;
+        try {
+            // Verify the contact belongs to the user
+            const { data: existingContact, error: fetchError } = await ctx.supabaseAdmin
+                .from('contacts')
+                .select('id')
+                .eq('id', contactId)
+                .eq('user_id', ctx.user.id)
+                .single();
+            if (fetchError || !existingContact) {
+                throw new TRPCError({
+                    code: 'NOT_FOUND',
+                    message: 'Contact not found or you do not have permission to update it',
+                });
+            }
+            // Update only the notes field
+            const { error: updateError } = await ctx.supabaseAdmin
+                .from('contacts')
+                .update({ notes, updated_at: new Date() })
+                .eq('id', contactId)
+                .eq('user_id', ctx.user.id);
+            if (updateError) {
+                throw new TRPCError({
+                    code: 'INTERNAL_SERVER_ERROR',
+                    message: `Failed to update contact notes: ${updateError.message}`,
+                });
+            }
+            return { success: true };
+        }
+        catch (error) {
+            if (error instanceof TRPCError) {
+                throw error;
+            }
+            console.error('Unhandled error in updateNotes procedure:', error);
+            throw new TRPCError({
+                code: 'INTERNAL_SERVER_ERROR',
+                message: 'Failed to update contact notes due to an unexpected error',
+            });
+        }
+    }),
+    // Get total count of contacts for the authenticated user
+    getTotalContactsCount: protectedProcedure.query(async ({ ctx }) => {
+        if (!ctx.user) {
+            throw new TRPCError({ code: 'UNAUTHORIZED' });
+        }
+        // Use count with head: true for efficiency - doesn't return the body, just the count
+        const { count, error } = await ctx.supabaseUser
+            .from('contacts')
+            .select('*', { count: 'exact', head: true });
+        if (error) {
+            console.error("Failed to get total contact count:", error);
+            throw new TRPCError({
+                code: 'INTERNAL_SERVER_ERROR',
+                message: 'Could not retrieve contact count.',
+            });
+        }
+        return { count: count ?? 0 };
     }),
 });

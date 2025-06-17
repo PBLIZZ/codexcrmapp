@@ -6,15 +6,15 @@
  * An array of public-facing paths related to the authentication flow.
  * Used to determine if a user is on an auth page.
  */
-export declare const AUTH_PAGES: string[];
+export declare const AUTH_PAGES: readonly ["/log-in", "/sign-up", "/forgot-password", "/reset-password", "/sign-up/confirmation"];
 /**
  * The primary sign-in page for the application.
  * Unauthenticated users on protected routes will be redirected here.
  */
-export declare const LOG_IN_PATH: string;
+export declare const LOG_IN_PATH: "/log-in";
 /**
  * The main dashboard or home page for authenticated users.
  * Users will be redirected here after a successful login.
  */
-export declare const DASHBOARD_PATH: string;
+export declare const DASHBOARD_PATH: "/dashboard";
 //# sourceMappingURL=paths.d.ts.map

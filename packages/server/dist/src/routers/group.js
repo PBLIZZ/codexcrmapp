@@ -10,13 +10,6 @@ const groupInputSchema = z.object({
         .max(500, 'Description too long')
         .optional()
         .nullable(),
-    color: z
-        .string()
-        .regex(/^#[0-9A-Fa-f]{6}$/, 'Must be a valid hex color (e.g., #FF0000)')
-        .or(z.literal(''))
-        .nullable()
-        .optional()
-        .transform((val) => (val === '' ? null : val)),
     emoji: z
         .string()
         .max(2, 'Emoji should be 1-2 characters')
@@ -39,7 +32,6 @@ export const groupRouter = router({
             throw new TRPCError({ code: 'UNAUTHORIZED' });
         }
         try {
-            // First, get the group IDs that this contact belongs to
             const { data: memberData, error: memberError } = await ctx.supabaseUser
                 .from('group_members')
                 .select('group_id')
@@ -51,23 +43,13 @@ export const groupRouter = router({
                     message: 'Failed to fetch group memberships',
                 });
             }
-            // If there are no groups, return empty array
             if (!memberData || memberData.length === 0) {
                 return [];
             }
-            // Extract just the group IDs into an array
             const groupIds = memberData.map((item) => item.group_id);
-            // Then fetch the actual groups using those IDs
             const { data: groupsData, error: groupsError } = await ctx.supabaseUser
                 .from('groups')
-                .select(`
-            id,
-            name,
-            description,
-            color,
-            created_at,
-            updated_at
-          `)
+                .select('id, name, description, color, created_at, updated_at')
                 .eq('user_id', ctx.user.id)
                 .in('id', groupIds);
             if (groupsError) {
@@ -87,15 +69,11 @@ export const groupRouter = router({
             });
         }
     }),
-    // List all groups for the authenticated user, including contact counts
+    // List all groups for the authenticated user
     list: protectedProcedure.query(async ({ ctx }) => {
-        console.warn('Group router: list procedure called');
-        console.warn('Group router: ctx.user:', ctx.user);
         if (!ctx.user) {
-            console.error('Group router: No authenticated user found');
             throw new TRPCError({ code: 'UNAUTHORIZED' });
         }
-        // Fetch groups along with their related group_members entries
         const { data, error } = await ctx.supabaseUser
             .from('groups')
             .select('*, group_members(*)')
@@ -107,20 +85,16 @@ export const groupRouter = router({
                 message: 'Failed to fetch groups',
             });
         }
-        // Map to include a contactCount property and strip out raw junction data
-        const result = (data || []).map((group) => {
-            // group.group_members is an array of contact-group relationships
+        return (data || []).map((group) => {
             const contactCount = Array.isArray(group.group_members)
                 ? group.group_members.length
                 : 0;
-            // Extract core group properties
-            const { group_members: _group_members, ...groupFields } = group;
+            const { group_members, ...groupFields } = group;
             return {
                 ...groupFields,
                 contactCount,
             };
         });
-        return result;
     }),
     // Get a single group by ID
     getById: protectedProcedure
@@ -156,32 +130,22 @@ export const groupRouter = router({
             user_id: ctx.user.id,
             updated_at: new Date().toISOString(),
         };
-        // If creating new group, don't include ID as it will be generated
         if (!isUpdate) {
             delete groupData.id;
         }
-        try {
-            const { data, error } = await ctx.supabaseUser
-                .from('groups')
-                .upsert(groupData)
-                .select()
-                .single();
-            if (error) {
-                console.error('Error saving group:', error);
-                throw new TRPCError({
-                    code: 'INTERNAL_SERVER_ERROR',
-                    message: `Failed to ${isUpdate ? 'update' : 'create'} group`,
-                });
-            }
-            return data;
-        }
-        catch (err) {
-            console.error('Unexpected error in save group procedure:', err);
+        const { data, error } = await ctx.supabaseUser
+            .from('groups')
+            .upsert(groupData)
+            .select()
+            .single();
+        if (error) {
+            console.error('Error saving group:', error);
             throw new TRPCError({
                 code: 'INTERNAL_SERVER_ERROR',
-                message: err instanceof Error ? err.message : 'An unknown error occurred',
+                message: `Failed to ${isUpdate ? 'update' : 'create'} group`,
             });
         }
+        return data;
     }),
     // Delete a group
     delete: protectedProcedure
@@ -190,7 +154,6 @@ export const groupRouter = router({
         if (!ctx.user) {
             throw new TRPCError({ code: 'UNAUTHORIZED' });
         }
-        // Delete group (contact_groups will cascade delete due to foreign key constraint)
         const { error } = await ctx.supabaseUser
             .from('groups')
             .delete()
@@ -212,69 +175,38 @@ export const groupRouter = router({
         if (!ctx.user) {
             throw new TRPCError({ code: 'UNAUTHORIZED' });
         }
-        // First verify the contact exists
-        const { data: _contact, error: contactError } = await ctx.supabaseUser
-            .from('contacts')
-            .select('id')
-            .eq('id', input.contactId)
-            .single();
-        if (contactError) {
-            console.error('Error verifying contact:', contactError);
-            throw new TRPCError({
-                code: 'BAD_REQUEST',
-                message: 'Invalid contact ID',
-            });
-        }
-        // Then verify the group exists
-        const { data: _group, error: groupError } = await ctx.supabaseUser
-            .from('groups')
-            .select('id')
-            .eq('id', input.groupId)
-            .single();
-        if (groupError) {
-            console.error('Error verifying group:', groupError);
-            throw new TRPCError({
-                code: 'BAD_REQUEST',
-                message: 'Invalid group ID',
-            });
-        }
-        // Check if the membership already exists
-        const { data: existing, error: checkError } = await ctx.supabaseUser
+        const { data: existing, error: existingError } = await ctx.supabaseUser
             .from('group_members')
             .select('id')
-            .eq('contact_id', input.contactId)
             .eq('group_id', input.groupId)
-            .maybeSingle();
-        if (checkError) {
-            console.error('Error checking existing membership:', checkError);
+            .eq('contact_id', input.contactId)
+            .single();
+        if (existingError && existingError.code !== 'PGRST116') {
+            console.error('Error checking for existing group member:', existingError);
             throw new TRPCError({
                 code: 'INTERNAL_SERVER_ERROR',
-                message: 'Failed to check existing membership',
+                message: 'Could not verify group membership.',
             });
         }
-        // If already exists, return success
         if (existing) {
-            return [existing];
+            return { success: true, message: 'Contact already in group.' };
         }
-        // Otherwise, insert new membership
-        const { data, error } = await ctx.supabaseUser
-            .from('group_members')
-            .insert({
-            contact_id: input.contactId,
-            group_id: input.groupId,
-        })
-            .select();
-        if (error) {
-            console.error('Error adding contact to group:', error, '\nPayload:', {
-                contact_id: input.contactId,
+        const { error } = await ctx.supabaseUser.from('group_members').insert([
+            {
                 group_id: input.groupId,
-            });
+                contact_id: input.contactId,
+                // user_id field removed as it doesn't exist in the table schema
+            },
+        ]);
+        if (error) {
+            console.error('Detailed error adding contact to group:', JSON.stringify(error, null, 2));
+            console.error('Original error object adding contact to group:', error);
             throw new TRPCError({
                 code: 'INTERNAL_SERVER_ERROR',
                 message: 'Failed to add contact to group',
             });
         }
-        return data || [];
+        return { success: true };
     }),
     // Remove a contact from a group
     removeContact: protectedProcedure
@@ -304,26 +236,17 @@ export const groupRouter = router({
         if (!ctx.user) {
             throw new TRPCError({ code: 'UNAUTHORIZED' });
         }
-        // First, verify the group exists and belongs to the user
         const { data: group, error: groupError } = await ctx.supabaseUser
             .from('groups')
             .select('id')
             .eq('id', input.groupId)
             .single();
         if (groupError || !group) {
-            console.error('Error verifying group:', groupError);
-            throw new TRPCError({
-                code: 'NOT_FOUND',
-                message: 'Group not found',
-            });
+            throw new TRPCError({ code: 'NOT_FOUND', message: 'Group not found' });
         }
-        // Get all contacts in the group via the junction table
         const { data, error } = await ctx.supabaseUser
             .from('group_members')
-            .select(`
-          contact_id,
-          contacts:contact_id (*)
-        `)
+            .select('contacts:contact_id (*)')
             .eq('group_id', input.groupId);
         if (error) {
             console.error('Error fetching contacts in group:', error);
@@ -332,7 +255,9 @@ export const groupRouter = router({
                 message: 'Failed to fetch contacts in group',
             });
         }
-        // Extract the contact data from the joined query
-        return (data?.map((item) => item.contacts) || []);
+        if (!data) {
+            return [];
+        }
+        return data.map((item) => item.contacts).filter(Boolean);
     }),
 });

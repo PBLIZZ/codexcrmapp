@@ -95,16 +95,16 @@ export declare const noteFilterSchema: z.ZodObject<{
     sentiment: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     contactId?: string | undefined;
-    sentiment?: string | undefined;
     sessionId?: string | undefined;
+    sentiment?: string | undefined;
     topicTag?: string | undefined;
     startDate?: string | undefined;
     endDate?: string | undefined;
     hasAiSummary?: boolean | undefined;
 }, {
     contactId?: string | undefined;
-    sentiment?: string | undefined;
     sessionId?: string | undefined;
+    sentiment?: string | undefined;
     topicTag?: string | undefined;
     startDate?: string | undefined;
     endDate?: string | undefined;
@@ -260,16 +260,16 @@ export declare const NoteSchemas: {
         sentiment: z.ZodOptional<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
         contactId?: string | undefined;
-        sentiment?: string | undefined;
         sessionId?: string | undefined;
+        sentiment?: string | undefined;
         topicTag?: string | undefined;
         startDate?: string | undefined;
         endDate?: string | undefined;
         hasAiSummary?: boolean | undefined;
     }, {
         contactId?: string | undefined;
-        sentiment?: string | undefined;
         sessionId?: string | undefined;
+        sentiment?: string | undefined;
         topicTag?: string | undefined;
         startDate?: string | undefined;
         endDate?: string | undefined;

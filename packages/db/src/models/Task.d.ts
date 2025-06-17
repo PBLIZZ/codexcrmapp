@@ -67,8 +67,8 @@ export declare const TaskSchema: z.ZodObject<{
     title: string;
     position: number;
     priority?: TaskPriority | undefined;
-    notes?: string | null | undefined;
     status?: TaskStatus | undefined;
+    notes?: string | null | undefined;
     created_at?: string | undefined;
     updated_at?: string | undefined;
     contact_id?: string | null | undefined;
@@ -124,8 +124,8 @@ export declare const TaskCreateSchema: z.ZodObject<Omit<{
     position: number;
     id?: string | undefined;
     priority?: TaskPriority | undefined;
-    notes?: string | null | undefined;
     status?: TaskStatus | undefined;
+    notes?: string | null | undefined;
     contact_id?: string | null | undefined;
     due_date?: string | null | undefined;
     is_repeating?: boolean | undefined;
@@ -137,8 +137,8 @@ export declare const TaskCreateSchema: z.ZodObject<Omit<{
 export type TaskCreate = z.infer<typeof TaskCreateSchema>;
 export declare const TaskUpdateSchema: z.ZodObject<{
     priority: z.ZodOptional<z.ZodDefault<z.ZodNativeEnum<typeof TaskPriority>>>;
-    notes: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodString>>>;
     status: z.ZodOptional<z.ZodDefault<z.ZodNativeEnum<typeof TaskStatus>>>;
+    notes: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodString>>>;
     user_id: z.ZodOptional<z.ZodString>;
     contact_id: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodString>>>;
     title: z.ZodOptional<z.ZodString>;
@@ -154,8 +154,8 @@ export declare const TaskUpdateSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     id: string;
     priority?: TaskPriority | undefined;
-    notes?: string | null | undefined;
     status?: TaskStatus | undefined;
+    notes?: string | null | undefined;
     user_id?: string | undefined;
     contact_id?: string | null | undefined;
     title?: string | undefined;
@@ -169,8 +169,8 @@ export declare const TaskUpdateSchema: z.ZodObject<{
 }, {
     id: string;
     priority?: TaskPriority | undefined;
-    notes?: string | null | undefined;
     status?: TaskStatus | undefined;
+    notes?: string | null | undefined;
     user_id?: string | undefined;
     contact_id?: string | null | undefined;
     title?: string | undefined;

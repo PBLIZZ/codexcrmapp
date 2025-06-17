@@ -239,15 +239,15 @@ export declare const Schemas: {
             source: import("zod").ZodOptional<import("zod").ZodString>;
         }, "strip", import("zod").ZodTypeAny, {
             search?: string | undefined;
+            groupId?: string | undefined;
             tags?: string[] | undefined;
             source?: string | undefined;
-            groupId?: string | undefined;
             journeyStage?: string | undefined;
         }, {
             search?: string | undefined;
+            groupId?: string | undefined;
             tags?: string[] | undefined;
             source?: string | undefined;
-            groupId?: string | undefined;
             journeyStage?: string | undefined;
         }>;
         profile: import("zod").ZodObject<{
@@ -430,8 +430,8 @@ export declare const Schemas: {
         }, "strip", import("zod").ZodTypeAny, {
             contact_id: string;
             session_time: string;
-            notes?: string | null | undefined;
             status?: string | null | undefined;
+            notes?: string | null | undefined;
             session_type?: string | null | undefined;
             follow_up_needed?: boolean | null | undefined;
             duration_minutes?: number | null | undefined;
@@ -447,8 +447,8 @@ export declare const Schemas: {
         }, {
             contact_id: string;
             session_time: string;
-            notes?: string | null | undefined;
             status?: string | null | undefined;
+            notes?: string | null | undefined;
             session_type?: string | null | undefined;
             follow_up_needed?: boolean | null | undefined;
             duration_minutes?: number | null | undefined;
@@ -482,8 +482,8 @@ export declare const Schemas: {
         }, "strip", import("zod").ZodTypeAny, {
             contact_id: string;
             session_time: string;
-            notes?: string | null | undefined;
             status?: string | null | undefined;
+            notes?: string | null | undefined;
             session_type?: string | null | undefined;
             follow_up_needed?: boolean | null | undefined;
             duration_minutes?: number | null | undefined;
@@ -499,8 +499,8 @@ export declare const Schemas: {
         }, {
             contact_id: string;
             session_time: string;
-            notes?: string | null | undefined;
             status?: string | null | undefined;
+            notes?: string | null | undefined;
             session_type?: string | null | undefined;
             follow_up_needed?: boolean | null | undefined;
             duration_minutes?: number | null | undefined;
@@ -535,8 +535,8 @@ export declare const Schemas: {
             id: import("zod").ZodString;
         }, "strip", import("zod").ZodTypeAny, {
             id: string;
-            notes?: string | null | undefined;
             status?: string | null | undefined;
+            notes?: string | null | undefined;
             contact_id?: string | undefined;
             session_time?: string | undefined;
             session_type?: string | null | undefined;
@@ -553,8 +553,8 @@ export declare const Schemas: {
             ai_insights?: any;
         }, {
             id: string;
-            notes?: string | null | undefined;
             status?: string | null | undefined;
+            notes?: string | null | undefined;
             contact_id?: string | undefined;
             session_time?: string | undefined;
             session_type?: string | null | undefined;
@@ -902,16 +902,16 @@ export declare const Schemas: {
             sentiment: import("zod").ZodOptional<import("zod").ZodString>;
         }, "strip", import("zod").ZodTypeAny, {
             contactId?: string | undefined;
-            sentiment?: string | undefined;
             sessionId?: string | undefined;
+            sentiment?: string | undefined;
             topicTag?: string | undefined;
             startDate?: string | undefined;
             endDate?: string | undefined;
             hasAiSummary?: boolean | undefined;
         }, {
             contactId?: string | undefined;
-            sentiment?: string | undefined;
             sessionId?: string | undefined;
+            sentiment?: string | undefined;
             topicTag?: string | undefined;
             startDate?: string | undefined;
             endDate?: string | undefined;

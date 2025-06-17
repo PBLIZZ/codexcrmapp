@@ -1,9 +1,8 @@
 import * as Sentry from '@sentry/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 
-// Import the server client creator from our new helper
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+// Import the server client creator from our modern SSR helper
+import { createClient } from '@/lib/supabase/server';
 
 export const dynamic = 'force-dynamic';
 
@@ -38,8 +37,8 @@ export async function GET(req: NextRequest) {
   Sentry.captureMessage('Auth callback triggered, processing authentication...', 'info');
 
   try {
-    // Create Supabase client using the server helper
-    const supabase = createRouteHandlerClient({ cookies });
+    // Create Supabase client using the modern SSR helper
+    const supabase = await createClient();
     const { searchParams } = new URL(req.url);
     const code = searchParams.get('code');
     const nextParam = searchParams.get('next');
