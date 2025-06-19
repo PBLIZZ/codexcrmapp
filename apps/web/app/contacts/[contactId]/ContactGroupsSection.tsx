@@ -45,39 +45,38 @@ function getColorClasses(color: string | null | undefined): {
 } {
   // Define a lookup map for color hex values to Tailwind classes
   // This is more maintainable than a switch statement if the list grows
-  const COLOR_MAP: Record<string, { border: string; bg: string; dot: string }> =
-    {
-      '#EF4444': {
-        border: 'border-red-500',
-        bg: 'bg-red-50',
-        dot: 'bg-red-500',
-      }, // Red
-      '#10B981': {
-        border: 'border-green-500',
-        bg: 'bg-green-50',
-        dot: 'bg-green-500',
-      }, // Green
-      '#F59E0B': {
-        border: 'border-amber-500',
-        bg: 'bg-amber-50',
-        dot: 'bg-amber-500',
-      }, // Amber
-      '#8B5CF6': {
-        border: 'border-purple-500',
-        bg: 'bg-purple-50',
-        dot: 'bg-purple-500',
-      }, // Purple
-      '#EC4899': {
-        border: 'border-pink-500',
-        bg: 'bg-pink-50',
-        dot: 'bg-pink-500',
-      }, // Pink
-      '#06B6D4': {
-        border: 'border-cyan-500',
-        bg: 'bg-cyan-50',
-        dot: 'bg-cyan-500',
-      }, // Cyan
-    };
+  const COLOR_MAP: Record<string, { border: string; bg: string; dot: string }> = {
+    '#EF4444': {
+      border: 'border-red-500',
+      bg: 'bg-red-50',
+      dot: 'bg-red-500',
+    }, // Red
+    '#10B981': {
+      border: 'border-green-500',
+      bg: 'bg-green-50',
+      dot: 'bg-green-500',
+    }, // Green
+    '#F59E0B': {
+      border: 'border-amber-500',
+      bg: 'bg-amber-50',
+      dot: 'bg-amber-500',
+    }, // Amber
+    '#8B5CF6': {
+      border: 'border-purple-500',
+      bg: 'bg-purple-50',
+      dot: 'bg-purple-500',
+    }, // Purple
+    '#EC4899': {
+      border: 'border-pink-500',
+      bg: 'bg-pink-50',
+      dot: 'bg-pink-500',
+    }, // Pink
+    '#06B6D4': {
+      border: 'border-cyan-500',
+      bg: 'bg-cyan-50',
+      dot: 'bg-cyan-500',
+    }, // Cyan
+  };
 
   // Default to blue if no color provided or color not in map
   const defaultClasses = {
@@ -85,8 +84,10 @@ function getColorClasses(color: string | null | undefined): {
     bg: 'bg-blue-50',
     dot: 'bg-blue-500',
   };
-  if (!color) {return defaultClasses;}
-  return COLOR_MAP[color] || defaultClasses;
+  if (!color) {
+    return defaultClasses;
+  }
+  return COLOR_MAP[color] ?? defaultClasses; // Use ??
 }
 
 export function ContactGroupsSection({ contactId }: { contactId: string }) {
@@ -98,25 +99,25 @@ export function ContactGroupsSection({ contactId }: { contactId: string }) {
 
   // Get all groups for this contact
   const {
-    data: contactGroups,
+    data: contactGroups, // Type the data
     isLoading: isLoadingContactGroups,
     error: contactGroupsError,
-  } = api.groups.getGroupsForContact.useQuery(
+  } = api.groups.getGroupsForContact.useQuery<Group[] | undefined>( // Explicitly type the query result
     { contactId },
     { enabled: !!contactId }
   );
 
   // Get all available groups for the dropdown
   const {
-    data: allGroups,
+    data: allGroups, // Type the data
     isLoading: isLoadingAllGroups,
     error: allGroupsError,
-  } = api.groups.list.useQuery();
+  } = api.groups.list.useQuery<Group[] | undefined>(); // Explicitly type the query result
 
   // Mutation to add contact to group
   const addToGroupMutation = api.groups.addContact.useMutation({
     onSuccess: () => {
-      utils.groups.getGroupsForContact.invalidate({ contactId });
+      void utils.groups.getGroupsForContact.invalidate({ contactId }); // Prepend with void
       setIsAddGroupDialogOpen(false);
       setSelectedGroupId('');
       // Success message would go here if we had a toast component
@@ -134,7 +135,7 @@ export function ContactGroupsSection({ contactId }: { contactId: string }) {
       setRemovingGroupId(groupId);
     },
     onSuccess: () => {
-      utils.groups.getGroupsForContact.invalidate({ contactId });
+      void utils.groups.getGroupsForContact.invalidate({ contactId }); // Prepend with void
       // Success message would go here if we had a toast component
     },
     onError: (error) => {
@@ -159,7 +160,9 @@ export function ContactGroupsSection({ contactId }: { contactId: string }) {
 
   // Filter out groups the contact is already in (memoized to prevent recalculation)
   const availableGroups = useMemo(() => {
-    if (!allGroups || !contactGroups) {return [];}
+    if (!allGroups || !contactGroups) {
+      return [];
+    } // Use ??
 
     return allGroups.filter(
       (group: Group) => !contactGroups.some((cg: Group) => cg.id === group.id)
@@ -167,7 +170,9 @@ export function ContactGroupsSection({ contactId }: { contactId: string }) {
   }, [allGroups, contactGroups]);
 
   const handleAddToGroup = () => {
-    if (!selectedGroupId) {return;}
+    if (!selectedGroupId) {
+      return;
+    }
 
     addToGroupMutation.mutate({
       contactId,
@@ -183,66 +188,62 @@ export function ContactGroupsSection({ contactId }: { contactId: string }) {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-medium">Groups</h3>
+    <div className='space-y-4'>
+      <div className='flex justify-between items-center'>
+        <h3 className='text-lg font-medium'>Groups</h3>
         <Button
-          variant="outline"
-          size="sm"
+          variant='outline'
+          size='sm'
           onClick={() => handleDialogOpenChange(true)}
           disabled={isLoadingAllGroups || availableGroups.length === 0}
         >
-          <Plus className="h-4 w-4 mr-2" />
+          <Plus className='h-4 w-4 mr-2' />
           Add to Group
         </Button>
       </div>
-      <Separator className="my-4" />
+      <Separator className='my-4' />
 
       {/* Handle loading, error, and data states properly */}
       {isLoadingContactGroups ? (
-        <div className="flex justify-center py-4">
-          <div className="flex items-center gap-2">
-            <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-500 border-t-transparent"></div>
-            <p className="text-sm text-gray-500">Loading groups...</p>
+        <div className='flex justify-center py-4'>
+          <div className='flex items-center gap-2'>
+            <div className='h-4 w-4 animate-spin rounded-full border-2 border-blue-500 border-t-transparent'></div>
+            <p className='text-sm text-gray-500'>Loading groups...</p>
           </div>
         </div>
       ) : contactGroupsError ? (
-        <div className="py-4 text-center">
-          <p className="text-sm text-red-600">
+        <div className='py-4 text-center'>
+          <p className='text-sm text-red-600'>
             Failed to load contact groups: {contactGroupsError.message}
           </p>
         </div>
       ) : contactGroups && contactGroups.length > 0 ? (
-        <div className="flex flex-wrap gap-2 py-2">
+        <div className='flex flex-wrap gap-2 py-2'>
           {contactGroups.map((group: Group) => {
             const colorClasses = getColorClasses(group.color);
             return (
               <Badge
                 key={group.id}
-                variant="outline"
+                variant='outline'
                 className={cn(
                   'flex items-center gap-1 py-1.5 px-3',
                   colorClasses.border,
                   colorClasses.bg
                 )}
               >
-                <Tag className="h-3 w-3 mr-1" />
+                <Tag className='h-3 w-3 mr-1' />
                 {group.name}
                 <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-4 w-4 ml-1 p-0 hover:bg-transparent"
+                  variant='ghost'
+                  size='icon'
+                  className='h-4 w-4 ml-1 p-0 hover:bg-transparent'
                   onClick={() => handleRemoveFromGroup(group.id)}
-                  disabled={
-                    removeFromGroupMutation.isPending &&
-                    removingGroupId === group.id
-                  }
+                  disabled={removeFromGroupMutation.isPending && removingGroupId === group.id}
                 >
-                  {removeFromGroupMutation.isPending &&
-                  removingGroupId === group.id ? (
-                    <div className="h-3 w-3 animate-spin rounded-full border border-gray-300 border-t-transparent"></div>
+                  {removeFromGroupMutation.isPending && removingGroupId === group.id ? (
+                    <div className='h-3 w-3 animate-spin rounded-full border border-gray-300 border-t-transparent'></div>
                   ) : (
-                    <X className="h-3 w-3" />
+                    <X className='h-3 w-3' />
                   )}
                 </Button>
               </Badge>
@@ -250,36 +251,30 @@ export function ContactGroupsSection({ contactId }: { contactId: string }) {
           })}
         </div>
       ) : (
-        <div className="py-4 text-center">
-          <p className="text-sm text-gray-500">
-            Not a member of any groups yet.
-          </p>
+        <div className='py-4 text-center'>
+          <p className='text-sm text-gray-500'>Not a member of any groups yet.</p>
         </div>
       )}
 
       {/* Add to Group Dialog */}
       <Dialog open={isAddGroupDialogOpen} onOpenChange={handleDialogOpenChange}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className='sm:max-w-[425px]'>
           <DialogHeader>
             <DialogTitle>Add to Group</DialogTitle>
-            <DialogDescription>
-              Select a group to add this contact to.
-            </DialogDescription>
+            <DialogDescription>Select a group to add this contact to.</DialogDescription>
           </DialogHeader>
 
           {/* Display errors from queries or mutations */}
           {allGroupsError && (
-            <p className="text-sm text-red-600 mt-2">
+            <p className='text-sm text-red-600 mt-2'>
               Failed to load groups: {allGroupsError.message}
             </p>
           )}
           {addToGroupMutation.error && (
-            <p className="text-sm text-red-600 mt-2">
-              {addToGroupMutation.error.message}
-            </p>
+            <p className='text-sm text-red-600 mt-2'>{addToGroupMutation.error.message}</p>
           )}
 
-          <div className="py-4">
+          <div className='py-4'>
             <Select
               value={selectedGroupId}
               onValueChange={setSelectedGroupId}
@@ -287,33 +282,26 @@ export function ContactGroupsSection({ contactId }: { contactId: string }) {
             >
               <SelectTrigger>
                 {isLoadingAllGroups ? (
-                  <div className="flex items-center gap-2">
-                    <div className="h-3 w-3 animate-spin rounded-full border border-gray-300 border-t-transparent"></div>
-                    <span className="text-gray-400">Loading groups...</span>
+                  <div className='flex items-center gap-2'>
+                    <div className='h-3 w-3 animate-spin rounded-full border border-gray-300 border-t-transparent'></div>
+                    <span className='text-gray-400'>Loading groups...</span>
                   </div>
                 ) : (
-                  <SelectValue placeholder="Select a group" />
+                  <SelectValue placeholder='Select a group' />
                 )}
               </SelectTrigger>
               <SelectContent>
                 {availableGroups.length === 0 ? (
-                  <SelectItem value="no-groups" disabled>
-                    {allGroupsError
-                      ? 'Error loading groups'
-                      : 'No available groups'}
+                  <SelectItem value='no-groups' disabled>
+                    {allGroupsError ? 'Error loading groups' : 'No available groups'}
                   </SelectItem>
                 ) : (
                   availableGroups.map((group: Group) => {
                     const colorClasses = getColorClasses(group.color);
                     return (
                       <SelectItem key={group.id} value={group.id}>
-                        <div className="flex items-center">
-                          <div
-                            className={cn(
-                              'h-3 w-3 rounded-full mr-2',
-                              colorClasses.dot
-                            )}
-                          />
+                        <div className='flex items-center'>
+                          <div className={cn('h-3 w-3 rounded-full mr-2', colorClasses.dot)} />
                           {group.name}
                         </div>
                       </SelectItem>
@@ -325,19 +313,12 @@ export function ContactGroupsSection({ contactId }: { contactId: string }) {
           </div>
 
           <DialogFooter>
-            <Button
-              variant="secondary"
-              onClick={() => handleDialogOpenChange(false)}
-            >
+            <Button variant='secondary' onClick={() => handleDialogOpenChange(false)}>
               Cancel
             </Button>
             <Button
               onClick={handleAddToGroup}
-              disabled={
-                isLoadingAllGroups ||
-                !selectedGroupId ||
-                addToGroupMutation.isPending
-              }
+              disabled={isLoadingAllGroups || !selectedGroupId || addToGroupMutation.isPending}
             >
               {addToGroupMutation.isPending ? 'Adding...' : 'Add to Group'}
             </Button>
