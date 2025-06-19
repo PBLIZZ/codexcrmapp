@@ -1,8 +1,40 @@
 {
-    "extends": "../../tsconfig.json",
-    "compilerOptions": {
-        "composite": true,
-        "outDir": "dist"
-    },
-    "include": ["src/**/*"]
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    // Build output configuration
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "composite": true,
+
+    // Database/Node.js specific configuration
+    "module": "commonjs",
+    "target": "es2022",
+    "moduleResolution": "node",
+    "tsBuildInfoFile": "../../.tsbuildinfo-db",
+
+    // Monorepo and database library paths - using root-relative paths
+    "baseUrl": "../..",
+    "paths": {
+      // Monorepo packages using aliases from root
+      "@codexcrm/server/*": ["packages/server/src/*"],
+      "@codexcrm/auth/*": ["packages/auth/src/*"],
+      "@codexcrm/config/*": ["packages/config/src/*"],
+      "@codexcrm/db/*": ["packages/db/src/*"],
+      "@codexcrm/jobs/*": ["packages/jobs/src/*"],
+      "@codexcrm/ui/*": ["packages/ui/src/*"],
+      "@/*": ["apps/web/*"],
+      // Local paths
+      "@/db/*": ["packages/db/src/*"],
+      "@/models/*": ["packages/db/src/models/*"],
+      "@/repositories/*": ["packages/db/src/repositories/*"],
+      "@/utils/*": ["packages/db/src/utils/*"]
+    }
+  },
+
+  "include": ["src/**/*"],
+
+  "exclude": ["node_modules", "dist", "**/*.test.{ts,tsx}", "**/*.spec.{ts,tsx}"]
 }

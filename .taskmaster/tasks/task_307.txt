@@ -1,0 +1,25 @@
+# Task ID: 307
+# Title: Epic 3: Implement Project-Based Task Filtering
+# Status: pending
+# Dependencies: 306
+# Priority: high
+# Description: Enable users to view tasks filtered by the selected project.
+# Details:
+This task makes the project list in the sidebar functional, allowing it to control the main task view.
+
+# Test Strategy:
+Create two projects, 'Project A' and 'Project B'. Create 'Task 1' assigned to 'Project A' and 'Task 2' assigned to 'Project B'. Click 'Project A' in the sidebar; only 'Task 1' should be visible. Click 'Project B'; only 'Task 2' should be visible. Click 'Inbox' or 'All Tasks'; both should be visible.
+
+# Subtasks:
+## 1. Update `task.list` for Project Filtering [pending]
+### Dependencies: None
+### Description: Modify the `task.list` tRPC procedure to accept an optional `projectId`.
+### Details:
+The `task.list` procedure should be updated to accept `input: { projectId?: string }`. If a `projectId` is provided, the database query must be modified with a `WHERE` clause to only return tasks matching that `projectId`.
+
+## 2. Connect Sidebar Links to Filter State [pending]
+### Dependencies: None
+### Description: Make the project links in the sidebar control the filter applied to the task list.
+### Details:
+Use a client-side state management solution (like Zustand or React Context) or URL query parameters (`/tasks?project=...`) to manage the currently selected project filter. When a project link in `TasksSidebar.tsx` is clicked, update this state. The main task list component should use this state to call the `api.task.list.useQuery()` hook with the correct `projectId`.
+

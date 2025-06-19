@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { cn } from '../../lib/utils';
 import { useTheme } from './ThemeProvider';
-import { themeConfig } from '../../lib/theme';
 import {
   ThemedCard,
   ThemedCardHeader,
@@ -18,7 +17,7 @@ export interface ThemeDemoProps {
 }
 
 export function ThemeDemo({ className }: ThemeDemoProps) {
-  const { theme, setTheme, isDarkMode } = useTheme();
+  const { theme, setTheme } = useTheme();
   const [activeTab, setActiveTab] = useState<'colors' | 'components'>('colors');
 
   return (
@@ -92,34 +91,38 @@ export function ThemeDemo({ className }: ThemeDemoProps) {
           <div className="space-y-3">
             <h3 className="text-lg font-medium">Primary Colors (Teal)</h3>
             <div className="grid grid-cols-5 gap-2">
-              {[50, 100, 200, 300, 400, 500, 600, 700, 800, 900].map((shade) => (
-                <div key={`primary-${shade}`} className="space-y-1.5">
-                  <div
-                    className={`h-10 w-full rounded-md`}
-                    style={{ backgroundColor: `var(--primary-${shade})` }}
-                  />
-                  <div className="text-xs">
-                    <div className="font-medium">Primary {shade}</div>
+              {[50, 100, 200, 300, 400, 500, 600, 700, 800, 900].map(
+                (shade) => (
+                  <div key={`primary-${shade}`} className="space-y-1.5">
+                    <div
+                      className={`h-10 w-full rounded-md`}
+                      style={{ backgroundColor: `var(--primary-${shade})` }}
+                    />
+                    <div className="text-xs">
+                      <div className="font-medium">Primary {shade}</div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              )}
             </div>
           </div>
 
           <div className="space-y-3">
             <h3 className="text-lg font-medium">Accent Colors (Orange)</h3>
             <div className="grid grid-cols-5 gap-2">
-              {[50, 100, 200, 300, 400, 500, 600, 700, 800, 900].map((shade) => (
-                <div key={`accent-${shade}`} className="space-y-1.5">
-                  <div
-                    className={`h-10 w-full rounded-md`}
-                    style={{ backgroundColor: `var(--accent-${shade})` }}
-                  />
-                  <div className="text-xs">
-                    <div className="font-medium">Accent {shade}</div>
+              {[50, 100, 200, 300, 400, 500, 600, 700, 800, 900].map(
+                (shade) => (
+                  <div key={`accent-${shade}`} className="space-y-1.5">
+                    <div
+                      className={`h-10 w-full rounded-md`}
+                      style={{ backgroundColor: `var(--accent-${shade})` }}
+                    />
+                    <div className="text-xs">
+                      <div className="font-medium">Accent {shade}</div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              )}
             </div>
           </div>
 
@@ -201,7 +204,9 @@ export function ThemeDemo({ className }: ThemeDemoProps) {
                   <p>Card content goes here</p>
                 </ThemedCardContent>
                 <ThemedCardFooter>
-                  <p className="text-sm text-muted-foreground">Last updated: Today</p>
+                  <p className="text-sm text-muted-foreground">
+                    Last updated: Today
+                  </p>
                 </ThemedCardFooter>
               </ThemedCard>
 
@@ -246,7 +251,9 @@ export function ThemeDemo({ className }: ThemeDemoProps) {
                   <p>Card content goes here</p>
                 </ThemedCardContent>
                 <ThemedCardFooter>
-                  <p className="text-sm text-muted-foreground">Last updated: Today</p>
+                  <p className="text-sm text-muted-foreground">
+                    Last updated: Today
+                  </p>
                 </ThemedCardFooter>
               </ThemedCard>
             </div>

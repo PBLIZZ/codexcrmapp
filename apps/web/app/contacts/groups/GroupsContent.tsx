@@ -11,7 +11,7 @@ import {
   Edit,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner'; // For notifications
 
 import { BulkContactSelector } from '@/components/groups/BulkContactSelector';
@@ -27,21 +27,7 @@ import {
   CardContent,
   CardFooter,
 } from '@/components/ui/card';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  // DialogTrigger, // We will trigger dialog programmatically
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea'; // If using for description
 import { api } from '@/lib/trpc';
-
-
 
 // --- Interface for Group Data (matching what `api.groups.list` returns) ---
 interface Group {
@@ -66,20 +52,18 @@ export function GroupsContent() {
   const queryClient = useQueryClient(); // For direct cache invalidation
   const router = useRouter();
 
-
-
   // --- tRPC Queries and Mutations ---
   const {
     data: groups = [],
     isLoading: isLoadingGroups,
     error: groupsQueryError,
-    refetch: refetchGroups,
   } = api.groups.list.useQuery(undefined, {
     // staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   const deleteGroupMutation = api.groups.delete.useMutation({
-    onSuccess: (data) => {
+    onSuccess: (_data) => {
+      // Renamed data to _data
       toast.success('Group deleted successfully!');
       queryClient.invalidateQueries({ queryKey: [['groups', 'list']] });
     },
@@ -90,8 +74,6 @@ export function GroupsContent() {
 
   // --- Event Handlers ---
   // Edit group dialog handling is now managed by the GroupCreateDialog component
-
-
 
   const handleDeleteGroup = (groupId: string, groupName: string) => {
     if (
@@ -142,7 +124,7 @@ export function GroupsContent() {
             Manage Groups
           </h1>
         </div>
-        <GroupCreateDialog 
+        <GroupCreateDialog
           triggerButtonLabel="Create New Group"
           triggerButtonClassName="bg-purple-500 hover:bg-purple-600 text-white"
         />
@@ -202,7 +184,8 @@ export function GroupsContent() {
                     }}
                     className="w-full justify-center"
                   >
-                    <UserPlus className="mr-1.5 h-3.5 w-3.5" /> Add Lovely Contacts
+                    <UserPlus className="mr-1.5 h-3.5 w-3.5" /> Add Lovely
+                    Contacts
                   </Button>
 
                   {/* Edit and Delete buttons - side by side on all screens */}

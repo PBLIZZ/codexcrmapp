@@ -11,15 +11,15 @@ export declare const TaskTagSchema: z.ZodObject<{
     created_at: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     id: string;
-    user_id: string;
     task_id: string;
     tag_id: string;
+    user_id: string;
     created_at?: string | undefined;
 }, {
     id: string;
-    user_id: string;
     task_id: string;
     tag_id: string;
+    user_id: string;
     created_at?: string | undefined;
 }>;
 export type TaskTag = z.infer<typeof TaskTagSchema>;
@@ -32,14 +32,14 @@ export declare const TaskTagCreateSchema: z.ZodObject<Omit<{
 }, "id" | "created_at"> & {
     id: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
-    user_id: string;
     task_id: string;
     tag_id: string;
+    user_id: string;
     id?: string | undefined;
 }, {
-    user_id: string;
     task_id: string;
     tag_id: string;
+    user_id: string;
     id?: string | undefined;
 }>;
 export type TaskTagCreate = z.infer<typeof TaskTagCreateSchema>;

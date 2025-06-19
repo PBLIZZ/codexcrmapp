@@ -9,9 +9,11 @@ export const ProjectSchema = z.object({
     title: z.string().min(1, 'Title is required'),
     notes: z.string().nullable().optional(),
     due_date: z.string().nullable().optional(),
-    is_completed: z.boolean().default(false),
-    is_repeating: z.boolean().default(false),
-    repeat_rule: z.string().nullable().optional(),
+    archived: z.boolean().nullable().optional(),
+    completed_at: z.string().datetime().nullable().optional(),
+    metadata: z.any().nullable().optional(),
+    repeat_config: z.any().nullable().optional(),
+    status: z.string().nullable().optional(),
     user_id: z.string().uuid(),
     created_at: z.string().datetime().optional(),
     updated_at: z.string().datetime().optional(),
@@ -52,14 +54,20 @@ export class ProjectModel {
     get dueDate() {
         return this.data.due_date;
     }
-    get isCompleted() {
-        return this.data.is_completed;
+    get archived() {
+        return this.data.archived;
     }
-    get isRepeating() {
-        return this.data.is_repeating;
+    get completedAt() {
+        return this.data.completed_at;
     }
-    get repeatRule() {
-        return this.data.repeat_rule;
+    get metadata() {
+        return this.data.metadata;
+    }
+    get repeatConfig() {
+        return this.data.repeat_config;
+    }
+    get status() {
+        return this.data.status;
     }
     get userId() {
         return this.data.user_id;
@@ -79,11 +87,21 @@ export class ProjectModel {
     }
     // Business logic methods
     complete() {
-        this.data.is_completed = true;
+        this.data.status = 'completed'; // Assuming a 'completed' status exists
+        this.data.completed_at = new Date().toISOString();
         this.data.updated_at = new Date().toISOString();
     }
     reopen() {
-        this.data.is_completed = false;
+        this.data.status = 'active'; // Assuming an 'active' status exists
+        this.data.completed_at = null;
+        this.data.updated_at = new Date().toISOString();
+    }
+    archive() {
+        this.data.archived = true;
+        this.data.updated_at = new Date().toISOString();
+    }
+    unarchive() {
+        this.data.archived = false;
         this.data.updated_at = new Date().toISOString();
     }
     softDelete() {
@@ -111,8 +129,11 @@ export class ProjectModel {
         const projectData = {
             ...data,
             id: data.id || crypto.randomUUID(),
+            archived: data.archived ?? false,
+            status: data.status ?? 'active', // Assuming a default status
             created_at: now,
             updated_at: now,
+            completed_at: null,
             deleted_at: null,
         };
         return new ProjectModel(projectData);

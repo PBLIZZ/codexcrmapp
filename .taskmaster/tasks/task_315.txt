@@ -1,0 +1,25 @@
+# Task ID: 315
+# Title: Epic 6: Implement AI Task Delegation Frontend
+# Status: pending
+# Dependencies: 314
+# Priority: medium
+# Description: Build the UI for a user to delegate a task to the AI.
+# Details:
+This makes the AI handoff feature usable from the application interface.
+
+# Test Strategy:
+Find a task in your personal inbox. Use the new 'Delegate to AI' menu option. The task should disappear from your view. Navigate to the new 'AI Inbox' page. The task should be listed there.
+
+# Subtasks:
+## 1. Add 'Delegate to AI' Action to Task UI [pending]
+### Dependencies: None
+### Description: Add a button or context menu option to the `ThingsTaskCard`.
+### Details:
+In the task's context menu (the '...' button), add a new option labeled 'Delegate to AI'. This option should only be visible for tasks owned by the current user. Its `onClick` handler should call the `api.task.delegateToAI.useMutation()` hook.
+
+## 2. Modify `task.list` to Respect Ownership [pending]
+### Dependencies: None
+### Description: Update the primary task list query to only show tasks owned by the current user.
+### Details:
+Modify the `task.list` procedure. It must now include a `WHERE owner_id = [current_user_id]` clause by default. This ensures a user's main task list is not cluttered with tasks they have delegated.
+

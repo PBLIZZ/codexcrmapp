@@ -1,0 +1,25 @@
+# Task ID: 301
+# Title: Epic 1: Implement Core Database Schema
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: Create the foundational Supabase database migration scripts for all tables required by the V1 Tasks and Calendar modules.
+# Details:
+Using the existing monorepo and Supabase project, write and apply a new migration script. This script will create the `projects`, `tasks`, `task_assignees`, and `calendar_events` tables. This is a pure database task and is the bedrock for all subsequent backend work. Ensure all columns, types, and foreign key constraints are implemented as per the provided schema.
+
+# Test Strategy:
+After the AI confirms the migration is complete, connect to the Supabase Studio dashboard. In the Table Editor, verify that all four tables (`projects`, `tasks`, `task_assignees`, `calendar_events`) exist and that their schemas (columns, types, foreign keys) exactly match the specification.
+
+# Subtasks:
+## 1. Create `projects` and `tasks` Tables [pending]
+### Dependencies: None
+### Description: Write the SQL for the `projects` and `tasks` tables in a new migration file.
+### Details:
+Define the `projects` table (id, user_id, name, etc.) and the `tasks` table (id, user_id, project_id FK, title, status, due_date, etc.). The `status` on the `tasks` table should be a TEXT type to accommodate future values.
+
+## 2. Create `task_assignees` and `calendar_events` Tables [pending]
+### Dependencies: None
+### Description: Write the SQL for the `task_assignees` and `calendar_events` tables in the same migration file.
+### Details:
+Define the `task_assignees` join table with FKs to `tasks.id` and `contacts.id`. Define the `calendar_events` table (id, user_id, title, start_time, end_time, google_calendar_event_id, etc.).
+

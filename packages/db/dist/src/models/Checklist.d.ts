@@ -6,41 +6,41 @@ import { z } from 'zod';
 export declare const ChecklistSchema: z.ZodObject<{
     id: z.ZodString;
     title: z.ZodString;
-    is_completed: z.ZodDefault<z.ZodBoolean>;
+    description: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     task_id: z.ZodString;
-    position: z.ZodNumber;
+    position: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
     user_id: z.ZodString;
     created_at: z.ZodOptional<z.ZodString>;
     updated_at: z.ZodOptional<z.ZodString>;
     deleted_at: z.ZodOptional<z.ZodNullable<z.ZodString>>;
 }, "strip", z.ZodTypeAny, {
     id: string;
-    title: string;
-    is_completed: boolean;
-    user_id: string;
-    position: number;
     task_id: string;
+    user_id: string;
+    title: string;
     created_at?: string | undefined;
     updated_at?: string | undefined;
+    position?: number | null | undefined;
+    description?: string | null | undefined;
     deleted_at?: string | null | undefined;
 }, {
     id: string;
-    title: string;
-    user_id: string;
-    position: number;
     task_id: string;
-    is_completed?: boolean | undefined;
+    user_id: string;
+    title: string;
     created_at?: string | undefined;
     updated_at?: string | undefined;
+    position?: number | null | undefined;
+    description?: string | null | undefined;
     deleted_at?: string | null | undefined;
 }>;
 export type Checklist = z.infer<typeof ChecklistSchema>;
 export declare const ChecklistCreateSchema: z.ZodObject<Omit<{
     id: z.ZodString;
     title: z.ZodString;
-    is_completed: z.ZodDefault<z.ZodBoolean>;
+    description: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     task_id: z.ZodString;
-    position: z.ZodNumber;
+    position: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
     user_id: z.ZodString;
     created_at: z.ZodOptional<z.ZodString>;
     updated_at: z.ZodOptional<z.ZodString>;
@@ -48,43 +48,43 @@ export declare const ChecklistCreateSchema: z.ZodObject<Omit<{
 }, "id" | "created_at" | "updated_at" | "deleted_at"> & {
     id: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
-    title: string;
-    is_completed: boolean;
-    user_id: string;
-    position: number;
     task_id: string;
+    user_id: string;
+    title: string;
     id?: string | undefined;
+    position?: number | null | undefined;
+    description?: string | null | undefined;
 }, {
-    title: string;
-    user_id: string;
-    position: number;
     task_id: string;
+    user_id: string;
+    title: string;
     id?: string | undefined;
-    is_completed?: boolean | undefined;
+    position?: number | null | undefined;
+    description?: string | null | undefined;
 }>;
 export type ChecklistCreate = z.infer<typeof ChecklistCreateSchema>;
 export declare const ChecklistUpdateSchema: z.ZodObject<{
-    title: z.ZodOptional<z.ZodString>;
-    is_completed: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
-    user_id: z.ZodOptional<z.ZodString>;
-    position: z.ZodOptional<z.ZodNumber>;
     task_id: z.ZodOptional<z.ZodString>;
+    user_id: z.ZodOptional<z.ZodString>;
+    position: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
+    title: z.ZodOptional<z.ZodString>;
+    description: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodString>>>;
 } & {
     id: z.ZodString;
 }, "strip", z.ZodTypeAny, {
     id: string;
-    title?: string | undefined;
-    is_completed?: boolean | undefined;
-    user_id?: string | undefined;
-    position?: number | undefined;
     task_id?: string | undefined;
+    user_id?: string | undefined;
+    position?: number | null | undefined;
+    title?: string | undefined;
+    description?: string | null | undefined;
 }, {
     id: string;
-    title?: string | undefined;
-    is_completed?: boolean | undefined;
-    user_id?: string | undefined;
-    position?: number | undefined;
     task_id?: string | undefined;
+    user_id?: string | undefined;
+    position?: number | null | undefined;
+    title?: string | undefined;
+    description?: string | null | undefined;
 }>;
 export type ChecklistUpdate = z.infer<typeof ChecklistUpdateSchema>;
 /**
@@ -95,16 +95,13 @@ export declare class ChecklistModel {
     constructor(data: Checklist);
     get id(): string;
     get title(): string;
-    get isCompleted(): boolean;
     get taskId(): string;
-    get position(): number;
+    get position(): number | null | undefined;
     get userId(): string;
     get createdAt(): string | undefined;
     get updatedAt(): string | undefined;
     get deletedAt(): string | null | undefined;
     getData(): Checklist;
-    complete(): void;
-    reopen(): void;
     softDelete(): void;
     restore(): void;
     update(data: Partial<ChecklistUpdate>): void;

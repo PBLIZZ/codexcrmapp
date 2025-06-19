@@ -2,17 +2,30 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Search, Plus, SlidersHorizontal, AlertCircle, RefreshCw } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+import {
+  Search,
+  Plus,
+  SlidersHorizontal,
+  AlertCircle,
+  RefreshCw,
+} from 'lucide-react';
 import { useDebounce } from 'use-debounce';
 
 import { api } from '@/lib/trpc';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 // Import the BEST components we decided to keep
-import { ContactsTable, Contact } from './ContactsTable';
+import type { Contact } from './ContactsTable';
+import { ContactsTable } from './ContactsTable';
 import { ContactForm } from './ContactForm';
 import { ColumnSelector } from './ColumnSelector';
 import { ContactsWidgets } from '@/components/contacts/ContactsWidgets';
@@ -31,22 +44,31 @@ export function ContactsView({ initialGroupId }: ContactsViewProps = {}) {
   // --- State Management ---
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearchQuery] = useDebounce(searchQuery, 300);
-  
+
   const [sortField, setSortField] = useState('full_name');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
-  
+
   const [visibleColumns, setVisibleColumns] = useState<string[]>([
-    'name', 'email', 'phone', 'company_name', 'last_contacted_at', 'source'
+    'name',
+    'email',
+    'phone',
+    'company_name',
+    'last_contacted_at',
+    'source',
   ]);
-  
+
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
 
   // --- Data Fetching ---
-  const { data: contactsData = [], isLoading, error: queryError } = api.contacts.list.useQuery(
-    { 
+  const {
+    data: contactsData = [],
+    isLoading,
+    error: queryError,
+  } = api.contacts.list.useQuery(
+    {
       search: debouncedSearchQuery,
-      groupId: currentGroupId // Pass the groupId to filter contacts if provided
+      groupId: currentGroupId, // Pass the groupId to filter contacts if provided
     },
     { placeholderData: (prev: Contact[] | undefined) => prev }
   );
@@ -58,7 +80,7 @@ export function ContactsView({ initialGroupId }: ContactsViewProps = {}) {
       closeForm();
     },
     onError: (error) => {
-      console.error("Failed to save contact:", error);
+      console.error('Failed to save contact:', error);
       // Here you would show a toast notification
     },
   });
@@ -68,7 +90,7 @@ export function ContactsView({ initialGroupId }: ContactsViewProps = {}) {
       utils.contacts.list.invalidate();
     },
     onError: (error) => {
-      console.error("Failed to delete contact:", error);
+      console.error('Failed to delete contact:', error);
       // Here you would show a toast notification
     },
   });
@@ -79,7 +101,9 @@ export function ContactsView({ initialGroupId }: ContactsViewProps = {}) {
       const aVal = a[sortField as keyof Contact] || '';
       const bVal = b[sortField as keyof Contact] || '';
       if (typeof aVal === 'string' && typeof bVal === 'string') {
-        return sortDirection === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+        return sortDirection === 'asc'
+          ? aVal.localeCompare(bVal)
+          : bVal.localeCompare(aVal);
       }
       return 0;
     });
@@ -88,15 +112,19 @@ export function ContactsView({ initialGroupId }: ContactsViewProps = {}) {
   // --- Event Handlers ---
   const handleSortChange = (field: string) => {
     setSortField(field);
-    setSortDirection(prev => (sortField === field && prev === 'asc' ? 'desc' : 'asc'));
-  };
-  
-  const handleColumnToggle = (column: string) => {
-    setVisibleColumns(prev =>
-      prev.includes(column) ? prev.filter(col => col !== column) : [...prev, column]
+    setSortDirection((prev) =>
+      sortField === field && prev === 'asc' ? 'desc' : 'asc'
     );
   };
-  
+
+  const handleColumnToggle = (column: string) => {
+    setVisibleColumns((prev) =>
+      prev.includes(column)
+        ? prev.filter((col) => col !== column)
+        : [...prev, column]
+    );
+  };
+
   const handleEditContact = (contactId: string) => {
     const contactToEdit = contactsData.find((c: Contact) => c.id === contactId);
     if (contactToEdit) {
@@ -120,23 +148,29 @@ export function ContactsView({ initialGroupId }: ContactsViewProps = {}) {
     setIsFormOpen(false);
     setEditingContact(null);
   };
-  
+
   // --- Render Logic ---
   if (queryError) {
     return (
       <div className="p-6 bg-red-50 border-l-4 border-red-500 rounded-md">
         <div className="flex items-center">
           <AlertCircle className="h-6 w-6 text-red-500 mr-3" />
-          <h3 className="text-lg font-medium text-red-800">Error loading contacts</h3>
+          <h3 className="text-lg font-medium text-red-800">
+            Error loading contacts
+          </h3>
         </div>
         <p className="mt-2 text-sm text-red-700">{queryError.message}</p>
-        <Button variant="outline" className="mt-4" onClick={() => utils.contacts.list.invalidate()}>
+        <Button
+          variant="outline"
+          className="mt-4"
+          onClick={() => utils.contacts.list.invalidate()}
+        >
           <RefreshCw className="mr-2 h-4 w-4" /> Try Again
         </Button>
       </div>
     );
   }
-  
+
   return (
     <div className="space-y-6">
       {/* 1. Widgets */}
@@ -164,7 +198,10 @@ export function ContactsView({ initialGroupId }: ContactsViewProps = {}) {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Visible Columns</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <ColumnSelector visibleColumns={visibleColumns} onToggle={handleColumnToggle} />
+              <ColumnSelector
+                visibleColumns={visibleColumns}
+                onToggle={handleColumnToggle}
+              />
             </DropdownMenuContent>
           </DropdownMenu>
           <Button onClick={openNewContactForm} size="sm">
@@ -173,7 +210,7 @@ export function ContactsView({ initialGroupId }: ContactsViewProps = {}) {
           </Button>
         </div>
       </div>
-      
+
       {/* 3. The Table */}
       <ContactsTable
         contacts={sortedContacts}
@@ -189,38 +226,48 @@ export function ContactsView({ initialGroupId }: ContactsViewProps = {}) {
       {/* 4. The Form Modal (controlled by this component) */}
       {isFormOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-4 pt-16 overflow-y-auto">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-             <ContactForm
-                isOpen={isFormOpen}
-                initialData={editingContact ? {
-                  id: editingContact.id,
-                  full_name: editingContact.full_name,
-                  email: editingContact.email || '',
-                  phone: editingContact.phone,
-                  company_name: editingContact.company_name,
-                  job_title: editingContact.job_title,
-                  profile_image_url: editingContact.profile_image_url,
-                  source: editingContact.source,
-                  notes: editingContact.notes,
-                  last_contacted_at: editingContact.last_contacted_at,
-                  enrichment_status: editingContact.enrichment_status,
-                  enriched_data: editingContact.enriched_data as Record<string, unknown> | null,
-                  address_street: editingContact.address_street,
-                  address_city: editingContact.address_city,
-                  address_postal_code: editingContact.address_postal_code,
-                  address_country: editingContact.address_country,
-                  website: editingContact.website,
-                  tags: editingContact.tags?.map(tag => tag.name) || [],
-                  social_handles: [] // Contact doesn't have social_handles, initialize as empty
-                } : undefined}
-                onClose={closeForm}
-                onSubmit={async (data) => {
-                  await saveMutation.mutateAsync(data);
-                }}
-                isSubmitting={saveMutation.isPending}
-                error={saveMutation.error?.message || null}
-                editingContactId={editingContact?.id || null}
-              />
+          <div
+            className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ContactForm
+              isOpen={isFormOpen}
+              initialData={
+                editingContact
+                  ? {
+                      id: editingContact.id,
+                      full_name: editingContact.full_name,
+                      email: editingContact.email || '',
+                      phone: editingContact.phone,
+                      company_name: editingContact.company_name,
+                      job_title: editingContact.job_title,
+                      profile_image_url: editingContact.profile_image_url,
+                      source: editingContact.source,
+                      notes: editingContact.notes,
+                      last_contacted_at: editingContact.last_contacted_at,
+                      enrichment_status: editingContact.enrichment_status,
+                      enriched_data: editingContact.enriched_data as Record<
+                        string,
+                        unknown
+                      > | null,
+                      address_street: editingContact.address_street,
+                      address_city: editingContact.address_city,
+                      address_postal_code: editingContact.address_postal_code,
+                      address_country: editingContact.address_country,
+                      website: editingContact.website,
+                      tags: editingContact.tags?.map((tag) => tag.name) || [],
+                      social_handles: [], // Contact doesn't have social_handles, initialize as empty
+                    }
+                  : undefined
+              }
+              onClose={closeForm}
+              onSubmit={async (data) => {
+                await saveMutation.mutateAsync(data);
+              }}
+              isSubmitting={saveMutation.isPending}
+              error={saveMutation.error?.message || null}
+              editingContactId={editingContact?.id || null}
+            />
           </div>
         </div>
       )}

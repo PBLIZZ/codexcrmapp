@@ -14,7 +14,14 @@ export interface TimelineProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export const Timeline = forwardRef<HTMLDivElement, TimelineProps>(
   (
-    { className, orientation = 'vertical', compact = false, reverse = false, children, ...props },
+    {
+      className,
+      orientation = 'vertical',
+      compact = false,
+      reverse = false,
+      children,
+      ...props
+    },
     ref
   ) => {
     const orientationClasses = {
@@ -30,7 +37,9 @@ export const Timeline = forwardRef<HTMLDivElement, TimelineProps>(
         ref={ref}
         className={cn(
           orientationClasses[orientation],
-          orientation === 'vertical' ? spacingClasses : horizontalSpacingClasses,
+          orientation === 'vertical'
+            ? spacingClasses
+            : horizontalSpacingClasses,
           reverse && orientation === 'vertical' && 'flex-col-reverse',
           reverse && orientation === 'horizontal' && 'flex-row-reverse',
           className
@@ -46,7 +55,8 @@ export const Timeline = forwardRef<HTMLDivElement, TimelineProps>(
 Timeline.displayName = 'Timeline';
 
 // Timeline item component
-export interface TimelineItemProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface TimelineItemProps
+  extends React.HTMLAttributes<HTMLDivElement> {
   icon?: React.ReactNode;
   iconBackground?: string;
   connector?: boolean;
@@ -69,7 +79,6 @@ export const TimelineItem = forwardRef<HTMLDivElement, TimelineItemProps>(
       connectorStyle = 'solid',
       active = false,
       orientation = 'vertical',
-      position = 'left',
       children,
       ...props
     },
@@ -78,7 +87,9 @@ export const TimelineItem = forwardRef<HTMLDivElement, TimelineItemProps>(
     const { isDarkMode } = useTheme();
 
     // Default connector color based on theme
-    const defaultConnectorColor = isDarkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
+    const defaultConnectorColor = isDarkMode
+      ? 'rgba(255, 255, 255, 0.2)'
+      : 'rgba(0, 0, 0, 0.2)';
     const activeConnectorColor = 'var(--primary)';
 
     // Connector style classes
@@ -91,18 +102,16 @@ export const TimelineItem = forwardRef<HTMLDivElement, TimelineItemProps>(
     // Vertical timeline item
     if (orientation === 'vertical') {
       return (
-        <div
-          ref={ref}
-          className={cn('relative flex', className)}
-          {...props}
-        >
+        <div ref={ref} className={cn('relative flex', className)} {...props}>
           {/* Icon and connector column */}
           <div className="flex flex-col items-center mr-4">
             {/* Icon */}
             <div
               className={cn(
                 'z-10 flex items-center justify-center w-8 h-8 rounded-full',
-                active ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
+                active
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-muted text-muted-foreground'
               )}
               style={iconBackground ? { backgroundColor: iconBackground } : {}}
             >
@@ -159,7 +168,9 @@ export const TimelineItem = forwardRef<HTMLDivElement, TimelineItemProps>(
           <div
             className={cn(
               'z-10 flex items-center justify-center w-8 h-8 rounded-full',
-              active ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
+              active
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-muted text-muted-foreground'
             )}
             style={iconBackground ? { backgroundColor: iconBackground } : {}}
           >
@@ -208,7 +219,8 @@ export const TimelineItem = forwardRef<HTMLDivElement, TimelineItemProps>(
 TimelineItem.displayName = 'TimelineItem';
 
 // Timeline content component
-export interface TimelineContentProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface TimelineContentProps
+  extends React.HTMLAttributes<HTMLDivElement> {
   title?: string;
   subtitle?: string;
   date?: string;
@@ -218,16 +230,16 @@ export interface TimelineContentProps extends React.HTMLAttributes<HTMLDivElemen
 export const TimelineContent = forwardRef<HTMLDivElement, TimelineContentProps>(
   ({ className, title, subtitle, date, children, ...props }, ref) => {
     return (
-      <div
-        ref={ref}
-        className={cn('space-y-1', className)}
-        {...props}
-      >
+      <div ref={ref} className={cn('space-y-1', className)} {...props}>
         <div className="flex items-start justify-between">
           {title && <h4 className="font-medium">{title}</h4>}
-          {date && <span className="text-sm text-muted-foreground">{date}</span>}
+          {date && (
+            <span className="text-sm text-muted-foreground">{date}</span>
+          )}
         </div>
-        {subtitle && <p className="text-sm text-muted-foreground">{subtitle}</p>}
+        {subtitle && (
+          <p className="text-sm text-muted-foreground">{subtitle}</p>
+        )}
         {children && <div className="mt-2">{children}</div>}
       </div>
     );
@@ -237,29 +249,31 @@ export const TimelineContent = forwardRef<HTMLDivElement, TimelineContentProps>(
 TimelineContent.displayName = 'TimelineContent';
 
 // Timeline separator component
-export interface TimelineSeparatorProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface TimelineSeparatorProps
+  extends React.HTMLAttributes<HTMLDivElement> {
   label?: string;
 }
 
-export const TimelineSeparator = forwardRef<HTMLDivElement, TimelineSeparatorProps>(
-  ({ className, label, ...props }, ref) => {
-    return (
-      <div
-        ref={ref}
-        className={cn('relative flex items-center py-4', className)}
-        {...props}
-      >
-        <div className="flex-grow border-t border-border"></div>
-        {label && (
-          <span className="flex-shrink mx-4 text-sm font-medium text-muted-foreground">
-            {label}
-          </span>
-        )}
-        <div className="flex-grow border-t border-border"></div>
-      </div>
-    );
-  }
-);
+export const TimelineSeparator = forwardRef<
+  HTMLDivElement,
+  TimelineSeparatorProps
+>(({ className, label, ...props }, ref) => {
+  return (
+    <div
+      ref={ref}
+      className={cn('relative flex items-center py-4', className)}
+      {...props}
+    >
+      <div className="flex-grow border-t border-border"></div>
+      {label && (
+        <span className="flex-shrink mx-4 text-sm font-medium text-muted-foreground">
+          {label}
+        </span>
+      )}
+      <div className="flex-grow border-t border-border"></div>
+    </div>
+  );
+});
 
 TimelineSeparator.displayName = 'TimelineSeparator';
 
@@ -273,7 +287,14 @@ export interface TimelineDotProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export const TimelineDot = forwardRef<HTMLDivElement, TimelineDotProps>(
   (
-    { className, size = 'md', color, variant = 'filled', active = false, ...props },
+    {
+      className,
+      size = 'md',
+      color,
+      variant = 'filled',
+      active = false,
+      ...props
+    },
     ref
   ) => {
     const sizeClasses = {
@@ -292,7 +313,14 @@ export const TimelineDot = forwardRef<HTMLDivElement, TimelineDotProps>(
           active ? 'bg-primary border-primary' : 'bg-muted border-muted',
           className
         )}
-        style={color ? { backgroundColor: variant === 'filled' ? color : 'transparent', borderColor: color } : {}}
+        style={
+          color
+            ? {
+                backgroundColor: variant === 'filled' ? color : 'transparent',
+                borderColor: color,
+              }
+            : {}
+        }
         {...props}
       />
     );

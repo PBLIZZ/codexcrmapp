@@ -2,11 +2,12 @@
 
 import { use, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ContactForm, ContactFormData } from '@/app/contacts/ContactForm';
+import type { ContactFormData } from '@/app/contacts/ContactForm';
+import { ContactForm } from '@/app/contacts/ContactForm';
 import { api } from '@/lib/trpc';
 import { Button } from '@/components/ui/button';
 // Correctly import AlertCircle from lucide-react
-import { ArrowLeft, AlertCircle } from 'lucide-react'; 
+import { ArrowLeft, AlertCircle } from 'lucide-react';
 // Import only the necessary components from your alert file
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
@@ -22,15 +23,18 @@ export default function EditContactPage({ params }: EditContactPageProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Use the contactId directly from params
   // In Next.js 15+, this is the recommended approach
   const { contactId } = use(params);
   const utils = api.useUtils();
 
-  
   // Fetch contact data
-  const { data: contact, isLoading, error: fetchError } = api.contacts.getById.useQuery(
+  const {
+    data: contact,
+    isLoading,
+    error: fetchError,
+  } = api.contacts.getById.useQuery(
     { contactId },
     {
       enabled: !!contactId,
@@ -70,8 +74,9 @@ export default function EditContactPage({ params }: EditContactPageProps) {
         last_contacted_at: data.last_contacted_at || undefined,
         // Add other fields as needed
       });
-    } catch (err: any) {
-      setError(err.message || 'An unexpected error occurred');
+    } catch (err: unknown) {
+      // Changed 'any' to 'unknown'
+      setError((err as Error).message || 'An unexpected error occurred'); // Type assertion for err
       setIsSubmitting(false);
     }
   };
@@ -111,13 +116,19 @@ export default function EditContactPage({ params }: EditContactPageProps) {
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="flex items-center mb-6">
-        <Button variant="outline" onClick={() => router.push(`/contacts/${contactId}`)} className="mr-4">
+        <Button
+          variant="outline"
+          onClick={() => router.push(`/contacts/${contactId}`)}
+          className="mr-4"
+        >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Contact
         </Button>
-        <h1 className="text-2xl font-bold">Edit Contact: {contact.full_name}</h1>
+        <h1 className="text-2xl font-bold">
+          Edit Contact: {contact.full_name}
+        </h1>
       </div>
-      
+
       <ContactForm
         isOpen={true}
         initialData={{

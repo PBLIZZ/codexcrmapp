@@ -2,7 +2,6 @@
 
 import { forwardRef } from 'react';
 import { cn } from '../../lib/utils';
-import { breakpoints } from '../../lib/responsive';
 
 // Container component that centers content and applies max-width at different breakpoints
 export interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -13,7 +12,14 @@ export interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export const ResponsiveContainer = forwardRef<HTMLDivElement, ContainerProps>(
   (
-    { className, maxWidth = 'lg', padding = true, centered = true, children, ...props },
+    {
+      className,
+      maxWidth = 'lg',
+      padding = true,
+      centered = true,
+      children,
+      ...props
+    },
     ref
   ) => {
     const maxWidthClasses = {
@@ -562,7 +568,7 @@ export const ResponsiveStack = forwardRef<HTMLDivElement, StackProps>(
       <ResponsiveFlex
         ref={ref}
         direction="column"
-        gap={spacingToGap[spacing] as "xs" | "sm" | "md" | "lg" | "xl" | "none"}
+        gap={spacingToGap[spacing] as 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'none'}
         className={cn(
           dividers && 'divide-y',
           dividerColor && `divide-${dividerColor}`,
@@ -611,7 +617,7 @@ export const ResponsiveHStack = forwardRef<HTMLDivElement, HStackProps>(
       <ResponsiveFlex
         ref={ref}
         direction="row"
-        gap={spacingToGap[spacing] as "xs" | "sm" | "md" | "lg" | "xl" | "none"}
+        gap={spacingToGap[spacing] as 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'none'}
         className={cn(
           dividers && 'divide-x',
           dividerColor && `divide-${dividerColor}`,
@@ -703,10 +709,7 @@ export const ResponsiveLayout = forwardRef<HTMLDivElement, ResponsiveProps>(
     return (
       <div
         ref={ref}
-        className={cn(
-          (show || hide) && getVisibilityClasses(),
-          className
-        )}
+        className={cn((show || hide) && getVisibilityClasses(), className)}
         {...props}
       >
         {children}

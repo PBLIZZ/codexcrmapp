@@ -1,0 +1,25 @@
+# Task ID: 305
+# Title: Epic 2: Implement Task Completion
+# Status: pending
+# Dependencies: 303
+# Priority: high
+# Description: Enable users to mark tasks as complete, updating the UI and database state.
+# Details:
+This task connects the checkbox on the `ThingsTaskCard` to a backend mutation, providing the core interactive functionality of a to-do list.
+
+# Test Strategy:
+In the UI, find a pending task and click its checkbox. Verify its appearance changes immediately (e.g., text gets a strikethrough). Refresh the page; the task should remain marked as complete. Check the `status` column in the `tasks` table for that record in Supabase to confirm it's set to 'completed'.
+
+# Subtasks:
+## 1. Implement `task.updateStatus` tRPC Mutation [pending]
+### Dependencies: None
+### Description: Create a tRPC mutation to change the status of a task.
+### Details:
+In `taskRouter`, create an `updateStatus` mutation that accepts `{ taskId: string, status: 'pending' | 'completed' }` and updates the corresponding record in the database.
+
+## 2. Connect Checkbox to `updateStatus` Mutation [pending]
+### Dependencies: None
+### Description: Wire the `ThingsTaskCard` checkbox's `onClick` event to the tRPC mutation.
+### Details:
+In `ThingsTaskCard.tsx`, import and use the `api.task.updateStatus.useMutation()` hook. When the checkbox is clicked, call the mutation with the task's ID and the new status. Implement an optimistic UI update for instant feedback.
+

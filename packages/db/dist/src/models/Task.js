@@ -38,10 +38,12 @@ export const TaskSchema = z.object({
     priority: z.nativeEnum(TaskPriority).default(TaskPriority.NONE),
     category: z.nativeEnum(TaskCategory).default(TaskCategory.INBOX),
     due_date: z.string().nullable().optional(),
-    completion_date: z.string().nullable().optional(),
-    is_repeating: z.boolean().default(false),
-    repeat_rule: z.string().nullable().optional(),
+    completion_date: z.string().datetime().nullable().optional(),
+    is_checklist_item: z.boolean().nullable().optional(),
+    metadata: z.any().nullable().optional(),
+    parent_task_id: z.string().uuid().nullable().optional(),
     project_id: z.string().uuid().nullable().optional(),
+    repeat_config: z.any().nullable().optional(),
     heading_id: z.string().uuid().nullable().optional(),
     position: z.number().int().nonnegative(),
     user_id: z.string().uuid(),
@@ -98,11 +100,17 @@ export class TaskModel {
     get completionDate() {
         return this.data.completion_date;
     }
-    get isRepeating() {
-        return this.data.is_repeating;
+    get isChecklistItem() {
+        return this.data.is_checklist_item;
     }
-    get repeatRule() {
-        return this.data.repeat_rule;
+    get metadata() {
+        return this.data.metadata;
+    }
+    get parentTaskId() {
+        return this.data.parent_task_id;
+    }
+    get repeatConfig() {
+        return this.data.repeat_config;
     }
     get projectId() {
         return this.data.project_id;
@@ -142,28 +150,7 @@ export class TaskModel {
     reopen() {
         this.data.status = TaskStatus.TODO;
         this.data.completion_date = null;
-        // Determine appropriate category based on due date
-        if (this.data.due_date) {
-            const dueDate = new Date(this.data.due_date);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            if (dueDate < today) {
-                // Past due date, move to Today
-                this.data.category = TaskCategory.TODAY;
-            }
-            else if (dueDate.getTime() === today.getTime()) {
-                // Due today
-                this.data.category = TaskCategory.TODAY;
-            }
-            else {
-                // Future date
-                this.data.category = TaskCategory.UPCOMING;
-            }
-        }
-        else {
-            // No due date, move to Inbox
-            this.data.category = TaskCategory.INBOX;
-        }
+        this.data.category = TaskCategory.INBOX; // Default to inbox on reopen
         this.data.updated_at = new Date().toISOString();
     }
     cancel() {
@@ -200,12 +187,14 @@ export class TaskModel {
         this.data.category = category;
         this.data.updated_at = new Date().toISOString();
         // If moving to Logbook, mark as completed
-        if (category === TaskCategory.LOGBOOK && this.data.status !== TaskStatus.DONE) {
+        if (category === TaskCategory.LOGBOOK &&
+            this.data.status !== TaskStatus.DONE) {
             this.data.status = TaskStatus.DONE;
             this.data.completion_date = new Date().toISOString();
         }
         // If moving out of Logbook, mark as active if it was completed
-        if (category !== TaskCategory.LOGBOOK && this.data.status === TaskStatus.DONE) {
+        if (category !== TaskCategory.LOGBOOK &&
+            this.data.status === TaskStatus.DONE) {
             this.data.status = TaskStatus.TODO;
             this.data.completion_date = null;
         }
@@ -247,26 +236,6 @@ export class TaskModel {
         }
         this.data.updated_at = new Date().toISOString();
     }
-    // If a due date is set, move from someday/inbox to today if not already active/completed
-    setDueDateAndMoveCategory(dueDate) {
-        if (dueDate) {
-            if (this.data.category === TaskCategory.SOMEDAY ||
-                this.data.category === TaskCategory.INBOX) {
-                if (this.data.status !== TaskStatus.DONE) {
-                    this.moveToCategory(TaskCategory.TODAY);
-                }
-            }
-        }
-        else {
-            // If due date is removed, move from today to anytime if not completed
-            if (this.data.category === TaskCategory.TODAY) {
-                if (this.data.status !== TaskStatus.DONE) {
-                    this.moveToCategory(TaskCategory.ANYTIME);
-                }
-            }
-        }
-        this.data.updated_at = new Date().toISOString();
-    }
     // Set priority
     setPriority(priority) {
         this.data.priority = priority;
@@ -298,8 +267,12 @@ export class TaskModel {
             ...data,
             id: data.id || crypto.randomUUID(),
             category,
-            status: TaskStatus.TODO,
-            completion_date: null,
+            status: data.status ?? TaskStatus.TODO, // Use provided status or default
+            is_checklist_item: data.is_checklist_item ?? false,
+            metadata: data.metadata ?? {},
+            parent_task_id: data.parent_task_id ?? null,
+            repeat_config: data.repeat_config ?? null,
+            completion_date: null, // Always null on creation, set by complete()
             created_at: now,
             updated_at: now,
             deleted_at: null,

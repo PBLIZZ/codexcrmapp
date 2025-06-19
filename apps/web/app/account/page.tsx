@@ -16,11 +16,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import {
-  fetchCurrentUser,
-  updateUserPassword,
-  mapAuthErrorMessage,
-} from '@/lib/auth/service';
+import { fetchCurrentUser, updateUserPassword, mapAuthErrorMessage } from '@/lib/auth/service';
 
 // Constants
 const MIN_PASSWORD_LENGTH = 6;
@@ -47,10 +43,7 @@ const initialMessageState: MessageState = {
   type: 'error',
 };
 
-function messageReducer(
-  state: MessageState,
-  action: MessageAction
-): MessageState {
+function messageReducer(state: MessageState, action: MessageAction): MessageState {
   switch (action.type) {
     case 'SET_MESSAGE':
       return {
@@ -68,14 +61,10 @@ export default function AccountPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [isFetchingUser, setIsFetchingUser] = useState(true);
-  const [isSigningOut, setIsSigningOut] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [isPasswordLoading, setIsPasswordLoading] = useState(false);
-  const [messageState, dispatchMessage] = useReducer(
-    messageReducer,
-    initialMessageState
-  );
+  const [messageState, dispatchMessage] = useReducer(messageReducer, initialMessageState);
 
   // Fetch user data on component mount
   useEffect(() => {
@@ -100,7 +89,7 @@ export default function AccountPage() {
       setIsFetchingUser(false);
     };
 
-    getUserData();
+    void getUserData();
   }, [router]);
 
   // Handle password update
@@ -176,7 +165,7 @@ export default function AccountPage() {
   // Loading state
   if (isFetchingUser && !user) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-100">
+      <div className='flex min-h-screen items-center justify-center bg-gray-100'>
         <p>Loading account information...</p>
       </div>
     );
@@ -185,10 +174,10 @@ export default function AccountPage() {
   // No user state (fallback if redirect in useEffect fails)
   if (!user) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-100">
+      <div className='flex min-h-screen items-center justify-center bg-gray-100'>
         <p>
           Please{' '}
-          <Link href={ROUTES.signIn} className="underline">
+          <Link href={ROUTES.signIn} className='underline'>
             sign in
           </Link>{' '}
           to view your account.
@@ -198,71 +187,59 @@ export default function AccountPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-      <Card className="w-full max-w-lg shadow-lg">
-        <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-bold text-teal-600">
-            My Account
-          </CardTitle>
-          <CardDescription>
-            Manage your account details and settings.
-          </CardDescription>
+    <div className='flex min-h-screen items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8'>
+      <Card className='w-full max-w-lg shadow-lg'>
+        <CardHeader className='text-center'>
+          <CardTitle className='text-3xl font-bold text-teal-600'>My Account</CardTitle>
+          <CardDescription>Manage your account details and settings.</CardDescription>
         </CardHeader>
 
-        <CardContent className="space-y-8">
-          <div className="space-y-2">
-            <h3 className="text-lg font-semibold">Account Information</h3>
+        <CardContent className='space-y-8'>
+          <div className='space-y-2'>
+            <h3 className='text-lg font-semibold'>Account Information</h3>
             <p>
-              <span className="font-medium">Email:</span> {user.email}
+              <span className='font-medium'>Email:</span> {user.email}
             </p>
             <p>
-              <span className="font-medium">Account Created:</span>{' '}
-              {user.created_at
-                ? new Date(user.created_at).toLocaleDateString()
-                : 'N/A'}
+              <span className='font-medium'>Account Created:</span>{' '}
+              {user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
             </p>
             {user.last_sign_in_at && (
               <p>
-                <span className="font-medium">Last Log In:</span>{' '}
-                {new Date(user.last_sign_in_at!).toLocaleString()}
+                <span className='font-medium'>Last Log In:</span>{' '}
+                {new Date(user.last_sign_in_at).toLocaleString()}
               </p>
             )}
           </div>
 
           <Separator />
 
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Change Password</h3>
-            <form onSubmit={handlePasswordUpdate} className="space-y-4">
+          <div className='space-y-4'>
+            <h3 className='text-lg font-semibold'>Change Password</h3>
+            <form onSubmit={(e) => void handlePasswordUpdate(e)} className='space-y-4'>
               <div>
-                <Label htmlFor="new_password">New Password</Label>
+                <Label htmlFor='new_password'>New Password</Label>
                 <Input
-                  id="new_password"
-                  type="password"
+                  id='new_password'
+                  type='password'
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="Enter new password"
+                  placeholder='Enter new password'
                   required
                 />
               </div>
               <div>
-                <Label htmlFor="confirm_new_password">
-                  Confirm New Password
-                </Label>
+                <Label htmlFor='confirm_new_password'>Confirm New Password</Label>
                 <Input
-                  id="confirm_new_password"
-                  type="password"
+                  id='confirm_new_password'
+                  type='password'
                   value={confirmNewPassword}
                   onChange={(e) => setConfirmNewPassword(e.target.value)}
-                  placeholder="Confirm new password"
+                  placeholder='Confirm new password'
                   required
                 />
               </div>
-              <Button
-                type="submit"
-                className="w-full sm:w-auto"
-                disabled={isPasswordLoading}
-              >
+              <Button type='submit' className='w-full sm:w-auto' disabled={isPasswordLoading}>
                 {isPasswordLoading ? 'Updating...' : 'Update Password'}
               </Button>
             </form>
@@ -270,7 +247,9 @@ export default function AccountPage() {
 
           {messageState.text && (
             <p
-              className={`mt-4 text-sm ${messageState.type === 'error' ? 'text-red-600' : 'text-green-600'}`}
+              className={`mt-4 text-sm ${
+                messageState.type === 'error' ? 'text-red-600' : 'text-green-600'
+              }`}
             >
               {messageState.text}
             </p>
@@ -279,10 +258,10 @@ export default function AccountPage() {
           <Separator />
         </CardContent>
 
-        <CardFooter className="justify-center">
+        <CardFooter className='justify-center'>
           <Link
             href={ROUTES.dashboard}
-            className="text-sm font-medium text-teal-600 hover:underline"
+            className='text-sm font-medium text-teal-600 hover:underline'
           >
             Back to Dashboard
           </Link>
@@ -291,4 +270,3 @@ export default function AccountPage() {
     </div>
   );
 }
-

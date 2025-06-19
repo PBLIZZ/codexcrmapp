@@ -6,10 +6,9 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "next start"
   },
-  "packageManager": "pnpm@10.9.0",
+  "packageManager": "pnpm@10.12.1",
   "dependencies": {
     "@codexcrm/db": "workspace:*",
     "@codexcrm/server": "workspace:*",
@@ -33,7 +32,6 @@
     "@radix-ui/react-visually-hidden": "^1.2.3",
     "@sentry/nextjs": "^9.30.0",
     "@shadcn/ui": "^0.0.4",
-    "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.49.4",
     "@tanstack/react-query": "^5.80.6",
@@ -56,7 +54,7 @@
     "next-themes": "^0.3.0",
     "papaparse": "^5.5.3",
     "react": "^19.0.2",
-    "react-day-picker": "8.10.1",
+    "react-day-picker": "^9.0.0",
     "react-dom": "^19.0.2",
     "react-dropzone": "^14.3.8",
     "react-swipeable": "7.0.2",
@@ -71,15 +69,10 @@
     "zustand": "^5.0.5"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@stagewise-plugins/react": "^0.4.6",
-    "@stagewise/toolbar-next": "^0.4.6",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "15.3.1",
     "supabase": "^2.20.12",
     "tailwindcss": "^4.1.4",
     "tailwindcss-animate": "^1.0.7",

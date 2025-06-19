@@ -1,12 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest} from 'next/server';
+import { NextResponse } from 'next/server';
 
 /**
  * GET /api/docs/swagger
  * Returns the Swagger UI HTML for interactive API documentation
  */
-export async function GET(req: NextRequest) {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || `${req.nextUrl.origin}`;
-  
+export function GET(req: NextRequest) {
+  const apiUrl = process.env['NEXT_PUBLIC_API_URL'] ?? `${req.nextUrl.origin}`;
+
   // Serve the Swagger UI HTML
   const html = `
     <!DOCTYPE html>
@@ -74,14 +75,17 @@ export async function GET(req: NextRequest) {
  * OPTIONS /api/docs/swagger
  * Handles CORS preflight requests
  */
-export async function OPTIONS(req: NextRequest) {
-  return NextResponse.json({}, {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      'Access-Control-Max-Age': '86400',
-    },
-  });
+export function OPTIONS(_req: NextRequest) {
+  return NextResponse.json(
+    {},
+    {
+      status: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Access-Control-Max-Age': '86400',
+      },
+    }
+  );
 }

@@ -1,0 +1,25 @@
+# Task ID: 302
+# Title: Epic 1: Implement Foundational tRPC Routers
+# Status: pending
+# Dependencies: 301
+# Priority: high
+# Description: Create the boilerplate for all necessary tRPC routers with initial, mock data-returning procedures for Tasks, Projects, and Contacts.
+# Details:
+In the `packages/server/src/routers/` directory, create the files for `task.ts`, `project.ts`, and `contact.ts`. Implement `taskRouter`, `projectRouter`, and `contactRouter`. Define the initial procedures (`task.list`, `project.list`, `contact.search`) that return hardcoded, mock data conforming to the database schema. This unblocks frontend development.
+
+# Test Strategy:
+Once the AI completes the task, use an API client (like Thunder Client in VS Code) to send a request to each new endpoint (e.g., `task.list`, `project.list`). Verify that each endpoint returns a 200 OK status and the expected mock JSON array.
+
+# Subtasks:
+## 1. Implement `taskRouter` and `projectRouter` [pending]
+### Dependencies: None
+### Description: Create the routers and list procedures for tasks and projects.
+### Details:
+Create `taskRouter` with a `list` procedure. Create `projectRouter` with a `list` procedure. Both should be `publicProcedure` for now and return an array of 2-3 mock objects.
+
+## 2. Implement `contactRouter` search procedure [pending]
+### Dependencies: None
+### Description: Create the `contactRouter` with a `search` procedure needed for task assignment.
+### Details:
+Create `contactRouter` with a `search(input: { query: string })` procedure. It should take a search query and return a mock array of matching contacts.
+

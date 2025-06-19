@@ -46,7 +46,10 @@ interface ContactTimelineProps {
   limit?: number;
 }
 
-export function ContactTimeline({ contactId, limit = 10 }: ContactTimelineProps) {
+export function ContactTimeline({
+  contactId,
+  limit = 10,
+}: ContactTimelineProps) {
   const [timelineEvents, setTimelineEvents] = useState<TimelineEvent[]>([]);
   const [isCompact, setIsCompact] = useState(false);
 
@@ -129,7 +132,7 @@ export function ContactTimeline({ contactId, limit = 10 }: ContactTimelineProps)
 
       // Apply limit if specified
       const limitedEvents = limit ? events.slice(0, limit) : events;
-      
+
       setTimelineEvents(limitedEvents);
     }
   }, [sessions, limit]);
@@ -196,11 +199,11 @@ export function ContactTimeline({ contactId, limit = 10 }: ContactTimelineProps)
   timelineEvents.forEach((event) => {
     const date = new Date(event.date);
     const monthYear = format(date, 'MMMM yyyy');
-    
+
     if (!groupedEvents[monthYear]) {
       groupedEvents[monthYear] = [];
     }
-    
+
     groupedEvents[monthYear].push(event);
   });
 
@@ -223,97 +226,123 @@ export function ContactTimeline({ contactId, limit = 10 }: ContactTimelineProps)
       </CardHeader>
       <CardContent>
         <Timeline compact={isCompact}>
-          {Object.entries(groupedEvents).map(([monthYear, events], groupIndex) => (
-            <div key={monthYear}>
-              {groupIndex > 0 && <TimelineSeparator label={monthYear} />}
-              {events.map((event, eventIndex) => (
-                <TimelineItem
-                  key={event.id}
-                  active={eventIndex === 0} // Mark the most recent event as active
-                  icon={event.icon}
-                  iconBackground={event.iconBackground}
-                  connector={eventIndex < events.length - 1 || groupIndex < Object.keys(groupedEvents).length - 1}
-                >
-                  <TimelineContent
-                    title={event.title}
-                    date={format(parseISO(event.date), 'PPp')} // Format date as "Jan 1, 2025, 12:00 PM"
+          {Object.entries(groupedEvents).map(
+            ([monthYear, events], groupIndex) => (
+              <div key={monthYear}>
+                {groupIndex > 0 && <TimelineSeparator label={monthYear} />}
+                {events.map((event, eventIndex) => (
+                  <TimelineItem
+                    key={event.id}
+                    active={eventIndex === 0} // Mark the most recent event as active
+                    icon={event.icon}
+                    iconBackground={event.iconBackground}
+                    connector={
+                      eventIndex < events.length - 1 ||
+                      groupIndex < Object.keys(groupedEvents).length - 1
+                    }
                   >
-                    {event.description && (
-                      <p className="text-sm text-muted-foreground mt-1">
-                        {event.description}
-                      </p>
-                    )}
-                    
-                    {!isCompact && event.metadata && (
-                      <div className="mt-3 space-y-2">
-                        {/* Session details */}
-                        {event.type === 'session' && (
-                          <div className="flex flex-wrap gap-2 mt-2">
-                            {event.metadata.duration && (
-                              <Badge variant="outline" className="flex items-center gap-1">
-                                <Clock className="h-3 w-3" />
-                                {event.metadata.duration} min
-                              </Badge>
-                            )}
-                            {event.metadata.location && (
-                              <Badge variant="outline" className="flex items-center gap-1">
-                                <Tag className="h-3 w-3" />
-                                {event.metadata.location}
-                              </Badge>
-                            )}
-                            {event.metadata.status && (
-                              <Badge 
-                                variant={event.metadata.status === 'completed' ? 'default' : 'secondary'} 
-                                className="flex items-center gap-1"
-                              >
-                                <CheckCircle className="h-3 w-3" />
-                                {event.metadata.status}
-                              </Badge>
-                            )}
-                            {event.metadata.followUpNeeded && (
-                              <Badge variant="destructive" className="flex items-center gap-1">
-                                <AlertCircle className="h-3 w-3" />
-                                Follow-up needed
-                              </Badge>
-                            )}
-                          </div>
-                        )}
-                        
-                        {/* AI Insights */}
-                        {event.metadata.aiInsights && (
-                          <div className="mt-3 bg-purple-50 p-2 rounded-md border border-purple-100">
-                            <div className="flex items-center gap-1 text-sm font-medium text-purple-700 mb-1">
-                              <Sparkles className="h-3 w-3" />
-                              AI Insights
+                    <TimelineContent
+                      title={event.title}
+                      date={format(parseISO(event.date), 'PPp')} // Format date as "Jan 1, 2025, 12:00 PM"
+                    >
+                      {event.description && (
+                        <p className="text-sm text-muted-foreground mt-1">
+                          {event.description}
+                        </p>
+                      )}
+
+                      {!isCompact && event.metadata && (
+                        <div className="mt-3 space-y-2">
+                          {/* Session details */}
+                          {event.type === 'session' && (
+                            <div className="flex flex-wrap gap-2 mt-2">
+                              {event.metadata.duration && (
+                                <Badge
+                                  variant="outline"
+                                  className="flex items-center gap-1"
+                                >
+                                  <Clock className="h-3 w-3" />
+                                  {event.metadata.duration} min
+                                </Badge>
+                              )}
+                              {event.metadata.location && (
+                                <Badge
+                                  variant="outline"
+                                  className="flex items-center gap-1"
+                                >
+                                  <Tag className="h-3 w-3" />
+                                  {event.metadata.location}
+                                </Badge>
+                              )}
+                              {event.metadata.status && (
+                                <Badge
+                                  variant={
+                                    event.metadata.status === 'completed'
+                                      ? 'default'
+                                      : 'secondary'
+                                  }
+                                  className="flex items-center gap-1"
+                                >
+                                  <CheckCircle className="h-3 w-3" />
+                                  {event.metadata.status}
+                                </Badge>
+                              )}
+                              {event.metadata.followUpNeeded && (
+                                <Badge
+                                  variant="destructive"
+                                  className="flex items-center gap-1"
+                                >
+                                  <AlertCircle className="h-3 w-3" />
+                                  Follow-up needed
+                                </Badge>
+                              )}
                             </div>
-                            <p className="text-xs text-purple-800">
-                              {typeof event.metadata.aiInsights === 'string' 
-                                ? event.metadata.aiInsights 
-                                : JSON.stringify(event.metadata.aiInsights)}
-                            </p>
+                          )}
+
+                          {/* AI Insights */}
+                          {event.metadata.aiInsights && (
+                            <div className="mt-3 bg-purple-50 p-2 rounded-md border border-purple-100">
+                              <div className="flex items-center gap-1 text-sm font-medium text-purple-700 mb-1">
+                                <Sparkles className="h-3 w-3" />
+                                AI Insights
+                              </div>
+                              <p className="text-xs text-purple-800">
+                                {typeof event.metadata.aiInsights === 'string'
+                                  ? event.metadata.aiInsights
+                                  : JSON.stringify(event.metadata.aiInsights)}
+                              </p>
+                            </div>
+                          )}
+
+                          {/* Quick Actions */}
+                          <div className="flex gap-2 mt-3">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-7 px-2 text-xs"
+                            >
+                              <MessageSquare className="h-3 w-3 mr-1" />
+                              Add Note
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-7 px-2 text-xs"
+                            >
+                              <Calendar className="h-3 w-3 mr-1" />
+                              Schedule Follow-up
+                            </Button>
                           </div>
-                        )}
-                        
-                        {/* Quick Actions */}
-                        <div className="flex gap-2 mt-3">
-                          <Button variant="outline" size="sm" className="h-7 px-2 text-xs">
-                            <MessageSquare className="h-3 w-3 mr-1" />
-                            Add Note
-                          </Button>
-                          <Button variant="outline" size="sm" className="h-7 px-2 text-xs">
-                            <Calendar className="h-3 w-3 mr-1" />
-                            Schedule Follow-up
-                          </Button>
                         </div>
-                      </div>
-                    )}
-                  </TimelineContent>
-                </TimelineItem>
-              ))}
-            </div>
-          ))}
+                      )}
+                    </TimelineContent>
+                  </TimelineItem>
+                ))}
+              </div>
+            )
+          )}
         </Timeline>
-        
+
         {timelineEvents.length >= limit && (
           <div className="flex justify-center mt-6">
             <Button variant="outline" size="sm">

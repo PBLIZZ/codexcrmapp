@@ -1,40 +1,61 @@
 {
-  /* Inherit all compilerOptions & paths from the repo-root tsconfig.json */
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    /* === App-specific tweaks === */
+    // Next.js specific overrides
+    "module": "esnext",
     "moduleResolution": "bundler",
-    /* Next.js / React settings */
+    "jsx": "preserve",
     "jsxImportSource": "react",
+
+    // Next.js plugin for enhanced type checking
     "plugins": [
       {
         "name": "next"
       }
     ],
-    /* Let Next.js handle emitting JS */
+
+    // Let Next.js handle emitting JS
     "noEmit": true,
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
+
+    // Next.js specific libraries
+    "lib": ["dom", "dom.iterable", "esnext"],
+
+    // Performance for development
     "incremental": true,
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "skipLibCheck": true
+    "tsBuildInfoFile": ".next/.tsbuildinfo",
+
+    // App-specific path mappings
+    "baseUrl": ".",
+    "paths": {
+      // Monorepo package paths (relative to apps/web)
+      "@codexcrm/server/*": ["../../packages/server/src/*"],
+      "@codexcrm/auth/*": ["../../packages/auth/src/*"],
+      "@codexcrm/config/*": ["../../packages/config/src/*"],
+      "@codexcrm/db/*": ["../../packages/db/src/*"],
+      "@codexcrm/jobs/*": ["../../packages/jobs/src/*"],
+      "@codexcrm/ui/*": ["../../packages/ui/src/*"],
+      // App-specific paths
+      "@/*": ["./*"],
+      "@/components/*": ["./components/*"],
+      "@/lib/*": ["./lib/*"],
+      "@/hooks/*": ["./hooks/*"],
+      "@/app/*": ["./app/*"],
+      "@/types/*": ["./types/*"],
+      "@/utils/*": ["./lib/utils/*"]
+    }
   },
-  /* Files the app should compile */
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    "types/**/*.d.ts"
-, "components/layout/DashboardSidebar.tsx.bac"  ],
+
+  // Files the app should compile
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "types/**/*.d.ts"],
+
+  // Exclude unnecessary files
   "exclude": [
-    "node_modules"
+    "node_modules",
+    ".next",
+    "out",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx"
   ]
 }

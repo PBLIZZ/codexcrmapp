@@ -1,7 +1,8 @@
 'use client';
 
 import { Tag, Plus, X, Loader2 } from 'lucide-react';
-import { useState, useContext, createContext, ReactNode, useEffect } from 'react';
+import type { ReactNode} from 'react';
+import { useState, useContext, createContext, useEffect } from 'react';
 
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
@@ -54,17 +55,17 @@ const GroupsContext = createContext<GroupsContextType>({
 // Provider component for groups data
 export function GroupsProvider({ children }: { children: ReactNode }) {
   // Only fetch groups once for the entire contacts list
-  const {
-    data: allGroups,
-    isLoading,
-    refetch,
-  } = api.groups.list.useQuery(undefined, {
+  const groupsQuery = api.groups.list.useQuery(undefined, {
     staleTime: 30000, // Cache for 30 seconds
     refetchOnWindowFocus: false, // Don't refetch on window focus for performance
   });
 
+  const allGroups = groupsQuery.data as Group[] | undefined;
+  const isLoading = groupsQuery.isLoading;
+  const refetch = groupsQuery.refetch;
+
   return (
-    <GroupsContext.Provider value={{ allGroups, isLoading, refetch }}>
+    <GroupsContext.Provider value={{ allGroups, isLoading, refetch: () => { void refetch(); } }}>
       {children}
     </GroupsContext.Provider>
   );
@@ -92,17 +93,17 @@ export function ContactGroupManager({
   const utils = api.useUtils();
 
   // Get all groups for this contact - but ONLY when the dialog is open to avoid excessive API calls
-  const {
-    data: contactGroups,
-    isLoading: isLoadingContactGroups,
-    error: contactGroupsError,
-  } = api.groups.getGroupsForContact.useQuery(
+  const contactGroupsQuery = api.groups.getGroupsForContact.useQuery(
       { contactId },
       {
         enabled: !!contactId && isDialogOpen, // Only fetch when dialog is open
         staleTime: 30000, // Cache for 30 seconds
       }
     );
+
+  const contactGroups = contactGroupsQuery.data as Group[] | undefined;
+  const isLoadingContactGroups = contactGroupsQuery.isLoading;
+  const contactGroupsError = contactGroupsQuery.error;
 
   useEffect(() => {
     if (contactGroupsError) {
@@ -111,14 +112,14 @@ export function ContactGroupManager({
   }, [contactGroupsError]);
 
   // Use groups from context if available, otherwise fetch them (but only when dialog is open)
-  const {
-    data: localGroups,
-    isLoading: isLoadingLocalGroups,
-    error: localGroupsError,
-  } = api.groups.list.useQuery(undefined, {
+  const localGroupsQuery = api.groups.list.useQuery(undefined, {
       enabled: isDialogOpen && !groupsContext.allGroups, // Only fetch when dialog is open
       staleTime: 30000, // Cache for 30 seconds
     });
+
+  const localGroups = localGroupsQuery.data as Group[] | undefined;
+  const isLoadingLocalGroups = localGroupsQuery.isLoading;
+  const localGroupsError = localGroupsQuery.error;
 
   useEffect(() => {
     if (localGroupsError) {
@@ -127,25 +128,25 @@ export function ContactGroupManager({
   }, [localGroupsError]);
 
   // Use groups from context, or local query, or preloaded groups
-  const allGroups = groupsContext.allGroups || localGroups || preloadedGroups;
+  const allGroups = groupsContext.allGroups ?? localGroups ?? preloadedGroups;
   const isLoadingAllGroups = groupsContext.isLoading || isLoadingLocalGroups;
 
   // Mutation to add contact to group
   const addToGroupMutation = api.groups.addContact.useMutation({
     onSuccess: () => {
       // Invalidate queries to refresh data after mutations
-      utils.groups.getGroupsForContact.invalidate({ contactId });
-      utils.contacts.list.invalidate(); // Refresh contacts list to show updated groups
-      utils.groups.list.invalidate(); // Refresh all groups data
+      void utils.groups.getGroupsForContact.invalidate({ contactId });
+      void utils.contacts.list.invalidate(); // Refresh contacts list to show updated groups
+      void utils.groups.list.invalidate(); // Refresh all groups data
       setIsDialogOpen(false);
       setSelectedGroupId('');
       setError(null);
       setQueryError(null);
       // Refresh the context data
-      if (groupsContext) groupsContext.refetch();
+      if (groupsContext) { void groupsContext.refetch(); }
     },
-    onError: (error) => {
-      setError(`Failed to add to group: ${error.message}`);
+    onError: (addError) => {
+      setError(`Failed to add to group: ${addError.message}`);
     },
   });
 
@@ -153,17 +154,17 @@ export function ContactGroupManager({
   const removeFromGroupMutation = api.groups.removeContact.useMutation({
     onSuccess: () => {
       // Invalidate queries to refresh data after mutations
-      utils.groups.getGroupsForContact.invalidate({ contactId });
-      utils.contacts.list.invalidate(); // Refresh contacts list to show updated groups
-      utils.groups.list.invalidate(); // Refresh all groups data
+      void utils.groups.getGroupsForContact.invalidate({ contactId });
+      void utils.contacts.list.invalidate(); // Refresh contacts list to show updated groups
+      void utils.groups.list.invalidate(); // Refresh all groups data
       setError(null);
       setQueryError(null);
       setRemovingGroupId(null); // Clear ID on success
       // Refresh the context data
-      if (groupsContext) groupsContext.refetch();
+      if (groupsContext) { void groupsContext.refetch(); }
     },
-    onError: (error) => {
-      setError(`Failed to remove from group: ${error.message}`);
+    onError: (removeError) => {
+      setError(`Failed to remove from group: ${removeError.message}`);
       setRemovingGroupId(null); // Clear ID on error
     },
   });
@@ -194,7 +195,7 @@ export function ContactGroupManager({
   };
 
   // Combine error states for display
-  const displayError = error || queryError;
+  const displayError = error ?? queryError;
 
   return (
     <div className="flex flex-wrap gap-1 items-center">
@@ -213,7 +214,7 @@ export function ContactGroupManager({
           className={`flex items-center gap-1 text-xs px-2 py-1 ${group.color ? '' : 'bg-gray-100'}`}
           style={{
             backgroundColor: group.color ? `${group.color}20` : undefined,
-            borderColor: group.color || undefined,
+            borderColor: group.color ?? undefined,
           }}
         >
           <Tag className="h-3 w-3" />

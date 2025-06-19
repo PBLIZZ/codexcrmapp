@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { format, formatDistance } from 'date-fns';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { formatDistance } from 'date-fns';
 import Link from 'next/link';
+import Image from 'next/image'; // Added Image import
 import {
   ArrowDown,
   ArrowUp,
@@ -14,8 +15,6 @@ import {
   Trash2,
   Edit,
   ChevronDown,
-  Check,
-  Tag,
   Users,
 } from 'lucide-react';
 import { api } from '@/lib/trpc';
@@ -56,7 +55,9 @@ function ProfileAvatar({ contact }: { contact: Contact }) {
   const { data: fileUrlData } = api.storage.getFileUrl.useQuery(
     { filePath: contact.profile_image_url || '' },
     {
-      enabled: !!contact.profile_image_url && !contact.profile_image_url.includes('?token='),
+      enabled:
+        !!contact.profile_image_url &&
+        !contact.profile_image_url.includes('?token='),
       staleTime: 55 * 60 * 1000, // 55 minutes (URLs valid for 1 hour)
     }
   );
@@ -77,9 +78,11 @@ function ProfileAvatar({ contact }: { contact: Contact }) {
   if (contact.profile_image_url && !imageError && imageUrl) {
     return (
       <Avatar className="h-10 w-10 bg-teal-100 text-teal-800 overflow-hidden">
-        <img
+        <Image
           src={imageUrl}
           alt={contact.full_name}
+          width={40} // Added width
+          height={40} // Added height
           className="h-full w-full object-cover"
           onError={handleImageError}
         />
@@ -159,9 +162,9 @@ export function ContactsTable({
   const [isEnrichDialogOpen, setIsEnrichDialogOpen] = useState(false);
   const [isAddToGroupDialogOpen, setIsAddToGroupDialogOpen] = useState(false);
   const [selectedGroupId, setSelectedGroupId] = useState<string>('');
-  
+
   const utils = api.useUtils();
-  
+
   // Get all available groups for the dropdown
   const {
     data: allGroups,
@@ -170,7 +173,7 @@ export function ContactsTable({
   } = api.groups.list.useQuery(undefined, {
     enabled: isAddToGroupDialogOpen, // Only fetch when dialog is open
   });
-  
+
   // Mutation to add contacts to group
   const addToGroupMutation = api.groups.addContact.useMutation({
     onSuccess: () => {
@@ -183,47 +186,54 @@ export function ContactsTable({
       console.error('Add to group error:', error);
     },
   });
-  
+
   // State for column dragging
   const [draggedColumn, setDraggedColumn] = useState<string | null>(null);
   const [columnOrder, setColumnOrder] = useState<string[]>([
-    'name', 'actions', 'email', 'phone', 'company_name', 'job_title', 'last_contacted_at', 'notes', 'source', 'tags'
+    'name',
+    'actions',
+    'email',
+    'phone',
+    'company_name',
+    'job_title',
+    'last_contacted_at',
+    'notes',
+    'source',
+    'tags',
   ]);
   const tableRef = useRef<HTMLTableElement>(null);
-  
+
   // Update isAllSelected when selectedContactIds changes
+  const updateIsAllSelected = useCallback(() => {
+    setIsAllSelected(
+      contacts.length > 0 && selectedContactIds.length === contacts.length
+    );
+  }, [selectedContactIds, contacts.length]); // Added useCallback and its dependencies
+
   useEffect(() => {
     updateIsAllSelected();
-  }, [selectedContactIds, contacts.length]);
-  
+  }, [updateIsAllSelected]); // Dependency array updated to include useCallback
+
   // Handle select all checkbox
   const handleSelectAll = () => {
     if (isAllSelected || selectedContactIds.length === contacts.length) {
       setSelectedContactIds([]);
       setIsAllSelected(false);
     } else {
-      setSelectedContactIds(contacts.map(contact => contact.id));
+      setSelectedContactIds(contacts.map((contact) => contact.id));
       setIsAllSelected(true);
     }
   };
 
   // Handle individual row selection
   const handleSelectRow = (contactId: string, isSelected: boolean) => {
-    setSelectedContactIds(prev => {
+    setSelectedContactIds((prev) => {
       if (isSelected) {
         return [...prev, contactId];
       } else {
-        return prev.filter(id => id !== contactId);
+        return prev.filter((id) => id !== contactId);
       }
     });
-  };
-
-  // Update isAllSelected when selectedContactIds changes
-  const updateIsAllSelected = () => {
-    setIsAllSelected(
-      contacts.length > 0 && 
-      selectedContactIds.length === contacts.length
-    );
   };
 
   // Handle bulk delete
@@ -240,7 +250,7 @@ export function ContactsTable({
     // For now, we'll just close the dialog
     setIsEnrichDialogOpen(false);
   };
-  
+
   // Handle dialog open/close with proper state reset
   const handleAddToGroupDialogOpenChange = (open: boolean) => {
     setIsAddToGroupDialogOpen(open);
@@ -250,11 +260,11 @@ export function ContactsTable({
       addToGroupMutation.reset();
     }
   };
-  
+
   // Handle adding multiple contacts to a group
   const handleAddToGroup = async () => {
-    if (!selectedGroupId || selectedContactIds.length === 0) return;
-    
+    if (!selectedGroupId || selectedContactIds.length === 0) {return;}
+
     try {
       // Process contacts sequentially to avoid overwhelming the server
       for (const contactId of selectedContactIds) {
@@ -263,14 +273,14 @@ export function ContactsTable({
           groupId: selectedGroupId,
         });
       }
-      
+
       // Explicitly invalidate the groups list query to refresh counts
       utils.groups.list.invalidate();
-      
+
       // Close dialog and reset selection
       setIsAddToGroupDialogOpen(false);
       setSelectedGroupId('');
-      
+
       // Optionally, you could clear the selection after adding to group
       // setSelectedContactIds([]);
     } catch (error) {
@@ -285,7 +295,8 @@ export function ContactsTable({
   };
 
   // Handle phone action
-  const handlePhoneAction = (contact: Contact) => {
+  const handlePhoneAction = (_contact: Contact) => {
+    // Renamed contact to _contact
     // Currently non-functional
     alert(`Phone functionality not implemented yet`);
   };
@@ -301,64 +312,73 @@ export function ContactsTable({
     // Ask AI for insights about the contact
     alert(`Getting AI insights for ${contact.full_name}`);
   };
-  
+
   // Handle column drag start
-  const handleDragStart = (e: React.DragEvent<HTMLTableCellElement>, column: string) => {
+  const handleDragStart = (
+    e: React.DragEvent<HTMLTableCellElement>,
+    column: string
+  ) => {
     setDraggedColumn(column);
     e.dataTransfer.effectAllowed = 'move';
     // Add a custom class to the dragged element for styling
     e.currentTarget.classList.add('dragging');
   };
-  
+
   // Handle column drag over
-  const handleDragOver = (e: React.DragEvent<HTMLTableCellElement>, column: string) => {
+  const handleDragOver = (
+    e: React.DragEvent<HTMLTableCellElement>,
+    column: string
+  ) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
-    
+
     if (draggedColumn && draggedColumn !== column) {
       // Add visual indicator for drop target
       e.currentTarget.classList.add('drag-over');
     }
   };
-  
+
   // Handle column drag leave
   const handleDragLeave = (e: React.DragEvent<HTMLTableCellElement>) => {
     e.currentTarget.classList.remove('drag-over');
   };
-  
+
   // Handle column drop
-  const handleDrop = (e: React.DragEvent<HTMLTableCellElement>, targetColumn: string) => {
+  const handleDrop = (
+    e: React.DragEvent<HTMLTableCellElement>,
+    targetColumn: string
+  ) => {
     e.preventDefault();
     e.currentTarget.classList.remove('drag-over');
-    
+
     if (draggedColumn && draggedColumn !== targetColumn) {
       // Reorder columns
       const newOrder = [...columnOrder];
       const draggedIndex = newOrder.indexOf(draggedColumn);
       const targetIndex = newOrder.indexOf(targetColumn);
-      
+
       if (draggedIndex !== -1 && targetIndex !== -1) {
         newOrder.splice(draggedIndex, 1);
         newOrder.splice(targetIndex, 0, draggedColumn);
         setColumnOrder(newOrder);
-        
+
         // Log the new order for debugging
-        console.log('New column order:', newOrder);
+        console.warn('New column order:', newOrder); // Changed console.log to console.warn
       }
     }
-    
+
     setDraggedColumn(null);
   };
-  
+
   // Handle drag end
   const handleDragEnd = (e: React.DragEvent<HTMLTableCellElement>) => {
     e.currentTarget.classList.remove('dragging');
     setDraggedColumn(null);
-    
+
     // Remove drag-over class from all columns
     if (tableRef.current) {
       const headers = tableRef.current.querySelectorAll('th');
-      headers.forEach(header => {
+      headers.forEach((header) => {
         header.classList.remove('drag-over');
       });
     }
@@ -378,7 +398,7 @@ export function ContactsTable({
       }
     `;
     document.head.appendChild(style);
-    
+
     return () => {
       document.head.removeChild(style);
     };
@@ -401,7 +421,8 @@ export function ContactsTable({
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 flex items-center justify-between">
           <div className="flex items-center">
             <span className="text-blue-700 font-medium ml-2">
-              {selectedContactIds.length} contact{selectedContactIds.length !== 1 ? 's' : ''} selected
+              {selectedContactIds.length} contact
+              {selectedContactIds.length !== 1 ? 's' : ''} selected
             </span>
           </div>
           <div className="flex gap-2">
@@ -461,10 +482,10 @@ export function ContactsTable({
                 className="px-6 py-3 text-left text-xs font-semibold text-teal-800 uppercase tracking-wider cursor-grab"
                 draggable="true"
                 data-column="name"
-                onDragStart={(e) => handleDragStart(e, "name")}
-                onDragOver={(e) => handleDragOver(e, "name")}
+                onDragStart={(e) => handleDragStart(e, 'name')}
+                onDragOver={(e) => handleDragOver(e, 'name')}
                 onDragLeave={handleDragLeave}
-                onDrop={(e) => handleDrop(e, "name")}
+                onDrop={(e) => handleDrop(e, 'name')}
                 onDragEnd={handleDragEnd}
               >
                 <div
@@ -493,10 +514,10 @@ export function ContactsTable({
                 className="px-6 py-3 text-center text-xs font-semibold text-teal-800 uppercase tracking-wider cursor-grab"
                 draggable="true"
                 data-column="actions"
-                onDragStart={(e) => handleDragStart(e, "actions")}
-                onDragOver={(e) => handleDragOver(e, "actions")}
+                onDragStart={(e) => handleDragStart(e, 'actions')}
+                onDragOver={(e) => handleDragOver(e, 'actions')}
                 onDragLeave={handleDragLeave}
-                onDrop={(e) => handleDrop(e, "actions")}
+                onDrop={(e) => handleDrop(e, 'actions')}
                 onDragEnd={handleDragEnd}
               >
                 Actions
@@ -504,36 +525,76 @@ export function ContactsTable({
 
               {/* Generate dynamic columns based on visibleColumns and columnOrder */}
               {visibleColumns
-                .filter(col => col !== 'name')
+                .filter((col) => col !== 'name')
                 .sort((a, b) => {
                   const aIndex = columnOrder.indexOf(a);
                   const bIndex = columnOrder.indexOf(b);
                   return aIndex - bIndex;
                 })
-                .map(columnId => {
+                .map((columnId) => {
                   // Find the column definition from ColumnSelector
                   const columnDef = [
                     { id: 'email', label: 'Email', field: 'email' },
                     { id: 'phone', label: 'Phone', field: 'phone' },
-                    { id: 'company_name', label: 'Company', field: 'company_name' },
+                    {
+                      id: 'company_name',
+                      label: 'Company',
+                      field: 'company_name',
+                    },
                     { id: 'job_title', label: 'Job Title', field: 'job_title' },
-                    { id: 'address_city', label: 'City', field: 'address_city' },
-                    { id: 'address_country', label: 'Country', field: 'address_country' },
-                    { id: 'address_postal_code', label: 'Postal Code', field: 'address_postal_code' },
-                    { id: 'address_street', label: 'Street Address', field: 'address_street' },
-                    { id: 'client_since', label: 'Client Since', field: 'client_since' },
-                    { id: 'last_contacted_at', label: 'Last Contacted', field: 'last_contacted_at' },
+                    {
+                      id: 'address_city',
+                      label: 'City',
+                      field: 'address_city',
+                    },
+                    {
+                      id: 'address_country',
+                      label: 'Country',
+                      field: 'address_country',
+                    },
+                    {
+                      id: 'address_postal_code',
+                      label: 'Postal Code',
+                      field: 'address_postal_code',
+                    },
+                    {
+                      id: 'address_street',
+                      label: 'Street Address',
+                      field: 'address_street',
+                    },
+                    {
+                      id: 'client_since',
+                      label: 'Client Since',
+                      field: 'client_since',
+                    },
+                    {
+                      id: 'last_contacted_at',
+                      label: 'Last Contacted',
+                      field: 'last_contacted_at',
+                    },
                     { id: 'notes', label: 'Notes', field: 'notes' },
-                    { id: 'referral_source', label: 'Referral Source', field: 'referral_source' },
-                    { id: 'relationship_status', label: 'Relationship Status', field: 'relationship_status' },
+                    {
+                      id: 'referral_source',
+                      label: 'Referral Source',
+                      field: 'referral_source',
+                    },
+                    {
+                      id: 'relationship_status',
+                      label: 'Relationship Status',
+                      field: 'relationship_status',
+                    },
                     { id: 'source', label: 'Source', field: 'source' },
                     { id: 'tags', label: 'Tags', field: 'tags' },
                     { id: 'website', label: 'Website', field: 'website' },
-                    { id: 'wellness_status', label: 'Wellness Status', field: 'wellness_status' }
-                  ].find(col => col.id === columnId);
-                  
-                  if (!columnDef) return null;
-                  
+                    {
+                      id: 'wellness_status',
+                      label: 'Wellness Status',
+                      field: 'wellness_status',
+                    },
+                  ].find((col) => col.id === columnId);
+
+                  if (!columnDef) {return null;}
+
                   return (
                     <th
                       key={columnId}
@@ -574,13 +635,13 @@ export function ContactsTable({
             {contacts.length > 0 ? (
               contacts.map((contact) => {
                 const isSelected = selectedContactIds.includes(contact.id);
-                
+
                 return (
                   <tr
                     key={contact.id}
                     className={cn(
-                      "hover:bg-gray-50",
-                      isSelected ? "bg-blue-50" : ""
+                      'hover:bg-gray-50',
+                      isSelected ? 'bg-blue-50' : ''
                     )}
                   >
                     {/* Selection Column */}
@@ -593,7 +654,7 @@ export function ContactsTable({
                         aria-label={`Select ${contact.full_name}`}
                       />
                     </td>
-                    
+
                     {/* Name Column */}
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
@@ -625,7 +686,7 @@ export function ContactsTable({
                         >
                           <Mail className="h-4 w-4" />
                         </button>
-                        
+
                         <button
                           className="text-green-600 hover:text-green-800"
                           onClick={() => handlePhoneAction(contact)}
@@ -634,7 +695,7 @@ export function ContactsTable({
                         >
                           <Phone className="h-4 w-4" />
                         </button>
-                        
+
                         <button
                           className="text-purple-600 hover:text-purple-800"
                           onClick={() => handleMessageAction(contact)}
@@ -643,7 +704,7 @@ export function ContactsTable({
                         >
                           <MessageSquareText className="h-4 w-4" />
                         </button>
-                        
+
                         <button
                           className="text-amber-600 hover:text-amber-800"
                           onClick={() => handleAIAction(contact)}
@@ -652,7 +713,7 @@ export function ContactsTable({
                         >
                           <Sparkles className="h-4 w-4" />
                         </button>
-                        
+
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <button
@@ -663,7 +724,9 @@ export function ContactsTable({
                             </button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => onEditContact(contact.id)}>
+                            <DropdownMenuItem
+                              onClick={() => onEditContact(contact.id)}
+                            >
                               <Edit className="h-4 w-4 mr-2" />
                               Edit
                             </DropdownMenuItem>
@@ -682,79 +745,178 @@ export function ContactsTable({
 
                     {/* Generate dynamic cell content based on visibleColumns and columnOrder */}
                     {visibleColumns
-                      .filter(col => col !== 'name')
+                      .filter((col) => col !== 'name')
                       .sort((a, b) => {
                         const aIndex = columnOrder.indexOf(a);
                         const bIndex = columnOrder.indexOf(b);
                         return aIndex - bIndex;
                       })
-                      .map(columnId => {
+                      .map((columnId) => {
                         // Find the column definition
                         const columnDef = [
-                          { id: 'email', label: 'Email', field: 'email', render: (c: Contact) => c.email || '-' },
-                          { id: 'phone', label: 'Phone', field: 'phone', render: (c: Contact) => c.phone || '-' },
-                          { id: 'company_name', label: 'Company', field: 'company_name', render: (c: Contact) => c.company_name || '-' },
-                          { id: 'job_title', label: 'Job Title', field: 'job_title', render: (c: Contact) => c.job_title || '-' },
-                          { id: 'address_city', label: 'City', field: 'address_city', render: (c: Contact) => c.address_city || '-' },
-                          { id: 'address_country', label: 'Country', field: 'address_country', render: (c: Contact) => c.address_country || '-' },
-                          { id: 'address_postal_code', label: 'Postal Code', field: 'address_postal_code', render: (c: Contact) => c.address_postal_code || '-' },
-                          { id: 'address_street', label: 'Street Address', field: 'address_street', render: (c: Contact) => c.address_street || '-' },
-                          { id: 'client_since', label: 'Client Since', field: 'client_since', render: (c: Contact) => c.client_since ? new Date(c.client_since).toLocaleDateString() : '-' },
+                          {
+                            id: 'email',
+                            label: 'Email',
+                            field: 'email',
+                            render: (c: Contact) => c.email || '-',
+                          },
+                          {
+                            id: 'phone',
+                            label: 'Phone',
+                            field: 'phone',
+                            render: (c: Contact) => c.phone || '-',
+                          },
+                          {
+                            id: 'company_name',
+                            label: 'Company',
+                            field: 'company_name',
+                            render: (c: Contact) => c.company_name || '-',
+                          },
+                          {
+                            id: 'job_title',
+                            label: 'Job Title',
+                            field: 'job_title',
+                            render: (c: Contact) => c.job_title || '-',
+                          },
+                          {
+                            id: 'address_city',
+                            label: 'City',
+                            field: 'address_city',
+                            render: (c: Contact) => c.address_city || '-',
+                          },
+                          {
+                            id: 'address_country',
+                            label: 'Country',
+                            field: 'address_country',
+                            render: (c: Contact) => c.address_country || '-',
+                          },
+                          {
+                            id: 'address_postal_code',
+                            label: 'Postal Code',
+                            field: 'address_postal_code',
+                            render: (c: Contact) =>
+                              c.address_postal_code || '-',
+                          },
+                          {
+                            id: 'address_street',
+                            label: 'Street Address',
+                            field: 'address_street',
+                            render: (c: Contact) => c.address_street || '-',
+                          },
+                          {
+                            id: 'client_since',
+                            label: 'Client Since',
+                            field: 'client_since',
+                            render: (c: Contact) =>
+                              c.client_since
+                                ? new Date(c.client_since).toLocaleDateString()
+                                : '-',
+                          },
                           {
                             id: 'last_contacted_at',
                             label: 'Last Contacted',
                             field: 'last_contacted_at',
-                            render: (c: Contact) => c.last_contacted_at ? (
-                              <div className="flex flex-col">
-                                <span>{new Date(c.last_contacted_at).toLocaleDateString()}</span>
-                                <span className="text-xs text-gray-400">
-                                  {formatDistance(new Date(c.last_contacted_at), new Date(), { addSuffix: true })}
-                                </span>
-                              </div>
-                            ) : '-'
+                            render: (c: Contact) =>
+                              c.last_contacted_at ? (
+                                <div className="flex flex-col">
+                                  <span>
+                                    {new Date(
+                                      c.last_contacted_at
+                                    ).toLocaleDateString()}
+                                  </span>
+                                  <span className="text-xs text-gray-400">
+                                    {formatDistance(
+                                      new Date(c.last_contacted_at),
+                                      new Date(),
+                                      { addSuffix: true }
+                                    )}
+                                  </span>
+                                </div>
+                              ) : (
+                                '-'
+                              ),
                           },
                           {
                             id: 'notes',
                             label: 'Notes',
                             field: 'notes',
                             render: (c: Contact) => (
-                              <div className="max-w-xs truncate">{c.notes || '-'}</div>
-                            )
+                              <div className="max-w-xs truncate">
+                                {c.notes || '-'}
+                              </div>
+                            ),
                           },
-                          { id: 'referral_source', label: 'Referral Source', field: 'referral_source', render: (c: Contact) => c.referral_source || '-' },
-                          { id: 'relationship_status', label: 'Relationship Status', field: 'relationship_status', render: (c: Contact) => c.relationship_status || '-' },
+                          {
+                            id: 'referral_source',
+                            label: 'Referral Source',
+                            field: 'referral_source',
+                            render: (c: Contact) => c.referral_source || '-',
+                          },
+                          {
+                            id: 'relationship_status',
+                            label: 'Relationship Status',
+                            field: 'relationship_status',
+                            render: (c: Contact) =>
+                              c.relationship_status || '-',
+                          },
                           {
                             id: 'source',
                             label: 'Source',
                             field: 'source',
-                            render: (c: Contact) => c.source ? (
-                              <Badge variant="secondary" className="capitalize">
-                                {c.source.replace('_', ' ')}
-                              </Badge>
-                            ) : '-'
+                            render: (c: Contact) =>
+                              c.source ? (
+                                <Badge
+                                  variant="secondary"
+                                  className="capitalize"
+                                >
+                                  {c.source.replace('_', ' ')}
+                                </Badge>
+                              ) : (
+                                '-'
+                              ),
                           },
                           {
                             id: 'tags',
                             label: 'Tags',
                             field: 'tags',
-                            render: (c: Contact) => c.tags && c.tags.length > 0 ? (
-                              <div className="flex flex-wrap gap-1">
-                                {c.tags.map((tag, i) => (
-                                  <Badge key={i} variant="outline" className="text-xs">
-                                    {tag.name}
-                                  </Badge>
-                                ))}
-                              </div>
-                            ) : '-'
+                            render: (c: Contact) =>
+                              c.tags && c.tags.length > 0 ? (
+                                <div className="flex flex-wrap gap-1">
+                                  {c.tags.map((tag, i) => (
+                                    <Badge
+                                      key={i}
+                                      variant="outline"
+                                      className="text-xs"
+                                    >
+                                      {tag.name}
+                                    </Badge>
+                                  ))}
+                                </div>
+                              ) : (
+                                '-'
+                              ),
                           },
-                          { id: 'website', label: 'Website', field: 'website', render: (c: Contact) => c.website || '-' },
-                          { id: 'wellness_status', label: 'Wellness Status', field: 'wellness_status', render: (c: Contact) => c.wellness_status || '-' }
-                        ].find(col => col.id === columnId);
-                        
-                        if (!columnDef) return null;
-                        
+                          {
+                            id: 'website',
+                            label: 'Website',
+                            field: 'website',
+                            render: (c: Contact) => c.website || '-',
+                          },
+                          {
+                            id: 'wellness_status',
+                            label: 'Wellness Status',
+                            field: 'wellness_status',
+                            render: (c: Contact) => c.wellness_status || '-',
+                          },
+                        ].find((col) => col.id === columnId);
+
+                        if (!columnDef) {return null;}
+
                         return (
-                          <td key={columnId} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td
+                            key={columnId}
+                            className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                          >
                             {columnDef.render(contact)}
                           </td>
                         );
@@ -794,18 +956,25 @@ export function ContactsTable({
           </tbody>
         </table>
       </div>
-      
+
       {/* Bulk Delete Dialog */}
-      <Dialog open={isBulkDeleteDialogOpen} onOpenChange={setIsBulkDeleteDialogOpen}>
+      <Dialog
+        open={isBulkDeleteDialogOpen}
+        onOpenChange={setIsBulkDeleteDialogOpen}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Delete Selected Contacts</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete {selectedContactIds.length} selected contacts? This action cannot be undone.
+              Are you sure you want to delete {selectedContactIds.length}{' '}
+              selected contacts? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsBulkDeleteDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setIsBulkDeleteDialogOpen(false)}
+            >
               Cancel
             </Button>
             <Button variant="destructive" onClick={handleBulkDelete}>
@@ -814,37 +983,48 @@ export function ContactsTable({
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      
+
       {/* Bulk Enrich Dialog */}
       <Dialog open={isEnrichDialogOpen} onOpenChange={setIsEnrichDialogOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Enrich Selected Contacts</DialogTitle>
             <DialogDescription>
-              This will use AI to enrich {selectedContactIds.length} selected contacts with additional information.
+              This will use AI to enrich {selectedContactIds.length} selected
+              contacts with additional information.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsEnrichDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setIsEnrichDialogOpen(false)}
+            >
               Cancel
             </Button>
-            <Button onClick={handleBulkEnrich} className="bg-teal-600 hover:bg-teal-700">
+            <Button
+              onClick={handleBulkEnrich}
+              className="bg-teal-600 hover:bg-teal-700"
+            >
               Enrich Contacts
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      
+
       {/* Add to Group Dialog */}
-      <Dialog open={isAddToGroupDialogOpen} onOpenChange={handleAddToGroupDialogOpenChange}>
+      <Dialog
+        open={isAddToGroupDialogOpen}
+        onOpenChange={handleAddToGroupDialogOpenChange}
+      >
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Add to Group</DialogTitle>
             <DialogDescription>
-              Select a group to add {selectedContactIds.length} selected contact{selectedContactIds.length !== 1 ? 's' : ''} to.
+              Select a group to add {selectedContactIds.length} selected contact
+              {selectedContactIds.length !== 1 ? 's' : ''} to.
             </DialogDescription>
           </DialogHeader>
-          
+
           {/* Display errors from queries or mutations */}
           {groupsError && (
             <p className="text-sm text-red-600 mt-2">
@@ -856,7 +1036,7 @@ export function ContactsTable({
               {addToGroupMutation.error.message}
             </p>
           )}
-          
+
           <div className="py-4">
             <Select
               value={selectedGroupId}
@@ -898,7 +1078,7 @@ export function ContactsTable({
               </SelectContent>
             </Select>
           </div>
-          
+
           <DialogFooter>
             <Button
               variant="secondary"

@@ -1,7 +1,7 @@
 # Task ID: 210
 # Title: Refactor codebase for TanStack Query v5 and tRPC v11 compatibility
 # Status: pending
-# Dependencies: 191
+# Dependencies: 191 (Not found)
 # Priority: critical
 # Description: Update application code to align with API changes and best practices for TanStack Query v5 and tRPC v11. This includes addressing breaking changes in how queries, mutations, and tRPC procedures are defined and used throughout the application.
 # Details:

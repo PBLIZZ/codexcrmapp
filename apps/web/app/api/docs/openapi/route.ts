@@ -1,11 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest} from 'next/server';
+import { NextResponse } from 'next/server';
 import { getEnhancedOpenApiDocument } from '@codexcrm/server/src/utils/openapi';
 
 /**
  * GET /api/docs/openapi
  * Returns the OpenAPI documentation in JSON format
  */
-export async function GET(req: NextRequest) {
+export function GET(_req: NextRequest) {
   try {
     // Get the enhanced OpenAPI document
     const openApiDocument = getEnhancedOpenApiDocument();
@@ -32,14 +33,17 @@ export async function GET(req: NextRequest) {
  * OPTIONS /api/docs/openapi
  * Handles CORS preflight requests
  */
-export async function OPTIONS(req: NextRequest) {
-  return NextResponse.json({}, {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      'Access-Control-Max-Age': '86400',
-    },
-  });
+export function OPTIONS(_req: NextRequest) {
+  return NextResponse.json(
+    {},
+    {
+      status: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Access-Control-Max-Age': '86400',
+      },
+    }
+  );
 }

@@ -1,9 +1,8 @@
 'use client';
 
-import { forwardRef, ElementType } from 'react';
+import { forwardRef } from 'react';
 import { cn } from '../../lib/utils';
 import { useTheme } from '../core/ThemeProvider';
-import { themeConfig } from '../../lib/theme';
 
 export interface ThemedCardProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: 'default' | 'primary' | 'accent' | 'outline';
@@ -42,7 +41,11 @@ const ThemedCard = forwardRef<HTMLDivElement, ThemedCardProps>(
     };
 
     // Shadow classes
-    const shadowClass = withShadow ? (isDarkMode ? 'shadow-md shadow-black/20' : 'shadow-md shadow-black/10') : '';
+    const shadowClass = withShadow
+      ? isDarkMode
+        ? 'shadow-md shadow-black/20'
+        : 'shadow-md shadow-black/10'
+      : '';
 
     // Hover effect classes
     const hoverClass = withHover
@@ -74,7 +77,8 @@ const ThemedCard = forwardRef<HTMLDivElement, ThemedCardProps>(
 
 ThemedCard.displayName = 'ThemedCard';
 
-export interface ThemedCardHeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface ThemedCardHeaderProps
+  extends React.HTMLAttributes<HTMLDivElement> {}
 
 const ThemedCardHeader = forwardRef<HTMLDivElement, ThemedCardHeaderProps>(
   ({ className, ...props }, ref) => (
@@ -88,7 +92,8 @@ const ThemedCardHeader = forwardRef<HTMLDivElement, ThemedCardHeaderProps>(
 
 ThemedCardHeader.displayName = 'ThemedCardHeader';
 
-export interface ThemedCardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
+export interface ThemedCardTitleProps
+  extends React.HTMLAttributes<HTMLHeadingElement> {
   level?: 1 | 2 | 3 | 4 | 5 | 6;
 }
 
@@ -104,7 +109,7 @@ const ThemedCardTitle = forwardRef<HTMLHeadingElement, ThemedCardTitleProps>(
       level === 6 && 'text-xs',
       className
     );
-    
+
     switch (level) {
       case 1:
         return <h1 ref={ref} className={titleClasses} {...props} />;
@@ -126,21 +131,24 @@ const ThemedCardTitle = forwardRef<HTMLHeadingElement, ThemedCardTitleProps>(
 
 ThemedCardTitle.displayName = 'ThemedCardTitle';
 
-export interface ThemedCardDescriptionProps extends React.HTMLAttributes<HTMLParagraphElement> {}
+export interface ThemedCardDescriptionProps
+  extends React.HTMLAttributes<HTMLParagraphElement> {}
 
-const ThemedCardDescription = forwardRef<HTMLParagraphElement, ThemedCardDescriptionProps>(
-  ({ className, ...props }, ref) => (
-    <p
-      ref={ref}
-      className={cn('text-sm text-muted-foreground', className)}
-      {...props}
-    />
-  )
-);
+const ThemedCardDescription = forwardRef<
+  HTMLParagraphElement,
+  ThemedCardDescriptionProps
+>(({ className, ...props }, ref) => (
+  <p
+    ref={ref}
+    className={cn('text-sm text-muted-foreground', className)}
+    {...props}
+  />
+));
 
 ThemedCardDescription.displayName = 'ThemedCardDescription';
 
-export interface ThemedCardContentProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface ThemedCardContentProps
+  extends React.HTMLAttributes<HTMLDivElement> {}
 
 const ThemedCardContent = forwardRef<HTMLDivElement, ThemedCardContentProps>(
   ({ className, ...props }, ref) => (
@@ -150,7 +158,8 @@ const ThemedCardContent = forwardRef<HTMLDivElement, ThemedCardContentProps>(
 
 ThemedCardContent.displayName = 'ThemedCardContent';
 
-export interface ThemedCardFooterProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface ThemedCardFooterProps
+  extends React.HTMLAttributes<HTMLDivElement> {}
 
 const ThemedCardFooter = forwardRef<HTMLDivElement, ThemedCardFooterProps>(
   ({ className, ...props }, ref) => (

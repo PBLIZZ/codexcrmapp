@@ -28,7 +28,7 @@ export declare const Schemas: {
             social_handles: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodArray<import("zod").ZodString, "many">>>;
             source: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
             last_contacted_at: import("zod").ZodEffects<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodDate>>, Date | null | undefined, unknown>;
-            enriched_data: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodAny>>;
+            enriched_data: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodRecord<import("zod").ZodString, import("zod").ZodUnknown>>>;
             enrichment_status: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
             wellness_goals: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodArray<import("zod").ZodString, "many">>>;
             wellness_journey_stage: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
@@ -51,7 +51,7 @@ export declare const Schemas: {
             social_handles?: string[] | null | undefined;
             source?: string | null | undefined;
             last_contacted_at?: Date | null | undefined;
-            enriched_data?: any;
+            enriched_data?: Record<string, unknown> | null | undefined;
             enrichment_status?: string | null | undefined;
             wellness_goals?: string[] | null | undefined;
             wellness_journey_stage?: string | null | undefined;
@@ -74,7 +74,7 @@ export declare const Schemas: {
             social_handles?: string[] | null | undefined;
             source?: string | null | undefined;
             last_contacted_at?: unknown;
-            enriched_data?: any;
+            enriched_data?: Record<string, unknown> | null | undefined;
             enrichment_status?: string | null | undefined;
             wellness_goals?: string[] | null | undefined;
             wellness_journey_stage?: string | null | undefined;
@@ -98,7 +98,7 @@ export declare const Schemas: {
             social_handles: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodArray<import("zod").ZodString, "many">>>;
             source: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
             last_contacted_at: import("zod").ZodEffects<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodDate>>, Date | null | undefined, unknown>;
-            enriched_data: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodAny>>;
+            enriched_data: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodRecord<import("zod").ZodString, import("zod").ZodUnknown>>>;
             enrichment_status: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
             wellness_goals: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodArray<import("zod").ZodString, "many">>>;
             wellness_journey_stage: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
@@ -121,7 +121,7 @@ export declare const Schemas: {
             social_handles?: string[] | null | undefined;
             source?: string | null | undefined;
             last_contacted_at?: Date | null | undefined;
-            enriched_data?: any;
+            enriched_data?: Record<string, unknown> | null | undefined;
             enrichment_status?: string | null | undefined;
             wellness_goals?: string[] | null | undefined;
             wellness_journey_stage?: string | null | undefined;
@@ -144,7 +144,7 @@ export declare const Schemas: {
             social_handles?: string[] | null | undefined;
             source?: string | null | undefined;
             last_contacted_at?: unknown;
-            enriched_data?: any;
+            enriched_data?: Record<string, unknown> | null | undefined;
             enrichment_status?: string | null | undefined;
             wellness_goals?: string[] | null | undefined;
             wellness_journey_stage?: string | null | undefined;
@@ -168,7 +168,7 @@ export declare const Schemas: {
             social_handles: import("zod").ZodOptional<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodArray<import("zod").ZodString, "many">>>>;
             source: import("zod").ZodOptional<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>>;
             last_contacted_at: import("zod").ZodOptional<import("zod").ZodEffects<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodDate>>, Date | null | undefined, unknown>>;
-            enriched_data: import("zod").ZodOptional<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodAny>>>;
+            enriched_data: import("zod").ZodOptional<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodRecord<import("zod").ZodString, import("zod").ZodUnknown>>>>;
             enrichment_status: import("zod").ZodOptional<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>>;
             wellness_goals: import("zod").ZodOptional<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodArray<import("zod").ZodString, "many">>>>;
             wellness_journey_stage: import("zod").ZodOptional<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>>;
@@ -194,7 +194,7 @@ export declare const Schemas: {
             social_handles?: string[] | null | undefined;
             source?: string | null | undefined;
             last_contacted_at?: Date | null | undefined;
-            enriched_data?: any;
+            enriched_data?: Record<string, unknown> | null | undefined;
             enrichment_status?: string | null | undefined;
             wellness_goals?: string[] | null | undefined;
             wellness_journey_stage?: string | null | undefined;
@@ -218,7 +218,7 @@ export declare const Schemas: {
             social_handles?: string[] | null | undefined;
             source?: string | null | undefined;
             last_contacted_at?: unknown;
-            enriched_data?: any;
+            enriched_data?: Record<string, unknown> | null | undefined;
             enrichment_status?: string | null | undefined;
             wellness_goals?: string[] | null | undefined;
             wellness_journey_stage?: string | null | undefined;
@@ -255,31 +255,31 @@ export declare const Schemas: {
             detailed_bio: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
             family_members: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodArray<import("zod").ZodString, "many">>>;
             personality_traits: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodArray<import("zod").ZodString, "many">>>;
-            preferences: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodAny>>;
-            health_metrics: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodAny>>;
-            important_dates: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodAny>>;
+            preferences: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodRecord<import("zod").ZodString, import("zod").ZodUnknown>>>;
+            health_metrics: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodRecord<import("zod").ZodString, import("zod").ZodUnknown>>>;
+            important_dates: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodRecord<import("zod").ZodString, import("zod").ZodUnknown>>>;
             wellness_history: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-            custom_fields: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodAny>>;
+            custom_fields: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodRecord<import("zod").ZodString, import("zod").ZodUnknown>>>;
         }, "strip", import("zod").ZodTypeAny, {
             contact_id: string;
+            custom_fields?: Record<string, unknown> | null | undefined;
             detailed_bio?: string | null | undefined;
             family_members?: string[] | null | undefined;
+            health_metrics?: Record<string, unknown> | null | undefined;
+            important_dates?: Record<string, unknown> | null | undefined;
             personality_traits?: string[] | null | undefined;
-            preferences?: any;
-            health_metrics?: any;
-            important_dates?: any;
+            preferences?: Record<string, unknown> | null | undefined;
             wellness_history?: string | null | undefined;
-            custom_fields?: any;
         }, {
             contact_id: string;
+            custom_fields?: Record<string, unknown> | null | undefined;
             detailed_bio?: string | null | undefined;
             family_members?: string[] | null | undefined;
+            health_metrics?: Record<string, unknown> | null | undefined;
+            important_dates?: Record<string, unknown> | null | undefined;
             personality_traits?: string[] | null | undefined;
-            preferences?: any;
-            health_metrics?: any;
-            important_dates?: any;
+            preferences?: Record<string, unknown> | null | undefined;
             wellness_history?: string | null | undefined;
-            custom_fields?: any;
         }>;
         withProfile: import("zod").ZodObject<{
             full_name: import("zod").ZodString;
@@ -299,7 +299,7 @@ export declare const Schemas: {
             social_handles: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodArray<import("zod").ZodString, "many">>>;
             source: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
             last_contacted_at: import("zod").ZodEffects<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodDate>>, Date | null | undefined, unknown>;
-            enriched_data: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodAny>>;
+            enriched_data: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodRecord<import("zod").ZodString, import("zod").ZodUnknown>>>;
             enrichment_status: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
             wellness_goals: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodArray<import("zod").ZodString, "many">>>;
             wellness_journey_stage: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
@@ -311,31 +311,31 @@ export declare const Schemas: {
                 detailed_bio: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
                 family_members: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodArray<import("zod").ZodString, "many">>>;
                 personality_traits: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodArray<import("zod").ZodString, "many">>>;
-                preferences: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodAny>>;
-                health_metrics: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodAny>>;
-                important_dates: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodAny>>;
+                preferences: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodRecord<import("zod").ZodString, import("zod").ZodUnknown>>>;
+                health_metrics: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodRecord<import("zod").ZodString, import("zod").ZodUnknown>>>;
+                important_dates: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodRecord<import("zod").ZodString, import("zod").ZodUnknown>>>;
                 wellness_history: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-                custom_fields: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodAny>>;
+                custom_fields: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodRecord<import("zod").ZodString, import("zod").ZodUnknown>>>;
             }, "strip", import("zod").ZodTypeAny, {
                 contact_id: string;
+                custom_fields?: Record<string, unknown> | null | undefined;
                 detailed_bio?: string | null | undefined;
                 family_members?: string[] | null | undefined;
+                health_metrics?: Record<string, unknown> | null | undefined;
+                important_dates?: Record<string, unknown> | null | undefined;
                 personality_traits?: string[] | null | undefined;
-                preferences?: any;
-                health_metrics?: any;
-                important_dates?: any;
+                preferences?: Record<string, unknown> | null | undefined;
                 wellness_history?: string | null | undefined;
-                custom_fields?: any;
             }, {
                 contact_id: string;
+                custom_fields?: Record<string, unknown> | null | undefined;
                 detailed_bio?: string | null | undefined;
                 family_members?: string[] | null | undefined;
+                health_metrics?: Record<string, unknown> | null | undefined;
+                important_dates?: Record<string, unknown> | null | undefined;
                 personality_traits?: string[] | null | undefined;
-                preferences?: any;
-                health_metrics?: any;
-                important_dates?: any;
+                preferences?: Record<string, unknown> | null | undefined;
                 wellness_history?: string | null | undefined;
-                custom_fields?: any;
             }>>>;
         }, "strip", import("zod").ZodTypeAny, {
             id: string;
@@ -356,22 +356,22 @@ export declare const Schemas: {
             social_handles?: string[] | null | undefined;
             source?: string | null | undefined;
             last_contacted_at?: Date | null | undefined;
-            enriched_data?: any;
+            enriched_data?: Record<string, unknown> | null | undefined;
             enrichment_status?: string | null | undefined;
-            profile?: {
-                contact_id: string;
-                detailed_bio?: string | null | undefined;
-                family_members?: string[] | null | undefined;
-                personality_traits?: string[] | null | undefined;
-                preferences?: any;
-                health_metrics?: any;
-                important_dates?: any;
-                wellness_history?: string | null | undefined;
-                custom_fields?: any;
-            } | null | undefined;
             wellness_goals?: string[] | null | undefined;
             wellness_journey_stage?: string | null | undefined;
             wellness_status?: string | null | undefined;
+            profile?: {
+                contact_id: string;
+                custom_fields?: Record<string, unknown> | null | undefined;
+                detailed_bio?: string | null | undefined;
+                family_members?: string[] | null | undefined;
+                health_metrics?: Record<string, unknown> | null | undefined;
+                important_dates?: Record<string, unknown> | null | undefined;
+                personality_traits?: string[] | null | undefined;
+                preferences?: Record<string, unknown> | null | undefined;
+                wellness_history?: string | null | undefined;
+            } | null | undefined;
         }, {
             id: string;
             full_name: string;
@@ -391,22 +391,22 @@ export declare const Schemas: {
             social_handles?: string[] | null | undefined;
             source?: string | null | undefined;
             last_contacted_at?: unknown;
-            enriched_data?: any;
+            enriched_data?: Record<string, unknown> | null | undefined;
             enrichment_status?: string | null | undefined;
-            profile?: {
-                contact_id: string;
-                detailed_bio?: string | null | undefined;
-                family_members?: string[] | null | undefined;
-                personality_traits?: string[] | null | undefined;
-                preferences?: any;
-                health_metrics?: any;
-                important_dates?: any;
-                wellness_history?: string | null | undefined;
-                custom_fields?: any;
-            } | null | undefined;
             wellness_goals?: string[] | null | undefined;
             wellness_journey_stage?: string | null | undefined;
             wellness_status?: string | null | undefined;
+            profile?: {
+                contact_id: string;
+                custom_fields?: Record<string, unknown> | null | undefined;
+                detailed_bio?: string | null | undefined;
+                family_members?: string[] | null | undefined;
+                health_metrics?: Record<string, unknown> | null | undefined;
+                important_dates?: Record<string, unknown> | null | undefined;
+                personality_traits?: string[] | null | undefined;
+                preferences?: Record<string, unknown> | null | undefined;
+                wellness_history?: string | null | undefined;
+            } | null | undefined;
         }>;
     };
     Session: {
@@ -433,12 +433,12 @@ export declare const Schemas: {
             status?: string | null | undefined;
             notes?: string | null | undefined;
             session_type?: string | null | undefined;
-            follow_up_needed?: boolean | null | undefined;
             duration_minutes?: number | null | undefined;
             location?: string | null | undefined;
             virtual_meeting_link?: string | null | undefined;
             key_topics?: string[] | null | undefined;
             outcomes?: string | null | undefined;
+            follow_up_needed?: boolean | null | undefined;
             follow_up_details?: string | null | undefined;
             service_id?: string | null | undefined;
             program_id?: string | null | undefined;
@@ -450,12 +450,12 @@ export declare const Schemas: {
             status?: string | null | undefined;
             notes?: string | null | undefined;
             session_type?: string | null | undefined;
-            follow_up_needed?: boolean | null | undefined;
             duration_minutes?: number | null | undefined;
             location?: string | null | undefined;
             virtual_meeting_link?: string | null | undefined;
             key_topics?: string[] | null | undefined;
             outcomes?: string | null | undefined;
+            follow_up_needed?: boolean | null | undefined;
             follow_up_details?: string | null | undefined;
             service_id?: string | null | undefined;
             program_id?: string | null | undefined;
@@ -485,12 +485,12 @@ export declare const Schemas: {
             status?: string | null | undefined;
             notes?: string | null | undefined;
             session_type?: string | null | undefined;
-            follow_up_needed?: boolean | null | undefined;
             duration_minutes?: number | null | undefined;
             location?: string | null | undefined;
             virtual_meeting_link?: string | null | undefined;
             key_topics?: string[] | null | undefined;
             outcomes?: string | null | undefined;
+            follow_up_needed?: boolean | null | undefined;
             follow_up_details?: string | null | undefined;
             service_id?: string | null | undefined;
             program_id?: string | null | undefined;
@@ -502,12 +502,12 @@ export declare const Schemas: {
             status?: string | null | undefined;
             notes?: string | null | undefined;
             session_type?: string | null | undefined;
-            follow_up_needed?: boolean | null | undefined;
             duration_minutes?: number | null | undefined;
             location?: string | null | undefined;
             virtual_meeting_link?: string | null | undefined;
             key_topics?: string[] | null | undefined;
             outcomes?: string | null | undefined;
+            follow_up_needed?: boolean | null | undefined;
             follow_up_details?: string | null | undefined;
             service_id?: string | null | undefined;
             program_id?: string | null | undefined;
@@ -540,12 +540,12 @@ export declare const Schemas: {
             contact_id?: string | undefined;
             session_time?: string | undefined;
             session_type?: string | null | undefined;
-            follow_up_needed?: boolean | null | undefined;
             duration_minutes?: number | null | undefined;
             location?: string | null | undefined;
             virtual_meeting_link?: string | null | undefined;
             key_topics?: string[] | null | undefined;
             outcomes?: string | null | undefined;
+            follow_up_needed?: boolean | null | undefined;
             follow_up_details?: string | null | undefined;
             service_id?: string | null | undefined;
             program_id?: string | null | undefined;
@@ -558,12 +558,12 @@ export declare const Schemas: {
             contact_id?: string | undefined;
             session_time?: string | undefined;
             session_type?: string | null | undefined;
-            follow_up_needed?: boolean | null | undefined;
             duration_minutes?: number | null | undefined;
             location?: string | null | undefined;
             virtual_meeting_link?: string | null | undefined;
             key_topics?: string[] | null | undefined;
             outcomes?: string | null | undefined;
+            follow_up_needed?: boolean | null | undefined;
             follow_up_details?: string | null | undefined;
             service_id?: string | null | undefined;
             program_id?: string | null | undefined;
@@ -655,8 +655,8 @@ export declare const Schemas: {
             status: string;
             contact_id: string;
             action_type: string;
-            implemented: boolean;
             suggestion: string;
+            implemented: boolean;
             priority?: string | null | undefined;
             session_id?: string | null | undefined;
             context?: any;
@@ -669,8 +669,8 @@ export declare const Schemas: {
             priority?: string | null | undefined;
             status?: string | undefined;
             session_id?: string | null | undefined;
-            implemented?: boolean | undefined;
             context?: any;
+            implemented?: boolean | undefined;
             implementation_date?: string | null | undefined;
             feedback?: string | null | undefined;
         }>;
@@ -689,8 +689,8 @@ export declare const Schemas: {
             status: string;
             contact_id: string;
             action_type: string;
-            implemented: boolean;
             suggestion: string;
+            implemented: boolean;
             priority?: string | null | undefined;
             session_id?: string | null | undefined;
             context?: any;
@@ -703,8 +703,8 @@ export declare const Schemas: {
             priority?: string | null | undefined;
             status?: string | undefined;
             session_id?: string | null | undefined;
-            implemented?: boolean | undefined;
             context?: any;
+            implemented?: boolean | undefined;
             implementation_date?: string | null | undefined;
             feedback?: string | null | undefined;
         }>;
@@ -726,11 +726,11 @@ export declare const Schemas: {
             priority?: string | null | undefined;
             status?: string | undefined;
             contact_id?: string | undefined;
-            session_id?: string | null | undefined;
             action_type?: string | undefined;
-            implemented?: boolean | undefined;
+            session_id?: string | null | undefined;
             suggestion?: string | undefined;
             context?: any;
+            implemented?: boolean | undefined;
             implementation_date?: string | null | undefined;
             feedback?: string | null | undefined;
         }, {
@@ -738,11 +738,11 @@ export declare const Schemas: {
             priority?: string | null | undefined;
             status?: string | undefined;
             contact_id?: string | undefined;
-            session_id?: string | null | undefined;
             action_type?: string | undefined;
-            implemented?: boolean | undefined;
+            session_id?: string | null | undefined;
             suggestion?: string | undefined;
             context?: any;
+            implemented?: boolean | undefined;
             implementation_date?: string | null | undefined;
             feedback?: string | null | undefined;
         }>;
@@ -787,17 +787,17 @@ export declare const Schemas: {
         }, "strip", import("zod").ZodTypeAny, {
             status?: string | undefined;
             contactId?: string | undefined;
-            implemented?: boolean | undefined;
             sessionId?: string | undefined;
             actionType?: string | undefined;
+            implemented?: boolean | undefined;
             startDate?: string | undefined;
             endDate?: string | undefined;
         }, {
             status?: string | undefined;
             contactId?: string | undefined;
-            implemented?: boolean | undefined;
             sessionId?: string | undefined;
             actionType?: string | undefined;
+            implemented?: boolean | undefined;
             startDate?: string | undefined;
             endDate?: string | undefined;
         }>;

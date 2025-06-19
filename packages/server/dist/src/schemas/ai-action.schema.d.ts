@@ -14,8 +14,8 @@ export declare const aiActionBaseSchema: z.ZodObject<{
     status: string;
     contact_id: string;
     action_type: string;
-    implemented: boolean;
     suggestion: string;
+    implemented: boolean;
     priority?: string | null | undefined;
     session_id?: string | null | undefined;
     context?: any;
@@ -28,8 +28,8 @@ export declare const aiActionBaseSchema: z.ZodObject<{
     priority?: string | null | undefined;
     status?: string | undefined;
     session_id?: string | null | undefined;
-    implemented?: boolean | undefined;
     context?: any;
+    implemented?: boolean | undefined;
     implementation_date?: string | null | undefined;
     feedback?: string | null | undefined;
 }>;
@@ -48,8 +48,8 @@ export declare const aiActionCreateSchema: z.ZodObject<{
     status: string;
     contact_id: string;
     action_type: string;
-    implemented: boolean;
     suggestion: string;
+    implemented: boolean;
     priority?: string | null | undefined;
     session_id?: string | null | undefined;
     context?: any;
@@ -62,8 +62,8 @@ export declare const aiActionCreateSchema: z.ZodObject<{
     priority?: string | null | undefined;
     status?: string | undefined;
     session_id?: string | null | undefined;
-    implemented?: boolean | undefined;
     context?: any;
+    implemented?: boolean | undefined;
     implementation_date?: string | null | undefined;
     feedback?: string | null | undefined;
 }>;
@@ -85,11 +85,11 @@ export declare const aiActionUpdateSchema: z.ZodObject<{
     priority?: string | null | undefined;
     status?: string | undefined;
     contact_id?: string | undefined;
-    session_id?: string | null | undefined;
     action_type?: string | undefined;
-    implemented?: boolean | undefined;
+    session_id?: string | null | undefined;
     suggestion?: string | undefined;
     context?: any;
+    implemented?: boolean | undefined;
     implementation_date?: string | null | undefined;
     feedback?: string | null | undefined;
 }, {
@@ -97,11 +97,11 @@ export declare const aiActionUpdateSchema: z.ZodObject<{
     priority?: string | null | undefined;
     status?: string | undefined;
     contact_id?: string | undefined;
-    session_id?: string | null | undefined;
     action_type?: string | undefined;
-    implemented?: boolean | undefined;
+    session_id?: string | null | undefined;
     suggestion?: string | undefined;
     context?: any;
+    implemented?: boolean | undefined;
     implementation_date?: string | null | undefined;
     feedback?: string | null | undefined;
 }>;
@@ -146,17 +146,17 @@ export declare const aiActionFilterSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     status?: string | undefined;
     contactId?: string | undefined;
-    implemented?: boolean | undefined;
     sessionId?: string | undefined;
     actionType?: string | undefined;
+    implemented?: boolean | undefined;
     startDate?: string | undefined;
     endDate?: string | undefined;
 }, {
     status?: string | undefined;
     contactId?: string | undefined;
-    implemented?: boolean | undefined;
     sessionId?: string | undefined;
     actionType?: string | undefined;
+    implemented?: boolean | undefined;
     startDate?: string | undefined;
     endDate?: string | undefined;
 }>;
@@ -179,8 +179,8 @@ export declare const AiActionSchemas: {
         status: string;
         contact_id: string;
         action_type: string;
-        implemented: boolean;
         suggestion: string;
+        implemented: boolean;
         priority?: string | null | undefined;
         session_id?: string | null | undefined;
         context?: any;
@@ -193,8 +193,8 @@ export declare const AiActionSchemas: {
         priority?: string | null | undefined;
         status?: string | undefined;
         session_id?: string | null | undefined;
-        implemented?: boolean | undefined;
         context?: any;
+        implemented?: boolean | undefined;
         implementation_date?: string | null | undefined;
         feedback?: string | null | undefined;
     }>;
@@ -213,8 +213,8 @@ export declare const AiActionSchemas: {
         status: string;
         contact_id: string;
         action_type: string;
-        implemented: boolean;
         suggestion: string;
+        implemented: boolean;
         priority?: string | null | undefined;
         session_id?: string | null | undefined;
         context?: any;
@@ -227,8 +227,8 @@ export declare const AiActionSchemas: {
         priority?: string | null | undefined;
         status?: string | undefined;
         session_id?: string | null | undefined;
-        implemented?: boolean | undefined;
         context?: any;
+        implemented?: boolean | undefined;
         implementation_date?: string | null | undefined;
         feedback?: string | null | undefined;
     }>;
@@ -250,11 +250,11 @@ export declare const AiActionSchemas: {
         priority?: string | null | undefined;
         status?: string | undefined;
         contact_id?: string | undefined;
-        session_id?: string | null | undefined;
         action_type?: string | undefined;
-        implemented?: boolean | undefined;
+        session_id?: string | null | undefined;
         suggestion?: string | undefined;
         context?: any;
+        implemented?: boolean | undefined;
         implementation_date?: string | null | undefined;
         feedback?: string | null | undefined;
     }, {
@@ -262,11 +262,11 @@ export declare const AiActionSchemas: {
         priority?: string | null | undefined;
         status?: string | undefined;
         contact_id?: string | undefined;
-        session_id?: string | null | undefined;
         action_type?: string | undefined;
-        implemented?: boolean | undefined;
+        session_id?: string | null | undefined;
         suggestion?: string | undefined;
         context?: any;
+        implemented?: boolean | undefined;
         implementation_date?: string | null | undefined;
         feedback?: string | null | undefined;
     }>;
@@ -311,17 +311,17 @@ export declare const AiActionSchemas: {
     }, "strip", z.ZodTypeAny, {
         status?: string | undefined;
         contactId?: string | undefined;
-        implemented?: boolean | undefined;
         sessionId?: string | undefined;
         actionType?: string | undefined;
+        implemented?: boolean | undefined;
         startDate?: string | undefined;
         endDate?: string | undefined;
     }, {
         status?: string | undefined;
         contactId?: string | undefined;
-        implemented?: boolean | undefined;
         sessionId?: string | undefined;
         actionType?: string | undefined;
+        implemented?: boolean | undefined;
         startDate?: string | undefined;
         endDate?: string | undefined;
     }>;

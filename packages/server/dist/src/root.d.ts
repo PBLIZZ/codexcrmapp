@@ -1,15 +1,15 @@
-export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-import").BuiltRouter<{
+export declare const appRouter: import("@trpc/server").TRPCBuiltRouter<{
     ctx: import("./context").Context;
     meta: object;
-    errorShape: import("@trpc/server/dist/unstable-core-do-not-import").DefaultErrorShape;
+    errorShape: import("@trpc/server").TRPCDefaultErrorShape;
     transformer: true;
-}, import("@trpc/server/dist/unstable-core-do-not-import").DecorateCreateRouterOptions<{
-    contacts: import("@trpc/server/dist/unstable-core-do-not-import").BuiltRouter<{
+}, import("@trpc/server").TRPCDecorateCreateRouterOptions<{
+    contacts: import("@trpc/server").TRPCBuiltRouter<{
         ctx: import("./context").Context;
         meta: object;
-        errorShape: import("@trpc/server/dist/unstable-core-do-not-import").DefaultErrorShape;
+        errorShape: import("@trpc/server").TRPCDefaultErrorShape;
         transformer: true;
-    }, import("@trpc/server/dist/unstable-core-do-not-import").DecorateCreateRouterOptions<{
+    }, import("@trpc/server").TRPCDecorateCreateRouterOptions<{
         list: import("@trpc/server").TRPCQueryProcedure<{
             input: {
                 search?: string | undefined;
@@ -79,12 +79,12 @@ export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-i
             meta: object;
         }>;
     }>>;
-    groups: import("@trpc/server/dist/unstable-core-do-not-import").BuiltRouter<{
+    groups: import("@trpc/server").TRPCBuiltRouter<{
         ctx: import("./context").Context;
         meta: object;
-        errorShape: import("@trpc/server/dist/unstable-core-do-not-import").DefaultErrorShape;
+        errorShape: import("@trpc/server").TRPCDefaultErrorShape;
         transformer: true;
-    }, import("@trpc/server/dist/unstable-core-do-not-import").DecorateCreateRouterOptions<{
+    }, import("@trpc/server").TRPCDecorateCreateRouterOptions<{
         getGroupsForContact: import("@trpc/server").TRPCQueryProcedure<{
             input: {
                 contactId: string;
@@ -107,8 +107,9 @@ export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-i
         save: import("@trpc/server").TRPCMutationProcedure<{
             input: {
                 name: string;
-                id?: string | undefined;
                 description?: string | null | undefined;
+                id?: string | undefined;
+                color?: string | null | undefined;
                 emoji?: string | null | undefined;
             };
             output: any;
@@ -126,8 +127,8 @@ export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-i
         }>;
         addContact: import("@trpc/server").TRPCMutationProcedure<{
             input: {
-                groupId: string;
                 contactId: string;
+                groupId: string;
             };
             output: {
                 success: boolean;
@@ -140,8 +141,8 @@ export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-i
         }>;
         removeContact: import("@trpc/server").TRPCMutationProcedure<{
             input: {
-                groupId: string;
                 contactId: string;
+                groupId: string;
             };
             output: {
                 success: boolean;
@@ -156,12 +157,12 @@ export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-i
             meta: object;
         }>;
     }>>;
-    storage: import("@trpc/server/dist/unstable-core-do-not-import").BuiltRouter<{
+    storage: import("@trpc/server").TRPCBuiltRouter<{
         ctx: import("./context").Context;
         meta: object;
-        errorShape: import("@trpc/server/dist/unstable-core-do-not-import").DefaultErrorShape;
+        errorShape: import("@trpc/server").TRPCDefaultErrorShape;
         transformer: true;
-    }, import("@trpc/server/dist/unstable-core-do-not-import").DecorateCreateRouterOptions<{
+    }, import("@trpc/server").TRPCDecorateCreateRouterOptions<{
         getUploadUrl: import("@trpc/server").TRPCMutationProcedure<{
             input: {
                 fileName: string;
@@ -194,12 +195,12 @@ export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-i
             meta: object;
         }>;
     }>>;
-    sessions: import("@trpc/server/dist/unstable-core-do-not-import").BuiltRouter<{
+    sessions: import("@trpc/server").TRPCBuiltRouter<{
         ctx: import("./context").Context;
         meta: object;
-        errorShape: import("@trpc/server/dist/unstable-core-do-not-import").DefaultErrorShape;
+        errorShape: import("@trpc/server").TRPCDefaultErrorShape;
         transformer: true;
-    }, import("@trpc/server/dist/unstable-core-do-not-import").DecorateCreateRouterOptions<{
+    }, import("@trpc/server").TRPCDecorateCreateRouterOptions<{
         list: import("@trpc/server").TRPCQueryProcedure<{
             input: {
                 contactId?: string | undefined;
@@ -208,7 +209,7 @@ export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-i
                 followUpNeeded?: boolean | undefined;
                 limit?: number | undefined;
             } | undefined;
-            output: any[];
+            output: any;
             meta: object;
         }>;
         getById: import("@trpc/server").TRPCQueryProcedure<{
@@ -229,16 +230,16 @@ export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-i
             input: {
                 contact_id: string;
                 session_time: string;
-                id?: string | undefined;
                 status?: string | null | undefined;
+                id?: string | undefined;
                 notes?: string | null | undefined;
                 session_type?: string | null | undefined;
-                follow_up_needed?: boolean | null | undefined;
                 duration_minutes?: number | null | undefined;
                 location?: string | null | undefined;
                 virtual_meeting_link?: string | null | undefined;
                 key_topics?: string[] | null | undefined;
                 outcomes?: string | null | undefined;
+                follow_up_needed?: boolean | null | undefined;
                 follow_up_details?: string | null | undefined;
                 service_id?: string | null | undefined;
                 program_id?: string | null | undefined;
@@ -252,16 +253,16 @@ export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-i
             input: {
                 id: string;
                 status?: string | null | undefined;
-                notes?: string | null | undefined;
                 contact_id?: string | undefined;
+                notes?: string | null | undefined;
                 session_time?: string | undefined;
                 session_type?: string | null | undefined;
-                follow_up_needed?: boolean | null | undefined;
                 duration_minutes?: number | null | undefined;
                 location?: string | null | undefined;
                 virtual_meeting_link?: string | null | undefined;
                 key_topics?: string[] | null | undefined;
                 outcomes?: string | null | undefined;
+                follow_up_needed?: boolean | null | undefined;
                 follow_up_details?: string | null | undefined;
                 service_id?: string | null | undefined;
                 program_id?: string | null | undefined;
@@ -276,7 +277,7 @@ export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-i
                 sessionId: string;
             };
             output: {
-                success: boolean;
+                success: any;
                 sessionId: string;
             };
             meta: object;
@@ -290,20 +291,20 @@ export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-i
             meta: object;
         }>;
     }>>;
-    aiActions: import("@trpc/server/dist/unstable-core-do-not-import").BuiltRouter<{
+    aiActions: import("@trpc/server").TRPCBuiltRouter<{
         ctx: import("./context").Context;
         meta: object;
-        errorShape: import("@trpc/server/dist/unstable-core-do-not-import").DefaultErrorShape;
+        errorShape: import("@trpc/server").TRPCDefaultErrorShape;
         transformer: true;
-    }, import("@trpc/server/dist/unstable-core-do-not-import").DecorateCreateRouterOptions<{
+    }, import("@trpc/server").TRPCDecorateCreateRouterOptions<{
         list: import("@trpc/server").TRPCQueryProcedure<{
             input: {
-                status?: string | undefined;
                 contactId?: string | undefined;
                 sessionId?: string | undefined;
+                status?: string | undefined;
                 actionType?: string | undefined;
             } | undefined;
-            output: any[];
+            output: any;
             meta: object;
         }>;
         getById: import("@trpc/server").TRPCQueryProcedure<{
@@ -322,15 +323,15 @@ export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-i
         }>;
         create: import("@trpc/server").TRPCMutationProcedure<{
             input: {
-                contact_id: string;
                 action_type: string;
+                contact_id: string;
                 suggestion: string;
-                id?: string | undefined;
-                priority?: string | null | undefined;
                 status?: string | undefined;
+                id?: string | undefined;
                 session_id?: string | null | undefined;
-                implemented?: boolean | undefined;
+                priority?: string | null | undefined;
                 context?: any;
+                implemented?: boolean | undefined;
                 implementation_date?: string | null | undefined;
                 feedback?: string | null | undefined;
             };
@@ -340,14 +341,14 @@ export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-i
         update: import("@trpc/server").TRPCMutationProcedure<{
             input: {
                 id: string;
-                priority?: string | null | undefined;
                 status?: string | undefined;
+                action_type?: string | undefined;
                 contact_id?: string | undefined;
                 session_id?: string | null | undefined;
-                action_type?: string | undefined;
-                implemented?: boolean | undefined;
                 suggestion?: string | undefined;
+                priority?: string | null | undefined;
                 context?: any;
+                implemented?: boolean | undefined;
                 implementation_date?: string | null | undefined;
                 feedback?: string | null | undefined;
             };
@@ -359,7 +360,7 @@ export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-i
                 actionId: string;
             };
             output: {
-                success: boolean;
+                success: any;
                 actionId: string;
             };
             meta: object;
@@ -382,12 +383,12 @@ export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-i
             meta: object;
         }>;
     }>>;
-    notes: import("@trpc/server/dist/unstable-core-do-not-import").BuiltRouter<{
+    notes: import("@trpc/server").TRPCBuiltRouter<{
         ctx: import("./context").Context;
         meta: object;
-        errorShape: import("@trpc/server/dist/unstable-core-do-not-import").DefaultErrorShape;
+        errorShape: import("@trpc/server").TRPCDefaultErrorShape;
         transformer: true;
-    }, import("@trpc/server/dist/unstable-core-do-not-import").DecorateCreateRouterOptions<{
+    }, import("@trpc/server").TRPCDecorateCreateRouterOptions<{
         list: import("@trpc/server").TRPCQueryProcedure<{
             input: {
                 contactId?: string | undefined;
@@ -461,12 +462,12 @@ export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-i
             meta: object;
         }>;
     }>>;
-    dashboard: import("@trpc/server/dist/unstable-core-do-not-import").BuiltRouter<{
+    dashboard: import("@trpc/server").TRPCBuiltRouter<{
         ctx: import("./context").Context;
         meta: object;
-        errorShape: import("@trpc/server/dist/unstable-core-do-not-import").DefaultErrorShape;
+        errorShape: import("@trpc/server").TRPCDefaultErrorShape;
         transformer: true;
-    }, import("@trpc/server/dist/unstable-core-do-not-import").DecorateCreateRouterOptions<{
+    }, import("@trpc/server").TRPCDecorateCreateRouterOptions<{
         contactMetrics: import("@trpc/server").TRPCQueryProcedure<{
             input: {
                 startDate?: string | undefined;
@@ -532,63 +533,65 @@ export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-i
             meta: object;
         }>;
     }>>;
-    tasks: import("@trpc/server/dist/unstable-core-do-not-import").BuiltRouter<{
+    tasks: import("@trpc/server").TRPCBuiltRouter<{
         ctx: import("./context").Context;
         meta: object;
-        errorShape: import("@trpc/server/dist/unstable-core-do-not-import").DefaultErrorShape;
+        errorShape: import("@trpc/server").TRPCDefaultErrorShape;
         transformer: true;
-    }, import("@trpc/server/dist/unstable-core-do-not-import").DecorateCreateRouterOptions<{
+    }, import("@trpc/server").TRPCDecorateCreateRouterOptions<{
         list: import("@trpc/server").TRPCQueryProcedure<{
             input: {
                 contactId?: string | null | undefined;
                 view?: string | undefined;
                 projectId?: string | null | undefined;
             };
-            output: import("@codexcrm/db").TaskModel[];
+            output: any;
             meta: object;
         }>;
         getById: import("@trpc/server").TRPCQueryProcedure<{
             input: {
                 id: string;
             };
-            output: import("@codexcrm/db").TaskModel | null;
+            output: any;
             meta: object;
         }>;
         create: import("@trpc/server").TRPCMutationProcedure<{
             input: {
-                title: string;
-                priority?: import("@codexcrm/db").TaskPriority | undefined;
-                status?: import("@codexcrm/db").TaskStatus | undefined;
-                contactId?: string | null | undefined;
-                notes?: string | undefined;
-                is_repeating?: boolean | undefined;
-                position?: number | undefined;
-                category?: import("@codexcrm/db").TaskCategory | undefined;
-                projectId?: string | null | undefined;
-                dueDate?: string | null | undefined;
-                completionDate?: string | null | undefined;
-                headingId?: string | null | undefined;
+                [x: string]: any;
+                title?: unknown;
+                notes?: unknown;
+                status?: unknown;
+                priority?: unknown;
+                category?: unknown;
+                dueDate?: unknown;
+                completionDate?: unknown;
+                contactId?: unknown;
+                projectId?: unknown;
+                headingId?: unknown;
+                position?: unknown;
+                is_repeating?: unknown;
             };
-            output: import("@codexcrm/db").TaskModel;
+            output: any;
             meta: object;
         }>;
         update: import("@trpc/server").TRPCMutationProcedure<{
             input: {
-                id: string;
-                priority?: import("@codexcrm/db").TaskPriority | undefined;
-                status?: import("@codexcrm/db").TaskStatus | undefined;
-                contactId?: string | null | undefined;
-                notes?: string | undefined;
-                title?: string | undefined;
-                is_repeating?: boolean | undefined;
-                position?: number | undefined;
-                category?: import("@codexcrm/db").TaskCategory | undefined;
-                projectId?: string | null | undefined;
-                dueDate?: string | null | undefined;
-                completionDate?: string | null | undefined;
-                headingId?: string | null | undefined;
+                [x: string]: any;
+                id?: unknown;
+                title?: unknown;
+                notes?: unknown;
+                status?: unknown;
+                priority?: unknown;
+                category?: unknown;
+                dueDate?: unknown;
+                completionDate?: unknown;
+                contactId?: unknown;
+                projectId?: unknown;
+                headingId?: unknown;
+                position?: unknown;
+                is_repeating?: unknown;
             };
-            output: import("@codexcrm/db").TaskModel;
+            output: any;
             meta: object;
         }>;
         softDelete: import("@trpc/server").TRPCMutationProcedure<{
@@ -613,28 +616,28 @@ export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-i
             input: {
                 id: string;
             };
-            output: import("@codexcrm/db").TaskModel;
+            output: any;
             meta: object;
         }>;
         complete: import("@trpc/server").TRPCMutationProcedure<{
             input: {
                 id: string;
             };
-            output: import("@codexcrm/db").TaskModel;
+            output: any;
             meta: object;
         }>;
         reopen: import("@trpc/server").TRPCMutationProcedure<{
             input: {
                 id: string;
             };
-            output: import("@codexcrm/db").TaskModel;
+            output: any;
             meta: object;
         }>;
         cancel: import("@trpc/server").TRPCMutationProcedure<{
             input: {
                 id: string;
             };
-            output: import("@codexcrm/db").TaskModel;
+            output: any;
             meta: object;
         }>;
         updatePositions: import("@trpc/server").TRPCMutationProcedure<{
@@ -649,10 +652,11 @@ export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-i
         }>;
         moveToCategory: import("@trpc/server").TRPCMutationProcedure<{
             input: {
-                id: string;
-                category: import("@codexcrm/db").TaskCategory;
+                [x: string]: any;
+                id?: unknown;
+                category?: unknown;
             };
-            output: import("@codexcrm/db").TaskModel;
+            output: any;
             meta: object;
         }>;
         moveToProject: import("@trpc/server").TRPCMutationProcedure<{
@@ -661,7 +665,7 @@ export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-i
                 projectId: string | null;
                 headingId?: string | null | undefined;
             };
-            output: import("@codexcrm/db").TaskModel;
+            output: any;
             meta: object;
         }>;
         setDueDate: import("@trpc/server").TRPCMutationProcedure<{
@@ -669,24 +673,24 @@ export declare const appRouter: import("@trpc/server/dist/unstable-core-do-not-i
                 id: string;
                 dueDate: string | null;
             };
-            output: import("@codexcrm/db").TaskModel;
+            output: any;
             meta: object;
         }>;
         getCategoryCounts: import("@trpc/server").TRPCQueryProcedure<{
             input: void;
-            output: Record<string, number>;
+            output: any;
             meta: object;
         }>;
         getCategories: import("@trpc/server").TRPCQueryProcedure<{
             input: void;
-            output: import("@codexcrm/db").TaskCategory[];
+            output: unknown[];
             meta: object;
         }>;
         getTasksByContactId: import("@trpc/server").TRPCQueryProcedure<{
             input: {
                 contactId: string;
             };
-            output: import("@codexcrm/db").TaskModel[];
+            output: any;
             meta: object;
         }>;
     }>>;

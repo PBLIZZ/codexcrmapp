@@ -1,7 +1,7 @@
 # Task ID: 255
 # Title: Migrate from @supabase/auth-helpers-nextjs to @supabase/ssr Package
 # Status: pending
-# Dependencies: 4, 209, 249, 252, 253
+# Dependencies: 4 (Not found), 209, 249, 252, 253
 # Priority: medium
 # Description: Update the application to use the new @supabase/ssr package instead of the deprecated @supabase/auth-helpers-nextjs, ensuring compatibility with Next.js App Router patterns.
 # Details:

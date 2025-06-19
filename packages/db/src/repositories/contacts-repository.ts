@@ -1,4 +1,9 @@
-import { getSupabaseClient, safeDbOperation, isDbError, handleDbResult } from '../utils/db-helpers';
+import {
+  getSupabaseClient,
+  safeDbOperation,
+  isDbError,
+  handleDbResult,
+} from '../utils/db-helpers';
 import type { Database } from '../database.types';
 
 type Contact = Database['public']['Tables']['contacts']['Row'];
@@ -6,11 +11,18 @@ type ContactInsert = Database['public']['Tables']['contacts']['Insert'];
 type ContactUpdate = Database['public']['Tables']['contacts']['Update'];
 
 type ContactProfile = Database['public']['Tables']['contact_profiles']['Row'];
-type ContactProfileInsert = Database['public']['Tables']['contact_profiles']['Insert'];
-type ContactProfileUpdate = Database['public']['Tables']['contact_profiles']['Update'];
+type ContactProfileInsert =
+  Database['public']['Tables']['contact_profiles']['Insert'];
+type ContactProfileUpdate =
+  Database['public']['Tables']['contact_profiles']['Update'];
 
 type ContactWithProfile = Contact & {
   profile?: ContactProfile | null;
+};
+
+// Define an intermediate type for the Supabase query result
+type ContactWithProfileQueryResult = Contact & {
+  profile: ContactProfile[];
 };
 
 /**
@@ -31,7 +43,7 @@ export const ContactsRepository = {
       if (error) throw error;
       return data || [];
     }, 'getAllContacts');
-    
+
     return handleDbResult(result);
   },
 
@@ -54,7 +66,7 @@ export const ContactsRepository = {
       }
       return data;
     }, 'getContactById');
-    
+
     return handleDbResult(result);
   },
 
@@ -67,10 +79,12 @@ export const ContactsRepository = {
     const result = await safeDbOperation(async () => {
       const { data, error } = await getSupabaseClient()
         .from('contacts')
-        .select(`
+        .select(
+          `
           *,
           profile:contact_profiles(*)
-        `)
+        `
+        )
         .eq('id', id)
         .single();
 
@@ -79,9 +93,21 @@ export const ContactsRepository = {
         throw error;
       }
 
-      return data as ContactWithProfile;
+      const typedData = data as ContactWithProfileQueryResult; // Cast here
+
+      // Ensure profile is a single object or null, not an array
+      // Supabase returns profile as an array even for one-to-one relationships
+      const contactData = {
+        ...typedData,
+        profile:
+          typedData.profile && typedData.profile.length > 0
+            ? typedData.profile[0]
+            : null,
+      };
+
+      return contactData as ContactWithProfile;
     }, 'getContactWithProfile');
-    
+
     return handleDbResult(result);
   },
 
@@ -101,7 +127,7 @@ export const ContactsRepository = {
       if (error) throw error;
       return data;
     }, 'createContact');
-    
+
     return handleDbResult(result);
   },
 
@@ -147,7 +173,7 @@ export const ContactsRepository = {
         profile: profileData,
       };
     }, 'createContactWithProfile');
-    
+
     return handleDbResult(result);
   },
 
@@ -169,7 +195,7 @@ export const ContactsRepository = {
       if (error) throw error;
       return data;
     }, 'updateContact');
-    
+
     return handleDbResult(result);
   },
 
@@ -188,7 +214,7 @@ export const ContactsRepository = {
       if (error) throw error;
       return true;
     }, 'deleteContact');
-    
+
     return handleDbResult(result);
   },
 
@@ -208,7 +234,7 @@ export const ContactsRepository = {
       if (error) throw error;
       return data || [];
     }, 'searchContacts');
-    
+
     return handleDbResult(result);
   },
 
@@ -227,7 +253,7 @@ export const ContactsRepository = {
       if (error) throw error;
       return data || [];
     }, 'getContactsWithWellnessGoals');
-    
+
     return handleDbResult(result);
   },
 
@@ -247,7 +273,7 @@ export const ContactsRepository = {
       if (error) throw error;
       return data || [];
     }, 'getContactsByJourneyStage');
-    
+
     return handleDbResult(result);
-  }
+  },
 };

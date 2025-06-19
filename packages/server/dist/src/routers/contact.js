@@ -49,18 +49,37 @@ export const contactRouter = router({
         // If a groupId is provided, we start from group_members and expand contacts.
         // This is the most efficient way to filter by group.
         if (groupId) {
-            // Start building the query from the join table
-            let query = ctx.supabaseUser
+            // First, get the contact IDs that belong to this group
+            const { data: groupMembers, error: memberError } = await ctx.supabaseUser
                 .from('group_members')
-                .select('contacts(*)') // Expand all columns from the related 'contacts' table
-                .eq('group_id', groupId); // Filter by the specific group
-            // Conditionally add the search filter
-            if (search) {
-                // Note: The column names in the 'or' filter must be prefixed with the foreign table name.
-                query = query.or(`contacts.full_name.ilike.%${search}%,contacts.email.ilike.%${search}%`);
+                .select('contact_id')
+                .eq('group_id', groupId);
+            if (memberError) {
+                console.error("Error fetching group members:", memberError);
+                throw new TRPCError({
+                    code: 'INTERNAL_SERVER_ERROR',
+                    message: `Failed to retrieve group members: ${memberError.message}`,
+                });
             }
+            // If no contacts in the group, return empty array
+            if (!groupMembers || groupMembers.length === 0) {
+                return [];
+            }
+            // Extract contact IDs
+            const contactIds = groupMembers.map((member) => member.contact_id);
+            // Now query contacts with both group filtering (via IDs) and search
+            let contactsQuery = ctx.supabaseUser
+                .from('contacts')
+                .select('*')
+                .in('id', contactIds);
+            // Add search filter if provided
+            if (search) {
+                contactsQuery = contactsQuery.or(`full_name.ilike.%${search}%,email.ilike.%${search}%`);
+            }
+            // Add ordering
+            contactsQuery = contactsQuery.order('created_at', { ascending: false });
             // Execute the query
-            const { data: groupMembers, error } = await query;
+            const { data: contacts, error } = await contactsQuery;
             if (error) {
                 console.error("Error fetching contacts for group:", error);
                 throw new TRPCError({
@@ -68,9 +87,7 @@ export const contactRouter = router({
                     message: `Failed to retrieve contacts for group: ${error.message}`,
                 });
             }
-            // The result is an array of { contacts: { ... } }. We need to flatten it.
-            const contacts = groupMembers?.map((member) => member.contacts).filter(Boolean) || [];
-            return contacts;
+            return contacts || [];
         }
         // If no groupId is provided, we query the contacts table directly.
         else {

@@ -1,12 +1,12 @@
 import type { Context } from '../context';
-declare const middleware: <$ContextOverrides>(fn: import("@trpc/server/dist/unstable-core-do-not-import").MiddlewareFunction<Context, object, object, $ContextOverrides, unknown>) => import("@trpc/server/dist/unstable-core-do-not-import").MiddlewareBuilder<Context, object, $ContextOverrides, unknown>;
+declare const middleware: <$ContextOverrides>(fn: import("@trpc/server").TRPCMiddlewareFunction<Context, object, object, $ContextOverrides, unknown>) => import("@trpc/server").TRPCMiddlewareBuilder<Context, object, $ContextOverrides, unknown>;
 /**
  * Authentication middleware
  * Checks if the user is authenticated and adds the user to the context
  */
-export declare const isAuthenticated: import("@trpc/server/dist/unstable-core-do-not-import").MiddlewareBuilder<Context, object, {
-    user: import("@supabase/supabase-js").AuthUser;
-    session: import("@supabase/supabase-js").AuthSession | null;
+export declare const isAuthenticated: import("@trpc/server").TRPCMiddlewareBuilder<Context, object, {
+    user: import("@supabase/auth-js").User;
+    session: import("@supabase/auth-js").Session | null;
     supabaseAdmin: import("@supabase/supabase-js").SupabaseClient<any, "public", any>;
     supabaseUser: any;
 }, unknown>;
@@ -15,10 +15,10 @@ export declare const isAuthenticated: import("@trpc/server/dist/unstable-core-do
  * Checks if the user has the required role
  * @param requiredRoles Array of roles that are allowed to access the resource
  */
-export declare const hasRole: (requiredRoles: string[]) => import("@trpc/server/dist/unstable-core-do-not-import").MiddlewareBuilder<Context, object, {
-    user: import("@supabase/supabase-js").AuthUser;
+export declare const hasRole: (requiredRoles: string[]) => import("@trpc/server").TRPCMiddlewareBuilder<Context, object, {
+    user: import("@supabase/auth-js").User;
     roles: any;
-    session: import("@supabase/supabase-js").AuthSession | null;
+    session: import("@supabase/auth-js").Session | null;
     supabaseAdmin: import("@supabase/supabase-js").SupabaseClient<any, "public", any>;
     supabaseUser: any;
 }, unknown>;
@@ -27,9 +27,9 @@ export declare const hasRole: (requiredRoles: string[]) => import("@trpc/server/
  * Checks if the user is the owner of the resource
  * @param getResourceOwnerId Function that returns the owner ID of the resource
  */
-export declare const isOwner: <TInput>(getResourceOwnerId: (input: TInput, ctx: Context) => Promise<string | null>) => import("@trpc/server/dist/unstable-core-do-not-import").MiddlewareBuilder<Context, object, {
-    user: import("@supabase/supabase-js").AuthUser;
-    session: import("@supabase/supabase-js").AuthSession | null;
+export declare const isOwner: <TInput>(getResourceOwnerId: (input: TInput, ctx: Context) => Promise<string | null>) => import("@trpc/server").TRPCMiddlewareBuilder<Context, object, {
+    user: import("@supabase/auth-js").User;
+    session: import("@supabase/auth-js").Session | null;
     supabaseAdmin: import("@supabase/supabase-js").SupabaseClient<any, "public", any>;
     supabaseUser: any;
 }, unknown>;
@@ -37,9 +37,9 @@ export declare const isOwner: <TInput>(getResourceOwnerId: (input: TInput, ctx: 
  * Combine multiple middleware functions
  * @param middlewares Array of middleware functions to combine
  */
-export declare const combineMiddlewares: (middlewares: ReturnType<typeof middleware>[]) => import("@trpc/server/dist/unstable-core-do-not-import").MiddlewareBuilder<Context, object, {
-    user: import("@supabase/supabase-js").AuthUser | null;
-    session: import("@supabase/supabase-js").AuthSession | null;
+export declare const combineMiddlewares: (middlewares: ReturnType<typeof middleware>[]) => import("@trpc/server").TRPCMiddlewareBuilder<Context, object, {
+    user: import("@supabase/auth-js").User | null;
+    session: import("@supabase/auth-js").Session | null;
     supabaseAdmin: import("@supabase/supabase-js").SupabaseClient<any, "public", any>;
     supabaseUser: any;
 }, unknown>;

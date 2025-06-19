@@ -17,7 +17,7 @@ export declare const contactBaseSchema: z.ZodObject<{
     social_handles: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
     source: z.ZodNullable<z.ZodOptional<z.ZodString>>;
     last_contacted_at: z.ZodEffects<z.ZodNullable<z.ZodOptional<z.ZodDate>>, Date | null | undefined, unknown>;
-    enriched_data: z.ZodNullable<z.ZodOptional<z.ZodAny>>;
+    enriched_data: z.ZodNullable<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>;
     enrichment_status: z.ZodNullable<z.ZodOptional<z.ZodString>>;
     wellness_goals: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
     wellness_journey_stage: z.ZodNullable<z.ZodOptional<z.ZodString>>;
@@ -40,7 +40,7 @@ export declare const contactBaseSchema: z.ZodObject<{
     social_handles?: string[] | null | undefined;
     source?: string | null | undefined;
     last_contacted_at?: Date | null | undefined;
-    enriched_data?: any;
+    enriched_data?: Record<string, unknown> | null | undefined;
     enrichment_status?: string | null | undefined;
     wellness_goals?: string[] | null | undefined;
     wellness_journey_stage?: string | null | undefined;
@@ -63,7 +63,7 @@ export declare const contactBaseSchema: z.ZodObject<{
     social_handles?: string[] | null | undefined;
     source?: string | null | undefined;
     last_contacted_at?: unknown;
-    enriched_data?: any;
+    enriched_data?: Record<string, unknown> | null | undefined;
     enrichment_status?: string | null | undefined;
     wellness_goals?: string[] | null | undefined;
     wellness_journey_stage?: string | null | undefined;
@@ -87,7 +87,7 @@ export declare const contactCreateSchema: z.ZodObject<{
     social_handles: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
     source: z.ZodNullable<z.ZodOptional<z.ZodString>>;
     last_contacted_at: z.ZodEffects<z.ZodNullable<z.ZodOptional<z.ZodDate>>, Date | null | undefined, unknown>;
-    enriched_data: z.ZodNullable<z.ZodOptional<z.ZodAny>>;
+    enriched_data: z.ZodNullable<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>;
     enrichment_status: z.ZodNullable<z.ZodOptional<z.ZodString>>;
     wellness_goals: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
     wellness_journey_stage: z.ZodNullable<z.ZodOptional<z.ZodString>>;
@@ -110,7 +110,7 @@ export declare const contactCreateSchema: z.ZodObject<{
     social_handles?: string[] | null | undefined;
     source?: string | null | undefined;
     last_contacted_at?: Date | null | undefined;
-    enriched_data?: any;
+    enriched_data?: Record<string, unknown> | null | undefined;
     enrichment_status?: string | null | undefined;
     wellness_goals?: string[] | null | undefined;
     wellness_journey_stage?: string | null | undefined;
@@ -133,7 +133,7 @@ export declare const contactCreateSchema: z.ZodObject<{
     social_handles?: string[] | null | undefined;
     source?: string | null | undefined;
     last_contacted_at?: unknown;
-    enriched_data?: any;
+    enriched_data?: Record<string, unknown> | null | undefined;
     enrichment_status?: string | null | undefined;
     wellness_goals?: string[] | null | undefined;
     wellness_journey_stage?: string | null | undefined;
@@ -157,7 +157,7 @@ export declare const contactUpdateSchema: z.ZodObject<{
     social_handles: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
     source: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
     last_contacted_at: z.ZodOptional<z.ZodEffects<z.ZodNullable<z.ZodOptional<z.ZodDate>>, Date | null | undefined, unknown>>;
-    enriched_data: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodAny>>>;
+    enriched_data: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>>;
     enrichment_status: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
     wellness_goals: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
     wellness_journey_stage: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
@@ -183,7 +183,7 @@ export declare const contactUpdateSchema: z.ZodObject<{
     social_handles?: string[] | null | undefined;
     source?: string | null | undefined;
     last_contacted_at?: Date | null | undefined;
-    enriched_data?: any;
+    enriched_data?: Record<string, unknown> | null | undefined;
     enrichment_status?: string | null | undefined;
     wellness_goals?: string[] | null | undefined;
     wellness_journey_stage?: string | null | undefined;
@@ -207,7 +207,7 @@ export declare const contactUpdateSchema: z.ZodObject<{
     social_handles?: string[] | null | undefined;
     source?: string | null | undefined;
     last_contacted_at?: unknown;
-    enriched_data?: any;
+    enriched_data?: Record<string, unknown> | null | undefined;
     enrichment_status?: string | null | undefined;
     wellness_goals?: string[] | null | undefined;
     wellness_journey_stage?: string | null | undefined;
@@ -244,31 +244,31 @@ export declare const contactProfileSchema: z.ZodObject<{
     detailed_bio: z.ZodNullable<z.ZodOptional<z.ZodString>>;
     family_members: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
     personality_traits: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
-    preferences: z.ZodNullable<z.ZodOptional<z.ZodAny>>;
-    health_metrics: z.ZodNullable<z.ZodOptional<z.ZodAny>>;
-    important_dates: z.ZodNullable<z.ZodOptional<z.ZodAny>>;
+    preferences: z.ZodNullable<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>;
+    health_metrics: z.ZodNullable<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>;
+    important_dates: z.ZodNullable<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>;
     wellness_history: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-    custom_fields: z.ZodNullable<z.ZodOptional<z.ZodAny>>;
+    custom_fields: z.ZodNullable<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>;
 }, "strip", z.ZodTypeAny, {
     contact_id: string;
+    custom_fields?: Record<string, unknown> | null | undefined;
     detailed_bio?: string | null | undefined;
     family_members?: string[] | null | undefined;
+    health_metrics?: Record<string, unknown> | null | undefined;
+    important_dates?: Record<string, unknown> | null | undefined;
     personality_traits?: string[] | null | undefined;
-    preferences?: any;
-    health_metrics?: any;
-    important_dates?: any;
+    preferences?: Record<string, unknown> | null | undefined;
     wellness_history?: string | null | undefined;
-    custom_fields?: any;
 }, {
     contact_id: string;
+    custom_fields?: Record<string, unknown> | null | undefined;
     detailed_bio?: string | null | undefined;
     family_members?: string[] | null | undefined;
+    health_metrics?: Record<string, unknown> | null | undefined;
+    important_dates?: Record<string, unknown> | null | undefined;
     personality_traits?: string[] | null | undefined;
-    preferences?: any;
-    health_metrics?: any;
-    important_dates?: any;
+    preferences?: Record<string, unknown> | null | undefined;
     wellness_history?: string | null | undefined;
-    custom_fields?: any;
 }>;
 export declare const contactWithProfileSchema: z.ZodObject<{
     full_name: z.ZodString;
@@ -288,7 +288,7 @@ export declare const contactWithProfileSchema: z.ZodObject<{
     social_handles: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
     source: z.ZodNullable<z.ZodOptional<z.ZodString>>;
     last_contacted_at: z.ZodEffects<z.ZodNullable<z.ZodOptional<z.ZodDate>>, Date | null | undefined, unknown>;
-    enriched_data: z.ZodNullable<z.ZodOptional<z.ZodAny>>;
+    enriched_data: z.ZodNullable<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>;
     enrichment_status: z.ZodNullable<z.ZodOptional<z.ZodString>>;
     wellness_goals: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
     wellness_journey_stage: z.ZodNullable<z.ZodOptional<z.ZodString>>;
@@ -300,31 +300,31 @@ export declare const contactWithProfileSchema: z.ZodObject<{
         detailed_bio: z.ZodNullable<z.ZodOptional<z.ZodString>>;
         family_members: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
         personality_traits: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
-        preferences: z.ZodNullable<z.ZodOptional<z.ZodAny>>;
-        health_metrics: z.ZodNullable<z.ZodOptional<z.ZodAny>>;
-        important_dates: z.ZodNullable<z.ZodOptional<z.ZodAny>>;
+        preferences: z.ZodNullable<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>;
+        health_metrics: z.ZodNullable<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>;
+        important_dates: z.ZodNullable<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>;
         wellness_history: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-        custom_fields: z.ZodNullable<z.ZodOptional<z.ZodAny>>;
+        custom_fields: z.ZodNullable<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>;
     }, "strip", z.ZodTypeAny, {
         contact_id: string;
+        custom_fields?: Record<string, unknown> | null | undefined;
         detailed_bio?: string | null | undefined;
         family_members?: string[] | null | undefined;
+        health_metrics?: Record<string, unknown> | null | undefined;
+        important_dates?: Record<string, unknown> | null | undefined;
         personality_traits?: string[] | null | undefined;
-        preferences?: any;
-        health_metrics?: any;
-        important_dates?: any;
+        preferences?: Record<string, unknown> | null | undefined;
         wellness_history?: string | null | undefined;
-        custom_fields?: any;
     }, {
         contact_id: string;
+        custom_fields?: Record<string, unknown> | null | undefined;
         detailed_bio?: string | null | undefined;
         family_members?: string[] | null | undefined;
+        health_metrics?: Record<string, unknown> | null | undefined;
+        important_dates?: Record<string, unknown> | null | undefined;
         personality_traits?: string[] | null | undefined;
-        preferences?: any;
-        health_metrics?: any;
-        important_dates?: any;
+        preferences?: Record<string, unknown> | null | undefined;
         wellness_history?: string | null | undefined;
-        custom_fields?: any;
     }>>>;
 }, "strip", z.ZodTypeAny, {
     id: string;
@@ -345,22 +345,22 @@ export declare const contactWithProfileSchema: z.ZodObject<{
     social_handles?: string[] | null | undefined;
     source?: string | null | undefined;
     last_contacted_at?: Date | null | undefined;
-    enriched_data?: any;
+    enriched_data?: Record<string, unknown> | null | undefined;
     enrichment_status?: string | null | undefined;
-    profile?: {
-        contact_id: string;
-        detailed_bio?: string | null | undefined;
-        family_members?: string[] | null | undefined;
-        personality_traits?: string[] | null | undefined;
-        preferences?: any;
-        health_metrics?: any;
-        important_dates?: any;
-        wellness_history?: string | null | undefined;
-        custom_fields?: any;
-    } | null | undefined;
     wellness_goals?: string[] | null | undefined;
     wellness_journey_stage?: string | null | undefined;
     wellness_status?: string | null | undefined;
+    profile?: {
+        contact_id: string;
+        custom_fields?: Record<string, unknown> | null | undefined;
+        detailed_bio?: string | null | undefined;
+        family_members?: string[] | null | undefined;
+        health_metrics?: Record<string, unknown> | null | undefined;
+        important_dates?: Record<string, unknown> | null | undefined;
+        personality_traits?: string[] | null | undefined;
+        preferences?: Record<string, unknown> | null | undefined;
+        wellness_history?: string | null | undefined;
+    } | null | undefined;
 }, {
     id: string;
     full_name: string;
@@ -380,22 +380,22 @@ export declare const contactWithProfileSchema: z.ZodObject<{
     social_handles?: string[] | null | undefined;
     source?: string | null | undefined;
     last_contacted_at?: unknown;
-    enriched_data?: any;
+    enriched_data?: Record<string, unknown> | null | undefined;
     enrichment_status?: string | null | undefined;
-    profile?: {
-        contact_id: string;
-        detailed_bio?: string | null | undefined;
-        family_members?: string[] | null | undefined;
-        personality_traits?: string[] | null | undefined;
-        preferences?: any;
-        health_metrics?: any;
-        important_dates?: any;
-        wellness_history?: string | null | undefined;
-        custom_fields?: any;
-    } | null | undefined;
     wellness_goals?: string[] | null | undefined;
     wellness_journey_stage?: string | null | undefined;
     wellness_status?: string | null | undefined;
+    profile?: {
+        contact_id: string;
+        custom_fields?: Record<string, unknown> | null | undefined;
+        detailed_bio?: string | null | undefined;
+        family_members?: string[] | null | undefined;
+        health_metrics?: Record<string, unknown> | null | undefined;
+        important_dates?: Record<string, unknown> | null | undefined;
+        personality_traits?: string[] | null | undefined;
+        preferences?: Record<string, unknown> | null | undefined;
+        wellness_history?: string | null | undefined;
+    } | null | undefined;
 }>;
 export declare const ContactSchemas: {
     base: z.ZodObject<{
@@ -416,7 +416,7 @@ export declare const ContactSchemas: {
         social_handles: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
         source: z.ZodNullable<z.ZodOptional<z.ZodString>>;
         last_contacted_at: z.ZodEffects<z.ZodNullable<z.ZodOptional<z.ZodDate>>, Date | null | undefined, unknown>;
-        enriched_data: z.ZodNullable<z.ZodOptional<z.ZodAny>>;
+        enriched_data: z.ZodNullable<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>;
         enrichment_status: z.ZodNullable<z.ZodOptional<z.ZodString>>;
         wellness_goals: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
         wellness_journey_stage: z.ZodNullable<z.ZodOptional<z.ZodString>>;
@@ -439,7 +439,7 @@ export declare const ContactSchemas: {
         social_handles?: string[] | null | undefined;
         source?: string | null | undefined;
         last_contacted_at?: Date | null | undefined;
-        enriched_data?: any;
+        enriched_data?: Record<string, unknown> | null | undefined;
         enrichment_status?: string | null | undefined;
         wellness_goals?: string[] | null | undefined;
         wellness_journey_stage?: string | null | undefined;
@@ -462,7 +462,7 @@ export declare const ContactSchemas: {
         social_handles?: string[] | null | undefined;
         source?: string | null | undefined;
         last_contacted_at?: unknown;
-        enriched_data?: any;
+        enriched_data?: Record<string, unknown> | null | undefined;
         enrichment_status?: string | null | undefined;
         wellness_goals?: string[] | null | undefined;
         wellness_journey_stage?: string | null | undefined;
@@ -486,7 +486,7 @@ export declare const ContactSchemas: {
         social_handles: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
         source: z.ZodNullable<z.ZodOptional<z.ZodString>>;
         last_contacted_at: z.ZodEffects<z.ZodNullable<z.ZodOptional<z.ZodDate>>, Date | null | undefined, unknown>;
-        enriched_data: z.ZodNullable<z.ZodOptional<z.ZodAny>>;
+        enriched_data: z.ZodNullable<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>;
         enrichment_status: z.ZodNullable<z.ZodOptional<z.ZodString>>;
         wellness_goals: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
         wellness_journey_stage: z.ZodNullable<z.ZodOptional<z.ZodString>>;
@@ -509,7 +509,7 @@ export declare const ContactSchemas: {
         social_handles?: string[] | null | undefined;
         source?: string | null | undefined;
         last_contacted_at?: Date | null | undefined;
-        enriched_data?: any;
+        enriched_data?: Record<string, unknown> | null | undefined;
         enrichment_status?: string | null | undefined;
         wellness_goals?: string[] | null | undefined;
         wellness_journey_stage?: string | null | undefined;
@@ -532,7 +532,7 @@ export declare const ContactSchemas: {
         social_handles?: string[] | null | undefined;
         source?: string | null | undefined;
         last_contacted_at?: unknown;
-        enriched_data?: any;
+        enriched_data?: Record<string, unknown> | null | undefined;
         enrichment_status?: string | null | undefined;
         wellness_goals?: string[] | null | undefined;
         wellness_journey_stage?: string | null | undefined;
@@ -556,7 +556,7 @@ export declare const ContactSchemas: {
         social_handles: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
         source: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
         last_contacted_at: z.ZodOptional<z.ZodEffects<z.ZodNullable<z.ZodOptional<z.ZodDate>>, Date | null | undefined, unknown>>;
-        enriched_data: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodAny>>>;
+        enriched_data: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>>;
         enrichment_status: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
         wellness_goals: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
         wellness_journey_stage: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
@@ -582,7 +582,7 @@ export declare const ContactSchemas: {
         social_handles?: string[] | null | undefined;
         source?: string | null | undefined;
         last_contacted_at?: Date | null | undefined;
-        enriched_data?: any;
+        enriched_data?: Record<string, unknown> | null | undefined;
         enrichment_status?: string | null | undefined;
         wellness_goals?: string[] | null | undefined;
         wellness_journey_stage?: string | null | undefined;
@@ -606,7 +606,7 @@ export declare const ContactSchemas: {
         social_handles?: string[] | null | undefined;
         source?: string | null | undefined;
         last_contacted_at?: unknown;
-        enriched_data?: any;
+        enriched_data?: Record<string, unknown> | null | undefined;
         enrichment_status?: string | null | undefined;
         wellness_goals?: string[] | null | undefined;
         wellness_journey_stage?: string | null | undefined;
@@ -643,31 +643,31 @@ export declare const ContactSchemas: {
         detailed_bio: z.ZodNullable<z.ZodOptional<z.ZodString>>;
         family_members: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
         personality_traits: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
-        preferences: z.ZodNullable<z.ZodOptional<z.ZodAny>>;
-        health_metrics: z.ZodNullable<z.ZodOptional<z.ZodAny>>;
-        important_dates: z.ZodNullable<z.ZodOptional<z.ZodAny>>;
+        preferences: z.ZodNullable<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>;
+        health_metrics: z.ZodNullable<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>;
+        important_dates: z.ZodNullable<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>;
         wellness_history: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-        custom_fields: z.ZodNullable<z.ZodOptional<z.ZodAny>>;
+        custom_fields: z.ZodNullable<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>;
     }, "strip", z.ZodTypeAny, {
         contact_id: string;
+        custom_fields?: Record<string, unknown> | null | undefined;
         detailed_bio?: string | null | undefined;
         family_members?: string[] | null | undefined;
+        health_metrics?: Record<string, unknown> | null | undefined;
+        important_dates?: Record<string, unknown> | null | undefined;
         personality_traits?: string[] | null | undefined;
-        preferences?: any;
-        health_metrics?: any;
-        important_dates?: any;
+        preferences?: Record<string, unknown> | null | undefined;
         wellness_history?: string | null | undefined;
-        custom_fields?: any;
     }, {
         contact_id: string;
+        custom_fields?: Record<string, unknown> | null | undefined;
         detailed_bio?: string | null | undefined;
         family_members?: string[] | null | undefined;
+        health_metrics?: Record<string, unknown> | null | undefined;
+        important_dates?: Record<string, unknown> | null | undefined;
         personality_traits?: string[] | null | undefined;
-        preferences?: any;
-        health_metrics?: any;
-        important_dates?: any;
+        preferences?: Record<string, unknown> | null | undefined;
         wellness_history?: string | null | undefined;
-        custom_fields?: any;
     }>;
     withProfile: z.ZodObject<{
         full_name: z.ZodString;
@@ -687,7 +687,7 @@ export declare const ContactSchemas: {
         social_handles: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
         source: z.ZodNullable<z.ZodOptional<z.ZodString>>;
         last_contacted_at: z.ZodEffects<z.ZodNullable<z.ZodOptional<z.ZodDate>>, Date | null | undefined, unknown>;
-        enriched_data: z.ZodNullable<z.ZodOptional<z.ZodAny>>;
+        enriched_data: z.ZodNullable<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>;
         enrichment_status: z.ZodNullable<z.ZodOptional<z.ZodString>>;
         wellness_goals: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
         wellness_journey_stage: z.ZodNullable<z.ZodOptional<z.ZodString>>;
@@ -699,31 +699,31 @@ export declare const ContactSchemas: {
             detailed_bio: z.ZodNullable<z.ZodOptional<z.ZodString>>;
             family_members: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
             personality_traits: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
-            preferences: z.ZodNullable<z.ZodOptional<z.ZodAny>>;
-            health_metrics: z.ZodNullable<z.ZodOptional<z.ZodAny>>;
-            important_dates: z.ZodNullable<z.ZodOptional<z.ZodAny>>;
+            preferences: z.ZodNullable<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>;
+            health_metrics: z.ZodNullable<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>;
+            important_dates: z.ZodNullable<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>;
             wellness_history: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-            custom_fields: z.ZodNullable<z.ZodOptional<z.ZodAny>>;
+            custom_fields: z.ZodNullable<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>;
         }, "strip", z.ZodTypeAny, {
             contact_id: string;
+            custom_fields?: Record<string, unknown> | null | undefined;
             detailed_bio?: string | null | undefined;
             family_members?: string[] | null | undefined;
+            health_metrics?: Record<string, unknown> | null | undefined;
+            important_dates?: Record<string, unknown> | null | undefined;
             personality_traits?: string[] | null | undefined;
-            preferences?: any;
-            health_metrics?: any;
-            important_dates?: any;
+            preferences?: Record<string, unknown> | null | undefined;
             wellness_history?: string | null | undefined;
-            custom_fields?: any;
         }, {
             contact_id: string;
+            custom_fields?: Record<string, unknown> | null | undefined;
             detailed_bio?: string | null | undefined;
             family_members?: string[] | null | undefined;
+            health_metrics?: Record<string, unknown> | null | undefined;
+            important_dates?: Record<string, unknown> | null | undefined;
             personality_traits?: string[] | null | undefined;
-            preferences?: any;
-            health_metrics?: any;
-            important_dates?: any;
+            preferences?: Record<string, unknown> | null | undefined;
             wellness_history?: string | null | undefined;
-            custom_fields?: any;
         }>>>;
     }, "strip", z.ZodTypeAny, {
         id: string;
@@ -744,22 +744,22 @@ export declare const ContactSchemas: {
         social_handles?: string[] | null | undefined;
         source?: string | null | undefined;
         last_contacted_at?: Date | null | undefined;
-        enriched_data?: any;
+        enriched_data?: Record<string, unknown> | null | undefined;
         enrichment_status?: string | null | undefined;
-        profile?: {
-            contact_id: string;
-            detailed_bio?: string | null | undefined;
-            family_members?: string[] | null | undefined;
-            personality_traits?: string[] | null | undefined;
-            preferences?: any;
-            health_metrics?: any;
-            important_dates?: any;
-            wellness_history?: string | null | undefined;
-            custom_fields?: any;
-        } | null | undefined;
         wellness_goals?: string[] | null | undefined;
         wellness_journey_stage?: string | null | undefined;
         wellness_status?: string | null | undefined;
+        profile?: {
+            contact_id: string;
+            custom_fields?: Record<string, unknown> | null | undefined;
+            detailed_bio?: string | null | undefined;
+            family_members?: string[] | null | undefined;
+            health_metrics?: Record<string, unknown> | null | undefined;
+            important_dates?: Record<string, unknown> | null | undefined;
+            personality_traits?: string[] | null | undefined;
+            preferences?: Record<string, unknown> | null | undefined;
+            wellness_history?: string | null | undefined;
+        } | null | undefined;
     }, {
         id: string;
         full_name: string;
@@ -779,21 +779,21 @@ export declare const ContactSchemas: {
         social_handles?: string[] | null | undefined;
         source?: string | null | undefined;
         last_contacted_at?: unknown;
-        enriched_data?: any;
+        enriched_data?: Record<string, unknown> | null | undefined;
         enrichment_status?: string | null | undefined;
-        profile?: {
-            contact_id: string;
-            detailed_bio?: string | null | undefined;
-            family_members?: string[] | null | undefined;
-            personality_traits?: string[] | null | undefined;
-            preferences?: any;
-            health_metrics?: any;
-            important_dates?: any;
-            wellness_history?: string | null | undefined;
-            custom_fields?: any;
-        } | null | undefined;
         wellness_goals?: string[] | null | undefined;
         wellness_journey_stage?: string | null | undefined;
         wellness_status?: string | null | undefined;
+        profile?: {
+            contact_id: string;
+            custom_fields?: Record<string, unknown> | null | undefined;
+            detailed_bio?: string | null | undefined;
+            family_members?: string[] | null | undefined;
+            health_metrics?: Record<string, unknown> | null | undefined;
+            important_dates?: Record<string, unknown> | null | undefined;
+            personality_traits?: string[] | null | undefined;
+            preferences?: Record<string, unknown> | null | undefined;
+            wellness_history?: string | null | undefined;
+        } | null | undefined;
     }>;
 };

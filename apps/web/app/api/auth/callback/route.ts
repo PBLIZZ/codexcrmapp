@@ -1,5 +1,6 @@
 import * as Sentry from '@sentry/nextjs';
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest} from 'next/server';
+import { NextResponse } from 'next/server';
 
 // Import the server client creator from our modern SSR helper
 import { createClient } from '@/lib/supabase/server';
@@ -54,9 +55,7 @@ export async function GET(req: NextRequest) {
     // If no code is present, we can't authenticate the user
     if (!code) {
       Sentry.captureMessage('No code parameter found in callback URL', 'warning');
-      return NextResponse.redirect(
-        new URL('/sign-in?error=missing_code', req.url)
-      );
+      return NextResponse.redirect(new URL('/sign-in?error=missing_code', req.url));
     }
 
     // Exchange the code for a session
@@ -67,12 +66,14 @@ export async function GET(req: NextRequest) {
     const { error, data } = await supabase.auth.exchangeCodeForSession(code);
 
     if (error) {
-      // eslint-disable-next-line no-console
-      console.error(
-        `Auth Callback: Error exchanging code for session: ${error.message}`,
-        error
-      );
-      Sentry.captureException(error, { extra: { context: 'Auth Callback: Error exchanging code for session', code, nextParam } });
+      console.error(`Auth Callback: Error exchanging code for session: ${error.message}`, error);
+      Sentry.captureException(error, {
+        extra: {
+          context: 'Auth Callback: Error exchanging code for session',
+          code,
+          nextParam,
+        },
+      });
       // Log the redirect URL in case of error as well
       const errorRedirectUrl = req.nextUrl.clone();
       errorRedirectUrl.pathname = '/sign-in';
@@ -82,20 +83,14 @@ export async function GET(req: NextRequest) {
         `Auth Callback: Redirecting to error page: ${errorRedirectUrl.toString()}`,
         'error'
       );
-      // eslint-disable-next-line no-console
       console.error('Error exchanging code for session:', error); // Keep console.error as per user preference
-      return NextResponse.redirect(
-        new URL('/sign-in?error=auth_callback_error', req.url)
-      );
+      return NextResponse.redirect(new URL('/sign-in?error=auth_callback_error', req.url));
     }
 
     if (!data.session) {
-      // eslint-disable-next-line no-console
       console.error('No session returned after code exchange');
       Sentry.captureMessage('No session returned after code exchange', 'error');
-      return NextResponse.redirect(
-        new URL('/sign-in?error=no_session', req.url)
-      );
+      return NextResponse.redirect(new URL('/sign-in?error=no_session', req.url));
     }
 
     Sentry.captureMessage(`Successfully authenticated user: ${data.session.user?.id}`, 'info');
@@ -105,9 +100,11 @@ export async function GET(req: NextRequest) {
     // Add auth_success parameter with timestamp to prevent caching
     redirectUrl.searchParams.set('auth_success', Date.now().toString());
 
-    if (data && data.session) {
+    if (data?.session) {
       Sentry.captureMessage(
-        `Auth Callback: Successfully exchanged code. User ID: ${data.session.user.id}. Session Exists: ${!!data.session}.`,
+        `Auth Callback: Successfully exchanged code. User ID: ${
+          data.session.user.id
+        }. Session Exists: ${!!data.session}.`,
         'info'
       );
       Sentry.captureMessage(
@@ -128,9 +125,9 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   } catch (error) {
     console.error('Unexpected error in auth callback:', error);
-    Sentry.captureException(error, { extra: { context: 'Unexpected error in auth callback' } });
-    return NextResponse.redirect(
-      new URL('/sign-in?error=unexpected_error', req.url)
-    );
+    Sentry.captureException(error, {
+      extra: { context: 'Unexpected error in auth callback' },
+    });
+    return NextResponse.redirect(new URL('/sign-in?error=unexpected_error', req.url));
   }
 }

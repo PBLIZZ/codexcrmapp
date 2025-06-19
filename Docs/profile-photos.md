@@ -5,6 +5,7 @@ This document explains how to set up and use the contact profile photo feature i
 ## Overview
 
 Contact profile photos in CodexCRM are implemented using Supabase Storage, which provides:
+
 - Private, secure storage for contact profile images
 - Row-level security (RLS) to ensure users can only access their own contacts' photos
 - Direct browser uploads via presigned URLs
@@ -68,6 +69,7 @@ The system supports three ways to add profile photos:
 #### Data Flow
 
 1. When uploading a file:
+
    - A presigned URL is generated via tRPC
    - File is uploaded directly to Supabase Storage
    - Only the storage path is saved to the database

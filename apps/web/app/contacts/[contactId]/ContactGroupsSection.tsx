@@ -85,7 +85,7 @@ function getColorClasses(color: string | null | undefined): {
     bg: 'bg-blue-50',
     dot: 'bg-blue-500',
   };
-  if (!color) return defaultClasses;
+  if (!color) {return defaultClasses;}
   return COLOR_MAP[color] || defaultClasses;
 }
 
@@ -159,7 +159,7 @@ export function ContactGroupsSection({ contactId }: { contactId: string }) {
 
   // Filter out groups the contact is already in (memoized to prevent recalculation)
   const availableGroups = useMemo(() => {
-    if (!allGroups || !contactGroups) return [];
+    if (!allGroups || !contactGroups) {return [];}
 
     return allGroups.filter(
       (group: Group) => !contactGroups.some((cg: Group) => cg.id === group.id)
@@ -167,7 +167,7 @@ export function ContactGroupsSection({ contactId }: { contactId: string }) {
   }, [allGroups, contactGroups]);
 
   const handleAddToGroup = () => {
-    if (!selectedGroupId) return;
+    if (!selectedGroupId) {return;}
 
     addToGroupMutation.mutate({
       contactId,
