@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ContactForm, ContactFormData } from '@/app/contacts/ContactForm';
+import type { ContactFormData } from '@/app/contacts/ContactForm';
+import { ContactForm } from '@/app/contacts/ContactForm';
 import { api } from '@/lib/trpc';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';

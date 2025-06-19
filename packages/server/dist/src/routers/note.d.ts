@@ -1,9 +1,9 @@
-export declare const noteRouter: import("@trpc/server/dist/unstable-core-do-not-import").BuiltRouter<{
+export declare const noteRouter: import("@trpc/server").TRPCBuiltRouter<{
     ctx: import("..").Context;
     meta: object;
-    errorShape: import("@trpc/server/dist/unstable-core-do-not-import").DefaultErrorShape;
+    errorShape: import("@trpc/server").TRPCDefaultErrorShape;
     transformer: true;
-}, import("@trpc/server/dist/unstable-core-do-not-import").DecorateCreateRouterOptions<{
+}, import("@trpc/server").TRPCDecorateCreateRouterOptions<{
     list: import("@trpc/server").TRPCQueryProcedure<{
         input: {
             contactId?: string | undefined;

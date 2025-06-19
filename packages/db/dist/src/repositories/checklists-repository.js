@@ -1,4 +1,4 @@
-import { ChecklistModel } from '../models';
+import { ChecklistModel, } from '../models';
 /**
  * Repository for checklist-related database operations
  */
@@ -23,7 +23,7 @@ export class ChecklistsRepository {
             console.error('Error fetching checklists:', error);
             throw error;
         }
-        return (data || []).map(checklist => ChecklistModel.fromDatabase(checklist));
+        return (data || []).map((checklist) => ChecklistModel.fromDatabase(checklist));
     }
     /**
      * Get a checklist by ID
@@ -93,7 +93,7 @@ export class ChecklistsRepository {
             .from('checklists')
             .update({
             deleted_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
+            updated_at: new Date().toISOString(),
         })
             .eq('id', id);
         if (error) {
@@ -125,7 +125,7 @@ export class ChecklistsRepository {
             .from('checklists')
             .update({
             deleted_at: null,
-            updated_at: new Date().toISOString()
+            updated_at: new Date().toISOString(),
         })
             .eq('id', id)
             .select()
@@ -145,8 +145,8 @@ export class ChecklistsRepository {
         const { data, error } = await this.supabase
             .from('checklists')
             .update({
-            is_completed: true,
-            updated_at: new Date().toISOString()
+            completed: true,
+            updated_at: new Date().toISOString(),
         })
             .eq('id', id)
             .is('deleted_at', null)
@@ -167,8 +167,8 @@ export class ChecklistsRepository {
         const { data, error } = await this.supabase
             .from('checklists')
             .update({
-            is_completed: false,
-            updated_at: new Date().toISOString()
+            completed: false,
+            updated_at: new Date().toISOString(),
         })
             .eq('id', id)
             .is('deleted_at', null)
@@ -187,7 +187,7 @@ export class ChecklistsRepository {
     async updatePositions(checklists) {
         // Use a transaction to update all positions at once
         const { error } = await this.supabase.rpc('update_checklist_positions', {
-            checklist_positions: checklists
+            checklist_item_positions: checklists,
         });
         if (error) {
             console.error('Error updating checklist positions:', error);
@@ -204,14 +204,14 @@ export class ChecklistsRepository {
             .from('checklists')
             .select('*')
             .eq('task_id', taskId)
-            .eq('is_completed', true)
+            .eq('completed', true)
             .is('deleted_at', null)
             .order('position', { ascending: true });
         if (error) {
             console.error('Error fetching completed checklists:', error);
             throw error;
         }
-        return (data || []).map(checklist => ChecklistModel.fromDatabase(checklist));
+        return (data || []).map((checklist) => ChecklistModel.fromDatabase(checklist));
     }
     /**
      * Get incomplete checklists for a task
@@ -223,14 +223,14 @@ export class ChecklistsRepository {
             .from('checklists')
             .select('*')
             .eq('task_id', taskId)
-            .eq('is_completed', false)
+            .eq('completed', false)
             .is('deleted_at', null)
             .order('position', { ascending: true });
         if (error) {
             console.error('Error fetching incomplete checklists:', error);
             throw error;
         }
-        return (data || []).map(checklist => ChecklistModel.fromDatabase(checklist));
+        return (data || []).map((checklist) => ChecklistModel.fromDatabase(checklist));
     }
     /**
      * Get completion percentage for a task
@@ -238,19 +238,34 @@ export class ChecklistsRepository {
      * @returns Percentage of completed checklists (0-100)
      */
     async getCompletionPercentage(taskId) {
-        const { data, error } = await this.supabase
+        // First, get all checklist IDs associated with the task
+        const { data: checklistIds, error: checklistError } = await this.supabase
             .from('checklists')
-            .select('is_completed')
+            .select('id')
             .eq('task_id', taskId)
             .is('deleted_at', null);
-        if (error) {
-            console.error('Error fetching checklists for completion percentage:', error);
-            throw error;
+        if (checklistError) {
+            console.error('Error fetching checklist IDs for completion percentage:', checklistError);
+            throw checklistError;
         }
-        if (!data || data.length === 0) {
-            return 0;
+        if (!checklistIds || checklistIds.length === 0) {
+            return 0; // No checklists for this task, so 0% completion
         }
-        const completedCount = data.filter(item => item.is_completed).length;
-        return Math.round((completedCount / data.length) * 100);
+        const ids = checklistIds.map((c) => c.id);
+        // Now, get all checklist items for these checklists
+        const { data: checklistItems, error: itemsError } = await this.supabase
+            .from('checklist_items')
+            .select('completed')
+            .in('checklist_id', ids)
+            .is('deleted_at', null); // Assuming checklist_items also have a deleted_at column, if not, remove this line
+        if (itemsError) {
+            console.error('Error fetching checklist items for completion percentage:', itemsError);
+            throw itemsError;
+        }
+        if (!checklistItems || checklistItems.length === 0) {
+            return 0; // No items in checklists, so 0% completion
+        }
+        const completedCount = checklistItems.filter((item) => item.completed).length;
+        return Math.round((completedCount / checklistItems.length) * 100);
     }
 }

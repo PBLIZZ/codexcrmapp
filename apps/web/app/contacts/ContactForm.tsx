@@ -77,7 +77,7 @@ export function ContactForm({
 }: ContactFormProps) {
   const utils = api.useUtils();
   
-  const [formData, setFormData] = useState<ContactFormData>(initialData || {
+  const [formData, setFormData] = useState<ContactFormData>(initialData ?? {
     address_street: '', address_city: '', address_postal_code: '', address_country: '',
     phone_country_code: '', website: '', social_handles: [], tags: [],
     id: undefined, full_name: '', email: '', phone: '', company_name: '',
@@ -92,15 +92,15 @@ export function ContactForm({
   }, [initialData]);
 
   const createContact = api.contacts.save.useMutation({
-    onSuccess: () => { utils.contacts.list.invalidate(); onClose(); },
+    onSuccess: () => { void utils.contacts.list.invalidate(); onClose(); },
     onError: (error) => console.error('Create contact error:', error)
   });
   
   const saveContact = api.contacts.save.useMutation({
     onSuccess: () => {
-      utils.contacts.list.invalidate();
+      void utils.contacts.list.invalidate();
       if (editingContactId) {
-        utils.contacts.getById.invalidate({ contactId: editingContactId });
+        void utils.contacts.getById.invalidate({ contactId: editingContactId });
       }
       onClose();
     },
@@ -118,12 +118,12 @@ export function ContactForm({
         profile_image_url: formData.profile_image_url,
         social_handles: rawData.social_handles ? (rawData.social_handles as string).split(',').map(s => s.trim()).filter(Boolean) : [],
         tags: rawData.tags ? (rawData.tags as string).split(',').map(s => s.trim()).filter(Boolean) : [],
-        phone: rawData.phone || null, company_name: rawData.company_name || null,
-        job_title: rawData.job_title || null, website: rawData.website || null,
-        address_street: rawData.address_street || null, address_city: rawData.address_city || null,
-        address_postal_code: rawData.address_postal_code || null, address_country: rawData.address_country || null,
-        phone_country_code: rawData.phone_country_code || null, source: rawData.source || null,
-        notes: rawData.notes || null, last_contacted_at: rawData.last_contacted_at || null,
+        phone: rawData.phone ?? null, company_name: rawData.company_name ?? null,
+        job_title: rawData.job_title ?? null, website: rawData.website ?? null,
+        address_street: rawData.address_street ?? null, address_city: rawData.address_city ?? null,
+        address_postal_code: rawData.address_postal_code ?? null, address_country: rawData.address_country ?? null,
+        phone_country_code: rawData.phone_country_code ?? null, source: rawData.source ?? null,
+        notes: rawData.notes ?? null, last_contacted_at: rawData.last_contacted_at ?? null,
       };
 
       const validatedData = contactSchema.parse(processedData);
@@ -140,7 +140,7 @@ export function ContactForm({
         const fieldErrors = error.flatten().fieldErrors;
         const typedErrors: Record<string, string[]> = {};
         Object.entries(fieldErrors).forEach(([key, value]) => {
-          if (value) typedErrors[key] = Array.isArray(value) ? value : [String(value)];
+          if (value) {typedErrors[key] = Array.isArray(value) ? value : [String(value)];}
         });
         return { success: false, message: 'Please fix the errors below.', errors: typedErrors };
       }
@@ -209,7 +209,7 @@ export function ContactForm({
             <div className="space-y-6 lg:pr-8">
               <div className="space-y-4">
                 <FormLabel htmlFor="profile_image_url">Profile Photo</FormLabel>
-                <ImageUpload value={formData.profile_image_url || null} onChange={handleImageChange} disabled={isLoading} contactId={editingContactId || undefined} />
+                <ImageUpload value={formData.profile_image_url ?? null} onChange={handleImageChange} disabled={isLoading} contactId={editingContactId ?? undefined} />
                 <FieldError message={state.errors?.profile_image_url?.[0]} />
               </div>
 
@@ -227,17 +227,17 @@ export function ContactForm({
                 </div>
                 <div>
                   <FormLabel htmlFor="phone">Phone</FormLabel>
-                  <FormInput id="phone" type="text" defaultValue={formData.phone || ''} />
+                  <FormInput id="phone" type="text" defaultValue={formData.phone ?? ''} />
                   <FieldError message={state.errors?.phone?.[0]} />
                 </div>
                 <div>
                   <FormLabel htmlFor="company_name">Company</FormLabel>
-                  <FormInput id="company_name" type="text" defaultValue={formData.company_name || ''} />
+                  <FormInput id="company_name" type="text" defaultValue={formData.company_name ?? ''} />
                   <FieldError message={state.errors?.company_name?.[0]} />
                 </div>
                 <div>
                   <FormLabel htmlFor="job_title">Job Title</FormLabel>
-                  <FormInput id="job_title" type="text" defaultValue={formData.job_title || ''} />
+                  <FormInput id="job_title" type="text" defaultValue={formData.job_title ?? ''} />
                   <FieldError message={state.errors?.job_title?.[0]} />
                 </div>
               </div>
@@ -249,22 +249,22 @@ export function ContactForm({
                 <h3 className="text-base font-semibold text-gray-800">Location</h3>
                 <div>
                   <FormLabel htmlFor="address_street">Street address</FormLabel>
-                  <FormInput type="text" id="address_street" defaultValue={formData.address_street || ''} />
+                  <FormInput type="text" id="address_street" defaultValue={formData.address_street ?? ''} />
                   <FieldError message={state.errors?.address_street?.[0]} />
                 </div>
                 <div>
                   <FormLabel htmlFor="address_city">City</FormLabel>
-                  <FormInput type="text" id="address_city" defaultValue={formData.address_city || ''} />
+                  <FormInput type="text" id="address_city" defaultValue={formData.address_city ?? ''} />
                   <FieldError message={state.errors?.address_city?.[0]} />
                 </div>
                 <div>
                   <FormLabel htmlFor="address_postal_code">ZIP / Postal code</FormLabel>
-                  <FormInput type="text" id="address_postal_code" defaultValue={formData.address_postal_code || ''} />
+                  <FormInput type="text" id="address_postal_code" defaultValue={formData.address_postal_code ?? ''} />
                   <FieldError message={state.errors?.address_postal_code?.[0]} />
                 </div>
                 <div>
                   <FormLabel htmlFor="address_country">Country</FormLabel>
-                  <FormInput type="text" id="address_country" defaultValue={formData.address_country || ''} />
+                  <FormInput type="text" id="address_country" defaultValue={formData.address_country ?? ''} />
                   <FieldError message={state.errors?.address_country?.[0]} />
                 </div>
               </div>
@@ -272,12 +272,12 @@ export function ContactForm({
                 <h3 className="text-base font-semibold text-gray-800">Online Presence</h3>
                 <div>
                   <FormLabel htmlFor="website">Website</FormLabel>
-                  <FormInput id="website" type="text" defaultValue={formData.website || ''} />
+                  <FormInput id="website" type="text" defaultValue={formData.website ?? ''} />
                   <FieldError message={state.errors?.website?.[0]} />
                 </div>
                 <div>
                   <FormLabel htmlFor="social_handles">Social Handles (comma-separated)</FormLabel>
-                  <FormInput id="social_handles" type="text" defaultValue={formData.social_handles?.join(', ') || ''} onBlur={(e) => handleArrayFieldBlur('social_handles', e.target.value)} />
+                  <FormInput id="social_handles" type="text" defaultValue={formData.social_handles?.join(', ') ?? ''} onBlur={(e) => handleArrayFieldBlur('social_handles', e.target.value)} />
                   <FieldError message={state.errors?.social_handles?.[0]} />
                 </div>
               </div>
@@ -289,17 +289,17 @@ export function ContactForm({
                  <h3 className="text-base font-semibold text-gray-800">CRM Data</h3>
                  <div>
                   <FormLabel htmlFor="tags">Tags (comma-separated)</FormLabel>
-                  <FormInput id="tags" type="text" defaultValue={formData.tags?.join(', ') || ''} onBlur={(e) => handleArrayFieldBlur('tags', e.target.value)} />
+                  <FormInput id="tags" type="text" defaultValue={formData.tags?.join(', ') ?? ''} onBlur={(e) => handleArrayFieldBlur('tags', e.target.value)} />
                   <FieldError message={state.errors?.tags?.[0]} />
                 </div>
                 <div>
                   <FormLabel htmlFor="source">Source</FormLabel>
-                  <FormInput id="source" type="text" defaultValue={formData.source || ''} />
+                  <FormInput id="source" type="text" defaultValue={formData.source ?? ''} />
                   <FieldError message={state.errors?.source?.[0]} />
                 </div>
                 <div>
                   <FormLabel htmlFor="last_contacted_at">Last Contacted</FormLabel>
-                  <FormInput id="last_contacted_at" type="datetime-local" defaultValue={formData.last_contacted_at || ''} />
+                  <FormInput id="last_contacted_at" type="datetime-local" defaultValue={formData.last_contacted_at ?? ''} />
                   <FieldError message={state.errors?.last_contacted_at?.[0]} />
                 </div>
               </div>
@@ -307,7 +307,7 @@ export function ContactForm({
               <div className="space-y-4 pt-4 border-t border-gray-200">
                 <h3 className="text-base font-semibold text-gray-800">Notes</h3>
                 <div>
-                  <FormTextarea id="notes" rows={8} defaultValue={formData.notes || ''} />
+                  <FormTextarea id="notes" rows={8} defaultValue={formData.notes ?? ''} />
                   <FieldError message={state.errors?.notes?.[0]} />
                 </div>
               </div>

@@ -1,9 +1,47 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "dist",
-    "jsx": "react-jsx",
-    "composite": true
+    // Build output configuration
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "composite": true,
+
+    // Server-specific configuration
+    "module": "NodeNext",
+    "target": "es2022",
+    "tsBuildInfoFile": "../../.tsbuildinfo-server",
+    "moduleResolution": "NodeNext",
+
+    // Allow require() in server code
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+
+    // Monorepo and server paths - using root-relative paths
+    "baseUrl": "../..",
+    "paths": {
+      // Monorepo packages using aliases from root
+      "@codexcrm/server/*": ["packages/server/src/*"],
+      "@codexcrm/auth/*": ["packages/auth/src/*"],
+      "@codexcrm/config/*": ["packages/config/src/*"],
+      "@codexcrm/db/*": ["packages/db/src/*"],
+      "@codexcrm/jobs/*": ["packages/jobs/src/*"],
+      "@codexcrm/ui/*": ["packages/ui/src/*"],
+      "@/*": ["apps/web/*"],
+      // Local paths
+      "@/server/*": ["packages/server/src/*"],
+      "@/lib/*": ["packages/server/src/lib/*"],
+      "@/middleware/*": ["packages/server/src/middleware/*"],
+      "@/routers/*": ["packages/server/src/routers/*"],
+      "@/schemas/*": ["packages/server/src/schemas/*"]
+    }
   },
-  "include": ["src/**/*"]
+
+  "include": ["src/**/*"],
+
+  "exclude": ["node_modules", "dist", "**/*.test.{ts,tsx}", "**/*.spec.{ts,tsx}"],
+
+  "references": [{ "path": "../db" }]
 }

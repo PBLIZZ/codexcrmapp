@@ -1,9 +1,9 @@
-export declare const dashboardRouter: import("@trpc/server/dist/unstable-core-do-not-import").BuiltRouter<{
+export declare const dashboardRouter: import("@trpc/server").TRPCBuiltRouter<{
     ctx: import("..").Context;
     meta: object;
-    errorShape: import("@trpc/server/dist/unstable-core-do-not-import").DefaultErrorShape;
+    errorShape: import("@trpc/server").TRPCDefaultErrorShape;
     transformer: true;
-}, import("@trpc/server/dist/unstable-core-do-not-import").DecorateCreateRouterOptions<{
+}, import("@trpc/server").TRPCDecorateCreateRouterOptions<{
     contactMetrics: import("@trpc/server").TRPCQueryProcedure<{
         input: {
             startDate?: string | undefined;

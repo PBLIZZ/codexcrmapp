@@ -388,16 +388,14 @@ var ThemedCardTitle = forwardRef(
   }
 );
 ThemedCardTitle.displayName = "ThemedCardTitle";
-var ThemedCardDescription = forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ jsx3(
-    "p",
-    {
-      ref,
-      className: cn("text-sm text-muted-foreground", className),
-      ...props
-    }
-  )
-);
+var ThemedCardDescription = forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx3(
+  "p",
+  {
+    ref,
+    className: cn("text-sm text-muted-foreground", className),
+    ...props
+  }
+));
 ThemedCardDescription.displayName = "ThemedCardDescription";
 var ThemedCardContent = forwardRef(
   ({ className, ...props }, ref) => /* @__PURE__ */ jsx3("div", { ref, className: cn("pt-0", className), ...props })
@@ -1187,7 +1185,14 @@ var ContactMessageButton = (props) => /* @__PURE__ */ jsx5(
 import { forwardRef as forwardRef4 } from "react";
 import { jsx as jsx6, jsxs as jsxs4 } from "react/jsx-runtime";
 var Timeline = forwardRef4(
-  ({ className, orientation = "vertical", compact = false, reverse = false, children, ...props }, ref) => {
+  ({
+    className,
+    orientation = "vertical",
+    compact = false,
+    reverse = false,
+    children,
+    ...props
+  }, ref) => {
     const orientationClasses = {
       vertical: "flex flex-col",
       horizontal: "flex flex-row"
@@ -1222,7 +1227,6 @@ var TimelineItem = forwardRef4(
     connectorStyle = "solid",
     active = false,
     orientation = "vertical",
-    position = "left",
     children,
     ...props
   }, ref) => {
@@ -1235,60 +1239,52 @@ var TimelineItem = forwardRef4(
       dotted: "border-dotted"
     };
     if (orientation === "vertical") {
-      return /* @__PURE__ */ jsxs4(
-        "div",
-        {
-          ref,
-          className: cn("relative flex", className),
-          ...props,
-          children: [
-            /* @__PURE__ */ jsxs4("div", { className: "flex flex-col items-center mr-4", children: [
-              /* @__PURE__ */ jsx6(
-                "div",
-                {
-                  className: cn(
-                    "z-10 flex items-center justify-center w-8 h-8 rounded-full",
-                    active ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
-                  ),
-                  style: iconBackground ? { backgroundColor: iconBackground } : {},
-                  children: icon || /* @__PURE__ */ jsxs4(
-                    "svg",
-                    {
-                      xmlns: "http://www.w3.org/2000/svg",
-                      width: "16",
-                      height: "16",
-                      viewBox: "0 0 24 24",
-                      fill: "none",
-                      stroke: "currentColor",
-                      strokeWidth: "2",
-                      strokeLinecap: "round",
-                      strokeLinejoin: "round",
-                      children: [
-                        /* @__PURE__ */ jsx6("circle", { cx: "12", cy: "12", r: "10" }),
-                        /* @__PURE__ */ jsx6("path", { d: "m12 8 4 4-4 4" }),
-                        /* @__PURE__ */ jsx6("path", { d: "m8 12h8" })
-                      ]
-                    }
-                  )
-                }
+      return /* @__PURE__ */ jsxs4("div", { ref, className: cn("relative flex", className), ...props, children: [
+        /* @__PURE__ */ jsxs4("div", { className: "flex flex-col items-center mr-4", children: [
+          /* @__PURE__ */ jsx6(
+            "div",
+            {
+              className: cn(
+                "z-10 flex items-center justify-center w-8 h-8 rounded-full",
+                active ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
               ),
-              connector && /* @__PURE__ */ jsx6(
-                "div",
+              style: iconBackground ? { backgroundColor: iconBackground } : {},
+              children: icon || /* @__PURE__ */ jsxs4(
+                "svg",
                 {
-                  className: cn(
-                    "w-0 h-full border-l-2 mt-1",
-                    connectorStyleClasses[connectorStyle]
-                  ),
-                  style: {
-                    borderColor: active ? connectorColor || activeConnectorColor : connectorColor || defaultConnectorColor
-                  }
+                  xmlns: "http://www.w3.org/2000/svg",
+                  width: "16",
+                  height: "16",
+                  viewBox: "0 0 24 24",
+                  fill: "none",
+                  stroke: "currentColor",
+                  strokeWidth: "2",
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                  children: [
+                    /* @__PURE__ */ jsx6("circle", { cx: "12", cy: "12", r: "10" }),
+                    /* @__PURE__ */ jsx6("path", { d: "m12 8 4 4-4 4" }),
+                    /* @__PURE__ */ jsx6("path", { d: "m8 12h8" })
+                  ]
                 }
               )
-            ] }),
-            /* @__PURE__ */ jsx6("div", { className: "flex-1 pb-6", children })
-          ]
-        }
-      );
+            }
+          ),
+          connector && /* @__PURE__ */ jsx6(
+            "div",
+            {
+              className: cn(
+                "w-0 h-full border-l-2 mt-1",
+                connectorStyleClasses[connectorStyle]
+              ),
+              style: {
+                borderColor: active ? connectorColor || activeConnectorColor : connectorColor || defaultConnectorColor
+              }
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsx6("div", { className: "flex-1 pb-6", children })
+      ] });
     }
     return /* @__PURE__ */ jsxs4(
       "div",
@@ -1349,45 +1345,42 @@ var TimelineItem = forwardRef4(
 TimelineItem.displayName = "TimelineItem";
 var TimelineContent = forwardRef4(
   ({ className, title, subtitle, date, children, ...props }, ref) => {
-    return /* @__PURE__ */ jsxs4(
-      "div",
-      {
-        ref,
-        className: cn("space-y-1", className),
-        ...props,
-        children: [
-          /* @__PURE__ */ jsxs4("div", { className: "flex items-start justify-between", children: [
-            title && /* @__PURE__ */ jsx6("h4", { className: "font-medium", children: title }),
-            date && /* @__PURE__ */ jsx6("span", { className: "text-sm text-muted-foreground", children: date })
-          ] }),
-          subtitle && /* @__PURE__ */ jsx6("p", { className: "text-sm text-muted-foreground", children: subtitle }),
-          children && /* @__PURE__ */ jsx6("div", { className: "mt-2", children })
-        ]
-      }
-    );
+    return /* @__PURE__ */ jsxs4("div", { ref, className: cn("space-y-1", className), ...props, children: [
+      /* @__PURE__ */ jsxs4("div", { className: "flex items-start justify-between", children: [
+        title && /* @__PURE__ */ jsx6("h4", { className: "font-medium", children: title }),
+        date && /* @__PURE__ */ jsx6("span", { className: "text-sm text-muted-foreground", children: date })
+      ] }),
+      subtitle && /* @__PURE__ */ jsx6("p", { className: "text-sm text-muted-foreground", children: subtitle }),
+      children && /* @__PURE__ */ jsx6("div", { className: "mt-2", children })
+    ] });
   }
 );
 TimelineContent.displayName = "TimelineContent";
-var TimelineSeparator = forwardRef4(
-  ({ className, label, ...props }, ref) => {
-    return /* @__PURE__ */ jsxs4(
-      "div",
-      {
-        ref,
-        className: cn("relative flex items-center py-4", className),
-        ...props,
-        children: [
-          /* @__PURE__ */ jsx6("div", { className: "flex-grow border-t border-border" }),
-          label && /* @__PURE__ */ jsx6("span", { className: "flex-shrink mx-4 text-sm font-medium text-muted-foreground", children: label }),
-          /* @__PURE__ */ jsx6("div", { className: "flex-grow border-t border-border" })
-        ]
-      }
-    );
-  }
-);
+var TimelineSeparator = forwardRef4(({ className, label, ...props }, ref) => {
+  return /* @__PURE__ */ jsxs4(
+    "div",
+    {
+      ref,
+      className: cn("relative flex items-center py-4", className),
+      ...props,
+      children: [
+        /* @__PURE__ */ jsx6("div", { className: "flex-grow border-t border-border" }),
+        label && /* @__PURE__ */ jsx6("span", { className: "flex-shrink mx-4 text-sm font-medium text-muted-foreground", children: label }),
+        /* @__PURE__ */ jsx6("div", { className: "flex-grow border-t border-border" })
+      ]
+    }
+  );
+});
 TimelineSeparator.displayName = "TimelineSeparator";
 var TimelineDot = forwardRef4(
-  ({ className, size = "md", color, variant = "filled", active = false, ...props }, ref) => {
+  ({
+    className,
+    size = "md",
+    color,
+    variant = "filled",
+    active = false,
+    ...props
+  }, ref) => {
     const sizeClasses = {
       sm: "w-2 h-2",
       md: "w-3 h-3",
@@ -1404,7 +1397,10 @@ var TimelineDot = forwardRef4(
           active ? "bg-primary border-primary" : "bg-muted border-muted",
           className
         ),
-        style: color ? { backgroundColor: variant === "filled" ? color : "transparent", borderColor: color } : {},
+        style: color ? {
+          backgroundColor: variant === "filled" ? color : "transparent",
+          borderColor: color
+        } : {},
         ...props
       }
     );
@@ -1795,7 +1791,7 @@ Button.displayName = "Button";
 import { useState as useState2 } from "react";
 import { jsx as jsx10, jsxs as jsxs7 } from "react/jsx-runtime";
 function ThemeDemo({ className }) {
-  const { theme, setTheme, isDarkMode: isDarkMode2 } = useTheme();
+  const { theme, setTheme } = useTheme();
   const [activeTab, setActiveTab] = useState2("colors");
   return /* @__PURE__ */ jsxs7("div", { className: cn("space-y-6", className), children: [
     /* @__PURE__ */ jsxs7("div", { className: "flex items-center justify-between", children: [
@@ -1863,35 +1859,39 @@ function ThemeDemo({ className }) {
     activeTab === "colors" && /* @__PURE__ */ jsxs7("div", { className: "space-y-6", children: [
       /* @__PURE__ */ jsxs7("div", { className: "space-y-3", children: [
         /* @__PURE__ */ jsx10("h3", { className: "text-lg font-medium", children: "Primary Colors (Teal)" }),
-        /* @__PURE__ */ jsx10("div", { className: "grid grid-cols-5 gap-2", children: [50, 100, 200, 300, 400, 500, 600, 700, 800, 900].map((shade) => /* @__PURE__ */ jsxs7("div", { className: "space-y-1.5", children: [
-          /* @__PURE__ */ jsx10(
-            "div",
-            {
-              className: `h-10 w-full rounded-md`,
-              style: { backgroundColor: `var(--primary-${shade})` }
-            }
-          ),
-          /* @__PURE__ */ jsx10("div", { className: "text-xs", children: /* @__PURE__ */ jsxs7("div", { className: "font-medium", children: [
-            "Primary ",
-            shade
-          ] }) })
-        ] }, `primary-${shade}`)) })
+        /* @__PURE__ */ jsx10("div", { className: "grid grid-cols-5 gap-2", children: [50, 100, 200, 300, 400, 500, 600, 700, 800, 900].map(
+          (shade) => /* @__PURE__ */ jsxs7("div", { className: "space-y-1.5", children: [
+            /* @__PURE__ */ jsx10(
+              "div",
+              {
+                className: `h-10 w-full rounded-md`,
+                style: { backgroundColor: `var(--primary-${shade})` }
+              }
+            ),
+            /* @__PURE__ */ jsx10("div", { className: "text-xs", children: /* @__PURE__ */ jsxs7("div", { className: "font-medium", children: [
+              "Primary ",
+              shade
+            ] }) })
+          ] }, `primary-${shade}`)
+        ) })
       ] }),
       /* @__PURE__ */ jsxs7("div", { className: "space-y-3", children: [
         /* @__PURE__ */ jsx10("h3", { className: "text-lg font-medium", children: "Accent Colors (Orange)" }),
-        /* @__PURE__ */ jsx10("div", { className: "grid grid-cols-5 gap-2", children: [50, 100, 200, 300, 400, 500, 600, 700, 800, 900].map((shade) => /* @__PURE__ */ jsxs7("div", { className: "space-y-1.5", children: [
-          /* @__PURE__ */ jsx10(
-            "div",
-            {
-              className: `h-10 w-full rounded-md`,
-              style: { backgroundColor: `var(--accent-${shade})` }
-            }
-          ),
-          /* @__PURE__ */ jsx10("div", { className: "text-xs", children: /* @__PURE__ */ jsxs7("div", { className: "font-medium", children: [
-            "Accent ",
-            shade
-          ] }) })
-        ] }, `accent-${shade}`)) })
+        /* @__PURE__ */ jsx10("div", { className: "grid grid-cols-5 gap-2", children: [50, 100, 200, 300, 400, 500, 600, 700, 800, 900].map(
+          (shade) => /* @__PURE__ */ jsxs7("div", { className: "space-y-1.5", children: [
+            /* @__PURE__ */ jsx10(
+              "div",
+              {
+                className: `h-10 w-full rounded-md`,
+                style: { backgroundColor: `var(--accent-${shade})` }
+              }
+            ),
+            /* @__PURE__ */ jsx10("div", { className: "text-xs", children: /* @__PURE__ */ jsxs7("div", { className: "font-medium", children: [
+              "Accent ",
+              shade
+            ] }) })
+          ] }, `accent-${shade}`)
+        ) })
       ] }),
       /* @__PURE__ */ jsxs7("div", { className: "space-y-3", children: [
         /* @__PURE__ */ jsx10("h3", { className: "text-lg font-medium", children: "UI Colors" }),
@@ -2047,7 +2047,6 @@ function MetricCardDemo({ className }) {
   };
   const lineData1 = [10, 15, 8, 12, 18, 15, 20, 25, 22, 30];
   const lineData2 = [20, 15, 25, 18, 15, 20, 18, 15, 20, 18];
-  const lineData3 = [5, 10, 8, 15, 12, 15, 18, 20, 18, 25];
   return /* @__PURE__ */ jsxs8("div", { className: cn("space-y-6", className), children: [
     /* @__PURE__ */ jsxs8("div", { className: "flex items-center justify-between", children: [
       /* @__PURE__ */ jsx11("h2", { className: "text-2xl font-bold", children: "Metric Cards" }),
@@ -2202,7 +2201,15 @@ function MetricCardDemo({ className }) {
               trend: "up",
               trendValue: "+5%",
               loading,
-              chart: /* @__PURE__ */ jsx11(ProgressIndicator, { value: 75, max: 100, color: "var(--accent)", size: "md" })
+              chart: /* @__PURE__ */ jsx11(
+                ProgressIndicator,
+                {
+                  value: 75,
+                  max: 100,
+                  color: "var(--accent)",
+                  size: "md"
+                }
+              )
             }
           ),
           /* @__PURE__ */ jsx11(

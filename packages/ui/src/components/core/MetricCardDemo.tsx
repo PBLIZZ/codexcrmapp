@@ -24,7 +24,6 @@ export function MetricCardDemo({ className }: MetricCardDemoProps) {
   // Sample data for charts
   const lineData1 = [10, 15, 8, 12, 18, 15, 20, 25, 22, 30];
   const lineData2 = [20, 15, 25, 18, 15, 20, 18, 15, 20, 18];
-  const lineData3 = [5, 10, 8, 15, 12, 15, 18, 20, 18, 25];
 
   return (
     <div className={cn('space-y-6', className)}>
@@ -130,7 +129,9 @@ export function MetricCardDemo({ className }: MetricCardDemoProps) {
               trend="up"
               trendValue="+15%"
               loading={loading}
-              chart={<SimpleLineChart data={lineData1} color="var(--primary)" />}
+              chart={
+                <SimpleLineChart data={lineData1} color="var(--primary)" />
+              }
             />
 
             <MetricCard
@@ -153,7 +154,9 @@ export function MetricCardDemo({ className }: MetricCardDemoProps) {
               trend="neutral"
               trendLabel="of 100 GB"
               loading={loading}
-              chart={<ProgressIndicator value={45} max={100} showValue size="md" />}
+              chart={
+                <ProgressIndicator value={45} max={100} showValue size="md" />
+              }
             />
 
             <MetricCard
@@ -162,7 +165,14 @@ export function MetricCardDemo({ className }: MetricCardDemoProps) {
               trend="up"
               trendValue="+5%"
               loading={loading}
-              chart={<ProgressIndicator value={75} max={100} color="var(--accent)" size="md" />}
+              chart={
+                <ProgressIndicator
+                  value={75}
+                  max={100}
+                  color="var(--accent)"
+                  size="md"
+                />
+              }
             />
 
             <MetricCard

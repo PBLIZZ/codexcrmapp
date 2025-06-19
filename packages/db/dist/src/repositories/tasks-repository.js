@@ -1,4 +1,4 @@
-import { TaskModel, TaskCategory, TaskStatus } from '../models';
+import { TaskModel, TaskCategory, TaskStatus, } from '../models';
 /**
  * Repository for task-related database operations
  */
@@ -33,7 +33,9 @@ export class TasksRepository {
                     today.setHours(0, 0, 0, 0);
                     const tomorrow = new Date(today);
                     tomorrow.setDate(today.getDate() + 1);
-                    query = query.gte('due_date', today.toISOString()).lt('due_date', tomorrow.toISOString());
+                    query = query
+                        .gte('due_date', today.toISOString())
+                        .lt('due_date', tomorrow.toISOString());
                     break;
                 case 'upcoming':
                     const nextDay = new Date();
@@ -62,7 +64,7 @@ export class TasksRepository {
             console.error('Error fetching tasks:', error);
             throw error;
         }
-        return (data || []).map(task => TaskModel.fromDatabase(task));
+        return (data || []).map((task) => TaskModel.fromDatabase(task));
     }
     /**
      * Get a task by ID
@@ -132,7 +134,7 @@ export class TasksRepository {
             .from('tasks')
             .update({
             deleted_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
+            updated_at: new Date().toISOString(),
         })
             .eq('id', id);
         if (error) {
@@ -145,10 +147,7 @@ export class TasksRepository {
      * @param id The task ID to delete
      */
     async delete(id) {
-        const { error } = await this.supabase
-            .from('tasks')
-            .delete()
-            .eq('id', id);
+        const { error } = await this.supabase.from('tasks').delete().eq('id', id);
         if (error) {
             console.error('Error deleting task:', error);
             throw error;
@@ -164,7 +163,7 @@ export class TasksRepository {
             .from('tasks')
             .update({
             deleted_at: null,
-            updated_at: new Date().toISOString()
+            updated_at: new Date().toISOString(),
         })
             .eq('id', id)
             .select()
@@ -187,7 +186,7 @@ export class TasksRepository {
             status: TaskStatus.DONE,
             completion_date: new Date().toISOString(),
             category: TaskCategory.LOGBOOK,
-            updated_at: new Date().toISOString()
+            updated_at: new Date().toISOString(),
         })
             .eq('id', id)
             .is('deleted_at', null)
@@ -230,7 +229,7 @@ export class TasksRepository {
             status: TaskStatus.TODO,
             completion_date: null,
             category,
-            updated_at: new Date().toISOString()
+            updated_at: new Date().toISOString(),
         })
             .eq('id', id)
             .is('deleted_at', null)
@@ -253,7 +252,7 @@ export class TasksRepository {
             .update({
             status: TaskStatus.CANCELED,
             category: TaskCategory.LOGBOOK,
-            updated_at: new Date().toISOString()
+            updated_at: new Date().toISOString(),
         })
             .eq('id', id)
             .is('deleted_at', null)
@@ -271,7 +270,7 @@ export class TasksRepository {
      */
     async updatePositions(tasks) {
         const { error } = await this.supabase.rpc('update_task_positions', {
-            task_positions: tasks
+            task_positions: tasks,
         });
         if (error) {
             console.error('Error updating task positions:', error);
@@ -287,7 +286,7 @@ export class TasksRepository {
     async moveToCategory(id, category) {
         let updateData = {
             category,
-            updated_at: new Date().toISOString()
+            updated_at: new Date().toISOString(),
         };
         if (category === TaskCategory.LOGBOOK) {
             updateData.status = TaskStatus.DONE;
@@ -326,7 +325,7 @@ export class TasksRepository {
             .update({
             project_id: projectId,
             heading_id: headingId,
-            updated_at: new Date().toISOString()
+            updated_at: new Date().toISOString(),
         })
             .eq('id', id)
             .is('deleted_at', null)
@@ -381,10 +380,21 @@ export class TasksRepository {
             console.error('Error getting category counts, falling back:', error);
             return this.getCategoryCountsFallback(userId);
         }
-        return data;
+        // Transform the array of { category: string, count: number } into a Record<string, number>
+        return data.reduce((acc, item) => {
+            acc[item.category] = item.count;
+            return acc;
+        }, {});
     }
     async getCategoryCountsFallback(userId) {
-        const views = ['inbox', 'today', 'upcoming', 'anytime', 'someday', 'logbook'];
+        const views = [
+            'inbox',
+            'today',
+            'upcoming',
+            'anytime',
+            'someday',
+            'logbook',
+        ];
         const counts = {};
         for (const view of views) {
             let query = this.supabase
@@ -401,7 +411,9 @@ export class TasksRepository {
                     today.setHours(0, 0, 0, 0);
                     const tomorrow = new Date(today);
                     tomorrow.setDate(today.getDate() + 1);
-                    query = query.gte('due_date', today.toISOString()).lt('due_date', tomorrow.toISOString());
+                    query = query
+                        .gte('due_date', today.toISOString())
+                        .lt('due_date', tomorrow.toISOString());
                     break;
                 case 'upcoming':
                     const nextDay = new Date();

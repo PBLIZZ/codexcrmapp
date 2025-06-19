@@ -14,19 +14,19 @@ export declare const HeadingSchema: z.ZodObject<{
     deleted_at: z.ZodOptional<z.ZodNullable<z.ZodString>>;
 }, "strip", z.ZodTypeAny, {
     id: string;
-    title: string;
-    user_id: string;
     project_id: string;
+    user_id: string;
     position: number;
+    title: string;
     created_at?: string | undefined;
     updated_at?: string | undefined;
     deleted_at?: string | null | undefined;
 }, {
     id: string;
-    title: string;
-    user_id: string;
     project_id: string;
+    user_id: string;
     position: number;
+    title: string;
     created_at?: string | undefined;
     updated_at?: string | undefined;
     deleted_at?: string | null | undefined;
@@ -44,38 +44,38 @@ export declare const HeadingCreateSchema: z.ZodObject<Omit<{
 }, "id" | "created_at" | "updated_at" | "deleted_at"> & {
     id: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
-    title: string;
-    user_id: string;
     project_id: string;
+    user_id: string;
     position: number;
+    title: string;
     id?: string | undefined;
 }, {
-    title: string;
-    user_id: string;
     project_id: string;
+    user_id: string;
     position: number;
+    title: string;
     id?: string | undefined;
 }>;
 export type HeadingCreate = z.infer<typeof HeadingCreateSchema>;
 export declare const HeadingUpdateSchema: z.ZodObject<{
-    title: z.ZodOptional<z.ZodString>;
-    user_id: z.ZodOptional<z.ZodString>;
     project_id: z.ZodOptional<z.ZodString>;
+    user_id: z.ZodOptional<z.ZodString>;
     position: z.ZodOptional<z.ZodNumber>;
+    title: z.ZodOptional<z.ZodString>;
 } & {
     id: z.ZodString;
 }, "strip", z.ZodTypeAny, {
     id: string;
-    title?: string | undefined;
-    user_id?: string | undefined;
     project_id?: string | undefined;
+    user_id?: string | undefined;
     position?: number | undefined;
+    title?: string | undefined;
 }, {
     id: string;
-    title?: string | undefined;
-    user_id?: string | undefined;
     project_id?: string | undefined;
+    user_id?: string | undefined;
     position?: number | undefined;
+    title?: string | undefined;
 }>;
 export type HeadingUpdate = z.infer<typeof HeadingUpdateSchema>;
 /**

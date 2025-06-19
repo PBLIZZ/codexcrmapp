@@ -1,8 +1,36 @@
 {
-    "extends": "../../tsconfig.json",
-    "compilerOptions": {
-        "composite": true,
-        "outDir": "dist"
-    },
-    "include": ["src/**/*"]
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    // Build output configuration
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "composite": true,
+
+    // Jobs package specific
+    "module": "commonjs",
+    "target": "es2022",
+    "moduleResolution": "node",
+
+    // Monorepo and package paths - using root-relative paths
+    "baseUrl": "../..",
+    "paths": {
+      // Monorepo packages using aliases from root
+      "@codexcrm/server/*": ["packages/server/src/*"],
+      "@codexcrm/auth/*": ["packages/auth/src/*"],
+      "@codexcrm/config/*": ["packages/config/src/*"],
+      "@codexcrm/db/*": ["packages/db/src/*"],
+      "@codexcrm/jobs/*": ["packages/jobs/src/*"],
+      "@codexcrm/ui/*": ["packages/ui/src/*"],
+      "@/*": ["apps/web/*"],
+      // Local paths
+      "@/jobs/*": ["packages/jobs/src/*"]
+    }
+  },
+
+  "include": ["src/**/*"],
+
+  "exclude": ["node_modules", "dist", "**/*.test.{ts,tsx}", "**/*.spec.{ts,tsx}"]
 }

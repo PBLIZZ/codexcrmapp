@@ -1,4 +1,7 @@
-import { cn } from './utils';
+/**
+ * Type for nested color values in themeConfig
+ */
+type ColorValue = string | { [key: string]: ColorValue };
 
 /**
  * Theme configuration for the wellness design system
@@ -101,15 +104,15 @@ export const themeConfig = {
  */
 export function getThemeColor(path: string): string {
   const parts = path.split('.');
-  let current: any = themeConfig.colors;
-  
+  let current: ColorValue = themeConfig.colors;
+
   for (const part of parts) {
     if (current[part] === undefined) {
       return '';
     }
     current = current[part];
   }
-  
+
   return current;
 }
 
@@ -128,10 +131,11 @@ export function isDarkMode(): boolean {
  */
 export function toggleDarkMode(isDark?: boolean): void {
   if (typeof window === 'undefined') return;
-  
+
   const root = document.documentElement;
-  const newDarkMode = isDark !== undefined ? isDark : !root.classList.contains('dark');
-  
+  const newDarkMode =
+    isDark !== undefined ? isDark : !root.classList.contains('dark');
+
   if (newDarkMode) {
     root.classList.add('dark');
     localStorage.setItem('theme', 'dark');
@@ -146,10 +150,10 @@ export function toggleDarkMode(isDark?: boolean): void {
  */
 export function initializeTheme(): void {
   if (typeof window === 'undefined') return;
-  
+
   const savedTheme = localStorage.getItem('theme');
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  
+
   if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
     document.documentElement.classList.add('dark');
   } else {

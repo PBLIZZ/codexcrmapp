@@ -17,16 +17,16 @@ export declare const TagSchema: z.ZodObject<{
     name: string;
     created_at?: string | undefined;
     updated_at?: string | undefined;
-    deleted_at?: string | null | undefined;
     color?: string | undefined;
+    deleted_at?: string | null | undefined;
 }, {
     id: string;
     user_id: string;
     name: string;
     created_at?: string | undefined;
     updated_at?: string | undefined;
-    deleted_at?: string | null | undefined;
     color?: string | undefined;
+    deleted_at?: string | null | undefined;
 }>;
 export type Tag = z.infer<typeof TagSchema>;
 export declare const TagCreateSchema: z.ZodObject<Omit<{
@@ -53,20 +53,20 @@ export declare const TagCreateSchema: z.ZodObject<Omit<{
 export type TagCreate = z.infer<typeof TagCreateSchema>;
 export declare const TagUpdateSchema: z.ZodObject<{
     user_id: z.ZodOptional<z.ZodString>;
-    name: z.ZodOptional<z.ZodString>;
     color: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    name: z.ZodOptional<z.ZodString>;
 } & {
     id: z.ZodString;
 }, "strip", z.ZodTypeAny, {
     id: string;
     user_id?: string | undefined;
-    name?: string | undefined;
     color?: string | undefined;
+    name?: string | undefined;
 }, {
     id: string;
     user_id?: string | undefined;
-    name?: string | undefined;
     color?: string | undefined;
+    name?: string | undefined;
 }>;
 export type TagUpdate = z.infer<typeof TagUpdateSchema>;
 /**

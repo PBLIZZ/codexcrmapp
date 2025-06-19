@@ -1,21 +1,16 @@
 'use client';
-
-import type { AppRouter } from '@codexcrm/server/src/root'; // Corrected tRPC client import path
-import type { TRPCClientErrorLike } from '@trpc/client';
-import type { TRPCClientError } from '@trpc/client';
-import type { ParseError as PapaParseError } from 'papaparse';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import type { FileWithPath } from 'react-dropzone';
 
 import { Button } from '@/components/ui/button';
 import { CsvUpload } from '@/components/ui/csv-upload';
+import type {
+  CsvValidationError,
+  ValidatedContactData} from '@/lib/csv-utils';
 import {
   parseCsvFile,
-  validateCsvData,
-  CsvValidationError,
-  ValidatedContactData,
+  validateCsvData
 } from '@/lib/csv-utils'; // Removed ParsedCsvRow, Added ValidatedContactData
-import { api } from '@/lib/trpc';
 
 // Define the expected response structure from the importCsvData mutation (matching backend's importCsvDataOutputSchema)
 interface ContactImportResult {
@@ -58,7 +53,7 @@ export default function CsvUploadTestPage() {
   >(null); // To store backend response
 
   const handleFilesAccepted = async (files: FileWithPath[]) => {
-    console.log('Files received in parent component:', files);
+    console.warn('Files received in parent component:', files); // Changed to console.warn
     setUploadedFile(null);
     setParsedData(null);
     setParsingErrors(null);
@@ -74,7 +69,7 @@ export default function CsvUploadTestPage() {
       setFeedbackMessage(`Processing "${file.name}"...`);
       try {
         const parsedResult = await parseCsvFile(file);
-        console.log('Parsed CSV Result:', parsedResult);
+        console.warn('Parsed CSV Result:', parsedResult); // Changed to console.warn
 
         setParsingErrors(
           parsedResult.errors.length > 0
@@ -166,10 +161,6 @@ export default function CsvUploadTestPage() {
       // The backend expects an object { contacts: ParsedCsvRow[] }
       // Ensure parsedData matches the structure expected by csvContactInput Zod schema on backend
       // Keys in ParsedCsvRow should align with csvContactInput fields (e.g. 'company', not 'company_name')
-      const contactsWithOriginalIndex = parsedData.map((contact, index) => ({
-        ...contact,
-        originalIndex: index,
-      }));
       // importMutation.mutate({
       //   contacts: validatedContacts,
       //   fieldMapping: fieldMapping as Record<string, keyof ValidatedContactData>,
@@ -257,7 +248,9 @@ export default function CsvUploadTestPage() {
                   <li key={`val-${index}`}>
                     {err.type === 'header'
                       ? `Header Error: ${err.message}`
-                      : `Row ${err.row !== undefined ? err.row : 'N/A'}${err.field ? ` (Field: ${err.field})` : ''}: ${err.message}`}
+                      : `Row ${err.row !== undefined ? err.row : 'N/A'}${
+                          err.field ? ` (Field: ${err.field})` : ''
+                        }: ${err.message}`}
                   </li>
                 ))}
               </ul>
@@ -283,7 +276,11 @@ export default function CsvUploadTestPage() {
             )}
           {importFeedback && (
             <div
-              className={`mt-4 p-3 rounded-md ${importResult && 'error' in importResult ? 'bg-destructive/20 text-destructive' : 'bg-green-100 text-green-700'}`}
+              className={`mt-4 p-3 rounded-md ${
+                importResult && 'error' in importResult
+                  ? 'bg-destructive/20 text-destructive'
+                  : 'bg-green-100 text-green-700'
+              }`}
             >
               <p className="font-semibold">Import Status:</p>
               <p>{importFeedback}</p>
@@ -324,10 +321,10 @@ export default function CsvUploadTestPage() {
                                     item.status === 'imported'
                                       ? 'text-green-700'
                                       : item.status === 'skipped'
-                                        ? 'text-yellow-700'
-                                        : item.status === 'error'
-                                          ? 'text-red-700'
-                                          : ''
+                                      ? 'text-yellow-700'
+                                      : item.status === 'error'
+                                      ? 'text-red-700'
+                                      : ''
                                   }
                                 >
                                   Row {item.originalIndex + 1}:{' '}

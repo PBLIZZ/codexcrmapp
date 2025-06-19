@@ -7,14 +7,12 @@
   "scripts": {
     "build": "tsc -p . --outDir dist",
     "clean": "rm -rf dist",
-    "lint": "eslint . --ext .ts,.tsx",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.0.0" 
+    "@supabase/supabase-js": "^2.0.0"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
-    "eslint": "^8.0.0"
+    "typescript": "^5.0.0"
   }
 }

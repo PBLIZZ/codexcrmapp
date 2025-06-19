@@ -1,6 +1,6 @@
 # Task ID: 294
 # Title: Refactor App Router Components to Align with Next.js 15 Standards
-# Status: pending
+# Status: done
 # Dependencies: 287
 # Priority: medium
 # Description: Update app router files to Next.js 15 patterns with authentication flow and navigation optimization.
@@ -11,13 +11,13 @@ Apply an AST transformation script to update `page.tsx` and `layout.tsx` files t
 Run `npx next build` to confirm no errors with special validation for authentication flow and section navigation. Check the JSON report for successful transformations and user experience enhancements.
 
 # Subtasks:
-## 1. Apply AST transformation with authentication and navigation focus [pending]
+## 1. Apply AST transformation with authentication and navigation focus [done]
 ### Dependencies: None
 ### Description: Update app router files with Next.js 15 patterns and application optimizations
 ### Details:
 Apply AST transformation script with user experience optimizations and Next.js 15 patterns
 
-## 2. Execute build validation for authentication workflows [pending]
+## 2. Execute build validation for authentication workflows [done]
 ### Dependencies: 294.1
 ### Description: Validate Next.js build success with authentication flow and section navigation testing
 ### Details:

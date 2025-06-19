@@ -1,0 +1,11 @@
+# Task ID: 318
+# Title: Quality Assurance: Contacts Integration Testing
+# Status: pending
+# Dependencies: 310
+# Priority: high
+# Description: Perform end-to-end manual testing of the task-to-contact assignment feature.
+# Details:
+Manually verify the entire workflow of assigning and un-assigning contacts to tasks, ensuring data integrity and a smooth user experience.
+
+# Test Strategy:
+Follow a written test plan: 1. Create a task. 2. Assign 3 contacts to it. 3. Verify all 3 are saved correctly. 4. Un-assign 1 contact. 5. Verify the remaining 2 are still assigned. 6. Delete the task and confirm the records in `task_assignees` are also deleted (cascade).

@@ -1,128 +1,145 @@
-// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
-import storybook from "eslint-plugin-storybook";
-
-import js from '@eslint/js';
+// eslint.config.js
 import nextPlugin from '@next/eslint-plugin-next';
-import prettierConfig from 'eslint-config-prettier';
-import importPlugin from 'eslint-plugin-import';
-import prettierPlugin from 'eslint-plugin-prettier';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
-/** @type {import('eslint').Linter.FlatConfig[]} */
-export default [// Base ESLint recommended rules
-js.configs.recommended, // TypeScript configuration
-...tseslint.configs.recommended, // Global settings
-{
-  ignores: ['node_modules/**', 'dist/**', '.next/**', 'legacy-linted/**'],
-  languageOptions: {
-    ecmaVersion: 2022,
-    sourceType: 'module',
-    globals: {
-      ...globals.browser,
-      ...globals.node,
-      ...globals.es2021,
-    },
-    parserOptions: {
-      ecmaFeatures: {
-        jsx: true,
-      },
-    },
-  },
-  linterOptions: {
-    reportUnusedDisableDirectives: 'warn',
-  },
-}, // React configuration
-{
-  files: ['**/*.{js,jsx,ts,tsx}'],
-  plugins: {
-    react: reactPlugin,
-    'react-hooks': reactHooksPlugin,
-  },
-  rules: {
-    'react/jsx-uses-react': 'error',
-    'react/jsx-uses-vars': 'error',
-    'react/react-in-jsx-scope': 'off', // Not needed in React 17+
-    'react-hooks/rules-of-hooks': 'error',
-    'react-hooks/exhaustive-deps': 'warn',
-  },
-  settings: {
-    react: {
-      version: 'detect',
-    },
-  },
-}, // Import plugin configuration
-{
-  files: ['**/*.{js,jsx,ts,tsx}'],
-  plugins: {
-    import: importPlugin,
-  },
-  rules: {
-    'import/order': [
-      'error',
-      {
-        groups: [
-          'builtin',
-          'external',
-          'internal',
-          'parent',
-          'sibling',
-          'index',
-        ],
-        'newlines-between': 'always',
-        alphabetize: { order: 'asc', caseInsensitive: true },
-      },
+export default tseslint.config(
+  // Global ignores
+  {
+    ignores: [
+      'node_modules/',
+      'dist/',
+      'build/',
+      '.next/',
+      'coverage/',
+      '.storybook/',
+      'storybook-static/',
+      '**/*.stories.{js,jsx,ts,tsx}',
+      '**/*.d.ts',
+      'supabase/migrations/*.sql',
+      'public/**/*',
+      '*.config.{js,ts,mjs}',
     ],
-    'import/first': 'error',
-    'import/no-duplicates': 'error',
   },
-}, // Next.js configuration
-{
-  files: ['apps/web/**/*.{js,jsx,ts,tsx}'],
-  plugins: {
-    '@next/next': nextPlugin,
-  },
-  rules: {
-    '@next/next/no-html-link-for-pages': 'error',
-    '@next/next/no-img-element': 'warn',
-  },
-}, // Path alias rules
-{
-  files: ['apps/web/**/*.{js,jsx,ts,tsx}'],
-  rules: {
-    'import/no-relative-parent-imports': 'warn', // Encourage using @/* aliases
-  },
-}, // Specific rules for the monorepo
-{
-  files: ['**/*.{js,jsx,ts,tsx}'],
-  plugins: {
-    prettier: prettierPlugin,
-  },
-  rules: {
-    'prettier/prettier': 'error',
-    'no-console': ['warn', { allow: ['warn', 'error'] }],
-    'no-unused-vars': 'off', // TypeScript handles this better
-    '@typescript-eslint/no-unused-vars': [
-      'warn',
-      {
-        argsIgnorePattern: '^_',
-        varsIgnorePattern: '^_',
+
+  // TypeScript ESLint recommended (includes ESLint recommended)
+  ...tseslint.configs.recommended,
+  ...tseslint.configs.recommendedTypeChecked, // It's a good practice to add this for full type-aware linting
+
+  // Base configuration for TypeScript/React files
+  {
+    files: ['**/*.{ts,tsx}'],
+    languageOptions: {
+      ecmaVersion: 2024,
+      sourceType: 'module',
+      globals: {
+        ...globals.browser,
+        ...globals.node,
       },
-    ],
-    '@typescript-eslint/no-explicit-any': 'error',
-    'prefer-const': 'warn',
+      parserOptions: {
+        project: true,
+        tsconfigRootDir: import.meta.dirname,
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+    },
+    plugins: {
+      react: reactPlugin,
+      'react-hooks': reactHooksPlugin,
+    },
+    rules: {
+      // React 19 - JSX transform handles this automatically
+      'react/react-in-jsx-scope': 'off',
+      'react/jsx-uses-react': 'off',
+
+      // Essential React rules
+      'react/prop-types': 'off', // Using TypeScript for props validation
+      'react/jsx-key': 'error',
+      'react/jsx-no-duplicate-props': 'error',
+      'react/jsx-no-undef': 'error',
+      'react/jsx-uses-vars': 'error',
+      'react/no-children-prop': 'error',
+      'react/no-danger-with-children': 'error',
+      'react/no-deprecated': 'error',
+      'react/no-direct-mutation-state': 'error',
+      'react/no-find-dom-node': 'error',
+      'react/no-is-mounted': 'error',
+      'react/no-render-return-value': 'error',
+      'react/no-string-refs': 'error',
+      'react/no-unescaped-entities': 'error',
+      'react/no-unknown-property': 'error',
+      'react/require-render-return': 'error',
+
+      // React Hooks Rules (Note: React Compiler rules will be included in v6.0.0+)
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+
+      // Enhanced TypeScript rules
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/prefer-nullish-coalescing': 'error',
+      '@typescript-eslint/prefer-optional-chain': 'error',
+      '@typescript-eslint/no-non-null-assertion': 'warn',
+      '@typescript-eslint/prefer-as-const': 'error',
+      '@typescript-eslint/no-floating-promises': 'error',
+      '@typescript-eslint/await-thenable': 'error',
+      '@typescript-eslint/no-misused-promises': 'error',
+      '@typescript-eslint/no-shadow': 'error',
+      '@typescript-eslint/consistent-type-imports': ['error', { prefer: 'type-imports' }],
+
+      // Code quality rules
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
+      'prefer-const': 'error',
+      'no-var': 'error',
+      eqeqeq: ['error', 'always', { null: 'ignore' }],
+      curly: ['error', 'all'],
+      'no-shadow': 'off',
+    },
+    settings: {
+      react: {
+        version: '19',
+      },
+    },
   },
-}, // Ignore patterns
-{
-  ignores: [
-    '**/node_modules/**',
-    '**/dist/**',
-    '**/build/**',
-    '**/.next/**',
-    '**/coverage/**',
-  ],
-}, // Add Prettier config last to override other formatting rules
-// and turn off any ESLint rules that might conflict with Prettier.
-prettierConfig, ...storybook.configs["flat/recommended"]];
+
+  // Next.js specific rules (if using Next.js)
+  {
+    files: ['apps/web/**/*.{ts,tsx}'],
+    plugins: {
+      '@next/next': nextPlugin,
+    },
+    settings: {
+      next: {
+        rootDir: 'apps/web/',
+      },
+    },
+    rules: {
+      ...nextPlugin.configs.recommended.rules,
+      ...nextPlugin.configs['core-web-vitals'].rules,
+    },
+  },
+
+  // Test files - more relaxed rules
+  {
+    files: ['**/*.{test,spec}.{ts,tsx}', '**/__tests__/**/*.{ts,tsx}'],
+    languageOptions: {
+      globals: {
+        ...globals.jest,
+      },
+    },
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+      'no-console': 'off',
+    },
+  }
+);

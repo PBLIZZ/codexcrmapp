@@ -1,7 +1,6 @@
 import { appRouter, createContext } from '@codexcrm/server';
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 import type { AnyRouter } from '@trpc/server';
-import superjson from 'superjson';
 
 /**
  * tRPC API endpoint configuration
@@ -27,17 +26,14 @@ type ApiErrorResponse = {
  * Main request handler for tRPC API calls
  */
 export const GET = async (req: Request) => {
-  console.info(`[TRPC API] Handling ${req.method} request to ${req.url}`);
+  console.warn(`[TRPC API] Handling ${req.method} request to ${req.url}`);
 
   try {
     // Log the headers at debug level for detailed troubleshooting only
     if (process.env.NODE_ENV === 'development') {
       const headers = Object.fromEntries(req.headers.entries());
       // Use debug level for potentially sensitive or verbose information
-      console.debug(
-        '[TRPC API] Request headers:',
-        JSON.stringify(headers, null, 2)
-      );
+      console.warn('[TRPC API] Request headers:', JSON.stringify(headers, null, 2));
     }
 
     // Handle the request with tRPC's fetchRequestHandler
@@ -59,9 +55,7 @@ export const GET = async (req: Request) => {
       onError:
         process.env.NODE_ENV === 'development'
           ? ({ path, error }) => {
-              console.error(
-                `❌ [TRPC API] Failed on ${path}: ${error.message}`
-              );
+              console.error(`❌ [TRPC API] Failed on ${path}: ${error.message}`);
               console.error(error.stack);
             }
           : ({ path }) => {
@@ -70,7 +64,7 @@ export const GET = async (req: Request) => {
             },
     });
 
-    console.info(`[TRPC API] Response status: ${response.status}`);
+    console.warn(`[TRPC API] Response status: ${response.status}`);
     return response;
   } catch (error) {
     console.error('[TRPC API] Unhandled error:', error);

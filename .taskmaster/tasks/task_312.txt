@@ -1,0 +1,25 @@
+# Task ID: 312
+# Title: Epic 5: Implement Calendar Data Display
+# Status: pending
+# Dependencies: 311
+# Priority: high
+# Description: Create the unified calendar view that displays events from both the CRM and the user's connected Google Calendar.
+# Details:
+This task focuses on reading data from multiple sources and presenting it in a single, coherent user interface.
+
+# Test Strategy:
+Manually create one event in your `calendar_events` table for today. Create a separate, different event in your actual Google Calendar for tomorrow. Navigate to the `/calendar` page in the app. Verify you can see both events displayed correctly on their respective days.
+
+# Subtasks:
+## 1. Create `calendarRouter` and `listEvents` Procedure [pending]
+### Dependencies: None
+### Description: Implement a tRPC router for calendar-related data fetching.
+### Details:
+The `listEvents` procedure will be the core of this router. It will first fetch events from the `calendar_events` table. Then, if the user has a connected Google Calendar, it will use their stored tokens to call the Google Calendar API and fetch events from their primary business calendar for the requested date range. It will then merge and return both sets of data.
+
+## 2. Build the `/calendar` Page UI [pending]
+### Dependencies: None
+### Description: Develop the main calendar page using a robust calendar component library.
+### Details:
+Choose and install a library like `react-big-calendar`. The main page component will call the `api.calendar.listEvents.useQuery()` hook. The fetched events will be transformed into the format expected by the calendar library and passed as props to render the view.
+

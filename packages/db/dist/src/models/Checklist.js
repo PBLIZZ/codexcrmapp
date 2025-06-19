@@ -7,9 +7,9 @@ import { z } from 'zod';
 export const ChecklistSchema = z.object({
     id: z.string().uuid(),
     title: z.string().min(1, 'Title is required'),
-    is_completed: z.boolean().default(false),
+    description: z.string().nullable().optional(),
     task_id: z.string().uuid(),
-    position: z.number().int().nonnegative(),
+    position: z.number().int().nonnegative().nullable().optional(),
     user_id: z.string().uuid(),
     created_at: z.string().datetime().optional(),
     updated_at: z.string().datetime().optional(),
@@ -44,9 +44,6 @@ export class ChecklistModel {
     get title() {
         return this.data.title;
     }
-    get isCompleted() {
-        return this.data.is_completed;
-    }
     get taskId() {
         return this.data.task_id;
     }
@@ -70,14 +67,6 @@ export class ChecklistModel {
         return this.data;
     }
     // Business logic methods
-    complete() {
-        this.data.is_completed = true;
-        this.data.updated_at = new Date().toISOString();
-    }
-    reopen() {
-        this.data.is_completed = false;
-        this.data.updated_at = new Date().toISOString();
-    }
     softDelete() {
         this.data.deleted_at = new Date().toISOString();
         this.data.updated_at = new Date().toISOString();

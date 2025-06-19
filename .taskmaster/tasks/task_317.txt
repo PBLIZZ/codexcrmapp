@@ -1,0 +1,11 @@
+# Task ID: 317
+# Title: Quality Assurance: Task & Project Flow Testing
+# Status: pending
+# Dependencies: 308
+# Priority: high
+# Description: Perform end-to-end manual testing on all core task and project management user stories.
+# Details:
+This task involves manually going through all user flows related to creating and organizing tasks and projects, without AI or calendar features, to ensure the core functionality is bug-free.
+
+# Test Strategy:
+Follow a written test plan: 1. Create Project A. 2. Create Task 1 and assign it to Project A. 3. Create Task 2 with no project. 4. Mark Task 2 complete. 5. Move Task 1 to a new Project B. Verify at each step that the UI and underlying database state are correct.

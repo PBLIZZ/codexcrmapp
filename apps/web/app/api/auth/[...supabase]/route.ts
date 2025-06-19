@@ -12,13 +12,11 @@ export const dynamic = 'force-dynamic';
  */
 function getSafePath(path: string | null): string {
   // Default to home page if no path is provided
-  if (!path) return '/';
+  if (!path) {return '/';}
 
   // Ensure path starts with / to prevent open redirect vulnerabilities
   if (!path.startsWith('/')) {
-    console.warn(
-      `Auth callback: Invalid 'next' parameter "${path}". Defaulting to '/'.`
-    );
+    console.warn(`Auth callback: Invalid 'next' parameter "${path}". Defaulting to '/'.`);
     return '/';
   }
 
@@ -42,8 +40,8 @@ export async function GET(request: NextRequest) {
 
   if (code) {
     // Check for required environment variables
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const supabaseUrl = process.env['NEXT_PUBLIC_SUPABASE_URL'];
+    const supabaseAnonKey = process.env['NEXT_PUBLIC_SUPABASE_ANON_KEY'];
 
     if (!supabaseUrl || !supabaseAnonKey) {
       console.error(

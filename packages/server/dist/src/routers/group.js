@@ -10,6 +10,11 @@ const groupInputSchema = z.object({
         .max(500, 'Description too long')
         .optional()
         .nullable(),
+    color: z
+        .string()
+        .regex(/^#([0-9a-f]{3}){1,2}$/i, 'Must be a valid hex color')
+        .optional()
+        .nullable(),
     emoji: z
         .string()
         .max(2, 'Emoji should be 1-2 characters')

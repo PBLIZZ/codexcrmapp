@@ -1,17 +1,17 @@
-export declare const aiActionRouter: import("@trpc/server/dist/unstable-core-do-not-import").BuiltRouter<{
+export declare const aiActionRouter: import("@trpc/server").TRPCBuiltRouter<{
     ctx: import("..").Context;
     meta: object;
-    errorShape: import("@trpc/server/dist/unstable-core-do-not-import").DefaultErrorShape;
+    errorShape: import("@trpc/server").TRPCDefaultErrorShape;
     transformer: true;
-}, import("@trpc/server/dist/unstable-core-do-not-import").DecorateCreateRouterOptions<{
+}, import("@trpc/server").TRPCDecorateCreateRouterOptions<{
     list: import("@trpc/server").TRPCQueryProcedure<{
         input: {
-            status?: string | undefined;
             contactId?: string | undefined;
             sessionId?: string | undefined;
+            status?: string | undefined;
             actionType?: string | undefined;
         } | undefined;
-        output: any[];
+        output: any;
         meta: object;
     }>;
     getById: import("@trpc/server").TRPCQueryProcedure<{
@@ -30,15 +30,15 @@ export declare const aiActionRouter: import("@trpc/server/dist/unstable-core-do-
     }>;
     create: import("@trpc/server").TRPCMutationProcedure<{
         input: {
-            contact_id: string;
             action_type: string;
+            contact_id: string;
             suggestion: string;
-            id?: string | undefined;
-            priority?: string | null | undefined;
             status?: string | undefined;
+            id?: string | undefined;
             session_id?: string | null | undefined;
-            implemented?: boolean | undefined;
+            priority?: string | null | undefined;
             context?: any;
+            implemented?: boolean | undefined;
             implementation_date?: string | null | undefined;
             feedback?: string | null | undefined;
         };
@@ -48,14 +48,14 @@ export declare const aiActionRouter: import("@trpc/server/dist/unstable-core-do-
     update: import("@trpc/server").TRPCMutationProcedure<{
         input: {
             id: string;
-            priority?: string | null | undefined;
             status?: string | undefined;
+            action_type?: string | undefined;
             contact_id?: string | undefined;
             session_id?: string | null | undefined;
-            action_type?: string | undefined;
-            implemented?: boolean | undefined;
             suggestion?: string | undefined;
+            priority?: string | null | undefined;
             context?: any;
+            implemented?: boolean | undefined;
             implementation_date?: string | null | undefined;
             feedback?: string | null | undefined;
         };
@@ -67,7 +67,7 @@ export declare const aiActionRouter: import("@trpc/server/dist/unstable-core-do-
             actionId: string;
         };
         output: {
-            success: boolean;
+            success: any;
             actionId: string;
         };
         meta: object;

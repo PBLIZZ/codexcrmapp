@@ -1,9 +1,9 @@
-export declare const groupRouter: import("@trpc/server/dist/unstable-core-do-not-import").BuiltRouter<{
+export declare const groupRouter: import("@trpc/server").TRPCBuiltRouter<{
     ctx: import("..").Context;
     meta: object;
-    errorShape: import("@trpc/server/dist/unstable-core-do-not-import").DefaultErrorShape;
+    errorShape: import("@trpc/server").TRPCDefaultErrorShape;
     transformer: true;
-}, import("@trpc/server/dist/unstable-core-do-not-import").DecorateCreateRouterOptions<{
+}, import("@trpc/server").TRPCDecorateCreateRouterOptions<{
     getGroupsForContact: import("@trpc/server").TRPCQueryProcedure<{
         input: {
             contactId: string;
@@ -28,6 +28,7 @@ export declare const groupRouter: import("@trpc/server/dist/unstable-core-do-not
             name: string;
             id?: string | undefined;
             description?: string | null | undefined;
+            color?: string | null | undefined;
             emoji?: string | null | undefined;
         };
         output: any;

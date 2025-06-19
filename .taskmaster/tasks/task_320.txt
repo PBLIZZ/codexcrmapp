@@ -1,0 +1,11 @@
+# Task ID: 320
+# Title: Quality Assurance: AI Delegation Flow Testing
+# Status: pending
+# Dependencies: 316
+# Priority: high
+# Description: Perform end-to-end manual testing of the AI delegation feature.
+# Details:
+Manually verify that a user can successfully hand off a task to the AI, and that the task correctly moves from the user's view to the AI's view.
+
+# Test Strategy:
+Follow a written test plan: 1. Create a task. 2. Verify it is in your inbox. 3. Delegate it to the AI. 4. Verify it is no longer in your inbox. 5. Verify it now appears in the 'AI Inbox' view. 6. Check the database `owner_id` to confirm the change.

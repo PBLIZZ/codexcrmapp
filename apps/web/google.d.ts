@@ -8,16 +8,12 @@ declare global {
         id: {
           initialize: (config: google.accounts.id.IdConfiguration) => void;
           prompt: (
-            momentNotification?: (
-              notification: google.accounts.id.PromptMomentNotification
-            ) => void
+            momentNotification?: (notification: google.accounts.id.PromptMomentNotification) => void
           ) => void;
           renderButton: (
             parent: HTMLElement,
             options: google.accounts.id.GsiButtonConfiguration,
-            clickListener?: (
-              response: google.accounts.id.CredentialResponse
-            ) => void
+            clickListener?: (response: google.accounts.id.CredentialResponse) => void
           ) => void;
           disableAutoSelect: () => void;
           storeCredential: (

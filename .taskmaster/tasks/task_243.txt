@@ -1,7 +1,7 @@
 # Task ID: 243
 # Title: Refactor Codebase to Use Relative Paths for Monorepo Structure
 # Status: pending
-# Dependencies: 184, 210
+# Dependencies: 184 (Not found), 210
 # Priority: medium
 # Description: Refactor the codebase to change absolute filepaths to relative paths to better align with the monorepo structure, improving maintainability and reducing import errors.
 # Details:

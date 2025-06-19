@@ -1,4 +1,4 @@
-import { getSupabaseClient, safeDbOperation, handleDbResult } from '../utils/db-helpers';
+import { getSupabaseClient, safeDbOperation, handleDbResult, } from '../utils/db-helpers';
 /**
  * Repository for contact-related database operations
  */
@@ -60,7 +60,16 @@ export const ContactsRepository = {
                     return null; // Not found
                 throw error;
             }
-            return data;
+            const typedData = data; // Cast here
+            // Ensure profile is a single object or null, not an array
+            // Supabase returns profile as an array even for one-to-one relationships
+            const contactData = {
+                ...typedData,
+                profile: typedData.profile && typedData.profile.length > 0
+                    ? typedData.profile[0]
+                    : null,
+            };
+            return contactData;
         }, 'getContactWithProfile');
         return handleDbResult(result);
     },
@@ -208,5 +217,5 @@ export const ContactsRepository = {
             return data || [];
         }, 'getContactsByJourneyStage');
         return handleDbResult(result);
-    }
+    },
 };

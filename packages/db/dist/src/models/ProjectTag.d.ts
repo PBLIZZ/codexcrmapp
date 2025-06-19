@@ -11,15 +11,15 @@ export declare const ProjectTagSchema: z.ZodObject<{
     created_at: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     id: string;
-    user_id: string;
     project_id: string;
     tag_id: string;
+    user_id: string;
     created_at?: string | undefined;
 }, {
     id: string;
-    user_id: string;
     project_id: string;
     tag_id: string;
+    user_id: string;
     created_at?: string | undefined;
 }>;
 export type ProjectTag = z.infer<typeof ProjectTagSchema>;
@@ -32,14 +32,14 @@ export declare const ProjectTagCreateSchema: z.ZodObject<Omit<{
 }, "id" | "created_at"> & {
     id: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
-    user_id: string;
     project_id: string;
     tag_id: string;
+    user_id: string;
     id?: string | undefined;
 }, {
-    user_id: string;
     project_id: string;
     tag_id: string;
+    user_id: string;
     id?: string | undefined;
 }>;
 export type ProjectTagCreate = z.infer<typeof ProjectTagCreateSchema>;

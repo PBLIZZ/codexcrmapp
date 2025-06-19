@@ -15,6 +15,7 @@ The `MainLayout` component is the root layout for the application. It provides t
 **Location:** `components/layout/MainLayout.tsx`
 
 **Key Features:**
+
 - Implements a floating UI pattern with subtle background and shadow effects
 - Uses the SidebarProvider for managing sidebar state
 - Provides a responsive layout that works on various screen sizes
@@ -26,6 +27,7 @@ The `AppContent` component renders the main content area of the application, inc
 **Location:** `components/layout/AppContent.tsx`
 
 **Key Features:**
+
 - Handles authentication state
 - Provides a consistent container for all page content
 - Manages responsive behavior for different viewport sizes
@@ -37,6 +39,7 @@ The `AppSidebarController` determines which sidebar to display based on the curr
 **Location:** `components/layout/AppSidebarController.tsx`
 
 **Key Features:**
+
 - Uses path-based routing to determine the active section
 - Lazy-loads the appropriate sidebar component
 - Provides a fallback UI during loading
@@ -48,6 +51,7 @@ The `PageHeader` component displays the page title, breadcrumbs, and any page-sp
 **Location:** `components/layout/PageHeader.tsx`
 
 **Key Features:**
+
 - Consistent header across all pages
 - Breadcrumb navigation
 - Support for page-specific action buttons
@@ -60,6 +64,7 @@ The `MainSectionNav` component provides the main navigation for the application.
 **Location:** `components/layout/MainSectionNav.tsx`
 
 **Key Features:**
+
 - Responsive navigation that collapses to icons on smaller screens
 - Active state highlighting for the current section
 - Data-driven navigation items for easy maintenance
@@ -71,6 +76,7 @@ The application uses a comprehensive UI component system based on shadcn/ui, whi
 **Location:** `components/ui/`
 
 **Key Components:**
+
 - `Card` - For content containers
 - `Button` - For interactive elements
 - `Dialog` - For modal interactions
@@ -123,6 +129,7 @@ The dashboard uses a modular widget system. Widgets are self-contained component
 **Location:** `components/dashboard/` with each widget in its own subdirectory
 
 **Available Widgets:**
+
 - `AiClientInsights` - AI-generated insights about clients
 - `AiTaskPanel` - AI-suggested tasks requiring approval
 - `BusinessMetricsCard` - Key business metrics and visualizations
@@ -141,9 +148,9 @@ import { NewWidget } from '@/components/dashboard/new-widget/NewWidget';
 
 export function DashboardWidgets() {
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       {/* Existing widgets */}
-      <NewWidget className="h-full" />
+      <NewWidget className='h-full' />
     </div>
   );
 }

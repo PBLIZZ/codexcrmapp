@@ -1,7 +1,7 @@
 # Task ID: 242
 # Title: Error Handling and User Feedback System
 # Status: pending
-# Dependencies: 224, 237, 238, 177, 175
+# Dependencies: 224, 237, 238, 177 (Not found), 175 (Not found)
 # Priority: medium
 # Description: Implement a comprehensive error handling and user feedback system across the application to provide clear, actionable messages for both system errors and user actions.
 # Details:

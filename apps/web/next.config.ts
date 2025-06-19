@@ -14,11 +14,7 @@ const nextConfig: NextConfig = {
   ],
 
   // Moved from experimental.serverComponentsExternalPackages
-  serverExternalPackages: [
-    '@whatwg-node/fetch',
-    '@prisma/client',
-    'bcryptjs',
-  ],
+  serverExternalPackages: ['@whatwg-node/fetch', '@prisma/client', 'bcryptjs'],
 
   images: {
     remotePatterns: [

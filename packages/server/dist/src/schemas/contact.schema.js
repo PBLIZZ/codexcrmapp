@@ -11,7 +11,7 @@ export const contactBaseSchema = z.object({
     address_city: z.string().optional().nullable(),
     address_postal_code: z.string().optional().nullable(),
     address_country: z.string().optional().nullable(),
-    website: z.string().url({ message: "Invalid URL" }).optional().nullable(),
+    website: z.string().url({ message: 'Invalid URL' }).optional().nullable(),
     profile_image_url: z.string().optional().nullable(),
     notes: z.string().optional().nullable(),
     tags: z.array(z.string()).optional().nullable(),
@@ -26,7 +26,7 @@ export const contactBaseSchema = z.object({
         }
         return null;
     }, z.date().optional().nullable()),
-    enriched_data: z.any().optional().nullable(),
+    enriched_data: z.record(z.string(), z.unknown()).optional().nullable(),
     enrichment_status: z.string().optional().nullable(),
     wellness_goals: z.array(z.string()).optional().nullable(),
     wellness_journey_stage: z.string().optional().nullable(),
@@ -56,11 +56,11 @@ export const contactProfileSchema = z.object({
     detailed_bio: z.string().optional().nullable(),
     family_members: z.array(z.string()).optional().nullable(),
     personality_traits: z.array(z.string()).optional().nullable(),
-    preferences: z.any().optional().nullable(),
-    health_metrics: z.any().optional().nullable(),
-    important_dates: z.any().optional().nullable(),
+    preferences: z.record(z.string(), z.unknown()).optional().nullable(),
+    health_metrics: z.record(z.string(), z.unknown()).optional().nullable(),
+    important_dates: z.record(z.string(), z.unknown()).optional().nullable(),
     wellness_history: z.string().optional().nullable(),
-    custom_fields: z.any().optional().nullable(),
+    custom_fields: z.record(z.string(), z.unknown()).optional().nullable(),
 });
 // Schema for contact with profile
 export const contactWithProfileSchema = contactBaseSchema.extend({

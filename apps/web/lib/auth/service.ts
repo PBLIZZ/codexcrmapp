@@ -10,7 +10,7 @@ const supabase = createClient();
  */
 export async function fetchCurrentUser(): Promise<{
   user: User | null;
-  error: any | null;
+  error: Error | null;
 }> {
   const {
     data: { user },
@@ -26,7 +26,7 @@ export async function fetchCurrentUser(): Promise<{
  */
 export async function updateUserPassword(
   password: string
-): Promise<{ error: any | null }> {
+): Promise<{ error: Error | null }> {
   const { error } = await supabase.auth.updateUser({ password });
   return { error };
 }

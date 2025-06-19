@@ -1,0 +1,25 @@
+# Task ID: 311
+# Title: Epic 5: Implement Google Calendar Onboarding
+# Status: pending
+# Dependencies: 301
+# Priority: high
+# Description: Build the complete user flow for connecting a Google Calendar, including OAuth and calendar selection.
+# Details:
+This is a critical, user-facing security and integration feature that must be smooth and reliable.
+
+# Test Strategy:
+Go to `/settings/integrations`. Click 'Connect Google Calendar'. Successfully log in with a real Google account and grant permissions. On redirect, ensure you are presented with a dropdown of your calendars. Select one. Verify the UI updates to a 'Connected' state and that this state persists on refresh.
+
+# Subtasks:
+## 1. Build UI at `/settings/integrations` [pending]
+### Dependencies: None
+### Description: Create the settings page with the button to start the Google OAuth flow.
+### Details:
+The page should clearly explain what the integration does. The 'Connect' button should be disabled if a connection is already active. It should also display the currently connected calendar if one is set.
+
+## 2. Implement Backend OAuth Logic & Token Storage [pending]
+### Dependencies: None
+### Description: Create the tRPC procedures and API callback route to handle the Google OAuth 2.0 flow.
+### Details:
+This includes a procedure to generate the auth URL, an API route (`/api/auth/google/callback`) to handle the redirect from Google, and logic to securely store the tokens in Supabase Vault and the chosen calendar ID in user settings.
+

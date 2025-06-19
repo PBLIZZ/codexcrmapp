@@ -1,0 +1,11 @@
+# Task ID: 319
+# Title: Quality Assurance: Calendar Integration Testing
+# Status: pending
+# Dependencies: 313
+# Priority: high
+# Description: Perform end-to-end manual testing of the entire Google Calendar integration workflow.
+# Details:
+This is a critical test of an external integration. It involves checking the OAuth flow, data display, and the sync-to-calendar feature with a real Google account.
+
+# Test Strategy:
+Follow a written test plan: 1. Connect a fresh Google account. 2. Verify calendar events appear in the app. 3. Create a task with a due date in the app. 4. Click 'Add to Google Calendar'. 5. Check your Google Calendar to ensure the event was created correctly. 6. Disconnect the Google account from settings and ensure the app handles it gracefully.

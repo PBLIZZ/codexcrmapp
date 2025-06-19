@@ -6,9 +6,26 @@ import { useState, useTransition } from 'react';
 
 // Lucide React Icons
 import {
-  AlertCircle, ArrowLeft, Briefcase, Building, Calendar, CheckCircle, Clock,
-  Edit, ExternalLink, Globe, Home, Link as LinkIcon, Mail, MapPin, Phone,
-  Plus, Sparkles, Tag, Trash2, User
+  AlertCircle,
+  ArrowLeft,
+  Briefcase,
+  Building,
+  Calendar,
+  CheckCircle,
+  Clock,
+  Edit,
+  ExternalLink,
+  Globe,
+  Home,
+  Link as LinkIcon,
+  Mail,
+  MapPin,
+  Phone,
+  Plus,
+  Sparkles,
+  Tag,
+  Trash2,
+  User,
 } from 'lucide-react';
 
 // Shadcn/ui and local components
@@ -17,8 +34,12 @@ import { AvatarImage as CustomAvatarImage } from '@/components/ui/avatar-image';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-  Dialog, DialogContent, DialogDescription, DialogFooter,
-  DialogHeader, DialogTitle
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea'; // For inline notes
@@ -31,13 +52,19 @@ import { ContactGroupsSection } from './ContactGroupsSection';
 import { ContactTimeline } from './ContactTimeline';
 
 const TABS = { NOTES: 'notes', TASKS: 'tasks', TIMELINE: 'timeline' } as const;
-type TabValue = (typeof TABS)[keyof typeof TABS];
+type _TabValue = (typeof TABS)[keyof typeof TABS];
 
 /**
  * NotesEditSection Component
  * A self-contained component for inline note editing, using 'sonner' for notifications.
  */
-function NotesEditSection({ contactId, initialNotes }: { contactId: string; initialNotes: string | null }) {
+function NotesEditSection({
+  contactId,
+  initialNotes,
+}: {
+  contactId: string;
+  initialNotes: string | null;
+}) {
   const utils = api.useUtils();
   const [isEditing, setIsEditing] = useState(false);
   const [notes, setNotes] = useState(initialNotes || '');
@@ -48,13 +75,17 @@ function NotesEditSection({ contactId, initialNotes }: { contactId: string; init
   const updateNotesMutation = api.contacts.updateNotes.useMutation({
     onSuccess: async () => {
       // Using sonner's success method
-      toast.success("Notes Updated", { description: "Your changes have been saved." });
+      toast.success('Notes Updated', {
+        description: 'Your changes have been saved.',
+      });
       await utils.contacts.getById.invalidate({ contactId });
       setIsEditing(false);
     },
     onError: (error) => {
       // Using sonner's error method
-      toast.error("Update Failed", { description: `Failed to update notes: ${error.message}` });
+      toast.error('Update Failed', {
+        description: `Failed to update notes: ${error.message}`,
+      });
     },
   });
 
@@ -74,7 +105,11 @@ function NotesEditSection({ contactId, initialNotes }: { contactId: string; init
       <div className="flex flex-row items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-gray-800">Contact Notes</h3>
         {!isEditing && (
-          <Button size="sm" variant="outline" onClick={() => setIsEditing(true)}>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setIsEditing(true)}
+          >
             <Edit className="mr-2 h-4 w-4" /> Edit Notes
           </Button>
         )}
@@ -90,9 +125,11 @@ function NotesEditSection({ contactId, initialNotes }: { contactId: string; init
             className="w-full"
           />
           <div className="flex justify-end gap-2">
-            <Button variant="ghost" onClick={handleCancel} disabled={isPending}>Cancel</Button>
+            <Button variant="ghost" onClick={handleCancel} disabled={isPending}>
+              Cancel
+            </Button>
             <Button onClick={handleSave} disabled={isPending}>
-              {isPending ? "Saving..." : "Save Notes"}
+              {isPending ? 'Saving...' : 'Save Notes'}
             </Button>
           </div>
         </div>
@@ -105,8 +142,12 @@ function NotesEditSection({ contactId, initialNotes }: { contactId: string; init
           ) : (
             <div className="text-center py-16 bg-gray-50 rounded-lg">
               <User className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-800">No notes yet</h3>
-              <p className="text-gray-500 mt-1">Click "Edit Notes" to add important details.</p>
+              <h3 className="text-lg font-medium text-gray-800">
+                No notes yet
+              </h3>
+              <p className="text-gray-500 mt-1">
+                Click "Edit Notes" to add important details.
+              </p>
             </div>
           )}
         </>
@@ -115,20 +156,24 @@ function NotesEditSection({ contactId, initialNotes }: { contactId: string; init
   );
 }
 
-
 export function ContactDetailView({ contactId }: { contactId: string }) {
   const router = useRouter();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
-  const { data: contact, isLoading, error: queryError } = api.contacts.getById.useQuery(
-    { contactId }, { enabled: !!contactId, retry: 1 }
+  const {
+    data: contact,
+    isLoading,
+    error: queryError,
+  } = api.contacts.getById.useQuery(
+    { contactId },
+    { enabled: !!contactId, retry: 1 }
   );
 
   const deleteMutation = api.contacts.delete.useMutation({
     onSuccess: () => {
-        toast.success("Contact Deleted");
-        router.push('/contacts');
+      toast.success('Contact Deleted');
+      router.push('/contacts');
     },
     onError: (error) => {
       setDeleteError(`Failed to delete contact: ${error.message}`);
@@ -137,7 +182,7 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
   });
 
   const handleDeleteContact = () => {
-    if (contact?.id) deleteMutation.mutate({ contactId: contact.id });
+    if (contact?.id) {deleteMutation.mutate({ contactId: contact.id });}
   };
 
   if (isLoading) {
@@ -155,7 +200,9 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Error Loading Contact</AlertTitle>
           <AlertDescription>
-            {queryError ? queryError.message : 'The requested contact could not be found.'}
+            {queryError
+              ? queryError.message
+              : 'The requested contact could not be found.'}
           </AlertDescription>
         </Alert>
         <div className="text-center mt-6">
@@ -172,7 +219,11 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
     <div className="container mx-auto py-8 px-4 space-y-8">
       {/* Header with Back Navigation */}
       <div>
-        <Button variant="ghost" onClick={() => router.push('/contacts')} className="text-gray-600 hover:text-gray-900 mb-4">
+        <Button
+          variant="ghost"
+          onClick={() => router.push('/contacts')}
+          className="text-gray-600 hover:text-gray-900 mb-4"
+        >
           <ArrowLeft className="mr-2 h-4 w-4" />
           All Contacts
         </Button>
@@ -192,13 +243,24 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
           Contact Details
         </h2>
         <div className="flex items-center gap-x-2">
-          <Button variant="ghost" className="text-white hover:bg-teal-700/50" onClick={() => router.push(`/contacts/${contactId}/edit`)}>
+          <Button
+            variant="ghost"
+            className="text-white hover:bg-teal-700/50"
+            onClick={() => router.push(`/contacts/${contactId}/edit`)}
+          >
             <Edit className="mr-2 h-4 w-4" /> Edit Contact
           </Button>
-          <Button variant="outline" className="bg-transparent text-white border-white hover:bg-teal-700/50">
+          <Button
+            variant="outline"
+            className="bg-transparent text-white border-white hover:bg-teal-700/50"
+          >
             <Sparkles className="mr-2 h-4 w-4" /> Enrich Contact
           </Button>
-          <Button variant="destructive" className="bg-red-600 hover:bg-red-700" onClick={() => setIsDeleteDialogOpen(true)}>
+          <Button
+            variant="destructive"
+            className="bg-red-600 hover:bg-red-700"
+            onClick={() => setIsDeleteDialogOpen(true)}
+          >
             <Trash2 className="mr-2 h-4 w-4" /> Delete
           </Button>
         </div>
@@ -216,22 +278,37 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
                 size="xl"
                 className="h-28 w-28 mb-4 shadow-lg border-4 border-white"
               />
-              <h1 className="text-3xl font-bold text-gray-900">{contact.full_name}</h1>
-              {contact.job_title && <p className="text-lg text-gray-500">{contact.job_title}</p>}
+              <h1 className="text-3xl font-bold text-gray-900">
+                {contact.full_name}
+              </h1>
+              {contact.job_title && (
+                <p className="text-lg text-gray-500">{contact.job_title}</p>
+              )}
             </div>
 
             <div className="space-y-4 pt-4 border-t border-gray-200">
-              <h3 className="text-base font-semibold text-gray-800">Contact & Professional</h3>
+              <h3 className="text-base font-semibold text-gray-800">
+                Contact & Professional
+              </h3>
               <div className="space-y-3">
                 <div className="flex items-center">
                   <Mail className="h-4 w-4 mr-3 text-gray-400" />
-                  <a href={`mailto:${contact.email}`} className="text-teal-700 hover:underline">{contact.email}</a>
+                  <a
+                    href={`mailto:${contact.email}`}
+                    className="text-teal-700 hover:underline"
+                  >
+                    {contact.email}
+                  </a>
                 </div>
                 {contact.phone && (
                   <div className="flex items-center">
                     <Phone className="h-4 w-4 mr-3 text-gray-400" />
                     <span>{contact.phone}</span>
-                    {contact.phone_country_code && <span className="text-gray-500 ml-1">({contact.phone_country_code})</span>}
+                    {contact.phone_country_code && (
+                      <span className="text-gray-500 ml-1">
+                        ({contact.phone_country_code})
+                      </span>
+                    )}
                   </div>
                 )}
                 {contact.company_name && (
@@ -246,9 +323,14 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
 
           {/* === COLUMN 2: LOCATION & ONLINE PRESENCE === */}
           <div className="space-y-6 pt-6 md:pt-0 lg:px-8 lg:border-l lg:border-r border-gray-200">
-            {contact.address_street || contact.address_city || contact.address_postal_code || contact.address_country ? (
+            {contact.address_street ||
+            contact.address_city ||
+            contact.address_postal_code ||
+            contact.address_country ? (
               <div className="space-y-4">
-                <h3 className="text-base font-semibold text-gray-800">Location</h3>
+                <h3 className="text-base font-semibold text-gray-800">
+                  Location
+                </h3>
                 <div className="space-y-3">
                   {contact.address_street && (
                     <div className="flex items-center">
@@ -260,7 +342,11 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
                     <div className="flex items-center">
                       <MapPin className="h-4 w-4 mr-3 text-gray-400" />
                       <span>{contact.address_city}</span>
-                      {contact.address_postal_code && <span className="ml-1">{contact.address_postal_code}</span>}
+                      {contact.address_postal_code && (
+                        <span className="ml-1">
+                          {contact.address_postal_code}
+                        </span>
+                      )}
                     </div>
                   )}
                   {contact.address_country && (
@@ -274,24 +360,38 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
             ) : null}
 
             <div className="space-y-4 pt-4 border-t border-gray-200">
-              <h3 className="text-base font-semibold text-gray-800">Online Presence</h3>
+              <h3 className="text-base font-semibold text-gray-800">
+                Online Presence
+              </h3>
               <div className="space-y-3">
                 {contact.website && (
                   <div className="flex items-center">
                     <ExternalLink className="h-4 w-4 mr-3 text-gray-400" />
-                    <a href={contact.website} target="_blank" rel="noopener noreferrer" className="text-teal-700 hover:underline">{contact.website}</a>
+                    <a
+                      href={contact.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-teal-700 hover:underline"
+                    >
+                      {contact.website}
+                    </a>
                   </div>
                 )}
-                {contact.social_handles && contact.social_handles.length > 0 && (
-                  <div className="flex items-start">
-                    <LinkIcon className="h-4 w-4 mr-3 text-gray-400 mt-1" />
-                    <div className="flex flex-col">
-                      {contact.social_handles.map((handle: string, index: number) => (
-                        <span key={index} className="text-gray-700">{handle}</span>
-                      ))}
+                {contact.social_handles &&
+                  contact.social_handles.length > 0 && (
+                    <div className="flex items-start">
+                      <LinkIcon className="h-4 w-4 mr-3 text-gray-400 mt-1" />
+                      <div className="flex flex-col">
+                        {contact.social_handles.map(
+                          (handle: string, index: number) => (
+                            <span key={index} className="text-gray-700">
+                              {handle}
+                            </span>
+                          )
+                        )}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
               </div>
             </div>
           </div>
@@ -299,13 +399,20 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
           {/* === COLUMN 3: CRM & TAGS === */}
           <div className="space-y-6 pt-6 lg:pt-0 lg:pl-8">
             <div className="space-y-4">
-              <h3 className="text-base font-semibold text-gray-800">CRM Data</h3>
+              <h3 className="text-base font-semibold text-gray-800">
+                CRM Data
+              </h3>
               <div className="space-y-3">
                 {contact.tags && contact.tags.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-3">
                     {contact.tags.map((tag: string, index: number) => (
-                      <Badge key={index} variant="secondary" className="flex items-center gap-1">
-                        <Tag className="h-3 w-3" />{tag}
+                      <Badge
+                        key={index}
+                        variant="secondary"
+                        className="flex items-center gap-1"
+                      >
+                        <Tag className="h-3 w-3" />
+                        {tag}
                       </Badge>
                     ))}
                   </div>
@@ -313,13 +420,17 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
                 {contact.source && (
                   <div className="flex items-center">
                     <Briefcase className="h-4 w-4 mr-3 text-gray-400" />
-                    <span>Source: <Badge variant="outline">{contact.source}</Badge></span>
+                    <span>
+                      Source: <Badge variant="outline">{contact.source}</Badge>
+                    </span>
                   </div>
                 )}
                 {contact.last_contacted_at && (
                   <div className="flex items-center">
                     <Clock className="h-4 w-4 mr-3 text-gray-400" />
-                    <span>Last contact: {formatDateTime(contact.last_contacted_at)}</span>
+                    <span>
+                      Last contact: {formatDateTime(contact.last_contacted_at)}
+                    </span>
                   </div>
                 )}
                 {contact.enrichment_status && (
@@ -330,23 +441,38 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
                         <span className="mr-2">Enrichment:</span>
                         <Badge
                           className="text-sm"
-                          variant={contact.enrichment_status === 'completed' ? 'default' : 'destructive'}
+                          variant={
+                            contact.enrichment_status === 'completed'
+                              ? 'default'
+                              : 'destructive'
+                          }
                         >
                           {contact.enrichment_status === 'completed' ? (
-                            <><CheckCircle className="mr-1 h-3 w-3" /> Completed</>
+                            <>
+                              <CheckCircle className="mr-1 h-3 w-3" /> Completed
+                            </>
                           ) : (
-                            <><AlertCircle className="mr-1 h-3 w-3" /> {contact.enrichment_status}</>
+                            <>
+                              <AlertCircle className="mr-1 h-3 w-3" />{' '}
+                              {contact.enrichment_status}
+                            </>
                           )}
                         </Badge>
                       </div>
                       {contact.enriched_data && (
                         <div className="mt-2 text-sm bg-gray-50 p-2 rounded-md">
-                          {Object.entries(contact.enriched_data || {}).map(([key, value]) => (
-                            <div key={key} className="flex items-start mb-1">
-                              <span className="font-medium mr-1">{key}:</span>
-                              <span>{typeof value === 'string' ? value : JSON.stringify(value)}</span>
-                            </div>
-                          ))}
+                          {Object.entries(contact.enriched_data || {}).map(
+                            ([key, value]) => (
+                              <div key={key} className="flex items-start mb-1">
+                                <span className="font-medium mr-1">{key}:</span>
+                                <span>
+                                  {typeof value === 'string'
+                                    ? value
+                                    : JSON.stringify(value)}
+                                </span>
+                              </div>
+                            )
+                          )}
                         </div>
                       )}
                     </div>
@@ -366,10 +492,13 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
             <TabsTrigger value={TABS.TASKS}>Tasks</TabsTrigger>
             <TabsTrigger value={TABS.TIMELINE}>Timeline</TabsTrigger>
           </TabsList>
-          
+
           <div className="min-h-[400px]">
             <TabsContent value={TABS.NOTES} className="p-6">
-              <NotesEditSection contactId={contact.id} initialNotes={contact.notes} />
+              <NotesEditSection
+                contactId={contact.id}
+                initialNotes={contact.notes}
+              />
             </TabsContent>
 
             <TabsContent value={TABS.TASKS} className="p-6">
@@ -381,11 +510,15 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
               </div>
               <div className="text-center py-16 bg-gray-50 rounded-lg">
                 <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-800">Task Management Coming Soon</h3>
-                <p className="text-gray-500 mt-1">This feature will be available in a future update.</p>
+                <h3 className="text-lg font-medium text-gray-800">
+                  Task Management Coming Soon
+                </h3>
+                <p className="text-gray-500 mt-1">
+                  This feature will be available in a future update.
+                </p>
               </div>
             </TabsContent>
-            
+
             <TabsContent value={TABS.TIMELINE} className="p-6">
               <ContactTimeline contactId={contactId} />
             </TabsContent>
@@ -403,12 +536,29 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Delete Contact</DialogTitle>
-            <DialogDescription>Are you sure you want to delete this contact? This action cannot be undone.</DialogDescription>
+            <DialogDescription>
+              Are you sure you want to delete this contact? This action cannot
+              be undone.
+            </DialogDescription>
           </DialogHeader>
-          <p className="text-sm text-muted-foreground">This will permanently delete <span className="font-semibold">{contact.full_name}</span>.</p>
+          <p className="text-sm text-muted-foreground">
+            This will permanently delete{' '}
+            <span className="font-semibold">{contact.full_name}</span>.
+          </p>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setIsDeleteDialogOpen(false)} disabled={deleteMutation.isPending}>Cancel</Button>
-            <Button variant="destructive" onClick={handleDeleteContact} disabled={deleteMutation.isPending}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setIsDeleteDialogOpen(false)}
+              disabled={deleteMutation.isPending}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteContact}
+              disabled={deleteMutation.isPending}
+            >
               {deleteMutation.isPending ? 'Deleting...' : 'Delete Contact'}
             </Button>
           </DialogFooter>
