@@ -5,14 +5,17 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { toast } from 'sonner';
-import * as z from 'zod';
-
+import * as z from 'zod/v4';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { api } from '@/lib/trpc';
-import { GroupStylePicker, PRESET_COLORS, PRESET_EMOJIS } from '@/components/groups/GroupStylePicker';
+import {
+  GroupStylePicker,
+  PRESET_COLORS,
+  PRESET_EMOJIS,
+} from '@/components/groups/GroupStylePicker';
 
 // Zod Schema for Form Validation (consistent with backend expectations for group creation)
 const groupFormSchema = z.object({
@@ -56,7 +59,11 @@ interface GroupCreateFormProps {
   // source?: string; // Optional: for analytics or tracking where the form was initiated
 }
 
-export function GroupCreateForm({ onSuccess, editingGroup, isEditMode = false }: GroupCreateFormProps) {
+export function GroupCreateForm({
+  onSuccess,
+  editingGroup,
+  isEditMode = false,
+}: GroupCreateFormProps) {
   const queryClient = useQueryClient();
 
   const {
@@ -79,7 +86,9 @@ export function GroupCreateForm({ onSuccess, editingGroup, isEditMode = false }:
   const saveGroupMutation = api.groups.save.useMutation({
     onSuccess: (savedGroup) => {
       toast.success(isEditMode ? 'Group updated!' : 'Group created!', {
-        description: `The group "${savedGroup.name}" has been successfully ${isEditMode ? 'updated' : 'created'}.`,
+        description: `The group "${savedGroup.name}" has been successfully ${
+          isEditMode ? 'updated' : 'created'
+        }.`,
       });
       queryClient.invalidateQueries({ queryKey: [['groups', 'list']] });
       queryClient.invalidateQueries({ queryKey: [['groups', 'listWithCounts']] }); // Refetch group list
@@ -114,19 +123,19 @@ export function GroupCreateForm({ onSuccess, editingGroup, isEditMode = false }:
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 py-2">
+    <form onSubmit={handleSubmit(onSubmit)} className='space-y-6 py-2'>
       {/* Form fields: Emoji, Group Name, Description */}
-      <div className="space-y-4">
+      <div className='space-y-4'>
         <div>
-          <Label htmlFor="emoji" className="text-sm font-medium">
+          <Label htmlFor='emoji' className='text-sm font-medium'>
             Emoji
           </Label>
           <Controller
-            name="emoji"
+            name='emoji'
             control={control}
-            render={({ field:emojiField}) => (
+            render={({ field: emojiField }) => (
               <Controller
-                name="color"
+                name='color'
                 control={control}
                 render={({ field: colorField }) => (
                   <GroupStylePicker
@@ -139,47 +148,53 @@ export function GroupCreateForm({ onSuccess, editingGroup, isEditMode = false }:
               />
             )}
           />
-            {errors.emoji && <p className="text-red-500 text-xs mt-1">{errors.emoji.message}</p>}
-            {errors.color && <p className="text-red-500 text-xs mt-1">{errors.color.message}</p>}
+          {errors.emoji && <p className='text-red-500 text-xs mt-1'>{errors.emoji.message}</p>}
+          {errors.color && <p className='text-red-500 text-xs mt-1'>{errors.color.message}</p>}
         </div>
 
-        <div className="space-y-4">
-        <div>
-          <Label htmlFor="name">Group Name <span className="text-red-500">*</span></Label>
-          <Input
-            id="name"
-            {...register('name')}
-            placeholder="e.g., VIP Clients"
-            className={`mt-1 ${errors.name ? 'border-red-500' : ''}`}
-            autoFocus
-          />
-          {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
-        </div>
+        <div className='space-y-4'>
+          <div>
+            <Label htmlFor='name'>
+              Group Name <span className='text-red-500'>*</span>
+            </Label>
+            <Input
+              id='name'
+              {...register('name')}
+              placeholder='e.g., VIP Clients'
+              className={`mt-1 ${errors.name ? 'border-red-500' : ''}`}
+              autoFocus
+            />
+            {errors.name && <p className='text-red-500 text-xs mt-1'>{errors.name.message}</p>}
+          </div>
         </div>
 
         <div>
-          <Label htmlFor="description">Description (Optional)</Label>
+          <Label htmlFor='description'>Description (Optional)</Label>
           <Textarea
-            id="description"
+            id='description'
             {...register('description')}
-            placeholder="A short description of this group"
+            placeholder='A short description of this group'
             rows={3}
-            className="mt-1 resize-none"
+            className='mt-1 resize-none'
             maxLength={500}
           />
           {errors.description && (
-            <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>
-          )}  
+            <p className='text-red-500 text-xs mt-1'>{errors.description.message}</p>
+          )}
         </div>
       </div>
 
       {/* Submit Button: This form is self-contained with its own submit action */}
       {/* The parent component (Dialog, Sheet, Page) can decide how to lay this out */}
       {/* For a Dialog, the DialogFooter might contain this button */}
-      <div className="flex justify-end pt-2">
-        <Button type="submit" disabled={isSubmitting || saveGroupMutation.isPending} className="bg-purple-500 hover:bg-purple-600 text-white">
+      <div className='flex justify-end pt-2'>
+        <Button
+          type='submit'
+          disabled={isSubmitting || saveGroupMutation.isPending}
+          className='bg-purple-500 hover:bg-purple-600 text-white'
+        >
           {isSubmitting || saveGroupMutation.isPending ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            <Loader2 className='mr-2 h-4 w-4 animate-spin' />
           ) : isEditMode ? (
             'Save Changes'
           ) : (
@@ -190,4 +205,3 @@ export function GroupCreateForm({ onSuccess, editingGroup, isEditMode = false }:
     </form>
   );
 }
-

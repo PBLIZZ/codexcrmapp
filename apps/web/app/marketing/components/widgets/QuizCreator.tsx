@@ -42,7 +42,7 @@ export function QuizCreator() {
 
   const updateQuestion = (qIndex: number, text: string) => {
     const newQuestions = [...questions];
-    if (newQuestions[qIndex] && newQuestions[qIndex].question !== undefined) {
+    if (newQuestions[qIndex]?.question !== undefined) {
       newQuestions[qIndex].question = text;
       setQuestions(newQuestions);
     }
@@ -51,9 +51,7 @@ export function QuizCreator() {
   const updateOption = (qIndex: number, oIndex: number, text: string) => {
     const newQuestions = [...questions];
     if (
-      newQuestions[qIndex] &&
-      newQuestions[qIndex].options &&
-      newQuestions[qIndex].options[oIndex] !== undefined
+      newQuestions[qIndex]?.options?.[oIndex] !== undefined
     ) {
       newQuestions[qIndex].options[oIndex] = text;
       setQuestions(newQuestions);

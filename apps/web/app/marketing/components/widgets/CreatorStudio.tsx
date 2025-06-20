@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Palette, ArrowRight, Sparkles, Image, Layers, Wand2 } from 'lucide-react';
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
@@ -109,7 +109,7 @@ export function CreatorStudio() {
                 <div className='text-center space-y-4'>
                   <Layers className='h-16 w-16 mx-auto text-purple-400' />
                   <p className='text-sm text-muted-foreground'>
-                    Your design based on: "{promptText}"<br />
+                    Your design based on: &quot;{promptText}&quot;<br />
                     would appear here after generation
                   </p>
                 </div>

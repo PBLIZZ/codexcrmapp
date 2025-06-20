@@ -1,20 +1,17 @@
 'use client';
 
-import { UploadCloud, AlertTriangle, Loader2 } from 'lucide-react'; // Added AlertTriangle for errors and Loader2 for processing
-import React, { useCallback, useState } from 'react';
+import { UploadCloud, AlertTriangle, Loader2 } from 'lucide-react';
+import { useCallback, useState } from 'react';
 import { useDropzone, FileWithPath, FileRejection } from 'react-dropzone';
 
 const TEN_MB_IN_BYTES = 10 * 1024 * 1024;
 
 interface CsvUploadProps {
   onFilesAccepted: (files: FileWithPath[]) => void;
-  maxSize?: number; // Optional prop for max file size in bytes
+  maxSize?: number;
 }
 
-export function CsvUpload({
-  onFilesAccepted,
-  maxSize = TEN_MB_IN_BYTES,
-}: CsvUploadProps) {
+export function CsvUpload({ onFilesAccepted, maxSize = TEN_MB_IN_BYTES }: CsvUploadProps) {
   const [isHovering, setIsHovering] = useState(false);
   const [rejectionError, setRejectionError] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -26,16 +23,10 @@ export function CsvUpload({
       setIsProcessing(false); // Reset processing state
 
       if (fileRejections.length > 0) {
-        const firstRejection = fileRejections[0];
-        if (
-          firstRejection.errors.some((err) => err.code === 'file-too-large')
-        ) {
-          setRejectionError(
-            `File is too large. Maximum size is ${maxSize / (1024 * 1024)}MB.`
-          );
-        } else if (
-          firstRejection.errors.some((err) => err.code === 'file-invalid-type')
-        ) {
+        const firstRejection = fileRejection[0];
+        if (firstRejection.errors.some((err) => err.code === 'file-too-large')) {
+          setRejectionError(`File is too large. Maximum size is ${maxSize / (1024 * 1024)}MB.`);
+        } else if (firstRejection.errors.some((err) => err.code === 'file-invalid-type')) {
           setRejectionError('Invalid file type. Only .csv files are accepted.');
         } else {
           setRejectionError('File rejected. Please try another file.');
@@ -65,32 +56,24 @@ export function CsvUpload({
     [onFilesAccepted, maxSize]
   );
 
-  const {
-    getRootProps,
-    getInputProps,
-    isDragActive,
-    acceptedFiles,
-    fileRejections,
-  } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive, acceptedFiles } = useDropzone({
     onDrop,
     accept: {
       'text/csv': ['.csv'],
     },
     multiple: false,
-    maxSize, // Use the maxSize prop
+    maxSize,
     onDragEnter: () => {
       setIsHovering(true);
       setRejectionError(null);
-    }, // Clear error on new drag
+    },
     onDragLeave: () => setIsHovering(false),
     onDropAccepted: () => setIsHovering(false), // Handled in onDrop
     // onDropRejected is not strictly needed as onDrop receives fileRejections
   });
 
   const selectedFile =
-    acceptedFiles.length > 0 && !rejectionError && !isProcessing
-      ? acceptedFiles[0]
-      : null;
+    acceptedFiles.length > 0 && !rejectionError && !isProcessing ? acceptedFiles[0] : null;
   const isError = !!rejectionError;
 
   return (
@@ -103,48 +86,45 @@ export function CsvUpload({
           isError
             ? 'border-destructive bg-destructive/10'
             : isDragActive || isHovering
-              ? 'border-primary bg-primary/10'
-              : 'border-border hover:border-primary/70'
+            ? 'border-primary bg-primary/10'
+            : 'border-border hover:border-primary/70'
         }
       `}
     >
       <input {...getInputProps()} />
-      <div className="flex flex-col items-center justify-center space-y-2">
+      <div className='flex flex-col items-center justify-center space-y-2'>
         {isError ? (
-          <AlertTriangle className="w-12 h-12 mb-2 text-destructive" />
+          <AlertTriangle className='w-12 h-12 mb-2 text-destructive' />
         ) : isProcessing ? (
-          <Loader2 className="w-12 h-12 mb-2 text-primary animate-spin" />
+          <Loader2 className='w-12 h-12 mb-2 text-primary animate-spin' />
         ) : (
           <UploadCloud
-            className={`w-12 h-12 mb-2 ${isDragActive || isHovering ? 'text-primary' : 'text-muted-foreground'}`}
+            className={`w-12 h-12 mb-2 ${
+              isDragActive || isHovering ? 'text-primary' : 'text-muted-foreground'
+            }`}
           />
         )}
 
         {isError ? (
-          <p className="text-destructive font-semibold">{rejectionError}</p>
+          <p className='text-destructive font-semibold'>{rejectionError}</p>
         ) : isProcessing ? (
-          <p className="text-lg font-semibold text-primary">
-            Processing file...
-          </p>
+          <p className='text-lg font-semibold text-primary'>Processing file...</p>
         ) : isDragActive ? (
-          <p className="text-lg font-semibold text-primary">
-            Drop the CSV file here ...
-          </p>
+          <p className='text-lg font-semibold text-primary'>Drop the CSV file here ...</p>
         ) : (
-          <p className="text-muted-foreground">
+          <p className='text-muted-foreground'>
             Drag 'n' drop a CSV file here, or click to select file
           </p>
         )}
 
         {selectedFile && !isDragActive && !isError && !isProcessing && (
-          <div className="mt-3 text-sm text-muted-foreground">
+          <div className='mt-3 text-sm text-muted-foreground'>
             Selected file: {selectedFile.name}
           </div>
         )}
         {!isError && !isProcessing && (
-          <p className="text-xs text-muted-foreground mt-2">
-            Maximum file size: {maxSize / (1024 * 1024)}MB. Accepted format:
-            .csv
+          <p className='text-xs text-muted-foreground mt-2'>
+            Maximum file size: {maxSize / (1024 * 1024)}MB. Accepted format: .csv
           </p>
         )}
       </div>

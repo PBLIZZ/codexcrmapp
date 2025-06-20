@@ -67,19 +67,19 @@
   --primary-950: oklch(0.1 0.04 180);
 
   /* Secondary/Accent Orange Colors */
-  --accent: oklch(0.97 0.001 106.424); /* Orange */
+  --accent: oklch(0.97 0.001 106.424); /* New accent color */
   --accent-foreground: oklch(0.216 0.006 56.043);
-  --accent-50: oklch(0.95 0.03 60);
-  --accent-100: oklch(0.9 0.05 60);
-  --accent-200: oklch(0.85 0.07 60);
-  --accent-300: oklch(0.8 0.1 60);
-  --accent-400: oklch(0.75 0.12 60);
-  --accent-500: oklch(0.7 0.15 60);
-  --accent-600: oklch(0.65 0.17 60);
-  --accent-700: oklch(0.6 0.15 60);
-  --accent-800: oklch(0.5 0.12 60);
-  --accent-900: oklch(0.4 0.1 60);
-  --accent-950: oklch(0.3 0.08 60);
+  --accent-50: oklch(0.95 0.03 70);
+  --accent-100: oklch(0.9 0.05 70);
+  --accent-200: oklch(0.85 0.07 70);
+  --accent-300: oklch(0.8 0.1 70);
+  --accent-400: oklch(0.77 0.16 70);
+  --accent-500: oklch(0.7 0.15 70);
+  --accent-600: oklch(0.65 0.17 70);
+  --accent-700: oklch(0.6 0.15 70);
+  --accent-800: oklch(0.5 0.12 70);
+  --accent-900: oklch(0.4 0.1 70);
+  --accent-950: oklch(0.3 0.08 70);
 
   /* Other UI Colors */
   --secondary: oklch(0.97 0.001 106.424);
@@ -131,8 +131,8 @@
   --secondary-foreground: oklch(0.216 0.006 56.043);
   --muted: oklch(0.97 0.001 106.424);
   --muted-foreground: oklch(0.553 0.013 58.071);
-  --accent: oklch(0.7 0.15 60); /* Orange */
-  --accent-foreground: oklch(0.1 0.01 60);
+  --accent: oklch(0.77 0.16 70); /* New accent color */
+  --accent-foreground: oklch(0.1 0.01 70);
 
   /* Other UI Colors */
   --destructive: oklch(0.577 0.245 27.325);
@@ -183,19 +183,19 @@
   --primary-950: oklch(0.15 0.04 180);
 
   /* Secondary/Accent Orange Colors - Brighter for dark mode */
-  --accent: oklch(0.268 0.007 34.298); /* Brighter Orange */
+  --accent: oklch(0.268 0.007 34.298); /* New accent color dark mode */
   --accent-foreground: oklch(0.985 0.001 106.423);
-  --accent-50: oklch(0.95 0.03 60);
-  --accent-100: oklch(0.9 0.05 60);
-  --accent-200: oklch(0.85 0.07 60);
-  --accent-300: oklch(0.8 0.1 60);
-  --accent-400: oklch(0.78 0.15 60);
-  --accent-500: oklch(0.75 0.18 60);
-  --accent-600: oklch(0.7 0.2 60);
-  --accent-700: oklch(0.65 0.18 60);
-  --accent-800: oklch(0.6 0.15 60);
-  --accent-900: oklch(0.5 0.12 60);
-  --accent-950: oklch(0.4 0.1 60);
+  --accent-50: oklch(0.95 0.03 70);
+  --accent-100: oklch(0.9 0.05 70);
+  --accent-200: oklch(0.85 0.07 70);
+  --accent-300: oklch(0.8 0.1 70);
+  --accent-400: oklch(0.78 0.15 70);
+  --accent-500: oklch(0.75 0.18 70);
+  --accent-600: oklch(0.7 0.2 70);
+  --accent-700: oklch(0.65 0.18 70);
+  --accent-800: oklch(0.6 0.15 70);
+  --accent-900: oklch(0.5 0.12 70);
+  --accent-950: oklch(0.4 0.1 70);
 
   /* Other UI Colors */
   --secondary: oklch(0.268 0.007 34.298);
