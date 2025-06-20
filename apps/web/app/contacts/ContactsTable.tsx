@@ -113,7 +113,7 @@ export interface Contact {
   enriched_data?: unknown; // Changed unknown | null to unknown
   created_at?: string | null;
   updated_at?: string | null;
-  tags?: Array<{ id: string; name: string }> | null;
+  tags?: string[] | null;
   social_handles?: string[] | null | undefined; // Added social_handles
   address_city?: string | null;
   address_country?: string | null;
@@ -510,6 +510,10 @@ export function ContactsTable({
                 .sort((a, b) => {
                   const aIndex = columnOrder.indexOf(a);
                   const bIndex = columnOrder.indexOf(b);
+                  // Handle cases where columns are not in columnOrder
+                  if (aIndex === -1 && bIndex === -1) return 0;
+                  if (aIndex === -1) return 1; // Put unknown columns at the end
+                  if (bIndex === -1) return -1; // Put unknown columns at the end
                   return aIndex - bIndex;
                 })
                 .map((columnId) => {
@@ -725,6 +729,10 @@ export function ContactsTable({
                       .sort((a, b) => {
                         const aIndex = columnOrder.indexOf(a);
                         const bIndex = columnOrder.indexOf(b);
+                        // Handle cases where columns are not in columnOrder
+                        if (aIndex === -1 && bIndex === -1) return 0;
+                        if (aIndex === -1) return 1; // Put unknown columns at the end
+                        if (bIndex === -1) return -1; // Put unknown columns at the end
                         return aIndex - bIndex;
                       })
                       .map((columnId) => {
@@ -845,7 +853,7 @@ export function ContactsTable({
                                 <div className='flex flex-wrap gap-1'>
                                   {c.tags.map((tag, i) => (
                                     <Badge key={i} variant='outline' className='text-xs'>
-                                      {tag.name}
+                                      {tag}
                                     </Badge>
                                   ))}
                                 </div>

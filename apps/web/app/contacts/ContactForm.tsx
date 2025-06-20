@@ -2,7 +2,7 @@
 
 import { useActionState, useState, useEffect, type FormEvent } from 'react';
 import { api } from '@/lib/trpc';
-import * as z from 'zod';
+import * as z from 'zod/v4';
 import { ImageUpload } from '@/components/ui/image-upload';
 
 // Zod schema remains the same
@@ -13,7 +13,7 @@ export const contactSchema = z.object({
   address_country: z.union([z.string(), z.null(), z.undefined()]),
   phone_country_code: z.union([z.string(), z.null(), z.undefined()]),
   website: z.union([
-    z.string().url({ message: 'Invalid URL format' }),
+    z.url({ message: 'Invalid URL format' }),
     z.literal(''),
     z.null(),
     z.undefined(),
@@ -22,7 +22,7 @@ export const contactSchema = z.object({
   tags: z.union([z.array(z.string()), z.null(), z.undefined()]),
   id: z.union([z.string().uuid(), z.undefined()]),
   full_name: z.string().min(1, 'Full name is required'),
-  email: z.string().email('Invalid email format').min(1, 'Email is required'),
+  email: z.email('Invalid email format').min(1, 'Email is required'),
   phone: z.union([z.string(), z.null(), z.undefined()]),
   company_name: z.union([z.string(), z.null(), z.undefined()]),
   job_title: z.union([z.string(), z.null(), z.undefined()]),

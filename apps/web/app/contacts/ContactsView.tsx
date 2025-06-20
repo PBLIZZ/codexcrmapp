@@ -1,10 +1,11 @@
 // /app/contacts/ContactsView.tsx
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Search, Plus, SlidersHorizontal, AlertCircle, RefreshCw } from 'lucide-react';
 import { useDebounce } from 'use-debounce';
+import { toast } from 'sonner';
 
 import { api } from '@/lib/trpc';
 import { Button } from '@/components/ui/button';
@@ -17,9 +18,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-// Import the BEST components we decided to keep
-import type { Contact } from './ContactsTable';
-import { ContactsTable } from './ContactsTable';
+// Import the refactored modular table components
+import type { Contact } from './_components/table/types';
+import { ContactsTable } from './_components/table/components/ContactsTable';
 import { ContactForm, type ContactFormData } from './ContactForm';
 import { ColumnSelector } from './ColumnSelector';
 import { ContactsWidgets } from '@/components/contacts/ContactsWidgets';
@@ -42,17 +43,35 @@ export function ContactsView({ initialGroupId }: ContactsViewProps = {}) {
   const [sortField, setSortField] = useState('full_name');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
-  const [visibleColumns, setVisibleColumns] = useState<string[]>([
-    'name',
-    'email',
-    'phone',
-    'company_name',
-    'last_contacted_at',
-    'source',
-  ]);
+  // Initialize visibleColumns from localStorage or default
+  const [visibleColumns, setVisibleColumns] = useState<string[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('contacts-visible-columns');
+      if (saved) {
+        try {
+          return JSON.parse(saved);
+        } catch {
+          // Fall through to default
+        }
+      }
+    }
+    return [
+      'name',
+      'email',
+      'phone',
+      'company_name',
+      'last_contacted_at',
+      'source',
+    ];
+  });
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
+
+  // Save visible columns to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('contacts-visible-columns', JSON.stringify(visibleColumns));
+  }, [visibleColumns]);
 
   // --- Data Fetching ---
   const {
@@ -75,17 +94,16 @@ export function ContactsView({ initialGroupId }: ContactsViewProps = {}) {
       await utils.contacts.list.invalidate();
       closeForm();
     },
-    onError: (error) => {
-      console.error('Failed to save contact:', error);
-      // Here you would show a toast notification
+    onError: () => {
+      toast.error('Failed to save contact', { duration: 4000 });
     },
   });
 
   const handleSave = async (data: ContactFormData) => {
     try {
       await saveMutation.mutateAsync(data);
-    } catch (error) {
-      console.error('Failed to save contact:', error);
+    } catch {
+      toast.error('Failed to save contact', { duration: 4000 });
     }
   };
 
@@ -93,9 +111,8 @@ export function ContactsView({ initialGroupId }: ContactsViewProps = {}) {
     onSuccess: async () => {
       await utils.contacts.list.invalidate();
     },
-    onError: (error: unknown) => {
-      console.error('Failed to delete contact:', error);
-      // Here you would show a toast notification
+    onError: () => {
+      toast.error('Failed to delete contact', { duration: 4000 });
     },
   });
 
@@ -170,12 +187,12 @@ export function ContactsView({ initialGroupId }: ContactsViewProps = {}) {
   }
 
   return (
-    <div className='space-y-6'>
+    <div className='h-full flex flex-col space-y-6'>
       {/* 1. Widgets */}
       <ContactsWidgets />
 
       {/* 2. Toolbar */}
-      <div className='flex flex-col md:flex-row items-center justify-between gap-4'>
+      <div className='flex-shrink-0 flex flex-col md:flex-row items-center justify-between gap-4'>
         <div className='relative w-full md:w-80'>
           <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4' />
           <Input
@@ -206,17 +223,19 @@ export function ContactsView({ initialGroupId }: ContactsViewProps = {}) {
         </div>
       </div>
 
-      {/* 3. The Table */}
-      <ContactsTable
-        contacts={sortedContacts}
-        isLoading={isLoading}
-        visibleColumns={visibleColumns}
-        sortField={sortField}
-        sortDirection={sortDirection}
-        onSortChange={handleSortChange}
-        onEditContact={handleEditContact}
-        onDeleteContact={handleDeleteContact}
-      />
+      {/* 3. The Table - Takes remaining space and handles overflow */}
+      <div className='flex-1 min-h-0'>
+        <ContactsTable
+          contacts={sortedContacts}
+          isLoading={isLoading}
+          visibleColumns={visibleColumns}
+          sortField={sortField}
+          sortDirection={sortDirection}
+          onSortChange={handleSortChange}
+          onEditContact={handleEditContact}
+          onDeleteContact={handleDeleteContact}
+        />
+      </div>
 
       {/* 4. The Form Modal (controlled by this component) */}
       {isFormOpen && (
@@ -249,7 +268,7 @@ export function ContactsView({ initialGroupId }: ContactsViewProps = {}) {
                       address_postal_code: editingContact.address_postal_code ?? undefined, // Use ??
                       address_country: editingContact.address_country ?? undefined, // Use ??
                       website: editingContact.website ?? undefined, // Use ??
-                      tags: editingContact.tags?.map((tag) => tag.name) ?? undefined, // Use ??
+                      tags: editingContact.tags ?? undefined, // Use ??
                       social_handles: editingContact.social_handles ?? undefined, // Use ??
                     }
                   : {

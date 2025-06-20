@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuth } from '@/app/Providers';
+import { useAuth } from '@/app/providers';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 

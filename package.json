@@ -34,13 +34,20 @@
     "tailwind-variants": "^1.0.0",
     "tw-animate-css": "^1.2.5",
     "uuid": "^11.1.0",
-    "zod": "^3.24.3"
+    "zod": "^3.25.67"
   },
   "pnpm": {
     "overrides": {
       "react": "^19.0.0",
       "react-dom": "^19.0.0"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "@sentry/cli",
+      "@swc/core",
+      "@tailwindcss/oxide",
+      "esbuild",
+      "supabase"
+    ]
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^15.3.2",

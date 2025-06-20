@@ -6,7 +6,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import { cookies } from 'next/headers'; // Add this import
 import './globals.css'; // Global Styles
 import './theme.css';
-import { Providers } from './Providers';// Providers and Components
+import { Providers } from './providers';// Providers and Components
 import { AppContent } from '@/components/layout/AppContent';
 import { Toaster } from 'sonner';
 
