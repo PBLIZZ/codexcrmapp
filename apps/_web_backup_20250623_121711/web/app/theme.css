@@ -1,0 +1,74 @@
+/* Custom theme overrides for a calming wellness CRM */
+
+:root {
+  /* Calming color palette */
+  --teal-100: #ccfbf1;
+  --teal-200: #99f6e4;
+  --teal-300: #5eead4;
+  --teal-400: #2dd4bf;
+  --teal-500: #14b8a6;
+  --teal-600: #0d9488;
+  --teal-700: #0f766e;
+  --teal-800: #115e59;
+  
+  --amber-100: #fef3c7;
+  --amber-200: #fde68a;
+  --amber-300: #fcd34d;
+  --amber-400: #fbbf24;
+  --amber-500: #f59e0b;
+  --amber-600: #d97706;
+  
+  --sky-100: #e0f2fe;
+  --sky-200: #bae6fd;
+  --sky-300: #7dd3fc;
+  --sky-400: #38bdf8;
+  --sky-500: #0ea5e9;
+  
+  /* Override default hover colors */
+  --sidebar-accent: var(--teal-100);
+  --sidebar-accent-foreground: var(--teal-800);
+}
+
+/* Override hover states for sidebar items */
+.bg-sidebar-accent, 
+[data-sidebar="menu-button"]:hover,
+[data-sidebar="menu-sub-button"]:hover {
+  background-color: var(--teal-100) !important;
+  color: var(--teal-800) !important;
+}
+
+/* Override active states */
+[data-active="true"] {
+  background-color: var(--teal-100) !important;
+  color: var(--teal-800) !important;
+}
+
+/* Override section colors */
+.bg-orange-500 {
+  background-color: var(--teal-500) !important;
+}
+
+.bg-teal-400 {
+  background-color: var(--teal-400) !important;
+}
+
+.bg-teal-800 {
+  background-color: var(--teal-600) !important;
+}
+
+.bg-blue-500 {
+  background-color: var(--sky-400) !important;
+}
+
+.bg-indigo-600 {
+  background-color: var(--sky-500) !important;
+}
+
+/* Override hover states for navigation items */
+.hover\:bg-gray-100\/80:hover {
+  background-color: var(--teal-100) !important;
+}
+
+.hover\:text-gray-900:hover {
+  color: var(--teal-800) !important;
+}

@@ -7,6 +7,23 @@ dist/
 build/
 out/
 
+# Build and dependency folders
+node_modules
+dist
+build
+.next
+public
+
+# Config files (often have specific formatting)
+*.config.js
+*.config.mjs
+*.config.ts
+
+# Lockfiles
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
 # Testing
 coverage/
 
