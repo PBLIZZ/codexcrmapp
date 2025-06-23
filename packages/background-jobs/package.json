@@ -1,5 +1,5 @@
 {
-  "name": "@codexcrmapp/jobs",
+  "name": "@codexcrm/background-jobs",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
