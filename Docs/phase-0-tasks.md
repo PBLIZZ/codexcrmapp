@@ -1,16 +1,19 @@
 # Phase 0: Pre-Flight & Backup Tasks
+
 **Timeline**: Day 0 (Complete before ANY refactoring)  
 **Critical**: These tasks MUST be completed in order. Do not proceed to Phase 1 until all are verified.
 
 ---
 
 ## Task 001: Complete Backup and Validation
+
 **Priority**: CRITICAL  
 **Dependencies**: None  
 **Duration**: 15 minutes  
-**Description**: Create timestamped backup of current working app with rollback verification  
+**Description**: Create timestamped backup of current working app with rollback verification
 
 ### Implementation Steps:
+
 ```bash
 # 1. Create timestamp variable
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
@@ -27,6 +30,9 @@ Supabase Connection: VERIFIED
 Last Commit: $(git rev-parse HEAD)
 EOF
 
+# Exclude node_modules but explicitly include hidden files
+rsync -a --exclude='node_modules' --include='.*' apps/web/ $BACKUP_DIR/web/
+
 # 4. Commit current state
 git add -A && git commit -m "pre-refactor: working state before monorepo migration"
 
@@ -35,13 +41,16 @@ git tag -a "pre-refactor-${TIMESTAMP}" -m "Working OAuth and Supabase setup"
 ```
 
 ### Validation Checklist:
-- [ ] Backup directory exists: `ls -la apps/_web_backup_*`
-- [ ] All files copied: `diff -r apps/web ${BACKUP_DIR} | wc -l` (should be 0)
-- [ ] OAuth flow works: Test login/logout cycle
-- [ ] Git tag created: `git tag -l "pre-refactor-*"`
-- [ ] Rollback tested: `rm -rf apps/web && cp -r ${BACKUP_DIR} apps/web && rm -rf apps/web && git checkout apps/web`
+
+- [x] Backup directory exists: `ls -la apps/_web_backup_*`
+- [x] All files copied: `diff -r apps/web ${BACKUP_DIR} | wc -l` (should be 0)
+- [x] OAuth flow works: Test login/logout cycle
+- [x] Git tag created: `git tag -l "pre-refactor-*"`
+- [x] Rollback tested: `rm -rf apps/web && cp -r ${BACKUP_DIR} apps/web && rm -rf apps/web && git checkout apps/web`
+      the .env.local and the .env.sentry-build-plugin were not present in the rollback but i had saved them separately beforehand.
 
 ### Success Criteria:
+
 - Backup manifest file exists with all status indicators
 - Can restore from backup in under 30 seconds
 - OAuth and Supabase still functional after restore test
@@ -49,12 +58,14 @@ git tag -a "pre-refactor-${TIMESTAMP}" -m "Working OAuth and Supabase setup"
 ---
 
 ## Task 002: Initialize Refactor Tracking System
+
 **Priority**: CRITICAL  
 **Dependencies**: [001]  
 **Duration**: 10 minutes  
-**Description**: Set up comprehensive change tracking system for AI implementation  
+**Description**: Set up comprehensive change tracking system for AI implementation
 
 ### Implementation Steps:
+
 ```bash
 # 1. Create tracking file at repository root
 touch REFACTOR_CHANGELOG.md
@@ -115,12 +126,14 @@ git commit -m "refactor: initialize tracking system"
 ```
 
 ### Validation Checklist:
+
 - [ ] REFACTOR_CHANGELOG.md exists at repository root
 - [ ] File contains all template sections
 - [ ] Backup location is correctly recorded
 - [ ] File is tracked in git
 
 ### Success Criteria:
+
 - Can quickly log changes during refactor
 - Clear rollback procedures documented
 - AI instruction patterns established
@@ -128,12 +141,14 @@ git commit -m "refactor: initialize tracking system"
 ---
 
 ## Task 003: Audit Current Dependencies
+
 **Priority**: HIGH  
 **Dependencies**: [001, 002]  
 **Duration**: 20 minutes  
-**Description**: Map all current dependencies and identify migration requirements  
+**Description**: Map all current dependencies and identify migration requirements
 
 ### Implementation Steps:
+
 ```bash
 # 1. Extract current dependencies
 cd apps/web
@@ -187,6 +202,7 @@ echo "| ✅ | AUDIT | package.json | DEPENDENCY_AUDIT.json | Manual | None | Doc
 ```
 
 ### Validation Checklist:
+
 - [ ] DEPENDENCY_AUDIT.json created
 - [ ] DEPENDENCY_COMPARISON.md filled with actual versions
 - [ ] All major version differences identified
@@ -194,6 +210,7 @@ echo "| ✅ | AUDIT | package.json | DEPENDENCY_AUDIT.json | Manual | None | Doc
 - [ ] Update added to REFACTOR_CHANGELOG.md
 
 ### Success Criteria:
+
 - Clear understanding of version gaps
 - Migration risks identified
 - No surprise breaking changes during refactor
@@ -201,12 +218,14 @@ echo "| ✅ | AUDIT | package.json | DEPENDENCY_AUDIT.json | Manual | None | Doc
 ---
 
 ## Task 004: Test Current Authentication Flow
+
 **Priority**: HIGH  
 **Dependencies**: [001, 002, 003]  
 **Duration**: 15 minutes  
-**Description**: Document and test the working authentication flow before any changes  
+**Description**: Document and test the working authentication flow before any changes
 
 ### Implementation Steps:
+
 ```bash
 # 1. Create auth flow documentation
 cat > AUTH_FLOW_TEST.md << 'EOF'
@@ -289,12 +308,14 @@ echo "| ✅ | TEST | Auth Flow | AUTH_FLOW_TEST.md | Manual | None | All passing
 ```
 
 ### Validation Checklist:
+
 - [ ] All test scenarios completed
 - [ ] Screenshots captured for reference
 - [ ] Cookie behavior documented
 - [ ] No failing tests (fix before proceeding)
 
 ### Success Criteria:
+
 - 100% of auth tests passing
 - Clear documentation of working behavior
 - Reference point for post-refactor testing
@@ -302,12 +323,14 @@ echo "| ✅ | TEST | Auth Flow | AUTH_FLOW_TEST.md | Manual | None | All passing
 ---
 
 ## Task 005: Create Phase 0 Completion Checkpoint
+
 **Priority**: HIGH  
 **Dependencies**: [001, 002, 003, 004]  
 **Duration**: 10 minutes  
-**Description**: Final verification and sign-off before proceeding to Phase 1  
+**Description**: Final verification and sign-off before proceeding to Phase 1
 
 ### Implementation Steps:
+
 ```bash
 # 1. Create completion report
 cat > PHASE_0_COMPLETE.md << 'EOF'
@@ -377,6 +400,7 @@ echo "Phase 0 Complete! Backup at: apps/_web_phase0_complete_${FINAL_TIMESTAMP}"
 ```
 
 ### Validation Checklist:
+
 - [ ] PHASE_0_COMPLETE.md created and filled
 - [ ] All previous task outputs present
 - [ ] Git tag 'phase-0-complete' created
@@ -384,6 +408,7 @@ echo "Phase 0 Complete! Backup at: apps/_web_phase0_complete_${FINAL_TIMESTAMP}"
 - [ ] Go/No-Go decision made
 
 ### Success Criteria:
+
 - Confident to proceed with refactor
 - Clear rollback path if needed
 - All working functionality documented
@@ -395,6 +420,7 @@ echo "Phase 0 Complete! Backup at: apps/_web_phase0_complete_${FINAL_TIMESTAMP}"
 
 **Total Duration**: ~1.5 hours  
 **Critical Files Created**:
+
 - `apps/_web_backup_[timestamp]/` - Full backup
 - `REFACTOR_CHANGELOG.md` - Change tracking
 - `DEPENDENCY_AUDIT.json` - Current dependencies
@@ -403,10 +429,12 @@ echo "Phase 0 Complete! Backup at: apps/_web_phase0_complete_${FINAL_TIMESTAMP}"
 - `PHASE_0_COMPLETE.md` - Go/No-Go decision
 
 **Git Tags Created**:
+
 - `pre-refactor-[timestamp]` - Original working state
 - `phase-0-complete` - Pre-flight checks done
 
 **Ready for Phase 1 Criteria**:
+
 1. ✅ Complete backup with tested restore
 2. ✅ Tracking system operational
 3. ✅ Dependencies mapped and risks identified
