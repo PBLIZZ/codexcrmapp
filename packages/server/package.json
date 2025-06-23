@@ -21,7 +21,7 @@
   "license": "ISC",
   "packageManager": "pnpm@10.9.0",
   "dependencies": {
-    "@codexcrm/db": "workspace:*",
+    "@codexcrm/database": "workspace:*",
     "@supabase/supabase-js": "^2.45.1",
     "@trpc/server": "^11.3.1",
     "cookie": "^1.0.2",
