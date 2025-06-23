@@ -50,7 +50,7 @@ import { formatDateTime } from '@/lib/dateUtils';
 import { api } from '@/lib/trpc';
 import { ContactGroupsSection } from './ContactGroupsSection';
 import { ContactTimeline } from './ContactTimeline';
-import type { Tables } from '../../../../../packages/db/src/database.types';
+import type { Tables } from '@codexcrm/database/types';
 
 const TABS = { NOTES: 'notes', TASKS: 'tasks', TIMELINE: 'timeline' } as const;
 

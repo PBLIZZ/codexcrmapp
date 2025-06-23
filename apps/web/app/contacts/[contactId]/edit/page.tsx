@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, AlertCircle } from 'lucide-react';
 // Import only the necessary components from your alert file
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import type { Tables } from '../../../../../../packages/db/src/database.types'; // Import Tables type
+import type { Tables } from '@codexcrm/database/types'; // Import Tables type
 
 // Define the props type with proper typing for Next.js 15+
 interface EditContactPageProps {
