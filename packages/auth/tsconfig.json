@@ -10,9 +10,9 @@
     "composite": true,
 
     // Auth package specific
-    "module": "commonjs",
+    "module": "es2022",
     "target": "es2022",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
 
     // Monorepo and package paths - using root-relative paths
     "baseUrl": "../..",

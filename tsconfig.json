@@ -1,6 +1,10 @@
 {
   "files": [],
   "references": [
+    // Your Apps
+    { "path": "./apps/web" },
+
+    // Your Shared Packages
     { "path": "./packages/auth" },
     { "path": "./packages/config" },
     { "path": "./packages/db" },
