@@ -1,6 +1,6 @@
 # Current Monorepo Structure Analysis
 
-Date: 2025-06-24
+Date: $(date)
 
 ## Package Inventory
 
@@ -211,6 +211,7 @@ On 2025-06-24, we completed TASK 107 to standardize all configuration files:
 5. ✅ Fixed project references in root tsconfig.json
 
 Next steps:
+
 - Run Task 105 (verify imports)
 - Run Task 106 (complete Phase 1)
 - Start Phase 2 (Auth modernization)
@@ -357,3 +358,105 @@ Next steps:
 #### Current Goal
 
 Fix remaining ESLint/TypeScript errors
+
+# Consolidate Configs Plan
+
+## Notes
+
+- Task 104: Consolidate existing configuration files into `packages/config`.
+- Must copy (not recreate) current configs: TypeScript, ESLint, Prettier, Tailwind.
+- Respect monorepo import aliases (`@codexcrm/*`).
+- Provide package exports and README inside the new config package.
+- Follow user‐provided bash script steps and validation checklist.
+- Located existing configs: root tsconfig.json, tsconfig.base.json, apps/web/tsconfig.json, .prettierrc, eslint.config.js, apps/web/tailwind.config.js, packages/ui/tailwind.config.js.
+- Confirmed ESLint and Tailwind config contents; will copy apps/web/tailwind.config.js as canonical Tailwind config.
+- Created `packages/config/typescript`, `packages/config/eslint`, `packages/config/prettier`, and `packages/config/tailwind` directories.
+- Copied `tsconfig.base.json` ➜ `packages/config/typescript/base.json`.
+- Copied `apps/web/tsconfig.json` ➜ `packages/config/typescript/nextjs.json`.
+- Copied `.prettierrc` ➜ `packages/config/prettier/index.json`.
+- Copied `eslint.config.js` ➜ `packages/config/eslint/index.js`.
+- Copied `apps/web/tailwind.config.js` ➜ `packages/config/tailwind/index.js`.
+- Created `packages/config/package.json` with export map.
+- Added `packages/config/README.md`.
+- Validation complete; configs exist and exports map correctly.
+- New request: consolidate additional configs (`sentry.*`, `postcss`, `next.config.js`, component configs).
+- Searched repo for additional configs; located Sentry configs (`apps/web/sentry.server.config.ts`, `apps/web/sentry.edge.config.ts`), PostCSS configs (`apps/web/postcss.config.mjs`, `packages/ui/postcss.config.js`), and Next.js config (`apps/web/next.config.ts`).
+- Created `packages/config/sentry` and `packages/config/postcss` directories.
+- Created `packages/config/next` directory.
+- Copied Sentry configs to `packages/config/sentry` (server & edge).
+- Copied PostCSS configs to `packages/config/postcss` (app & ui).
+- Copied Next.js config to `packages/config/next/index.ts`.
+- Updated export map with Sentry, PostCSS, and Next configs.
+- Updated `packages/config/README.md` with usage for Sentry, PostCSS, and Next configs.
+- Validation complete; configs consolidated and exports correct.
+
+## Task List
+
+- [x] Scan repo and list all existing config files needed (tsconfig, .prettierrc, eslint, tailwind).
+- [x] Create directory structure:
+  - [x] packages/config/typescript
+  - [x] packages/config/eslint
+  - [x] packages/config/prettier
+  - [x] packages/config/tailwind
+- [x] Copy root `tsconfig.json` or `tsconfig.base.json` ➜ `packages/config/typescript/base.json`.
+- [x] Copy `apps/web/tsconfig.json` ➜ `packages/config/typescript/nextjs.json`.
+- [x] Copy Prettier config (`.prettierrc` or `.prettierrc.json`) ➜ `packages/config/prettier/index.json`.
+- [x] Copy ESLint config (`eslint.config.js` or `.eslintrc.js`) ➜ `packages/config/eslint/index.js`.
+- [x] Copy Tailwind config (`tailwind.config.js` or `tailwind.config.ts`) ➜ `packages/config/tailwind/index.(js|ts)`.
+- [x] Create `packages/config/package.json` with correct export map.
+- [x] Add `packages/config/README.md` explaining usage and contents.
+- [x] Validate: all configs exist, exports match, README accurate.
+- [x] Scan repo for additional configs: `sentry.*`, `postcss.config.*`, `next.config.js`, component configs.
+- [x] Create directories:
+  - [x] packages/config/sentry
+  - [x] packages/config/postcss
+  - [x] packages/config/next
+- [x] Copy Sentry configs (`sentry.server.config.ts`, `sentry.edge.config.ts`) ➜ `packages/config/sentry/`
+- [x] Copy PostCSS configs (`apps/web/postcss.config.mjs`, `packages/ui/postcss.config.js`) ➜ `packages/config/postcss/`
+- [x] Copy Next.js config (`apps/web/next.config.ts`) ➜ `packages/config/next/next.config.ts`
+- [x] Update `packages/config/package.json` export map with new entries.
+- [x] Update `packages/config/README.md` with usage for new configs.
+- [x] Validate: new configs consolidated and exports correct.
+
+## Current Goal
+
+None (task complete)
+
+# TASK 107: Make Everything Use The New Configs
+
+## Notes
+
+- Project: Next.js 15 (App Router) with React 19, TypeScript `strict`.
+- Monorepo uses `pnpm` workspaces. Structure: `apps/web` & `packages/*`.
+- Must rely on `@codexcrm/*` and `@/*` path aliases – no relative cross-package imports.
+- All source files need safety headers (SERVER / CLIENT / ROUTE-HANDLER) per user spec.
+- Config refactor requires every workspace to extend presets from `@codexcrm/config`.
+- `packages/config` already exists and contains `typescript/base.json` and `typescript/nextjs.json` presets.
+- Keep `Docs/june-refactor-2025/MONOREPO_ANALYSIS.md` in sync with each completed step.
+- Root and apps/web tsconfig files updated to new presets and aliases.
+- `packages/ui` and `packages/api` tsconfig files updated to new presets.
+- `packages/auth` and `packages/database` tsconfig files updated to new presets.
+- `packages/background-jobs` tsconfig file updated to new presets.
+- Root `tsconfig.json` updated with correct package references; TypeScript compile passes with no errors.
+- MONOREPO_ANALYSIS.md updated with TASK 107 completion details.
+
+## Task List
+
+- [x] Add `packages/config` to workspace and install deps.
+- [x] Update **root** `tsconfig.base.json` → extend `@codexcrm/config/typescript/base` & set paths.
+- [x] Update **apps/web/tsconfig.json** → extend `@codexcrm/config/typescript/nextjs` & local paths.
+- [x] Update `packages/api/tsconfig.json` to extend proper presets and declare paths.
+- [x] Update `packages/ui/tsconfig.json` to extend proper presets, declare paths, and output type declarations (`declaration`, `outDir`).
+- [x] Update `packages/auth/tsconfig.json` to extend proper presets and declare paths.
+- [x] Update `packages/database/tsconfig.json` to extend proper presets and declare paths.
+- [x] Update `packages/background-jobs/tsconfig.json` to extend proper presets and declare paths.
+- [x] Run `pnpm install`
+- [x] Clean up old project references in root `tsconfig.json` (remove or rename `packages/db`, `packages/server`, `packages/jobs`).
+- [x] Run `pnpm tsc --noEmit` to verify build passes.
+- [x] Commit changes: `git commit -m "refactor: setup monorepo packages structure"`.
+- [x] Update MONOREPO_ANALYSIS.md with the same details.
+- [ ] Report success & outline next tasks (105, 106, etc.).
+
+## Current Goal
+
+Report success & outline next tasks (105, 106, etc.)
