@@ -3,8 +3,8 @@
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { getColumnDefinition } from '../constants';
-import type { Contact } from '../types';
+import { getColumnDefinition } from '@/app/contacts/_components/table/constants';
+import type { Contact } from '@/app/contacts/_components/table/types';
 
 interface ContactTableHeaderProps {
   contacts: Contact[];

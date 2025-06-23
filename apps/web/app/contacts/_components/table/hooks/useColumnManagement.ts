@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
-import type { ColumnManagementHook, TableState } from '../types';
-import { DEFAULT_COLUMN_ORDER } from '../constants';
+import type { ColumnManagementHook, TableState } from '@/app/contacts/_components/table/types';
+import { DEFAULT_COLUMN_ORDER } from '@/app/contacts/_components/table/constants';
 
 interface UseColumnManagementProps {
   initialVisibleColumns: string[];

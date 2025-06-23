@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import type { Contact, ContactActionsHook } from '../types';
+import type { Contact, ContactActionsHook } from '@/app/contacts/_components/table/types';
 
 interface UseContactActionsProps {
   onEditContact: (contactId: string) => void;

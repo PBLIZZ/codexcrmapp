@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import type { Contact, ContactSelectionHook } from '../types';
+import type { Contact, ContactSelectionHook } from '@/app/contacts/_components/table/types';
 
 interface UseContactSelectionProps {
   contacts: Contact[];

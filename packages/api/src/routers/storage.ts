@@ -1,7 +1,7 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
-import { router, protectedProcedure } from '../trpc';
+import { router, protectedProcedure } from '@codexcrm/api/src/trpc';
 
 export const storageRouter = router({
   // Generate a presigned upload URL for direct browser-to-storage uploads

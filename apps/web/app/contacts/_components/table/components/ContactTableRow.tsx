@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ProfileAvatar } from './ProfileAvatar';
 import { ContactActions } from './ContactActions';
-import { getColumnDefinition } from '../constants';
-import type { Contact } from '../types';
+import { getColumnDefinition } from '@/app/contacts/_components/table/constants';
+import type { Contact } from '@/app/contacts/_components/table/types';
 
 interface ContactTableRowProps {
   contact: Contact;

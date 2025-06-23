@@ -88,6 +88,9 @@ importers:
         specifier: ^3.25.67
         version: 3.25.67
     devDependencies:
+      '@eslint/eslintrc':
+        specifier: ^3.3.1
+        version: 3.3.1
       '@next/eslint-plugin-next':
         specifier: ^15.3.2
         version: 15.3.4
@@ -121,6 +124,9 @@ importers:
       eslint-config-prettier:
         specifier: ^10.1.5
         version: 10.1.5(eslint@9.29.0(jiti@2.4.2))
+      eslint-plugin-import:
+        specifier: ^2.32.0
+        version: 2.32.0(@typescript-eslint/parser@8.34.1(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.29.0(jiti@2.4.2))
       eslint-plugin-react:
         specifier: ^7.37.5
         version: 7.37.5(eslint@9.29.0(jiti@2.4.2))
@@ -154,12 +160,12 @@ importers:
 
   apps/web:
     dependencies:
-      '@codexcrm/db':
+      '@codexcrm/api':
         specifier: workspace:*
-        version: link:../../packages/db
-      '@codexcrm/server':
+        version: link:../../packages/api
+      '@codexcrm/database':
         specifier: workspace:*
-        version: link:../../packages/server
+        version: link:../../packages/database
       '@codexcrm/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -320,6 +326,9 @@ importers:
         specifier: ^5.0.5
         version: 5.0.5(@types/react@19.1.8)(react@19.1.0)(use-sync-external-store@1.5.0(react@19.1.0))
     devDependencies:
+      '@eslint/eslintrc':
+        specifier: ^3.3.1
+        version: 3.3.1
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.1.10
@@ -348,45 +357,11 @@ importers:
         specifier: ^5
         version: 5.8.3
 
-  packages/auth:
+  packages/api:
     dependencies:
-      '@supabase/supabase-js':
-        specifier: ^2.50.0
-        version: 2.50.0
-      react:
-        specifier: ^19.0.0
-        version: 19.1.0
-    devDependencies:
-      '@types/react':
-        specifier: ^19.0.2
-        version: 19.1.8
-      typescript:
-        specifier: ^5.4.5
-        version: 5.8.3
-
-  packages/config:
-    devDependencies:
-      typescript:
-        specifier: ^5.4.5
-        version: 5.8.3
-
-  packages/db:
-    dependencies:
-      '@supabase/supabase-js':
-        specifier: ^2.0.0
-        version: 2.50.0
-    devDependencies:
-      typescript:
-        specifier: ^5.0.0
-        version: 5.8.3
-
-  packages/jobs: {}
-
-  packages/server:
-    dependencies:
-      '@codexcrm/db':
+      '@codexcrm/database':
         specifier: workspace:*
-        version: link:../db
+        version: link:../database
       '@supabase/supabase-js':
         specifier: ^2.45.1
         version: 2.50.0
@@ -408,6 +383,36 @@ importers:
       zod:
         specifier: ^3.24.3
         version: 3.25.67
+
+  packages/auth:
+    dependencies:
+      '@supabase/supabase-js':
+        specifier: ^2.50.0
+        version: 2.50.0
+      react:
+        specifier: ^19.0.0
+        version: 19.1.0
+    devDependencies:
+      '@types/react':
+        specifier: ^19.0.2
+        version: 19.1.8
+      typescript:
+        specifier: ^5.4.5
+        version: 5.8.3
+
+  packages/background-jobs: {}
+
+  packages/config: {}
+
+  packages/database:
+    dependencies:
+      '@supabase/supabase-js':
+        specifier: ^2.0.0
+        version: 2.50.0
+    devDependencies:
+      typescript:
+        specifier: ^5.0.0
+        version: 5.8.3
 
   packages/ui:
     dependencies:

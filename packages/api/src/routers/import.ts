@@ -1,7 +1,7 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
-import { router, protectedProcedure } from '../trpc';
+import { router, protectedProcedure } from '@codexcrm/api/src/trpc';
 
 // Schema for CSV import contact data
 const csvContactInputSchema = z.object({
