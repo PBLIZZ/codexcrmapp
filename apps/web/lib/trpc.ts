@@ -1,4 +1,4 @@
-import type { AppRouter } from '@codexcrm/server/src/root';
+import type { AppRouter } from '@codexcrm/api/src/root';
 
 export { api, API_VERSION } from './trpc/client';
 

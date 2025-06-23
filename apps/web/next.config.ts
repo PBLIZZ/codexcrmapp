@@ -40,7 +40,7 @@ const nextConfig: NextConfig = {
       '@codexcrm/config': path.resolve(__dirname, '../../packages/config/src'),
       '@codexcrm/database': path.resolve(__dirname, '../../packages/database/src'),
       '@codexcrm/lib': path.resolve(__dirname, '../../packages/lib/src'),
-      '@codexcrm/server': path.resolve(__dirname, '../../packages/server/src'),
+      '@codexcrm/api': path.resolve(__dirname, '../../packages/api/src'),
       '@codexcrm/ui': path.resolve(__dirname, '../../packages/ui/src'),
       '@/*': path.resolve(__dirname, './'),
     },

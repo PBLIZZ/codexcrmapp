@@ -1,4 +1,4 @@
-import type { AppRouter } from '@codexcrm/server/src/root';
+import type { AppRouter } from '@codexcrm/api/src/root';
 import { createTRPCReact } from '@trpc/react-query';
 
 // Version 2 - Adding version to force client refresh

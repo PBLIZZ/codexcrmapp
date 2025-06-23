@@ -18,7 +18,7 @@
     "baseUrl": "../..",
     "paths": {
       // Monorepo packages using aliases from root
-      "@codexcrm/server/*": ["packages/server/src/*"],
+      "@codexcrm/api/*": ["packages/api/src/*"],
       "@codexcrm/auth/*": ["packages/auth/src/*"],
       "@codexcrm/config/*": ["packages/config/src/*"],
       "@codexcrm/db/*": ["packages/db/src/*"],

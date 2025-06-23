@@ -1,6 +1,6 @@
 import type { NextRequest} from 'next/server';
 import { NextResponse } from 'next/server';
-import { getEnhancedOpenApiDocument } from '@codexcrm/server/src/utils/openapi';
+import { getEnhancedOpenApiDocument } from '@codexcrm/api/src/utils/openapi';
 
 /**
  * GET /api/docs/openapi
