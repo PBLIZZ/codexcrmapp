@@ -1,7 +1,7 @@
 'use client';
 
 import { ContactTableRow } from './ContactTableRow';
-import type { Contact } from '../types';
+import type { Contact } from '@/app/contacts/_components/table/types';
 
 interface ContactTableBodyProps {
   contacts: Contact[];

@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
-import type { Contact, ContactActionProps } from '../types';
+import type { Contact, ContactActionProps } from '@/app/contacts/_components/table/types';
 
 interface ContactActionsProps extends ContactActionProps {
   contact: Contact;

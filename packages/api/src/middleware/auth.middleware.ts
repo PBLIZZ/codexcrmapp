@@ -1,6 +1,6 @@
 import { TRPCError } from '@trpc/server';
-import { router, publicProcedure } from '../trpc';
-import type { Context } from '../context';
+import { router, publicProcedure } from '@codexcrm/api/src/trpc';
+import type { Context } from '@codexcrm/api/src/context';
 import { initTRPC } from '@trpc/server';
 
 // Initialize tRPC for middleware

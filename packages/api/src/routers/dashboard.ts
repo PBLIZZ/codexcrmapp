@@ -1,7 +1,8 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
-import { router, protectedProcedure } from '../trpc';
+import { supabaseAdmin } from '@codexcrm/api/src/supabaseAdmin';
+import { router, protectedProcedure } from '@codexcrm/api/src/trpc';
 
 // Define Zod schemas for validation
 const dateRangeSchema = z.object({

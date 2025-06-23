@@ -1,5 +1,5 @@
 import { TRPCError } from '@trpc/server';
-import { middleware } from '../trpc';
+import { middleware } from '@codexcrm/api/src/trpc';
 import { ZodError, ZodSchema } from 'zod';
 
 /**

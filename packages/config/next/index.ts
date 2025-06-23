@@ -1,3 +1,8 @@
+/**
+ * @SERVER-COMPONENT
+ * Next.js Configuration
+ */
+
 import path from 'node:path';
 import type { NextConfig } from 'next';
 import { withSentryConfig } from '@sentry/nextjs';
@@ -40,7 +45,7 @@ const nextConfig: NextConfig = {
       '@codexcrm/config': path.resolve(__dirname, '../../packages/config/src'),
       '@codexcrm/database': path.resolve(__dirname, '../../packages/database/src'),
       '@codexcrm/lib': path.resolve(__dirname, '../../packages/lib/src'),
-      '@codexcrm/server': path.resolve(__dirname, '../../packages/server/src'),
+      '@codexcrm/api': path.resolve(__dirname, '../../packages/api/src'),
       '@codexcrm/ui': path.resolve(__dirname, '../../packages/ui/src'),
       '@/*': path.resolve(__dirname, './'),
     },
@@ -83,5 +88,7 @@ const sentryConfig = {
   // Automatically tree-shake Sentry logger statements
   disableLogger: true,
 };
+
+export { nextConfig, sentryConfig };
 
 export default withSentryConfig(nextConfig, sentryConfig);

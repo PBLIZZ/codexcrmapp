@@ -1,15 +1,15 @@
 'use client';
 
-import { ContactTableHeader } from './ContactTableHeader';
-import { ContactTableBody } from './ContactTableBody';
-import { BulkActionToolbar } from './BulkActionToolbar';
+import { ContactTableHeader } from '@/app/contacts/_components/table/components/ContactTableHeader';
+import { ContactTableBody } from '@/app/contacts/_components/table/components/ContactTableBody';
+import { BulkActionToolbar } from '@/app/contacts/_components/table/components/BulkActionToolbar';
 import { 
   useContactSelection, 
   useContactActions, 
   useColumnManagement,
   useBulkOperations 
-} from '../hooks';
-import type { ContactsTableProps } from '../types';
+} from '@/app/contacts/_components/table/hooks';
+import type { ContactsTableProps } from '@/app/contacts/_components/table/types';
 
 /**
  * Main ContactsTable component that orchestrates all table functionality

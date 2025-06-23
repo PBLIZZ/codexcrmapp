@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { api } from '@/lib/trpc';
-import type { BulkOperationsHook, BulkOperationState } from '../types';
+import type { BulkOperationsHook, BulkOperationState } from '@/app/contacts/_components/table/types';
 
 interface UseBulkOperationsProps {
   selectedContactIds: string[];

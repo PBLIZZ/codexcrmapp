@@ -10,7 +10,7 @@
   },
   "packageManager": "pnpm@10.12.1",
   "dependencies": {
-    "@codexcrm/db": "workspace:*",
+    "@codexcrm/database": "workspace:*",
     "@codexcrm/server": "workspace:*",
     "@codexcrm/ui": "workspace:*",
     "@dnd-kit/core": "^6.3.1",
