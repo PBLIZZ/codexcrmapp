@@ -1,6 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { SessionsRepository } from '@codexcrm/db';
+import { SessionsRepository } from '@codexcrm/database';
 
 import { router, protectedProcedure } from '../trpc';
 

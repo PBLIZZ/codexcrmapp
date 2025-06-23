@@ -1,6 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { AiActionsRepository } from '@codexcrm/db';
+import { AiActionsRepository } from '@codexcrm/database';
 
 import { router, protectedProcedure } from '../trpc';
 

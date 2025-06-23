@@ -5,7 +5,7 @@ import { formatDistance } from 'date-fns';
 import Link from 'next/link';
 import Image from 'next/image'; // Added Image import
 import { ArrowDown, ArrowUp } from 'lucide-react';
-import type { Tables } from '@codexcrm/db/src/database.types'; // Import Tables type
+import type { Tables } from '@codexcrm/database/src/database.types'; // Import Tables type
 import {
   Mail,
   MessageSquareText,

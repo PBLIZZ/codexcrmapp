@@ -38,7 +38,7 @@ const nextConfig: NextConfig = {
     resolveAlias: {
       '@codexcrm/auth': path.resolve(__dirname, '../../packages/auth/src'),
       '@codexcrm/config': path.resolve(__dirname, '../../packages/config/src'),
-      '@codexcrm/db': path.resolve(__dirname, '../../packages/db/src'),
+      '@codexcrm/database': path.resolve(__dirname, '../../packages/database/src'),
       '@codexcrm/lib': path.resolve(__dirname, '../../packages/lib/src'),
       '@codexcrm/server': path.resolve(__dirname, '../../packages/server/src'),
       '@codexcrm/ui': path.resolve(__dirname, '../../packages/ui/src'),

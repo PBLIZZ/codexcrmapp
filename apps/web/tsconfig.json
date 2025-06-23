@@ -29,7 +29,7 @@
       "@codexcrm/server/*": ["../../packages/server/src/*"],
       "@codexcrm/auth/*": ["../../packages/auth/src/*"],
       "@codexcrm/config/*": ["../../packages/config/src/*"],
-      "@codexcrm/db/*": ["../../packages/db/src/*"],
+      "@codexcrm/database/*": ["../../packages/database/src/*"],
       "@codexcrm/jobs/*": ["../../packages/jobs/src/*"],
       "@codexcrm/ui/*": ["../../packages/ui/src/*"],
       // App-specific paths
