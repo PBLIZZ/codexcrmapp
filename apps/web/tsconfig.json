@@ -26,7 +26,7 @@
     "baseUrl": ".",
     "paths": {
       // Monorepo package paths (relative to apps/web)
-      "@codexcrm/server/*": ["../../packages/server/src/*"],
+      "@codexcrm/api/*": ["../../packages/api/src/*"],
       "@codexcrm/auth/*": ["../../packages/auth/src/*"],
       "@codexcrm/config/*": ["../../packages/config/src/*"],
       "@codexcrm/database/*": ["../../packages/database/src/*"],

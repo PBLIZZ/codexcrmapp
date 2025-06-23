@@ -1,6 +1,6 @@
 'use client';
 
-import type { AppRouter } from '@codexcrm/server/src/root';
+import type { AppRouter } from '@codexcrm/api/src/root';
 import { QueryClient, QueryClientProvider, QueryCache, MutationCache } from '@tanstack/react-query';
 import { httpBatchLink } from '@trpc/client';
 import type { inferRouterInputs } from '@trpc/server';

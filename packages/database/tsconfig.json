@@ -19,18 +19,18 @@
     "baseUrl": "../..",
     "paths": {
       // Monorepo packages using aliases from root
-      "@codexcrm/server/*": ["packages/server/src/*"],
+      "@codexcrm/api/*": ["packages/api/src/*"],
       "@codexcrm/auth/*": ["packages/auth/src/*"],
       "@codexcrm/config/*": ["packages/config/src/*"],
-      "@codexcrm/db/*": ["packages/db/src/*"],
-      "@codexcrm/jobs/*": ["packages/jobs/src/*"],
+      "@codexcrm/database/*": ["packages/database/src/*"],
+      "@codexcrm/background-jobs/*": ["packages/background-jobs/src/*"],
       "@codexcrm/ui/*": ["packages/ui/src/*"],
       "@/*": ["apps/web/*"],
       // Local paths
-      "@/db/*": ["packages/db/src/*"],
-      "@/models/*": ["packages/db/src/models/*"],
-      "@/repositories/*": ["packages/db/src/repositories/*"],
-      "@/utils/*": ["packages/db/src/utils/*"]
+      "@/db/*": ["packages/database/src/*"],
+      "@/models/*": ["packages/database/src/models/*"],
+      "@/repositories/*": ["packages/database/src/repositories/*"],
+      "@/utils/*": ["packages/database/src/utils/*"]
     }
   },
 
