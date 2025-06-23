@@ -1,11 +1,17 @@
 // eslint.config.js
-import nextPlugin from '@next/eslint-plugin-next';
+import { FlatCompat } from '@eslint/eslintrc';
 import tanstackQueryPlugin from '@tanstack/eslint-plugin-query';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
-import prettierConfig from 'eslint-config-prettier'; // <-- Import it
+import importPlugin from 'eslint-plugin-import';
+import prettier from "eslint-config-prettier";
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
+
+// Create compat instance
+const compat = new FlatCompat({
+  baseDirectory: import.meta.dirname,
+});
 
 export default tseslint.config(
   // 1. Global Ignores
@@ -13,20 +19,34 @@ export default tseslint.config(
     ignores: [
       'node_modules/',
       'dist/',
+      '**/dist/**',  // Explicitly ignore all dist directories anywhere
       'build/',
-      '**/.next/',
+      '**/build/**', // Explicitly ignore all build directories anywhere
+      '**/.next/**', // Explicitly ignore all Next.js output
       'public/',
+      'apps/_web_*/**', // Exclude backup directories
+      'Docs/**',      // Exclude documentation directory
       // FIX #1: The globstar `**/` ignores config files in ANY directory, not just the root.
       '**/*.config.{js,ts,mjs,cjs}',
       '**/*.d.ts',
     ],
   },
+  
+  // 2. Base Import Rules - Apply to all files
+  {
+    plugins: {
+      import: importPlugin,
+    },
+    rules: {
+      'import/no-relative-packages': 'error',
+    },
+  },
 
-  // 2. Base Configurations
-  ...tseslint.configs.recommendedTypeChecked,
+  // 3. Base Configurations
+    ...tseslint.configs.recommendedTypeChecked,
   ...tanstackQueryPlugin.configs['flat/recommended'],
 
-  // 3. Main Custom Configuration for TypeScript/React Files
+  // 4. Main Custom Configuration for TypeScript/React Files
   {
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
@@ -68,26 +88,20 @@ export default tseslint.config(
       'no-shadow': 'off',
       'no-console': ['warn', { allow: ['warn', 'error'] }],
       eqeqeq: ['error', 'always'],
+
     },
   },
 
-  // 4. Next.js Specific Override
-  {
-    files: ['apps/web/**/*.{ts,tsx}'],
-    plugins: {
-      '@next/next': nextPlugin,
-    },
-    // FIX #2: This block tells the Next.js plugin where to find your app directory.
+  // 4. Next.js Specific Override - UPDATED
+  ...compat.config({
+    extends: ['next'],
     settings: {
       next: {
         rootDir: 'apps/web/',
       },
     },
-    rules: {
-      ...nextPlugin.configs.recommended.rules,
-      ...nextPlugin.configs['core-web-vitals'].rules,
-    },
-  },
+  }),
+
   // 5. Prettier Configuration
-  ...prettierConfig.configs.recommended
+      prettier,
 );

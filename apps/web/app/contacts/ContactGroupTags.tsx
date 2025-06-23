@@ -4,7 +4,7 @@ import { Tag } from 'lucide-react';
 // Removed useState and useEffect as they're no longer needed
 
 import { Badge } from '@/components/ui/badge';
-import type { Tables } from '../../../../packages/db/src/database.types';
+import type { Tables } from '@codexcrm/database/types';
 import { api } from '@/lib/trpc';
 
 export function ContactGroupTags({ contactId }: { contactId: string }) {
