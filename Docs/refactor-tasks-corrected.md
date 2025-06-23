@@ -508,7 +508,7 @@ git tag -a "refactor-phase-X" -m "Phase X working"
 ```
 I need you to implement [Task 201] following these rules:
 
-1. This is a Next.js 15 App Router project using React 19
+1. This is a Next.js 15 TypeScript Strict App Router project using React 19
 2. File location: apps/web/lib/supabase/server.ts
 3. Component type: SERVER-ONLY utility
 4. Must follow pattern from PRD section 5.1
