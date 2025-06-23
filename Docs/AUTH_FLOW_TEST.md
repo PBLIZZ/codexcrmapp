@@ -78,6 +78,8 @@ Cookie attributes:
 
 ## Screenshots
 
-- [x] Login page screenshot saved
-- [x] OAuth flow screenshot saved
-- [x] Dashboard (logged in) screenshot saved
+- [x] Login page screenshot saved: `/apps/web/public/images/auth/login-page.png`
+- [x] OAuth flow screenshot saved: `/apps/web/public/images/auth/login-page.png` (Google OAuth popup visible)
+- [x] Dashboard (logged in) screenshot saved: `/apps/web/public/images/auth/dashboard-logged-in.png`
+
+Note: The screenshots confirm proper authentication flow, user data display, and protected route access.
