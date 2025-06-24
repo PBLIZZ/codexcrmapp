@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    // Language and Environment
     "target": "ES2022",
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "allowJs": true,
@@ -11,14 +10,12 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
 
-    // Module Resolution
     "module": "ESNext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
 
-    // Enhanced Type Checking
     "strictNullChecks": true,
     "strictFunctionTypes": true,
     "strictBindCallApply": true,
@@ -32,47 +29,16 @@
     "noUnusedParameters": true,
     "exactOptionalPropertyTypes": true,
 
-    // Advanced Type Checking
     "noPropertyAccessFromIndexSignature": true,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "useUnknownInCatchVariables": true,
 
-    // Modern TypeScript Features
     "verbatimModuleSyntax": false,
     "allowImportingTsExtensions": false,
     "resolvePackageJsonExports": true,
     "resolvePackageJsonImports": true,
 
-    // Performance
-    "incremental": true,
-    "tsBuildInfoFile": ".tsbuildinfo",
-
-    // Paths and Base URL
-    "baseUrl": ".",
-    "paths": {
-      "@codexcrm/api/*": ["packages/api/src/*"],
-      "@codexcrm/auth/*": ["packages/auth/src/*"],
-      "@codexcrm/config/*": ["packages/config/src/*"],
-      "@codexcrm/database/*": ["packages/database/src/*"],
-      "@codexcrm/background-jobs/*": ["packages/background-jobs/src/*"],
-      "@codexcrm/ui/*": ["packages/ui/src/*"],
-      "@/*": ["apps/web/*"]
-    },
-
-    // Type roots
-    "typeRoots": ["./node_modules/@types", "./types"]
-  },
-  "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "build",
-    ".next",
-    "coverage",
-    "**/*.test.ts",
-    "**/*.test.tsx",
-    "**/*.spec.ts",
-    "**/*.spec.tsx"
-  ]
+    "incremental": true
+  }
 }

@@ -1,4 +1,4 @@
-// eslint.config.js
+//packages/config / eslint / index.js
 import { FlatCompat } from '@eslint/eslintrc';
 import tanstackQueryPlugin from '@tanstack/eslint-plugin-query';
 import reactPlugin from 'eslint-plugin-react';
@@ -13,7 +13,7 @@ const compat = new FlatCompat({
   baseDirectory: import.meta.dirname,
 });
 
-export default tseslint.config(
+export const codexCrmPreset = tseslint.config(
   // 1. Global Ignores
   {
     ignores: [
@@ -31,28 +31,17 @@ export default tseslint.config(
       '**/*.d.ts',
     ],
   },
-  
-  // 2. Base Import Rules - Apply to all files
-  {
-    plugins: {
-      import: importPlugin,
-    },
-    rules: {
-      'import/no-relative-packages': 'error',
-    },
-  },
 
-  // 3. Base Configurations
-    ...tseslint.configs.recommendedTypeChecked,
+  // 2. Base Configurations
+  ...tseslint.configs.recommendedTypeChecked,
   ...tanstackQueryPlugin.configs['flat/recommended'],
 
-  // 4. Main Custom Configuration for TypeScript/React Files
+  // 3. Main Custom Configuration for TypeScript/React Files
   {
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
       parserOptions: {
         project: true,
-        tsconfigRootDir: import.meta.dirname,
       },
       globals: {
         ...globals.browser,
@@ -60,6 +49,7 @@ export default tseslint.config(
       },
     },
     plugins: {
+      import: importPlugin,
       react: reactPlugin,
       'react-hooks': reactHooksPlugin,
     },
@@ -69,12 +59,15 @@ export default tseslint.config(
       },
     },
     rules: {
+      // Import Rules
+      'import/no-relative-packages': 'error',
+      'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
+      // React Rules
       ...reactPlugin.configs.recommended.rules,
       ...reactHooksPlugin.configs.recommended.rules,
-
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
-
+      // TypeScript Rules
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/no-misused-promises': 'error',
       '@typescript-eslint/no-unused-vars': [
@@ -92,16 +85,12 @@ export default tseslint.config(
     },
   },
 
-  // 4. Next.js Specific Override - UPDATED
-  ...compat.config({
-    extends: ['next'],
-    settings: {
-      next: {
-        rootDir: 'apps/web/',
-      },
-    },
-  }),
-
-  // 5. Prettier Configuration
-      prettier,
+  // 4. Prettier - MUST BE LAST
+  prettier,
 );
+
+// 5. Next.js Specific Config - Exported Separately
+// This is site-plan specific and should be applied only by Next.js apps
+export const nextjsConfig = compat.config({
+  extends: ['next/core-web-vitals'],
+});

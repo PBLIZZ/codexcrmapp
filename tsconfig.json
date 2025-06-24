@@ -1,4 +1,5 @@
 {
+  "extends": "@codexcrm/config/typescript/base",
   "files": [],
   "references": [
     // Your Apps

@@ -1,15 +1,12 @@
+// /packages/ui/tsconfig.json
 {
-  "extends": "@codexcrm/config/typescript/react-library",
+  // This correctly extends your shared preset for a React component library
+  "extends": "../config/typescript/react-library.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@codexcrm/ui": ["./src"],
-      "@codexcrm/ui/*": ["./src/*"]
-    },
-    "declaration": true,
-    "declarationMap": true,
-    "outDir": "./dist"
+    // Define the output directory for your build process (tsup)
+    "outDir": "./dist",
+    "tsBuildInfoFile": "dist/.tsbuildinfo"
   },
-  "include": ["src/**/*"],
+  "include": ["src"], // 'src' is simpler than 'src/**/*'
   "exclude": ["node_modules", "dist"]
 }

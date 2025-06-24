@@ -4,17 +4,18 @@
   "engines": {
     "node": ">=18.0.0"
   },
+  "packageManager": "pnpm@10.9.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "cd apps/web && next dev",
-    "build": "pnpm --filter @codexcrm/web run build",
-    "start": "cd apps/web && next start",
+    "dev": "pnpm --filter=@codexcrm/web dev",
+    "build": "pnpm --filter=@codexcrm/web build",
+    "start": "pnpm --filter=@codexcrm/web start",
     "prepare": "husky",
-    "lint": "eslint .",
-    "typecheck": "tsc -p apps/web/tsconfig.json --noEmit",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "lint": "pnpm --filter=@codexcrm/web lint",
+    "typecheck": "pnpm --filter=@codexcrm/web typecheck",
+    "format": "pnpm --filter=@codexcrm/web format",
+    "format:check": "pnpm --filter=@codexcrm/web format:check",
     "lint-staged": "lint-staged"
   },
   "lint-staged": {
@@ -67,6 +68,7 @@
     ]
   },
   "devDependencies": {
+    "@codexcrm/config": "workspace:*",
     "@eslint/eslintrc": "^3.3.1",
     "@next/eslint-plugin-next": "^15.3.2",
     "@tailwindcss/postcss": "^4",

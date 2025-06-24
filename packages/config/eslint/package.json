@@ -1,0 +1,24 @@
+{
+  "name": "@codexcrm/config-eslint",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module", 
+  "main": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "dependencies": {
+    "@eslint/eslintrc": "^3.1.0", 
+    "@tanstack/eslint-plugin-query": "^5.35.6",
+    "typescript-eslint": "^7.8.0",
+    "eslint-plugin-react": "^7.34.1",
+    "eslint-plugin-react-hooks": "5.0.0-canary-...",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-config-prettier": "^9.1.0",
+    "globals": "^15.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.2.0",
+    "typescript": "^5.4.5"
+  }
+}

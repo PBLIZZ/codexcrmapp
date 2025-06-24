@@ -1,12 +1,10 @@
 {
   "extends": "@codexcrm/config/typescript/nextjs",
   "compilerOptions": {
+    "tsBuildInfoFile": ".next/tsconfig.tsbuildinfo",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "@/components/*": ["./components/*"],
-      "@/lib/*": ["./lib/*"],
-      "@/app/*": ["./app/*"]
+      "@/*": ["./*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
