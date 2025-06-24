@@ -1,59 +1,17 @@
 {
-  "extends": "@codexcrm/config/typescript/base",
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Next.js",
+  "extends": "./base.json",
   "compilerOptions": {
-    // Next.js specific overrides
-    "jsx": "preserve",
-    "jsxImportSource": "react",
-
-    // Next.js plugin for enhanced type checking
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
-
-    // Let Next.js handle emitting JS
-    "noEmit": true,
-
-    // Next.js specific libraries
+    "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
-
-    // Performance for development
+    "allowJs": true,
+    "noEmit": true,
     "incremental": true,
-    "tsBuildInfoFile": ".next/.tsbuildinfo",
-
-    // App-specific path mappings
-    "baseUrl": ".",
-    "paths": {
-      // Monorepo package paths (relative to apps/web)
-      "@codexcrm/api/*": ["../../packages/api/src/*"],
-      "@codexcrm/auth/*": ["../../packages/auth/src/*"],
-      "@codexcrm/config/*": ["../../packages/config/src/*"],
-      "@codexcrm/database/*": ["../../packages/database/src/*"],
-      "@codexcrm/jobs/*": ["../../packages/jobs/src/*"],
-      "@codexcrm/ui/*": ["../../packages/ui/src/*"],
-      // App-specific paths
-      "@/*": ["./*"],
-      "@/components/*": ["./components/*"],
-      "@/lib/*": ["./lib/*"],
-      "@/hooks/*": ["./hooks/*"],
-      "@/app/*": ["./app/*"],
-      "@/types/*": ["./types/*"],
-      "@/utils/*": ["./lib/utils/*"]
-    }
-  },
-
-  // Files the app should compile
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "types/**/*.d.ts"],
-
-  // Exclude unnecessary files
-  "exclude": [
-    "node_modules",
-    ".next",
-    "out",
-    "**/*.test.ts",
-    "**/*.test.tsx",
-    "**/*.spec.ts",
-    "**/*.spec.tsx"
-  ]
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "jsx": "preserve",
+    "plugins": [{ "name": "next" }]
+  }
 }

@@ -1,5 +1,4 @@
 {
-  "extends": "@codexcrm/config/typescript/base",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
@@ -13,8 +12,11 @@
       "@codexcrm/ui/*": ["./packages/ui/src/*"],
       "@codexcrm/background-jobs": ["./packages/background-jobs/src"],
       "@codexcrm/background-jobs/*": ["./packages/background-jobs/src/*"],
+
       "@codexcrm/config": ["./packages/config"],
-      "@codexcrm/config/*": ["./packages/config/*"]
+      "@codexcrm/config/*": ["./packages/config/*"],
+
+      "@/*": ["./apps/web/*"]
     }
   }
 }

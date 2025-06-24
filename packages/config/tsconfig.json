@@ -1,36 +1,8 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "@codexcrm/config/typescript/base",
   "compilerOptions": {
-    // Build output configuration
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "composite": true,
-
-    // Config package specific
-    "module": "esnext",
-    "target": "es2022",
-    "moduleResolution": "bundler",
-
-    // Monorepo and package paths - using root-relative paths
-    "baseUrl": "../..",
-    "paths": {
-      // Monorepo packages using aliases from root
-      "@codexcrm/api/*": ["packages/api/src/*"],
-      "@codexcrm/auth/*": ["packages/auth/src/*"],
-      "@codexcrm/config/*": ["packages/config/src/*"],
-      "@codexcrm/database/*": ["packages/database/src/*"],
-      "@codexcrm/background-jobs/*": ["packages/background-jobs/src/*"],
-      "@codexcrm/ui/*": ["packages/ui/src/*"],
-      "@/*": ["apps/web/*"],
-      // Local paths
-      "@/config/*": ["packages/config/src/*"]
-    }
+    "noEmit": true
   },
-
-  "include": ["src/**/*"],
-
-  "exclude": ["node_modules", "dist", "**/*.test.{ts,tsx}", "**/*.spec.{ts,tsx}"]
+  "include": ["*.json"],
+  "exclude": ["node_modules", "dist", "**/*.js", "**/*.mjs", "**/*.ts"]
 }
