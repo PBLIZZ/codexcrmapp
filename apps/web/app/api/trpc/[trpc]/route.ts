@@ -1,4 +1,4 @@
-import { appRouter, createContext } from '@codexcrm/server';
+import { appRouter, createContext } from '@codexcrm/api';
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 import type { AnyRouter } from '@trpc/server';
 

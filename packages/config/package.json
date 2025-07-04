@@ -1,10 +1,30 @@
 {
   "name": "@codexcrm/config",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
-  "devDependencies": {
-    "typescript": "^5.4.5"
+  "files": [
+    "typescript",
+    "prettier",
+    "eslint",
+    "tailwind",
+    "sentry",
+    "src",
+    "postcss",
+    "next"
+  ],
+  "exports": {
+    ".": "./src/paths.ts",
+    "./paths": "./src/paths.ts",
+    "./typescript/base": "./typescript/base.json",
+    "./typescript/nextjs": "./typescript/nextjs.json",
+    "./typescript/react-library": "./typescript/react-library.json",
+    "./prettier": "./prettier/index.json",
+    "./eslint": "./eslint/index.js",
+    "./tailwind": "./tailwind/tailwind.config.js",
+    "./sentry/edge": "./sentry/edge.config.ts",
+    "./sentry/server": "./sentry/server.config.ts",
+    "./postcss/app": "./postcss/app.mjs",
+    "./postcss/ui": "./postcss/ui.js",
+    "./next": "./next/index.ts"
   }
 }

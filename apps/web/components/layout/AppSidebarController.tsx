@@ -3,16 +3,16 @@
 
 import { usePathname } from 'next/navigation';
 
-import { ContactsSidebar } from './sidebars/ContactsSidebar';
-import { DashboardSidebar } from './sidebars/DashboardSidebar';
-import { TasksSidebar } from './sidebars/TasksSidebar';
-import { AnalyticsSidebar } from './sidebars/AnalyticsSidebar';
-import { CalendarSidebar } from './sidebars/CalendarSidebar';
-import { MessagesSidebar } from './sidebars/MessagesSidebar';
-import { MarketingSidebar } from './sidebars/MarketingSidebar';
-import { SettingsSidebar } from './sidebars/SettingsSidebar';
+import { ContactsSidebar } from '../../app/(authorisedRoute)/contacts/ContactsSidebar';
+import { DashboardSidebar } from '../../app/(authorisedRoute)/dashboard/DashboardSidebar';
+import { TasksSidebar } from '../../app/(authorisedRoute)/tasks/TasksSidebar';
+import { AnalyticsSidebar } from '../../app/(authorisedRoute)/analytics/AnalyticsSidebar';
+import { CalendarSidebar } from '../../app/(authorisedRoute)/calendar/CalendarSidebar';
+import { MessagesSidebar } from '../../app/(authorisedRoute)/messages/MessagesSidebar';
+import { MarketingSidebar } from '../../app/(authorisedRoute)/marketing/MarketingSidebar';
+import { SettingsSidebar } from '../../app/(authorisedRoute)/settings/SettingsSidebar';
 
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@codexcrm/ui/components/ui/skeleton';
 
 /**
  * AppSidebarController declaratively renders the correct contextual sidebar

@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 
 import { ResetPasswordContent } from './ResetPasswordContent';
 
-import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardDescription } from '@codexcrm/ui/components/ui/card';
 
 /**
  * Server Component wrapper with Suspense boundary for the ResetPasswordContent.

@@ -1,22 +1,35 @@
-import path from 'node:path';
-import type { NextConfig } from 'next';
-import { withSentryConfig } from '@sentry/nextjs';
+import { withSentryConfig } from "@sentry/nextjs";
+import type { NextConfig } from "next";
 
-/** @type {import('next').NextConfig} */
+/**
+ * @type {import('next').NextConfig}
+ */
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  
+  // Next.js 15 experimental features
+  experimental: {
+    typedRoutes: true,  // Typed routes for better type safety
+  },
+  
+  // Performance optimizations per Next.js 15 best practices
+  compress: true,
+  poweredByHeader: false,
+  
   transpilePackages: [
+    '@codexcrm/api',
+    '@codexcrm/auth',
+    '@codexcrm/database',
     '@codexcrm/ui',
-    '@trpc/client',
-    '@trpc/server',
-    '@trpc/react-query',
-    '@trpc/next',
+    '@codexcrm/background-jobs',
   ],
 
   // Moved from experimental.serverComponentsExternalPackages
   serverExternalPackages: ['@whatwg-node/fetch', '@prisma/client', 'bcryptjs'],
 
+  // Image optimization with Next.js 15 defaults
   images: {
+    formats: ['image/webp', 'image/avif'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -31,44 +44,6 @@ const nextConfig: NextConfig = {
         hostname: 'ppzaajcutzyluffvbnrg.supabase.co',
       },
     ],
-  },
-
-  // Moved from experimental.turbo
-  turbopack: {
-    resolveAlias: {
-      '@codexcrm/auth': path.resolve(__dirname, '../../packages/auth/src'),
-      '@codexcrm/config': path.resolve(__dirname, '../../packages/config/src'),
-      '@codexcrm/db': path.resolve(__dirname, '../../packages/db/src'),
-      '@codexcrm/lib': path.resolve(__dirname, '../../packages/lib/src'),
-      '@codexcrm/server': path.resolve(__dirname, '../../packages/server/src'),
-      '@codexcrm/ui': path.resolve(__dirname, '../../packages/ui/src'),
-      '@/*': path.resolve(__dirname, './'),
-    },
-  },
-
-  experimental: {
-    // Remove deprecated settings - they've been moved above
-    typedRoutes: true,
-  },
-
-  // Ensure API routes work properly with TRPC
-  async rewrites() {
-    return [
-      {
-        source: '/api/trpc/:path*',
-        destination: '/api/trpc/:path*',
-      },
-    ];
-  },
-
-  // Configure webpack for better compatibility
-  webpack: (config, { isServer }) => {
-    // Handle externals for server-side
-    if (isServer) {
-      config.externals.push('@prisma/client');
-    }
-
-    return config;
   },
 };
 

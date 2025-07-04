@@ -1,0 +1,32 @@
+{
+  "mcpServers": {
+    "taskmaster-ai": {
+      "command": "npx",
+      "args": ["-y", "--package=task-master-ai", "task-master-ai"],
+      "env": {
+        "ANTHROPIC_API_KEY": "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",
+        "PERPLEXITY_API_KEY": "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",
+        "OPENAI_API_KEY": "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",
+        "GOOGLE_API_KEY": "AIzaSyDTaE38JienciEEKELS6UQqGU7LbSg9Pos",
+        "OPENROUTER_API_KEY": "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"
+      }
+    },
+
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/peterjamesblizzard/Projects",
+        "/Users/peterjamesblizzard/Downloads",
+        "/Users/peterjamesblizzard/desktop-local-folder-june2025"
+      ]
+    },
+
+    "eslint": {
+      "command": "npx",
+      "args": ["@eslint/mcp@latest"],
+      "env": {}
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "extends": "@codexcrm/config/typescript/base",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@codexcrm/api": ["./src"],
+      "@codexcrm/api/*": ["./src/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
