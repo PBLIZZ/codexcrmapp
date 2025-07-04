@@ -1,49 +1,20 @@
+// /packages/ui/tsconfig.json
 {
-  "extends": "../../tsconfig.base.json",
+  // This correctly extends your shared preset for a React component library
+  "extends": "@codexcrm/config/typescript/react-library",
+
   "compilerOptions": {
-    // Build output configuration
+    // Define the output directory for your build process (tsup)
+    "rootDir": "src",
     "outDir": "./dist",
-    "rootDir": "./src",
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "composite": true,
-
-    // React JSX configuration
-    "jsx": "react-jsx",
-    "jsxImportSource": "react",
-
-    // Module configuration for library
-    "module": "esnext",
-    "target": "es2020",
-
-    // Monorepo and library-specific paths - using root-relative paths
-    "baseUrl": "../..",
+    "tsBuildInfoFile": "dist/.tsbuildinfo",
+    // Add path mappings for proper imports
+    "baseUrl": "./src",
     "paths": {
-      // Monorepo packages using aliases from root
-      "@codexcrm/server/*": ["packages/server/src/*"],
-      "@codexcrm/auth/*": ["packages/auth/src/*"],
-      "@codexcrm/config/*": ["packages/config/src/*"],
-      "@codexcrm/db/*": ["packages/db/src/*"],
-      "@codexcrm/jobs/*": ["packages/jobs/src/*"],
-      "@codexcrm/ui/*": ["packages/ui/src/*"],
-      "@/*": ["apps/web/*"],
-      // Local paths
-      "@/ui/*": ["packages/ui/src/*"],
-      "@/components/*": ["packages/ui/src/components/*"],
-      "@/lib/*": ["packages/ui/src/lib/*"],
-      "@/hooks/*": ["packages/ui/src/hooks/*"],
-      "@/utils/*": ["packages/ui/src/lib/utils/*"]
+      "@/*": ["./*"],
+      "@/lib/*": ["./lib/*"]
     }
   },
-
-  "include": ["src/**/*"],
-
-  "exclude": [
-    "node_modules",
-    "dist",
-    "**/*.stories.{ts,tsx}",
-    "**/*.test.{ts,tsx}",
-    "**/*.spec.{ts,tsx}"
-  ]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }

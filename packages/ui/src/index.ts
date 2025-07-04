@@ -2,26 +2,30 @@ import './styles/globals.css';
 
 // Export UI components
 export * from './components/ui/avatar';
-export * from './components/ui/themed-card';
-export * from './components/ui/metric-card';
-export * from './components/ui/contact-card';
-export * from './components/ui/timeline';
-export * from './components/ui/task-card';
 export * from './components/ui/loading-spinner';
 
 // Export utilities
 export * from './lib/utils';
 export * from './lib/theme';
 
+// Primitive shadcn components
+export * from './components/ui/button';
+export * from './components/ui/badge';
+export * from './components/ui/input';
+export * from './components/ui/separator';
+export * from './components/ui/tooltip';
+export * from './components/ui/alert';
+export * from './components/ui/table';
+export * from './components/ui/dropdown-menu';
+export * from './components/ui/select';
+export * from './components/ui/checkbox';
+
+// Timeline
+export * from './components/ui/timeline';
+
 // Main export file for @codexcrm/ui
 // Components will be exported from here
 
 // Core components
-export * from './components/core/Button';
-export * from './components/core/ThemeProvider';
-export * from './components/core/ThemeDemo';
-export * from './components/core/MetricCardDemo';
-export * from './components/core/ContactCardDemo';
-export * from './components/core/TimelineDemo';
-export * from './components/core/TaskCardDemo';
-// export * from './components/core/Input'; // Example for next component
+export * from './components/theme-provider';
+export * from './components/theme-toggle';

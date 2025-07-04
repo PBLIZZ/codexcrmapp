@@ -2,69 +2,80 @@
   "name": "@codexcrm/ui",
   "version": "0.1.0",
   "private": true,
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
-    },
-    "./lib/utils": {
-      "types": "./dist/lib/utils.d.ts",
-      "import": "./dist/lib/utils.mjs",
-      "require": "./dist/lib/utils.js"
-    },
-    "./components/ui/avatar": {
-      "types": "./dist/components/ui/avatar.d.ts",
-      "import": "./dist/components/ui/avatar.mjs",
-      "require": "./dist/components/ui/avatar.js"
+    ".": "./dist/index.js",
+    "./components/ui/*": "./dist/components/ui/*.js",
+    "./lib/*": "./dist/lib/*.js",
+    "./styles/globals.css": "./src/styles/globals.css"
+  },
+  "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "dist/*"
+      ]
     }
   },
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "clean": "rm -rf dist .turbo node_modules"
+    "clean": "rimraf .turbo dist",
+    "lint": "eslint . --max-warnings 0"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/modifiers": "9.0.0",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "@hookform/resolvers": "^5.1.1",
+    "@radix-ui/react-alert-dialog": "^1.1.14",
     "@radix-ui/react-avatar": "^1.1.10",
+    "@radix-ui/react-checkbox": "^1.3.2",
+    "@radix-ui/react-collapsible": "^1.1.11",
+    "@radix-ui/react-dialog": "^1.1.14",
+    "@radix-ui/react-dropdown-menu": "^2.1.15",
+    "@radix-ui/react-hover-card": "^1.1.14",
+    "@radix-ui/react-label": "^2.1.7",
+    "@radix-ui/react-popover": "^1.1.14",
+    "@radix-ui/react-select": "^2.2.5",
+    "@radix-ui/react-separator": "^1.1.7",
     "@radix-ui/react-slot": "^1.2.3",
+    "@radix-ui/react-tabs": "^1.1.12",
+    "@radix-ui/react-tooltip": "^1.2.7",
+    "@radix-ui/react-visually-hidden": "^1.2.3",
+    "@tanstack/react-table": "^8.21.3",
+    "@tanstack/react-virtual": "3.13.10",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
-    "lucide-react": "^0.300.0",
+    "cmdk": "^1.1.1",
+    "date-fns": "^2.30.0",
+    "embla-carousel-react": "^8.6.0",
+    "framer-motion": "^12.16.0",
+    "lucide-react": "^0.501.0",
     "next-themes": "^0.4.6",
+    "react-day-picker": "^9.7.0",
+    "react-hook-form": "^7.58.1",
+    "recharts": "^2.15.3",
     "sonner": "^2.0.5",
-    "tailwind-merge": "^2.2.0"
+    "tailwind-merge": "^2.2.0",
+    "tailwind-variants": "^1.0.0",
+    "vaul": "^1.1.2",
+    "zod": "^3.25.72"
   },
   "peerDependencies": {
     "react": "^18.2.0 || ^19.0.0"
   },
   "devDependencies": {
-    "browser-process-hrtime": "^1.0.0",
-    "buffer": "^6.0.3",
-    "crypto-browserify": "^3.12.1",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
     "postcss": "^8.4.33",
-    "process": "^0.11.10",
-    "react": "^19.0.2",
-    "stream-browserify": "^3.0.0",
-    "tailwindcss": "^3.4.1",
+    "tailwindcss": "^4.1.4",
     "tailwindcss-animate": "^1.0.7",
     "tsup": "^8.0.0",
-    "typescript": "^5.3.3",
-    "util": "^0.12.5",
-    "webpack": "^5.99.9"
+    "tw-animate-css": "^1.3.4",
+    "typescript": "^5.3.3"
   },
   "files": [
     "dist"
-  ],
-  "keywords": [
-    "react",
-    "typescript",
-    "ui-components",
-    "codexcrm"
-  ],
-  "publishConfig": {
-    "access": "public"
-  }
+  ]
 }

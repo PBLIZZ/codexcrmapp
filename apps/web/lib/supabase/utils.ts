@@ -1,7 +1,7 @@
 // apps/web/src/lib/supabase/utils.ts
 
 import { type SupabaseClient } from '@supabase/supabase-js';
-import { Database } from '@codexcrm/db';
+import { Database } from '@codexcrm/database';
 import { createClient as createBrowserClient } from './client';
 
 // Keep these type aliases - they are great!

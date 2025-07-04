@@ -1,4 +1,4 @@
-import { DashboardWidgets } from './dashboard/components/DashboardWidgets';
+import { DashboardWidgets } from './(authorisedRoute)/dashboard/components/DashboardWidgets';
 
 /**
  * The primary page for the application, serving as the main dashboard.

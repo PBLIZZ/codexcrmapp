@@ -1,7 +1,7 @@
 'use server';
 
 import { z } from 'zod';
-import { contactSchema } from '../contacts/ContactForm';
+import { contactSchema } from '@/app/(authorisedRoute)/contacts/new/ContactForm';
 
 export type SubmitContactActionState = {
   success: boolean;

@@ -26,9 +26,9 @@ Example AI assistant implementation:
 ```tsx
 // components/ai/AssistantChat.tsx
 import { useState, useRef, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@codexcrm/ui/components/ui/button';
+import { Input } from '@codexcrm/ui/components/ui/input';
+import { Card, CardContent } from '@codexcrm/ui/components/ui/card';
 import { trpc } from '@/lib/trpc';
 
 type Message = {

@@ -47,18 +47,21 @@ codexcrmapp/
 ## 🎯 Core Features
 
 ### 🔐 Authentication & Security
-- **Supabase Auth**: Email/password, magic links, OAuth providers
+
+- **Supabase Auth**: Email/password, OAuth providers
 - **Session Management**: Automatic token refresh and secure session handling
 - **Route Protection**: Server-side authentication with redirect handling
 - **Role-Based Access**: Granular permissions with Row Level Security
 
 ### 📊 Business Management
+
 - **Contact Management**: Full CRUD with groups, tags, and relationships
 - **Task Management**: Kanban boards, assignments, and workflow automation
 - **Dashboard Analytics**: Real-time business metrics and KPI tracking
 - **Marketing Tools**: Campaign management and customer segmentation
 
 ### 🏗️ Technical Excellence
+
 - **Type Safety**: End-to-end TypeScript with tRPC for zero runtime type errors
 - **Performance**: React 19 concurrent features, optimistic updates, and lazy loading
 - **Error Handling**: Comprehensive error boundaries and fallback UI
@@ -68,13 +71,14 @@ codexcrmapp/
 
 ### Prerequisites
 
-- **Node.js** v18+ (v20+ recommended for optimal performance)
-- **pnpm** v9+ (install via `npm install -g pnpm`)
+- **Node.js** v20+
+- **pnpm** v10+ (install via `npm install -g pnpm`)
 - **Supabase** account with project configured
 
 ### Quick Setup
 
 1. **Clone and Install**
+
    ```bash
    git clone https://github.com/PBLIZZ/codexcrmapp.git
    cd codexcrmapp
@@ -82,32 +86,35 @@ codexcrmapp/
    ```
 
 2. **Environment Configuration**
-   
+
    Create `apps/web/.env.local`:
+
    ```env
    # Supabase Configuration
    NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
    SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-   
+
    # Optional: Additional Configuration
    NEXT_PUBLIC_APP_NAME="CodexCRM"
    NEXT_PUBLIC_APP_DESCRIPTION="Business Management Platform"
    ```
 
 3. **Database Setup**
+
    ```bash
    # Run Supabase migrations (if available)
    npx supabase db push
-   
+
    # Or set up tables manually via Supabase Dashboard
    ```
 
 4. **Start Development**
+
    ```bash
    # Start the development server
    pnpm dev
-   
+
    # Available on http://localhost:3000
    # API endpoints available at http://localhost:3000/api/trpc
    ```
@@ -155,6 +162,7 @@ graph LR
 ```
 
 The authentication system uses:
+
 - **Server-side auth checks** with `requireAuth()` helper
 - **Automatic redirects** for protected routes
 - **Session persistence** across browser refreshes
@@ -176,6 +184,7 @@ git push origin main
 ```
 
 **Environment Variables for Production:**
+
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_production_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_production_anon_key
@@ -185,6 +194,7 @@ SUPABASE_SERVICE_ROLE_KEY=your_production_service_key
 ### Alternative Deployment Options
 
 **Docker:**
+
 ```dockerfile
 # Multi-stage build for optimized production image
 FROM node:20-alpine AS builder
@@ -208,17 +218,20 @@ CMD ["pnpm", "start"]
 ## 📊 Performance & Quality
 
 ### Core Web Vitals
+
 - **LCP**: < 1.2s (Excellent)
-- **FID**: < 50ms (Excellent)  
+- **FID**: < 50ms (Excellent)
 - **CLS**: < 0.05 (Excellent)
 
 ### Performance Features
+
 - **Bundle Optimization**: 25-30% reduction through code splitting
 - **React 19 Concurrent**: Non-blocking navigation with useTransition
 - **Progressive Loading**: Skeleton UI for all critical user flows
 - **Edge Functions**: Optimized API responses with global distribution
 
 ### Quality Assurance
+
 - **TypeScript**: 100% type coverage with strict mode
 - **ESLint**: Custom rules for code consistency
 - **Error Boundaries**: Comprehensive fallback UI
@@ -230,43 +243,46 @@ CMD ["pnpm", "start"]
 ### tRPC Endpoints
 
 **Contacts Router** (`/api/trpc/contacts.*`)
+
 ```typescript
 // List contacts with pagination
-contacts.list({ page: 1, limit: 10 })
+contacts.list({ page: 1, limit: 10 });
 
 // Create new contact
-contacts.save({ 
-  full_name: "John Doe",
-  email: "john@example.com",
-  phone: "+1234567890"
-})
+contacts.save({
+  full_name: 'John Doe',
+  email: 'john@example.com',
+  phone: '+1234567890',
+});
 
 // Update existing contact
-contacts.update({ id, data: { full_name: "Jane Doe" } })
+contacts.update({ id, data: { full_name: 'Jane Doe' } });
 
 // Delete contact
-contacts.delete({ id })
+contacts.delete({ id });
 ```
 
 **Tasks Router** (`/api/trpc/tasks.*`)
+
 ```typescript
 // List tasks with filters
-tasks.list({ status: "pending", assignee: "user-id" })
+tasks.list({ status: 'pending', assignee: 'user-id' });
 
 // Create task
 tasks.create({
-  title: "Follow up with client",
-  description: "Schedule meeting",
-  due_date: "2025-06-20",
-  priority: "high"
-})
+  title: 'Follow up with client',
+  description: 'Schedule meeting',
+  due_date: '2025-06-20',
+  priority: 'high',
+});
 ```
 
 **Groups Router** (`/api/trpc/groups.*`)
+
 ```typescript
 // Manage contact groups
-groups.create({ name: "VIP Clients", description: "High-value customers" })
-groups.addContacts({ groupId, contactIds: ["id1", "id2"] })
+groups.create({ name: 'VIP Clients', description: 'High-value customers' });
+groups.addContacts({ groupId, contactIds: ['id1', 'id2'] });
 ```
 
 ## 🔧 Component Architecture
@@ -274,12 +290,14 @@ groups.addContacts({ groupId, contactIds: ["id1", "id2"] })
 ### Core Layout Components
 
 **MainLayout** (`/components/layout/MainLayout.tsx`)
+
 - Responsive sidebar with contextual navigation
 - Header with user authentication status
 - Mobile-optimized hamburger menu
 - Error boundary integration
 
 **AppSidebarController** (`/components/layout/AppSidebarController.tsx`)
+
 - Declarative sidebar rendering based on route
 - 8 specialized sidebar configurations
 - Skeleton loading states during navigation
@@ -287,12 +305,14 @@ groups.addContacts({ groupId, contactIds: ["id1", "id2"] })
 ### Business Components
 
 **ContactForm** (`/app/contacts/ContactForm.tsx`)
+
 - React Hook Form with Zod validation
 - Real-time field validation
 - Image upload capabilities
 - Optimistic updates with error rollback
 
 **TaskBoard** (`/app/tasks/TaskBoard.tsx`)
+
 - Kanban-style task management
 - Drag-and-drop functionality
 - Status-based organization
@@ -301,6 +321,7 @@ groups.addContacts({ groupId, contactIds: ["id1", "id2"] })
 ## 🔄 Development Workflow
 
 ### Git Flow
+
 ```bash
 # Feature development
 git checkout -b feature/new-contact-fields
@@ -311,12 +332,14 @@ git push origin feature/new-contact-fields
 ```
 
 ### Code Quality Pipeline
+
 1. **Pre-commit**: Husky + lint-staged for code formatting
 2. **CI/CD**: Automatic TypeScript checks and ESLint validation
 3. **Testing**: Comprehensive test suite (implementation planned)
 4. **Deployment**: Automatic Vercel deployment on merge to main
 
 ### Development Best Practices
+
 - **Component Composition**: Prefer composition over inheritance
 - **Type Safety**: Define strict TypeScript interfaces for all data
 - **Error Handling**: Implement error boundaries for all major components
@@ -326,24 +349,28 @@ git push origin feature/new-contact-fields
 ## 📈 Future Roadmap
 
 ### Phase 1: Core Platform (Completed)
+
 - ✅ Next.js 15 + React 19 foundation
 - ✅ tRPC v11 API architecture
 - ✅ Supabase authentication and database
 - ✅ Responsive UI with Shadcn components
 
 ### Phase 2: Business Features (In Progress)
+
 - 🔄 Advanced contact management with custom fields
 - 🔄 Task automation and workflow management
 - 🔄 Calendar integration with appointment booking
 - 🔄 Email marketing campaign tools
 
 ### Phase 3: Enterprise Features (Planned)
+
 - 📋 Advanced analytics and reporting
 - 📋 Multi-tenant architecture
 - 📋 API rate limiting and usage analytics
 - 📋 Advanced security and compliance features
 
 ### Phase 4: AI & Automation (Future)
+
 - 📋 AI-powered customer insights
 - 📋 Automated task scheduling
 - 📋 Intelligent lead scoring

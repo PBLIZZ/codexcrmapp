@@ -1,0 +1,8 @@
+{
+  "extends": "@codexcrm/config/typescript/base",
+  "compilerOptions": {
+    "outDir": "./dist",
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}

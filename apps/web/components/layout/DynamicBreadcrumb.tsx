@@ -10,7 +10,7 @@ import {
   BreadcrumbLink,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
+} from '@codexcrm/ui/components/ui/breadcrumb';
 import { generateBreadcrumbs } from '@/lib/breadcrumb-config';
 
 export function DynamicBreadcrumb() {

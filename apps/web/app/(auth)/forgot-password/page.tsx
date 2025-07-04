@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@codexcrm/ui/components/ui/button';
 import {
   Card,
   CardHeader,
@@ -12,8 +12,8 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
-} from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+} from '@codexcrm/ui/components/ui/card';
+import { Input } from '@codexcrm/ui/components/ui/input';
 import { createClient } from '@/lib/supabase/client';
 
 const supabase = createClient();

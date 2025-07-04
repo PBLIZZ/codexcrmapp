@@ -1,98 +1,115 @@
+/* packages/ui/src/styles/globals.css */
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* 
-  Define CSS custom properties for theming. 
-  The consuming application is responsible for @tailwind base and body styling.
-*/
+@layer base {
+  /* ----------------------------------------- */
+  /*  1. RAW COLOR PALETTE (YOUR BRAND ASSETS) */
+  /* ----------------------------------------- */
+  :root {
+    /* SLATE (for backgrounds, text, borders) */
+    --slate-50: oklch(0.985 0.01 250);
+    --slate-100: oklch(0.97 0.008 250);
+    --slate-200: oklch(0.87 0.01 250);
+    --slate-600: oklch(0.5 0.05 250);
+    --slate-900: oklch(0.27 0.05 250);
 
-:root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  
-  --primary: oklch(0.70 0.12 183); /* Teal brand */
-  --primary-foreground: oklch(0.985 0 0);
-  
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  
-  --accent: oklch(0.76 0.16 56); /* Orange 400 */
-  --accent-foreground: oklch(0.205 0 0);
-  
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0);
-  
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.70 0.12 183);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+    /* TEAL (Primary Brand Color) */
+    --teal-50: oklch(0.97 0.02 180);
+    --teal-100: oklch(0.94 0.04 180);
+    --teal-200: oklch(0.89 0.08 180);
+    --teal-300: oklch(0.84 0.12 180);
+    --teal-400: oklch(0.79 0.16 180);
+    --teal-500: oklch(0.69 0.18 180);
+    --teal-600: oklch(0.53 0.18 180); /* Your chosen --primary */
+    --teal-700: oklch(0.46 0.16 180);
+    --teal-800: oklch(0.40 0.13 180);
+    --teal-900: oklch(0.35 0.11 180);
+    --teal-950: oklch(0.24 0.08 180);
+
+    /* VIOLET (Secondary Brand Color) */
+    --violet-50: oklch(0.98 0.03 300);
+    --violet-100: oklch(0.96 0.05 300); /* Your chosen --secondary */
+
+    /* AMBER (Accent Color) */
+    --amber-50: oklch(0.97 0.10 85);
+    --amber-100: oklch(0.95 0.15 85); /* Your chosen --accent */
+
+    /* SKY (Info/Highlight Color) */
+    --sky-50: oklch(0.97 0.03 235);
+    --sky-100: oklch(0.94 0.06 235); /* Your chosen --info */
+
+    /* RED (Destructive Color) */
+    --red-500: oklch(0.6 0.25 27);
+  }
+
+  /* ----------------------------------------- */
+  /*  2. SEMANTIC TOKENS (LIGHT MODE)          */
+  /* ----------------------------------------- */
+  :root {
+    --radius: 0.625rem;
+    --background: var(--slate-50);
+    --foreground: var(--slate-900);
+    --card: var(--slate-100);
+    --card-foreground: var(--foreground);
+    --popover: var(--card);
+    --popover-foreground: var(--foreground);
+    
+    --primary: var(--teal-600);
+    --primary-foreground: var(--slate-50);
+    --secondary: var(--violet-100);
+    --secondary-foreground: var(--foreground);
+    --accent: var(--amber-100);
+    --accent-foreground: var(--foreground);
+    --muted: var(--slate-100);
+    --muted-foreground: var(--slate-600);
+    
+    --destructive: var(--red-500);
+    --destructive-foreground: var(--slate-50);
+    
+    --border: var(--slate-200);
+    --input: var(--border);
+    --ring: oklch(0.7 0.05 250); /* A mid-slate for focus rings */
+  }
+
+  /* ----------------------------------------- */
+  /*  3. SEMANTIC TOKENS (DARK MODE)           */
+  /* ----------------------------------------- */
+  .dark {
+    --background: oklch(0.145 0 0);
+    --foreground: var(--slate-50);
+    --card: oklch(0.18 0.01 250);
+    --card-foreground: var(--foreground);
+    --popover: oklch(0.2 0.01 250);
+    --popover-foreground: var(--foreground);
+    
+    --primary: var(--teal-400); /* Brighter teal for dark mode pop */
+    --primary-foreground: var(--foreground);
+    --secondary: oklch(0.25 0.05 300); /* Darker violet */
+    --secondary-foreground: var(--foreground);
+    --accent: oklch(0.35 0.15 85); /* Darker amber */
+    --accent-foreground: var(--foreground);
+    --muted: oklch(0.23 0.01 250);
+    --muted-foreground: var(--slate-400); /* A lighter grey for muted text */
+    
+    --destructive: oklch(0.65 0.23 27);
+    --destructive-foreground: var(--slate-50);
+    
+    --border: oklch(0.35 0.01 250);
+    --input: var(--border);
+    --ring: oklch(0.6 0.02 250);
+  }
 }
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  
-  --primary: oklch(0.70 0.12 183); /* Teal brand */
-  --primary-foreground: oklch(0.985 0 0);
-  
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  
-  --accent: oklch(0.76 0.16 56); /* Orange 400 */
-  --accent-foreground: oklch(0.985 0 0);
-  
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.985 0 0);
-  
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.70 0.12 183);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+/* ----------------------------------------- */
+/*  4. BASE STYLES                           */
+/* ----------------------------------------- */
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
 }
