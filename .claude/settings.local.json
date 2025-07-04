@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(task-master update:*)",
+      "mcp__sequential-thinking__sequentialthinking",
+      "Bash(task-master show:*)",
+      "Bash(find:*)",
+      "Bash(mv:*)",
+      "Bash(taskmaster show:*)",
+      "Bash(task-master set-status:*)",
+      "Bash(grep:*)",
+      "Bash(npm run lint:*)",
+      "Bash(npm run dev:*)",
+      "Bash(pnpm --filter @codexcrm/web lint)",
+      "Bash(rg:*)",
+      "Bash(npx eslint:*)",
+      "mcp__supabase__list_projects",
+      "mcp__supabase__generate_typescript_types",
+      "mcp__ide__getDiagnostics",
+      "Bash(npx tsc:*)",
+      "Bash(ls:*)",
+      "Bash(pnpm -w run lint 2 >& 1)",
+      "Bash(true)",
+      "Bash(pnpm -w run lint --max-warnings 0 2 >& 1)",
+      "Bash(pnpm lint:*)",
+      "Bash(mkdir:*)",
+      "mcp__supabase__list_tables",
+      "Bash(npx prettier:*)",
+      "Bash(tree:*)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm dev:*)"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "supabase",
+    "memory",
+    "sequential-thinking"
+  ]
+}

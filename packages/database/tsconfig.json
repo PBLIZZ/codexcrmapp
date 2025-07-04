@@ -1,12 +1,8 @@
 {
   "extends": "@codexcrm/config/typescript/base",
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@codexcrm/database": ["./src"],
-      "@codexcrm/database/*": ["./src/*"]
-    }
+    "outDir": "./dist",
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules"]
 }

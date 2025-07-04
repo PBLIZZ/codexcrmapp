@@ -5,8 +5,8 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { cookies } from 'next/headers'; // Add this import
-import './globals.css'; // Global Styles
-import './theme.css';
+import '@codexcrm/ui/styles/globals.css';
+import { ThemeProvider } from '@codexcrm/ui';
 import { Providers } from './providers'; // Providers and Components
 import { AppContent } from '@/components/layout/AppContent';
 import { Toaster } from 'sonner';
@@ -40,10 +40,21 @@ export default async function RootLayout({
   return (
     <html lang='en' suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Providers cookies={cookieString}>
-          <Toaster />
-          <AppContent>{children}</AppContent>
-        </Providers>
+        <ThemeProvider
+          attribute='class'
+          defaultTheme='system'
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Providers
+            cookies={cookieString}
+          >
+            <Toaster />
+            <AppContent>
+              {children}
+            </AppContent>
+          </Providers>
+        </ThemeProvider>
       </body>
     </html>
   );

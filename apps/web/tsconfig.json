@@ -4,9 +4,32 @@
     "tsBuildInfoFile": ".next/tsconfig.tsbuildinfo",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
-    }
+      "@/*": [
+        "./*"
+      ],
+      "@codexcrm/ui": [
+        "../../packages/ui/src"
+      ],
+      "@codexcrm/ui/*": [
+        "../../packages/ui/src/*"
+      ],
+      "@codexcrm/database": [
+        "../../packages/database/src"
+      ],
+      "@codexcrm/database/*": [
+        "../../packages/database/src/*"
+      ]
+    },
+    "jsx": "preserve"
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "../../ContactsView.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

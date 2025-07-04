@@ -330,12 +330,12 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from '@codexcrm/ui/components/ui/dialog';
 
 // REMOVED unused form imports
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@codexcrm/ui/components/ui/input';
+import { Label } from '@codexcrm/ui/components/ui/label';
+import { Textarea } from '@codexcrm/ui/components/ui/textarea';
 ```
 
 **Code Changed**:
@@ -743,7 +743,7 @@ import React from 'react';
 import { createRoute } from '@/lib/utils/routes';
 import { api } from '@/lib/trpc';
 import { Filter } from 'lucide-react';
-import { CardFooter } from '@/components/ui/card';
+import { CardFooter } from '@codexcrm/ui/components/ui/card';
 const pathname = usePathname();
 const searchParams = useSearchParams();
 ```
@@ -1036,7 +1036,7 @@ const [sortField] = useState<keyof Contact>('full_name');
 ```tsx
 // REMOVED unused imports
 import { AlertCircle, TrendingDown, Users } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '@codexcrm/ui/components/ui/alert';
 import { BarChart, Bar } from 'recharts';
 ```
 
@@ -1237,7 +1237,7 @@ import { fontFamily } from "tailwindcss/defaultTheme";
 ```tsx
 // REMOVED unused imports
 import { useState } from 'react';
-import { CardDescription } from '@/components/ui/card';
+import { CardDescription } from '@codexcrm/ui/components/ui/card';
 import { TaskStatus, TaskPriority } from '@codexcrm/db/src/models/Task';
 ```
 

@@ -19,9 +19,9 @@ This document establishes enterprise-grade React development standards focusing 
 // components/user-profile.tsx
 import React, { memo, useCallback, useMemo, useState, useEffect } from 'react'
 import { User, Settings, Bell } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@codexcrm/ui/components/ui/button'
+import { Avatar, AvatarFallback, AvatarImage } from '@codexcrm/ui/components/ui/avatar'
+import { Card, CardContent, CardHeader, CardTitle } from '@codexcrm/ui/components/ui/card'
 
 interface UserProfileProps {
   userId: string

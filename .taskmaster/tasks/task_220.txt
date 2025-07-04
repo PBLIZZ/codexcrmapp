@@ -125,10 +125,10 @@ Example UI for displaying AI insights:
 ```tsx
 // components/contacts/NoteInsights.tsx
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent, CardHeader, CardTitle } from '@codexcrm/ui/components/ui/card';
+import { Badge } from '@codexcrm/ui/components/ui/badge';
+import { Button } from '@codexcrm/ui/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@codexcrm/ui/components/ui/tabs';
 
 interface NoteInsightsProps {
   analysis: {

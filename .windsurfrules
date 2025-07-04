@@ -219,7 +219,7 @@ order by
 ## Styling & UI
 
 - Use **Tailwind CSS** utility classes for all styling. Follow configuration in `apps/web/tailwind.config.ts`.
-- Utilize **Shadcn UI** components (`import { Button } from '@/components/ui/button'`, etc.) for the UI library. Follow its usage patterns.
+- Utilize **Shadcn UI** components (`import { Button } from '@codexcrm/ui/components/ui/button'`, etc.) for the UI library. Follow its usage patterns.
 - Use semantic HTML elements (`<nav>`, `<main>`, `<article>`, `<button>`, etc.).
 
 ### TypeScript

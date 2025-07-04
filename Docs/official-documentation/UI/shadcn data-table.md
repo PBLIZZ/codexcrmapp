@@ -1,12 +1,6 @@
-Here's the provided content formatted into Markdown:
-
 # Data Table
 
-[Previous](#) | [Next](#)
-
 Powerful table and datagrids built using [TanStack Table](https://tanstack.com/table/v8).
-
-[Docs](#) | [Preview](#) | [Code](#)
 
 ```jsx
 "use client"
@@ -347,48 +341,12 @@ Add the `<Table />` component to your project:
 pnpm dlx shadcn@latest add table
 ```
 
-**npm**
-
-```bash
-npm dlx shadcn@latest add table
-```
-
-**yarn**
-
-```bash
-yarn dlx shadcn@latest add table
-```
-
-**bun**
-
-```bash
-bun dlx shadcn@latest add table
-```
-
 Add `@tanstack/react-table` dependency:
 
 **pnpm**
 
 ```bash
 pnpm add @tanstack/react-table
-```
-
-**npm**
-
-```bash
-npm install @tanstack/react-table
-```
-
-**yarn**
-
-```bash
-yarn add @tanstack/react-table
-```
-
-**bun**
-
-```bash
-bun add @tanstack/react-table
 ```
 
 ## Prerequisites
@@ -498,7 +456,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from '@codexcrm/ui/components/ui/table';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -639,7 +597,7 @@ Update our columns definition to add a new actions column. The actions cell retu
 import { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@codexcrm/ui/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -647,7 +605,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@codexcrm/ui/components/ui/dropdown-menu';
 
 export const columns: ColumnDef<Payment>[] = [
   // ...
@@ -721,7 +679,7 @@ We can add pagination controls to our table using the `<Button />` component and
 `app/payments/data-table.tsx`
 
 ```tsx
-import { Button } from '@/components/ui/button';
+import { Button } from '@codexcrm/ui/components/ui/button';
 
 export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
@@ -864,8 +822,8 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from '@codexcrm/ui/components/ui/button';
+import { Input } from '@codexcrm/ui/components/ui/input';
 
 export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -931,13 +889,13 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@codexcrm/ui/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@codexcrm/ui/components/ui/dropdown-menu';
 
 export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -1018,8 +976,8 @@ Next, we're going to add row selection to our table.
 
 import { ColumnDef } from '@tanstack/react-table';
 
-import { Badge } from '@/components/ui/badge';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Badge } from '@codexcrm/ui/components/ui/badge';
+import { Checkbox } from '@codexcrm/ui/components/ui/checkbox';
 
 export const columns: ColumnDef<Payment>[] = [
   {

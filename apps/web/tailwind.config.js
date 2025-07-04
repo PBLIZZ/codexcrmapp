@@ -1,13 +1,24 @@
-const sharedConfig = require('@codexcrm/config/tailwind');
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  // Use the shared config as a preset
-  presets: [sharedConfig],
-  // The `content` path is ALWAYS relative to the current project
+  // highlight-start
+  // This tells the web app's Tailwind to inherit ALL settings (theme, plugins, etc.)
+  // from the UI package's config.
+  presets: [require('@codexcrm/ui/tailwind.config')],
+  // highlight-end
+
+  // This tells the web app's Tailwind to scan ITS OWN files for class usage,
+  // PLUS the files from the UI package. This is critical for the JIT compiler.
   content: [
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
-    // If you have a shared UI package, include it too!
-    '../../packages/ui/src/**/*.{js,ts,jsx,tsx}',
+    './app/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    '../../packages/ui/src/**/*.{ts,tsx}', // <-- The path to your shared UI components
   ],
-}
+  theme: {
+    extend: {
+      // You can add app-specific overrides or extensions here if needed
+    },
+  },
+  plugins: [
+    // You can add app-specific plugins here if needed
+  ],
+};

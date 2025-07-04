@@ -44,7 +44,7 @@ As you work, if you touch a component in a kebab-case folder, refactor its folde
 
 **Monorepo Packages**: ALWAYS use `@codexcrm/*` aliases for cross-package imports (e.g., `import { useAuth } from '@codexcrm/auth'`). Refer to the root `tsconfig.json`.
 
-**Internal App Imports**: ALWAYS use the `@/*` alias for imports within the `apps/web` project (e.g., `import { Button } from '@/components/ui/button'`).
+**Internal App Imports**: ALWAYS use the `@/*` alias for imports within the `apps/web` project (e.g., `import { Button } from '@codexcrm/ui/components/ui/button'`).
 
 **NEVER** use relative paths like `../../` to cross package or app boundaries.
 

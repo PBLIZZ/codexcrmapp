@@ -1,36 +1,30 @@
-// packages/ui/tsup.config.js
-const { defineConfig } = require('tsup');
+import { defineConfig } from "tsup";
 
-module.exports = defineConfig({
-  // The entry point is your main index.ts file.
-  // tsup will read this file, find all the imports, and build everything.
-  entry: ['src/index.ts'],
+export default defineConfig({
+  // The entry point of your library. tsup will build everything from here.
+  entry: ["src/index.ts"],
 
-  // Generate both ESM and CJS modules
-  format: ['esm'],
+  // The output format. 'esm' is standard for modern apps and libraries.
+  format: ["esm"],
 
-  // Disable d.ts generation here; declarations are handled by `tsc --build` via project references.
-  dts: false,
+  // --- CRITICAL FIX 1: GENERATE DECLARATION FILES ---
+  // This tells tsup to create the .d.ts files that TypeScript needs
+  // to understand the props and types of your components.
+  dts: true,
 
-  // Don't bundle the 'react' package with our component library
-  external: [
-    'react',
-    '@radix-ui/react-avatar',
-    '@radix-ui/react-slot',
-    'class-variance-authority',
-    'clsx',
-    'lucide-react',
-    'next-themes',
-    'sonner',
-    'tailwind-merge',
-  ],
+  // --- CRITICAL FIX 2: ADD "use client" BANNER ---
+  // This automatically adds "use client;" to the top of every
+  // compiled component file, making them compatible with Next.js App Router.
+  banner: {
+    js: '"use client";',
+  },
 
-  // Sourcemaps for easier debugging
-  sourcemap: true,
+  // Code splitting for better tree-shaking.
+  splitting: true,
 
-  // Clean the 'dist' folder before each build
+  // Don't bundle dependencies; they will be installed by the consumer app.
+  external: ["react", "react-dom"],
+
+  // Clean the 'dist' folder before each build.
   clean: true,
-
-  // Use standard tsconfig for bundling; no need for custom build config
-  tsconfig: 'tsconfig.json',
 });

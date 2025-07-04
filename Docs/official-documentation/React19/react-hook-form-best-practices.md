@@ -301,17 +301,17 @@ export function ControlledField<T extends FieldValues>({
 import React from 'react';
 import { useController, Control, FieldPath, FieldValues } from 'react-hook-form';
 import { cn } from '@/lib/utils';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Input } from '@codexcrm/ui/components/ui/input';
+import { Textarea } from '@codexcrm/ui/components/ui/textarea';
+import { Checkbox } from '@codexcrm/ui/components/ui/checkbox';
+import { RadioGroup, RadioGroupItem } from '@codexcrm/ui/components/ui/radio-group';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@codexcrm/ui/components/ui/select';
 
 // Enhanced text input
 interface FormInputProps<T extends FieldValues> extends BaseFormFieldProps<T> {

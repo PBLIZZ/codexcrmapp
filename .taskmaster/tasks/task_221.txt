@@ -72,12 +72,12 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Switch } from '@/components/ui/switch';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@codexcrm/ui/components/ui/button';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from '@codexcrm/ui/components/ui/form';
+import { Input } from '@codexcrm/ui/components/ui/input';
+import { Switch } from '@codexcrm/ui/components/ui/switch';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@codexcrm/ui/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@codexcrm/ui/components/ui/tabs';
 import { trpc } from '@/lib/trpc';
 
 const profileFormSchema = z.object({
