@@ -11,8 +11,8 @@
 **AiClientInsights.tsx:**
 ```tsx
 'use client';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@codexcrm/ui/components/ui/carousel';
+import { Card, CardContent, CardHeader, CardTitle } from '@codexcrm/ui/components/ui/card';
 
 // Mock data - replace with actual API call later
 const mockInsights = [
@@ -53,7 +53,7 @@ export function AiClientInsights() {
 
 **DailyInspirationCard.tsx:**
 ```tsx
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@codexcrm/ui/components/ui/card';
 
 export function DailyInspirationCard() {
   return (
@@ -76,8 +76,8 @@ export function DailyInspirationCard() {
 ```tsx
 'use client';
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@codexcrm/ui/components/ui/card';
+import { Button } from '@codexcrm/ui/components/ui/button';
 
 export function TherapistCheckIn() {
   const [mood, setMood] = useState<string | null>(null);
@@ -128,7 +128,7 @@ export function TherapistCheckIn() {
 
 **UpcomingAppointments.tsx:**
 ```tsx
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@codexcrm/ui/components/ui/card';
 
 // Mock data - replace with actual API call later
 const mockAppointments = [
@@ -165,7 +165,7 @@ export function UpcomingAppointments() {
 
 **KeyMetrics.tsx:**
 ```tsx
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@codexcrm/ui/components/ui/card';
 
 // Mock data - replace with actual API call later
 const mockMetrics = [

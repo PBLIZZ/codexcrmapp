@@ -28,7 +28,6 @@ export async function middleware(request: NextRequest) {
     request: { headers: request.headers },
   });
 
-  // 1. Use the modern, non-deprecated cookie handling for middleware
   try {
     const supabase = createServerClient(
       process.env['NEXT_PUBLIC_SUPABASE_URL']!,
@@ -49,15 +48,13 @@ export async function middleware(request: NextRequest) {
       }
     );
 
-    // 2. Use only `getUser()`. It efficiently handles session refresh and is the source of truth.
+    // Get user and handle session refresh automatically
     const {
       data: { user },
       error: authError,
     } = await supabase.auth.getUser();
 
-    // Log auth errors but don't block
     if (authError) {
-      // ✅ Check the actual auth error
       Sentry.captureException(authError, {
         tags: { context: 'middleware_auth' },
         extra: { pathname: request.nextUrl.pathname },
@@ -70,25 +67,51 @@ export async function middleware(request: NextRequest) {
     );
     const isPublicOnlyPath = publicOnlyPaths.includes(pathname);
 
-    // 3. Handle redirects with focused logging
+    // Skip auth checks for API routes, _next static files, and other Next.js internals
+    if (pathname.startsWith('/api/') || 
+        pathname.startsWith('/_next/') || 
+        pathname.startsWith('/favicon.ico') ||
+        pathname.startsWith('/sitemap.xml') ||
+        pathname.startsWith('/robots.txt')) {
+      return response;
+    }
+
+    // Redirect unauthenticated users from protected paths
     if (isProtectedPath && !user) {
       const redirectUrl = new URL('/log-in', request.url);
+      redirectUrl.searchParams.set('redirectTo', pathname);
       Sentry.captureMessage(`Redirecting unauthenticated user from ${pathname}`, 'info');
       return NextResponse.redirect(redirectUrl);
     }
 
+    // Redirect authenticated users away from auth-only pages  
     if (isPublicOnlyPath && user) {
-      const redirectUrl = new URL('/', request.url);
+      const redirectTo = request.nextUrl.searchParams.get('redirectTo') || '/dashboard';
+      const redirectUrl = new URL(redirectTo, request.url);
       Sentry.captureMessage(`Redirecting authenticated user from ${pathname}`, 'info');
       return NextResponse.redirect(redirectUrl);
     }
 
     return response;
   } catch (error) {
-    // Fallback: log error but allow request to continue
     Sentry.captureException(error, {
       tags: { context: 'middleware_critical' },
+      extra: { pathname: request.nextUrl.pathname },
     });
     return response;
   }
 }
+
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public folder files
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
+  ],
+};

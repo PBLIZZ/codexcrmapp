@@ -3,8 +3,6 @@
 **Prerequisites**: Phase 1 complete, imports cleaned up  
 **Focus**: Update to latest Supabase SSR patterns while preserving OAuth
 
----
-
 ## Task 201: Audit Current Auth Implementation
 **Priority**: CRITICAL  
 **Dependencies**: Phase 1 complete  

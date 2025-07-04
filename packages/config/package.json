@@ -13,6 +13,7 @@
     "next"
   ],
   "exports": {
+    ".": "./src/paths.ts",
     "./paths": "./src/paths.ts",
     "./typescript/base": "./typescript/base.json",
     "./typescript/nextjs": "./typescript/nextjs.json",

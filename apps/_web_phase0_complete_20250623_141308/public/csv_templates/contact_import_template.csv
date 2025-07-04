@@ -1,7 +1,0 @@
-***Delete this row before uploading to CSV file, Email is required for new contacts. Tags: comma-separated values.***
-first_name,last_name,email,phone,company,website,address_street,address_city,address_state,address_postal_code,address_country,notes,status,lead_source,tags
-John,Doe,john.doe@example.com,555-1234,Acme Corp,https://acme.com,"123 Main St","Anytown","CA","90210","USA","Initial contact, interested in Product X","Lead","Website Form","vip,tech"
-Jane,Smith,jane.smith@example.net,555-5678,Beta Inc.,https://beta.inc,"456 Oak Ave","Otherville","NY","10001","USA","Follow-up required. Met at conference.","Prospect","Conference","b2b,decision-maker"
-Alice,Johnson,alice.johnson@example.org,555-8765,Gamma LLC,https://gamma.llc,"789 Pine Rd","Somewhere","TX","75001","USA","Long-term client, very satisfied.","Customer","Referral","loyal,enterprise"
-Robert,Brown,robert.brown@example.com,555-4321,Delta Co,https://delta.co,"101 River Bend","New City","FL","33301","USA","Needs follow-up regarding new service.","Warm Lead","Cold Call","smb,potential"
-Sam,Lee,sam.lee@example.net,555-1122,Epsilon Solutions,https://epsilonsol.com,"222 Mountain View","Hill Valley","WA","98001","USA","Just signed up for trial.","New","Organic Search","trial,startup"

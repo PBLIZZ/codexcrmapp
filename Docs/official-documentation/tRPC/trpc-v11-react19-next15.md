@@ -240,7 +240,7 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
 'use client'
 
 import { api } from '@/trpc/react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@codexcrm/ui/components/ui/button'
 import { useInfiniteQuery } from '@tanstack/react-query'
 
 interface PostsPaginationProps {

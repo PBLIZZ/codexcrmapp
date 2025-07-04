@@ -91,7 +91,7 @@ app/
 'use client'
 
 import { useEffect } from 'react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@codexcrm/ui/components/ui/ponents/ui/ponents/ui/ponents/ui/button'
 import { AlertTriangle, RefreshCw } from 'lucide-react'
 
 interface ErrorProps {

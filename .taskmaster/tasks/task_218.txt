@@ -27,8 +27,8 @@ Example navigation implementation:
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { NavigationMenu } from '@/components/ui/navigation-menu';
+import { Button } from '@codexcrm/ui/components/ui/button';
+import { NavigationMenu } from '@codexcrm/ui/components/ui/navigation-menu';
 import { DashboardSidebar } from '@/components/layout/DashboardSidebar';
 import { ContactsSidebar } from '@/components/layout/ContactsSidebar';
 import { TasksSidebar } from '@/components/layout/TasksSidebar';

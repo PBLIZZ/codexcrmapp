@@ -178,7 +178,7 @@ find . -name "*.tsx" -exec sed -i 's/from "\.\/nav-main"/from "\.\/NavMain"/g' {
 // app/contacts/error.tsx
 'use client'
 import { useEffect } from 'react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@codexcrm/ui/components/ui/button'
 
 export default function ContactsError({
   error,
@@ -200,7 +200,7 @@ export default function ContactsError({
 }
 
 // app/contacts/loading.tsx
-import { Skeleton } from '@/components/ui/skeleton'
+import { Skeleton } from '@codexcrm/ui/components/ui/skeleton'
 
 export default function ContactsLoading() {
   return (

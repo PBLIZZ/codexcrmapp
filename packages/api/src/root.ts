@@ -6,7 +6,7 @@ import { importRouter } from './routers/import';
 import { router } from './trpc';
 
 export const appRouter = router({
-  clients: contactRouter, // Renamed from 'contacts' to avoid tRPC client conflicts
+  contacts: contactRouter, // Contact router (preferred)
   groups: groupRouter, // Groups management router
   storage: storageRouter, // Storage router for file uploads (photos)
   dashboard: dashboardRouter, // Dashboard metrics aggregation

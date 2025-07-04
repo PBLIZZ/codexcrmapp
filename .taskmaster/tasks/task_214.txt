@@ -28,7 +28,7 @@ Example dashboard layout:
 ```tsx
 // app/dashboard/page.tsx
 import { Suspense } from 'react';
-import { MetricCard } from '@/components/ui/metric-card';
+import { MetricCard } from '@codexcrm/ui/components/ui/metric-card';
 import { CalendarPreview } from '@/components/dashboard/calendar-preview';
 import { AiTaskPanel } from '@/components/dashboard/ai-task-panel';
 import { QuickActions } from '@/components/dashboard/quick-actions';

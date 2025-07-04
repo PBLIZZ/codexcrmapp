@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import { Sparkles, Send } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from '@codexcrm/ui/components/ui/button';
+import { Input } from '@codexcrm/ui/components/ui/input';
 
 /**
  * OmniBot provides the core AI assistant chat functionality.

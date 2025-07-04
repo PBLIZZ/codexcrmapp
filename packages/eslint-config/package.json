@@ -1,0 +1,24 @@
+{
+  "name": "@codexcrm/eslint-config",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "index.js",
+  "files": [
+    "base.js",
+    "next.js",
+    "index.js"
+  ],
+  "dependencies": {
+    "@eslint/js": "^9.15.0",
+    "@typescript-eslint/eslint-plugin": "^8.15.0",
+    "@typescript-eslint/parser": "^8.15.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react": "^7.37.0",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.14",
+    "eslint-plugin-turbo": "^2.3.0",
+    "globals": "^15.12.0",
+    "typescript-eslint": "^8.15.0"
+  }
+}
