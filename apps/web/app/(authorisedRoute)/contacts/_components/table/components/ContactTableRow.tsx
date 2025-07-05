@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Checkbox } from '@codexcrm/ui/components/ui/checkbox';
+import { Checkbox } from '@codexcrm/ui';
 import { ProfileAvatar } from './ProfileAvatar';
 import { ContactActions } from './ContactActions';
 import { getColumnDefinition } from '@/app/(authorisedRoute)/contacts/_components/table/constants';

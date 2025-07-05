@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { Button } from "@codexcrm/ui/components/ui/button";
+import { Button } from "@codexcrm/ui";
 import { AlertTriangle } from "lucide-react";
 
 export default function Error({

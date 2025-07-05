@@ -3,7 +3,7 @@
 import { Tag } from 'lucide-react';
 // Removed useState and useEffect as they're no longer needed
 
-import { Badge } from '@codexcrm/ui/components/ui/badge';
+import { Badge } from '@codexcrm/ui';
 import type { Tables } from '@codexcrm/database/types';
 import { api } from '@/lib/trpc';
 

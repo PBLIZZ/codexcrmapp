@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
-import { Button } from '@codexcrm/ui/components/ui/button';
+import { Button } from '@codexcrm/ui';
 import {
   Card,
   CardHeader,
@@ -12,9 +12,9 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
-} from '@codexcrm/ui/components/ui/card';
-import { Input } from '@codexcrm/ui/components/ui/input';
-import { Label } from '@codexcrm/ui/components/ui/label';
+} from '@codexcrm/ui';
+import { Input } from '@codexcrm/ui';
+import { Label } from '@codexcrm/ui';
 import { createClient } from '@/lib/supabase/client';
 
 const supabase = createClient();

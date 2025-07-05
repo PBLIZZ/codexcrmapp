@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { api } from '@/lib/trpc';
-import { Avatar } from '@codexcrm/ui/components/ui/avatar';
+import { Avatar } from '@codexcrm/ui';
 import type { Contact } from '../types';
 
 interface ProfileAvatarProps {

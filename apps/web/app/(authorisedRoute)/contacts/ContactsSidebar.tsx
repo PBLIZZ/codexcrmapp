@@ -8,20 +8,17 @@ import { api } from '@/lib/trpc';
 import Link from 'next/link';
 import * as React from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { Badge } from '@codexcrm/ui/components/ui/badge';
-
+import { Badge } from '@codexcrm/ui';
 import {
   Sidebar,
+  SidebarBody,
   SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupLabel,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarRail,
-} from '@codexcrm/ui/components/ui/sidebar';
+  SidebarItem,
+  SidebarLabel,
+  SidebarRoot,
+  SidebarTrigger,
+} from '@codexcrm/ui';
 
 // Define the Group type based on the expected structure
 interface Group {

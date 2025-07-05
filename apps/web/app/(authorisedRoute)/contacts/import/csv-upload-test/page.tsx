@@ -2,8 +2,8 @@
 import { useState } from 'react';
 import type { FileWithPath } from 'react-dropzone';
 
-import { Button } from '@codexcrm/ui/components/ui/button';
-import { CsvUpload } from '@codexcrm/ui/components/ui/csv-upload';
+import { Button } from '@codexcrm/ui';
+import { CsvUpload } from '@codexcrm/ui';
 import type { CsvValidationError, ValidatedContactData } from '@/lib/csv-utils';
 import { parseCsvFile, validateCsvData } from '@/lib/csv-utils'; // Removed ParsedCsvRow, Added ValidatedContactData
 

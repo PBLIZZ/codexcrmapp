@@ -23,10 +23,10 @@ export function CsvUpload({ onFilesAccepted, maxSize = TEN_MB_IN_BYTES }: CsvUpl
       setIsProcessing(false); // Reset processing state
 
       if (fileRejections.length > 0) {
-        const firstRejection = fileRejection[0];
-        if (firstRejection.errors.some((err) => err.code === 'file-too-large')) {
+        const firstRejection = fileRejections[0];
+        if (firstRejection.errors.some((err: any) => err.code === 'file-too-large')) {
           setRejectionError(`File is too large. Maximum size is ${maxSize / (1024 * 1024)}MB.`);
-        } else if (firstRejection.errors.some((err) => err.code === 'file-invalid-type')) {
+        } else if (firstRejection.errors.some((err: any) => err.code === 'file-invalid-type')) {
           setRejectionError('Invalid file type. Only .csv files are accepted.');
         } else {
           setRejectionError('File rejected. Please try another file.');

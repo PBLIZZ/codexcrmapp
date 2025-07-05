@@ -19,4 +19,3 @@ export function createDatabaseClient(supabaseUrl, supabaseKey) {
         supabase
     };
 }
-//# sourceMappingURL=index.js.map

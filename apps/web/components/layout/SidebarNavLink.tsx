@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import type { Route } from 'next';
 import { createRoute } from '@/lib/utils/routes';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@codexcrm/ui/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@codexcrm/ui';
 import { cn } from '@/lib/utils';
 
 interface SidebarNavLinkProps {

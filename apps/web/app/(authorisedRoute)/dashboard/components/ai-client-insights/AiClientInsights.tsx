@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@codexcrm/ui/components/ui/card";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@codexcrm/ui/components/ui/carousel';
-import { Button } from "@codexcrm/ui/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@codexcrm/ui";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@codexcrm/ui';
+import { Button } from "@codexcrm/ui";
 import { ArrowRight, RefreshCw, Brain } from "lucide-react";
 import Link from "next/link";
 

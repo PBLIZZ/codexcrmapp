@@ -5,11 +5,8 @@ import { useRouter } from 'next/navigation';
 import type { ContactFormData } from '@/app/(authorisedRoute)/contacts/new/ContactForm';
 import { ContactForm } from '@/app/(authorisedRoute)/contacts/new/ContactForm';
 import { api } from '@/lib/trpc';
-import { Button } from '@codexcrm/ui/components/ui/button';
-// Correctly import AlertCircle from lucide-react
-import { ArrowLeft, AlertCircle } from 'lucide-react';
-// Import only the necessary components from your alert file
-import { Alert, AlertTitle, AlertDescription } from '@codexcrm/ui/components/ui/alert';
+import { Button } from '@codexcrm/ui';
+import { Alert, AlertTitle, AlertDescription } from '@codexcrm/ui';
 import type { Tables } from '@codexcrm/database/types'; // Import Tables type
 
 // Define the props type with proper typing for Next.js 15+

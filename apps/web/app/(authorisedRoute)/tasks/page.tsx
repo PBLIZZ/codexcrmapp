@@ -1,7 +1,7 @@
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@codexcrm/ui/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@codexcrm/ui';
 import { CheckSquare2, Calendar, Clock, Plus } from 'lucide-react';
-import { Button } from '@codexcrm/ui/components/ui/button';
+import { Button } from '@codexcrm/ui';
 
 export default function TasksPage() {
   return (

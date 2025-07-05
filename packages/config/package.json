@@ -20,7 +20,7 @@
     "./typescript/react-library": "./typescript/react-library.json",
     "./prettier": "./prettier/index.json",
     "./eslint": "./eslint/index.js",
-    "./tailwind": "./tailwind/tailwind.config.js",
+    "./tailwind": "./tailwind/tailwind.config.ts",
     "./sentry/edge": "./sentry/edge.config.ts",
     "./sentry/server": "./sentry/server.config.ts",
     "./postcss/app": "./postcss/app.mjs",

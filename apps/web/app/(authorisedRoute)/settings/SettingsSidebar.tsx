@@ -10,9 +10,9 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from '@codexcrm/ui/components/ui/sidebar'
+} from '@codexcrm/ui'
 import { cn } from '@/lib/utils';
-import { SidebarProvider } from '@codexcrm/ui/components/ui/sidebar';
+import { SidebarProvider } from '@codexcrm/ui';
 
 // Icons for the settings navigation
 import { User, CreditCard, Bell, Sparkles, ShieldCheck } from 'lucide-react';

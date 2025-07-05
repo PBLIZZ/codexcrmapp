@@ -1,5 +1,5 @@
 import { GroupCreateForm } from '../_components/GroupCreateForm';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@codexcrm/ui/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@codexcrm/ui';
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
 

@@ -1,3 +1,9 @@
+<!--
+Last Updated: 
+Version: 1.0.0
+Status: Active
+-->
+
 ---
 description: Comprehensive reference for Taskmaster MCP tools and CLI commands.
 globs: **/*

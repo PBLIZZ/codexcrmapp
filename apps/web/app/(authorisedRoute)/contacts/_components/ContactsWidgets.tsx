@@ -1,6 +1,6 @@
 'use client';
 
-import { Card } from '@codexcrm/ui/components/ui/card';
+import { Card } from '@codexcrm/ui';
 import { api } from '@/lib/trpc';
 
 export function ContactsWidgets() {

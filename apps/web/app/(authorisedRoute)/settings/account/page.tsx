@@ -4,18 +4,17 @@ import type { User } from '@supabase/supabase-js';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, useReducer } from 'react';
-import { Button } from '@codexcrm/ui/components/ui/button';
+import { Button } from '@codexcrm/ui';
 import {
   Card,
+  CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from '@codexcrm/ui/components/ui/card';
-import { Input } from '@codexcrm/ui/components/ui/input';
-import { Label } from '@codexcrm/ui/components/ui/label';
-import { Separator } from '@codexcrm/ui/components/ui/separator';
+} from '@codexcrm/ui';
+import { Input } from '@codexcrm/ui';
+import { Label } from '@codexcrm/ui';
+import { Separator } from '@codexcrm/ui';
 import { fetchCurrentUser, updateUserPassword, mapAuthErrorMessage } from '@/lib/auth/service';
 
 // Constants

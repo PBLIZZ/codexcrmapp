@@ -6,11 +6,11 @@ import Link from 'next/link';
 import {
   Breadcrumb,
   BreadcrumbItem,
-  BreadcrumbList,
   BreadcrumbLink,
+  BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@codexcrm/ui/components/ui/breadcrumb';
+} from '@codexcrm/ui';
 import { generateBreadcrumbs } from '@/lib/breadcrumb-config';
 
 export function DynamicBreadcrumb() {

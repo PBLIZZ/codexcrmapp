@@ -1,19 +1,17 @@
 {
-  "name": "codexcrmapp",
-  "version": "0.1.0",
+  "name": "codexcrm-monorepo",
+  "private": true,
   "engines": {
     "node": ">=18.0.0"
   },
-  "packageManager": "pnpm@10.9.0",
-  "private": true,
-  "type": "module",
+  "packageManager": "pnpm@9.1.0",
   "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev",
-    "lint": "turbo run lint",
-    "clean": "turbo run clean",
-    "typecheck": "turbo run typecheck",
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "clean": "turbo clean",
+    "typecheck": "turbo typecheck",
     "prepare": "husky"
   },
   "lint-staged": {
@@ -22,42 +20,16 @@
       "prettier --write"
     ]
   },
-  "pnpm": {
-    "overrides": {
-      "react": "^19.0.0",
-      "react-dom": "^19.0.0"
-    },
-    "onlyBuiltDependencies": [
-      "@sentry/cli",
-      "@swc/core",
-      "@tailwindcss/oxide",
-      "esbuild",
-      "supabase"
-    ]
-  },
   "devDependencies": {
-    "@codexcrm/config": "workspace:*",
-    "@eslint/eslintrc": "^3.3.1",
-    "@next/eslint-plugin-next": "^15.3.2",
-    "@shadcn/ui": "^0.0.4",
-    "@tailwindcss/postcss": "^4",
-    "@tanstack/eslint-plugin-query": "^5.78.0",
-    "@types/node": "^20",
-    "eslint": "^9.29.0",
-    "eslint-config-next": "15.3.1",
-    "eslint-config-prettier": "^10.1.5",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "globals": "^16.2.0",
+    "@codexcrm/config-eslint": "workspace:*",
+    "@codexcrm/config-prettier": "workspace:*",
+    "@codexcrm/config-typescript": "workspace:*",
+    "eslint": "^9.0.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.0.0",
     "prettier": "^3.5.3",
     "rimraf": "^6.0.1",
-    "supabase": "^2.24.3",
-    "tailwindcss": "^4.1.4",
-    "turbo": "^2.5.4",
-    "typescript": "^5.8.2",
-    "typescript-eslint": "^8.32.1"
+    "turbo": "^2.0.4",
+    "typescript": "^5.4.5"
   }
 }

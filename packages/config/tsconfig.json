@@ -3,6 +3,6 @@
   "compilerOptions": {
     "noEmit": true
   },
-  "include": ["*.json"],
-  "exclude": ["node_modules", "dist", "**/*.js", "**/*.mjs", "**/*.ts"]
+  "include": ["**/*.ts", "**/*.js", "**/*.mjs", "src", "*.json"],
+  "exclude": ["node_modules", "dist"]
 }

@@ -7,10 +7,10 @@ import { useForm, Controller } from 'react-hook-form';
 import type { SubmitHandler } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod/v4';
-import { Button } from '@codexcrm/ui/components/ui/button';
-import { Input } from '@codexcrm/ui/components/ui/input';
-import { Label } from '@codexcrm/ui/components/ui/label';
-import { Textarea } from '@codexcrm/ui/components/ui/textarea';
+import { Button } from '@codexcrm/ui';
+import { Input } from '@codexcrm/ui';
+import { Label } from '@codexcrm/ui';
+import { Textarea } from '@codexcrm/ui';
 import { api } from '@/lib/trpc';
 import {
   GroupStylePicker,

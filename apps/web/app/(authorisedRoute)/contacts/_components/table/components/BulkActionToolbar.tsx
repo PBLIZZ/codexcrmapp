@@ -1,8 +1,8 @@
 'use client';
 
 import { Trash2, Users, Sparkles, X } from 'lucide-react';
-import { Button } from '@codexcrm/ui/components/ui/button';
-import { Badge } from '@codexcrm/ui/components/ui/badge';
+import { Button } from '@codexcrm/ui';
+import { Badge } from '@codexcrm/ui';
 
 interface BulkActionToolbarProps {
   selectedCount: number;

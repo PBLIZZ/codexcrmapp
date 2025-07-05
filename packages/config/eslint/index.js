@@ -1,96 +1,49 @@
-//packages/config / eslint / index.js
-import { FlatCompat } from '@eslint/eslintrc';
-import tanstackQueryPlugin from '@tanstack/eslint-plugin-query';
-import reactPlugin from 'eslint-plugin-react';
-import reactHooksPlugin from 'eslint-plugin-react-hooks';
-import importPlugin from 'eslint-plugin-import';
-import prettier from "eslint-config-prettier";
-import globals from 'globals';
-import tseslint from 'typescript-eslint';
+// @ts-check
+import eslint from "@eslint/js";
+import tseslint from "typescript-eslint";
+import prettierConfig from "eslint-config-prettier";
+import reactPlugin from "eslint-plugin-react";
+import hooksPlugin from "eslint-plugin-react-hooks";
+import queryPlugin from "@tanstack/eslint-plugin-query";
+import nextPlugin from "@next/eslint-plugin-next";
+import importPlugin from "eslint-plugin-import";
 
-// Create compat instance
-const compat = new FlatCompat({
-  baseDirectory: import.meta.dirname,
-});
-
-export const codexCrmPreset = tseslint.config(
-  // 1. Global Ignores
+// Base configuration applied to all files
+export const baseConfig = tseslint.config(
+  { ignores: ["**/dist/**", "**/.next/**", "**/node_modules/**"] },
+  eslint.configs.recommended,
+  ...tseslint.configs.recommended,
   {
-    ignores: [
-      'node_modules/',
-      'dist/',
-      '**/dist/**',  // Explicitly ignore all dist directories anywhere
-      'build/',
-      '**/build/**', // Explicitly ignore all build directories anywhere
-      '**/.next/**', // Explicitly ignore all Next.js output
-      'public/',
-      'apps/_web_*/**', // Exclude backup directories
-      'Docs/**',      // Exclude documentation directory
-      // FIX #1: The globstar `**/` ignores config files in ANY directory, not just the root.
-      '**/*.config.{js,ts,mjs,cjs}',
-      '**/*.d.ts',
-    ],
-  },
-
-  // 2. Base Configurations
-  ...tseslint.configs.recommendedTypeChecked,
-  ...tanstackQueryPlugin.configs['flat/recommended'],
-
-  // 3. Main Custom Configuration for TypeScript/React Files
-  {
-    files: ['**/*.{ts,tsx}'],
-    languageOptions: {
-      parserOptions: {
-        project: true,
-      },
-      globals: {
-        ...globals.browser,
-        ...globals.node,
-      },
-    },
-    plugins: {
-      import: importPlugin,
-      react: reactPlugin,
-      'react-hooks': reactHooksPlugin,
-    },
-    settings: {
-      react: {
-        version: 'detect',
-      },
-    },
+    plugins: { import: importPlugin },
     rules: {
-      // Import Rules
-      'import/no-relative-packages': 'error',
-      'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
-      // React Rules
-      ...reactPlugin.configs.recommended.rules,
-      ...reactHooksPlugin.configs.recommended.rules,
-      'react/react-in-jsx-scope': 'off',
-      'react/prop-types': 'off',
-      // TypeScript Rules
-      '@typescript-eslint/no-floating-promises': 'error',
-      '@typescript-eslint/no-misused-promises': 'error',
-      '@typescript-eslint/no-unused-vars': [
-        'warn',
-        { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' },
-      ],
-      '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/consistent-type-imports': 'error',
-      '@typescript-eslint/no-shadow': 'error',
-
-      'no-shadow': 'off',
-      'no-console': ['warn', { allow: ['warn', 'error'] }],
-      eqeqeq: ['error', 'always'],
-
+      "import/no-relative-packages": "error",
     },
   },
-
-  // 4. Prettier - MUST BE LAST
-  prettier,
+  {
+    plugins: { react: reactPlugin },
+    rules: {
+      ...reactPlugin.configs.recommended.rules,
+      "react/react-in-jsx-scope": "off",
+    },
+    settings: { react: { version: "detect" } },
+  },
+  {
+    plugins: { "react-hooks": hooksPlugin },
+    rules: hooksPlugin.configs.recommended.rules,
+  },
+  {
+    plugins: { "@tanstack/query": queryPlugin },
+    rules: queryPlugin.configs.recommended.rules,
+  },
+  prettierConfig // Must be last to override other formatting rules
 );
 
-// 5. Next.js Specific Config - Exported Separately
-// This is site-plan specific and should be applied only by Next.js apps
-export const nextjsConfig = compat.config({
-  extends: ['next/core-web-vitals'],
+// Specific configuration for the Next.js app
+export const nextjsConfig = tseslint.config({
+  files: ["apps/web/**/*.{ts,tsx}"],
+  plugins: { "@next/next": nextPlugin },
+  rules: {
+    ...nextPlugin.configs.recommended.rules,
+    ...nextPlugin.configs["core-web-vitals"].rules,
+  },
 });

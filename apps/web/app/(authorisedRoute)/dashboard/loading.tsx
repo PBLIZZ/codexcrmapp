@@ -1,6 +1,6 @@
 'use client';
 
-import { Skeleton } from "@codexcrm/ui/components/ui/skeleton";
+import { Skeleton } from "@codexcrm/ui";
 
 export default function Loading() {
   return (

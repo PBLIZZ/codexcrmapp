@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@codexcrm/ui/components/ui/card";
-import { Button } from "@codexcrm/ui/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@codexcrm/ui";
+import { Button } from "@codexcrm/ui";
 import { Heart, Users, Save, CheckCircle } from "lucide-react";
 
 interface TherapistCheckInProps {

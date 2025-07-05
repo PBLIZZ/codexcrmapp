@@ -17,11 +17,14 @@ import { UserNav } from '@/components/layout/UserNav';
 // 3. Import the structural primitives from our sidebar system
 import {
   Sidebar,
+  SidebarBody,
   SidebarContent,
-  SidebarFooter,
   SidebarHeader,
-  SidebarRail,
-} from '@codexcrm/ui/components/ui/sidebar';
+  SidebarItem,
+  SidebarLabel,
+  SidebarRoot,
+  SidebarTrigger,
+} from '@codexcrm/ui';
 
 import { Settings2, 
   Calendar, 
