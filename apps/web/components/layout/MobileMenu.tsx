@@ -7,13 +7,15 @@ import { createRoute } from '@/lib/utils/routes';
 import * as React from 'react';
 
 // UI and Icon Imports
-import { Button } from '@codexcrm/ui/components/ui/button';
+import { Button } from '@codexcrm/ui';
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
   SheetTrigger,
-  SheetClose,
-} from '@codexcrm/ui/components/ui/sheet';
+} from '@codexcrm/ui';
 import {
   Menu,
   Home,

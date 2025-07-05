@@ -14,18 +14,20 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@codexcrm/ui/components/ui/dropdown-menu'
+} from '@codexcrm/ui'
 import {
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuAction,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from '@codexcrm/ui/components/ui/sidebar'
+  Sidebar,
+  SidebarBody,
+  SidebarContent,
+  SidebarHeader,
+  SidebarItem,
+  SidebarLabel,
+  SidebarRoot,
+  SidebarTrigger,
+} from '@codexcrm/ui'
 
 // Define the structure for project items
 export interface ProjectItem {

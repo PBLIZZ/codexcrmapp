@@ -5,7 +5,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { cookies } from 'next/headers'; // Add this import
-import '@codexcrm/ui/styles/globals.css';
+import '@codexcrm/ui/dist/index.css';
 import { ThemeProvider } from '@codexcrm/ui';
 import { Providers } from './providers'; // Providers and Components
 import { AppContent } from '@/components/layout/AppContent';

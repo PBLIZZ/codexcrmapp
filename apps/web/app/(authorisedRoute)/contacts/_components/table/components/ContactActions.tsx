@@ -7,14 +7,14 @@ import {
   Mail, 
   Phone 
 } from 'lucide-react';
-import { Button } from '@codexcrm/ui/components/ui/button';
+import { Button } from '@codexcrm/ui';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
-} from '@codexcrm/ui/components/ui/dropdown-menu';
+} from '@codexcrm/ui';
 import type { Contact, ContactActionProps } from '@/app/(authorisedRoute)/contacts/_components/table/types';
 
 interface ContactActionsProps extends ContactActionProps {

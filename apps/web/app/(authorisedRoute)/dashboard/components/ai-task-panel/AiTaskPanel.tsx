@@ -8,12 +8,12 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@codexcrm/ui/components/ui/card';
-import { Button } from '@codexcrm/ui/components/ui/button';
-import { Badge } from '@codexcrm/ui/components/ui/badge';
+} from '@codexcrm/ui';
+import { Button } from '@codexcrm/ui';
+import { Badge } from '@codexcrm/ui';
 import { Check, Clock, X, AlertCircle, BrainCircuit } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '@codexcrm/ui/components/ui/alert';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@codexcrm/ui/components/ui/tabs';
+import { Alert, AlertDescription, AlertTitle } from '@codexcrm/ui';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@codexcrm/ui';
 
 interface AiTaskPanelProps {
   className?: string;

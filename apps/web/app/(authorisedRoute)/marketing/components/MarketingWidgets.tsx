@@ -9,7 +9,7 @@ import {
   Users,
   HelpCircle
 } from "lucide-react";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@codexcrm/ui/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@codexcrm/ui";
 
 // Import widget components
 import { EmailMarketing } from "./widgets/EmailMarketing";

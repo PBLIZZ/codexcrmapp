@@ -3,8 +3,8 @@
 import _React, { useState } from 'react';
 import { Users, ArrowRight, Sparkles, Award, Star, BadgePercent } from 'lucide-react';
 import Link from 'next/link';
-import { Input } from '@codexcrm/ui/components/ui/input';
-import { Button } from '@codexcrm/ui/components/ui/button';
+import { Input } from '@codexcrm/ui';
+import { Button } from '@codexcrm/ui';
 import {
   Card,
   CardContent,
@@ -12,7 +12,7 @@ import {
   CardHeader,
   CardTitle,
   CardFooter,
-} from '@codexcrm/ui/components/ui/card';
+} from '@codexcrm/ui';
 
 export function MembershipLoyalty() {
   const [programName, setProgramName] = useState('');

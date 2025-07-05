@@ -7,18 +7,18 @@ import { PanelLeftIcon } from 'lucide-react';
 
 import { useIsMobile } from '../../hooks/use-mobile';
 import { cn } from '../../lib/utils';
-import { Button } from '@codexcrm/ui/components/ui/button';
-import { Input } from '@codexcrm/ui/components/ui/input';
-import { Separator } from '@codexcrm/ui/components/ui/separator';
+import { Button } from './button';
+import { Input } from './input';
+import { Separator } from './separator';
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from '@codexcrm/ui/components/ui/sheet';
-import { Skeleton } from '@codexcrm/ui/components/ui/skeleton';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@codexcrm/ui/components/ui/tooltip';
+} from './sheet';
+import { Skeleton } from './skeleton';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './tooltip';
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;

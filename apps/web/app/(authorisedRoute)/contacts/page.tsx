@@ -2,7 +2,7 @@
 import { requireAuth } from '@/lib/auth/require-auth';
 import { ContactsView } from './_components/ContactsView'; // We will create this new component
 import { Suspense } from 'react';
-import { Skeleton } from '@codexcrm/ui/components/ui/skeleton';
+import { Skeleton } from '@codexcrm/ui';
 
 export const metadata = {
   title: 'Contacts | CodexCRM',

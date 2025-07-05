@@ -3,4 +3,3 @@
  */
 // Re-export existing repositories
 export { ContactsRepository } from './contacts-repository';
-//# sourceMappingURL=index.js.map

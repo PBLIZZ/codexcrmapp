@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import type { ContactFormData } from '@/app/(authorisedRoute)/contacts/new/ContactForm';
 import { ContactForm } from '@/app/(authorisedRoute)/contacts/new/ContactForm';
 import { api } from '@/lib/trpc';
-import { Button } from '@codexcrm/ui/components/ui/button';
+import { Button } from '@codexcrm/ui';
 import { ArrowLeft } from 'lucide-react';
 
 export default function NewContactPage() {

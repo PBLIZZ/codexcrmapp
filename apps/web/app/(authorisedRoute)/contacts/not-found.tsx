@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Button } from '@codexcrm/ui/components/ui/button';
+import { Button } from '@codexcrm/ui';
 import { FileX } from 'lucide-react';
 
 export default function NotFound() {

@@ -6,11 +6,11 @@ import { useRouter } from 'next/navigation';
 import { api } from '@/lib/trpc';
 import { ArrowLeft, Upload, FileSpreadsheet, Check, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
-import { Button } from '@codexcrm/ui/components/ui/button';
+import { Button } from '@codexcrm/ui';
 import { Download } from 'lucide-react';
-import { Card } from '@codexcrm/ui/components/ui/card';
-import { Input } from '@codexcrm/ui/components/ui/input';
-import { Label } from '@codexcrm/ui/components/ui/label';
+import { Card } from '@codexcrm/ui';
+import { Input } from '@codexcrm/ui';
+import { Label } from '@codexcrm/ui';
 import { toast } from 'sonner';
 
 export default function ImportContactsPage() {

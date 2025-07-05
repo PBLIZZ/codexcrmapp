@@ -1,11 +1,11 @@
 'use client';
 
 import React from 'react';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@codexcrm/ui/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@codexcrm/ui";
 import { api } from "@/lib/trpc";
 import { AlertCircle, ArrowRight, TrendingUp, TrendingDown, Users, Calendar, AlertTriangle } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@codexcrm/ui/components/ui/alert";
-import { Button } from "@codexcrm/ui/components/ui/button";
+import { Alert, AlertDescription, AlertTitle } from "@codexcrm/ui";
+import { Button } from "@codexcrm/ui";
 import Link from "next/link";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 

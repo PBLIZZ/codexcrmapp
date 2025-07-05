@@ -1,8 +1,8 @@
 'use client';
 
 import { ArrowDown, ArrowUp } from 'lucide-react';
-import { Button } from '@codexcrm/ui/components/ui/button';
-import { Checkbox } from '@codexcrm/ui/components/ui/checkbox';
+import { Button } from '@codexcrm/ui';
+import { Checkbox } from '@codexcrm/ui';
 import { getColumnDefinition } from '@/app/(authorisedRoute)/contacts/_components/table/constants';
 import type { Contact } from '@/app/(authorisedRoute)/contacts/_components/table/types';
 

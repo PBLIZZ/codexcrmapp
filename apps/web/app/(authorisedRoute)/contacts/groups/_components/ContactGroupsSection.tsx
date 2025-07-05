@@ -3,8 +3,8 @@
 import { Tag, Plus, X } from 'lucide-react';
 import { useState, useMemo } from 'react';
 
-import { Badge } from '@codexcrm/ui/components/ui/badge';
-import { Button } from '@codexcrm/ui/components/ui/button';
+import { Badge } from '@codexcrm/ui';
+import { Button } from '@codexcrm/ui';
 import {
   Dialog,
   DialogContent,
@@ -12,15 +12,16 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@codexcrm/ui/components/ui/dialog';
+  DialogTrigger,
+} from '@codexcrm/ui';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@codexcrm/ui/components/ui/select';
-import { Separator } from '@codexcrm/ui/components/ui/separator';
+} from '@codexcrm/ui';
+import { Separator } from '@codexcrm/ui';
 import { api } from '@/lib/trpc';
 import { cn } from '@/lib/utils';
 

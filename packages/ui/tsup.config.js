@@ -3,6 +3,7 @@ import { defineConfig } from "tsup";
 export default defineConfig({
   // The entry point of your library. tsup will build everything from here.
   entry: ["src/index.ts"],
+  tsconfig: "tsconfig.json",
 
   // The output format. 'esm' is standard for modern apps and libraries.
   format: ["esm"],

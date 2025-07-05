@@ -1,3 +1,9 @@
+<!--
+Last Updated: 
+Version: 1.0.0
+Status: Active
+-->
+
 ---
 description: Guide for using Task Master to manage task-driven development workflows
 globs: **/*

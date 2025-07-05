@@ -1,9 +1,11 @@
 'use client';
 
-import { useActionState, useState, useEffect, type FormEvent } from 'react';
+import { useActionState, useState, useEffect, type FormEvent, useCallback } from 'react';
 import { api } from '@/lib/trpc';
 import * as z from 'zod/v4';
-import { ImageUpload } from '@codexcrm/ui/components/ui/image-upload';
+import { ImageUpload } from '@codexcrm/ui';
+import { v4 as uuidv4 } from 'uuid';
+import type { FileWithPath } from 'react-dropzone';
 
 // Zod schema remains the same
 export const contactSchema = z.object({
@@ -147,12 +149,72 @@ export function ContactForm({
       enriched_data: null,
     }
   );
+  
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(initialData?.profile_image_url ?? null);
 
   useEffect(() => {
     if (initialData) {
       setFormData(initialData);
+      setPreviewUrl(initialData.profile_image_url ?? null);
     }
   }, [initialData]);
+
+  const getUploadUrlMutation = api.storage.getUploadUrl.useMutation();
+  const deleteFileMutation = api.storage.deleteFile.useMutation();
+
+  const handleImageDrop = useCallback(async (acceptedFiles: FileWithPath[]) => {
+    if (acceptedFiles.length === 0) return;
+
+    const file = acceptedFiles[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    setUploadError(null);
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${editingContactId ?? uuidv4()}-${Date.now()}.${fileExt}`;
+      
+      const { signedUrl, path } = await getUploadUrlMutation.mutateAsync({
+        fileName,
+        contentType: file.type,
+        folderPath: 'contacts',
+      });
+
+      const response = await fetch(signedUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': file.type },
+        body: file,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to upload to storage.');
+      }
+
+      setFormData(prev => ({ ...prev, profile_image_url: path }));
+      setPreviewUrl(URL.createObjectURL(file));
+
+    } catch (error) {
+      setUploadError(error instanceof Error ? error.message : 'An unknown error occurred.');
+    } finally {
+      setIsUploading(false);
+    }
+  }, [editingContactId, getUploadUrlMutation]);
+
+  const handleImageRemove = useCallback(async () => {
+    if (!formData.profile_image_url) return;
+
+    try {
+      await deleteFileMutation.mutateAsync({ filePath: formData.profile_image_url });
+      setFormData(prev => ({ ...prev, profile_image_url: null }));
+      setPreviewUrl(null);
+    } catch (error) {
+      setUploadError('Failed to delete image.');
+    }
+  }, [formData.profile_image_url, deleteFileMutation]);
+
 
   const createContact = api.contacts.save.useMutation({
     onSuccess: () => {
@@ -290,11 +352,7 @@ export function ContactForm({
     handleInputChange(field, arrayValue);
   };
 
-  const handleImageChange = (url: string | null) => {
-    handleInputChange('profile_image_url', url);
-  };
-
-  const isLoading = isPending || isSubmitting || createContact.isPending || saveContact.isPending;
+  const isLoading = isPending || isSubmitting || createContact.isPending || saveContact.isPending || isUploading;
 
   return (
     <div
@@ -364,10 +422,12 @@ export function ContactForm({
               <div className='space-y-4'>
                 <FormLabel htmlFor='profile_image_url'>Profile Photo</FormLabel>
                 <ImageUpload
-                  value={formData.profile_image_url ?? null}
-                  onChange={handleImageChange}
+                  value={previewUrl}
+                  onDrop={handleImageDrop}
+                  onRemove={handleImageRemove}
+                  isUploading={isUploading}
+                  uploadError={uploadError}
                   disabled={isLoading}
-                  contactId={editingContactId ?? undefined}
                 />
                 <FieldError message={getErrorMessage('profile_image_url')} />
               </div>

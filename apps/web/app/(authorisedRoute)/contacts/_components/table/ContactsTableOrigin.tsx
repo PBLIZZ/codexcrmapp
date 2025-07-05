@@ -19,17 +19,16 @@ import {
 } from 'lucide-react';
 import { api } from '@/lib/trpc';
 import { cn } from '@/lib/utils';
-import { Avatar } from '@codexcrm/ui/components/ui/avatar';
-import { Badge } from '@codexcrm/ui/components/ui/badge';
-import { Button } from '@codexcrm/ui/components/ui/button';
-import { Checkbox } from '@codexcrm/ui/components/ui/checkbox';
+import { Avatar } from '@codexcrm/ui';
+import { Badge } from '@codexcrm/ui';
+import { Button } from '@codexcrm/ui';
+import { Checkbox } from '@codexcrm/ui';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from '@codexcrm/ui/components/ui/dropdown-menu';
+} from '@codexcrm/ui';
 import {
   Dialog,
   DialogContent,
@@ -37,14 +36,15 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@codexcrm/ui/components/ui/dialog';
+  DialogTrigger,
+} from '@codexcrm/ui';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@codexcrm/ui/components/ui/select';
+} from '@codexcrm/ui';
 
 // ProfileAvatar component to handle profile image display with proper URL signing
 function ProfileAvatar({ contact }: { contact: Contact }) {

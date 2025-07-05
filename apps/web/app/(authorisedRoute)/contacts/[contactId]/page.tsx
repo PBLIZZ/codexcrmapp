@@ -3,7 +3,7 @@ import _React from 'react'; // Import React separately and prepend with _
 
 import { ContactDetailView } from './ContactDetailView';
 
-import { Skeleton } from '@codexcrm/ui/components/ui/skeleton';
+import { Skeleton } from '@codexcrm/ui';
 
 /**
  * Props for the ContactDetailPage component following Next.js App Router conventions

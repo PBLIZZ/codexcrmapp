@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { z } from 'zod';
 
 import OneTapComponent from '@/app/(auth)/components/auth/OneTapComponent'; // Ensure this path is correct and component exists
-import { Button } from '@codexcrm/ui/components/ui/button';
+import { Button } from '@codexcrm/ui';
 import {
   Card,
   CardHeader,
@@ -14,8 +14,8 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
-} from '@codexcrm/ui/components/ui/card';
-import { Input } from '@codexcrm/ui/components/ui/input';
+} from '@codexcrm/ui';
+import { Input } from '@codexcrm/ui';
 import { createClient } from '@/lib/supabase/client';
 
 const supabase = createClient();

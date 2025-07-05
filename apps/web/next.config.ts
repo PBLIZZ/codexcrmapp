@@ -6,13 +6,7 @@ import type { NextConfig } from "next";
  */
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  
-  // Next.js 15 experimental features
-  experimental: {
-    typedRoutes: true,  // Typed routes for better type safety
-  },
-  
-  // Performance optimizations per Next.js 15 best practices
+  typedRoutes: true,
   compress: true,
   poweredByHeader: false,
   
@@ -24,10 +18,8 @@ const nextConfig: NextConfig = {
     '@codexcrm/background-jobs',
   ],
 
-  // Moved from experimental.serverComponentsExternalPackages
   serverExternalPackages: ['@whatwg-node/fetch', '@prisma/client', 'bcryptjs'],
 
-  // Image optimization with Next.js 15 defaults
   images: {
     formats: ['image/webp', 'image/avif'],
     remotePatterns: [

@@ -6,28 +6,15 @@
     "paths": {
       "@/*": [
         "./*"
-      ],
-      "@codexcrm/ui": [
-        "../../packages/ui/src"
-      ],
-      "@codexcrm/ui/*": [
-        "../../packages/ui/src/*"
-      ],
-      "@codexcrm/database": [
-        "../../packages/database/src"
-      ],
-      "@codexcrm/database/*": [
-        "../../packages/database/src/*"
       ]
     },
-    "jsx": "preserve"
+    "resolveJsonModule": true
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts",
-    "../../ContactsView.tsx"
+    ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

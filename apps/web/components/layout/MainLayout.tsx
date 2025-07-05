@@ -5,14 +5,8 @@ import { ReactNode } from 'react';
 import { Toaster } from 'sonner';
 
 // Import the layout primitives from your UI library
-import { SidebarInset, SidebarProvider, SidebarTrigger } from '@codexcrm/ui/components/ui/sidebar';
-
-// Import your custom layout components
-import { AppSidebarController } from './AppSidebarController';
-import { MainSectionNav } from './MainSectionNav';
-import { OmniBotFloat } from './OmniBotFloat';
-import { DynamicBreadcrumb } from './DynamicBreadcrumb';
-import { Separator } from '@codexcrm/ui/components/ui/separator';
+import { SidebarInset, SidebarProvider, SidebarTrigger } from '@codexcrm/ui';
+import { Separator } from '@codexcrm/ui';
 
 interface MainLayoutProps {
   children: ReactNode;

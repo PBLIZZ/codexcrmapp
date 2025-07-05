@@ -1,0 +1,48 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/.claude-hooks-json-protection.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/.claude-hooks-prettier.sh",
+            "timeout": 30
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/.claude-hooks-eslint.sh",
+            "timeout": 30
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/.claude-hooks-typescript-check.sh",
+            "timeout": 60
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/.claude-hooks-nextjs-validation.sh",
+            "timeout": 30
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/.claude-hooks-trpc-validation.sh",
+            "timeout": 20
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,7 +1,7 @@
 'use client';
 
-import { Checkbox } from '@codexcrm/ui/components/ui/checkbox';
-import { Label } from '@codexcrm/ui/components/ui/label';
+import { Checkbox } from '@codexcrm/ui';
+import { Label } from '@codexcrm/ui';
 
 interface ColumnSelectorProps {
   visibleColumns: string[];

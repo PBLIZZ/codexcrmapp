@@ -4,9 +4,9 @@ import { Check, Search, User, Mail } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@codexcrm/ui/components/ui/avatar';
-import { Button } from '@codexcrm/ui/components/ui/button';
-import { Checkbox } from '@codexcrm/ui/components/ui/checkbox';
+import { Avatar, AvatarFallback, AvatarImage } from '@codexcrm/ui';
+import { Button } from '@codexcrm/ui';
+import { Checkbox } from '@codexcrm/ui';
 import { Database } from '@codexcrm/database/types';
 import {
   Dialog,
@@ -14,8 +14,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from '@codexcrm/ui/components/ui/dialog';
-import { Input } from '@codexcrm/ui/components/ui/input';
+} from '@codexcrm/ui';
+import { Input } from '@codexcrm/ui';
 import { api } from '@/lib/trpc';
 
 interface Contact {

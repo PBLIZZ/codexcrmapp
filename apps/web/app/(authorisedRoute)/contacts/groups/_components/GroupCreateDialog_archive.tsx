@@ -3,15 +3,16 @@
 import { useState, useEffect } from 'react';
 import { Plus, Edit, Loader2 } from 'lucide-react';
 
-import { Button } from '@codexcrm/ui/components/ui/button';
+import { Button } from '@codexcrm/ui';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@codexcrm/ui/components/ui/dialog';
+} from '@codexcrm/ui';
 import { GroupCreateForm } from './GroupCreateForm';
 
 // Interface for Group Data (matching what `api.groups.list` returns)

@@ -10,20 +10,17 @@ import {
 } from 'lucide-react';
 import { UserNav } from '@/components/layout/UserNav';
 import { createRoute } from '@/lib/utils/routes';
-import { Badge } from '@codexcrm/ui/components/ui/badge';
-
+import { Badge } from '@codexcrm/ui';
 import {
   Sidebar,
+  SidebarBody,
   SidebarContent,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarFooter,
-  SidebarRail,
-  SidebarGroup,
-  SidebarGroupLabel,
-} from '@codexcrm/ui/components/ui/sidebar';
+  SidebarItem,
+  SidebarLabel,
+  SidebarRoot,
+  SidebarTrigger,
+} from '@codexcrm/ui';
 
 // Mock data for active projects
 const mockProjects = [

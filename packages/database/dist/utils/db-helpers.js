@@ -90,4 +90,3 @@ export const logQuery = (query, params = []) => {
         console.log('Executing query:', formatQuery(query, params));
     }
 };
-//# sourceMappingURL=db-helpers.js.map

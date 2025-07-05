@@ -12,7 +12,7 @@ import { MessagesSidebar } from '../../app/(authorisedRoute)/messages/MessagesSi
 import { MarketingSidebar } from '../../app/(authorisedRoute)/marketing/MarketingSidebar';
 import { SettingsSidebar } from '../../app/(authorisedRoute)/settings/SettingsSidebar';
 
-import { Skeleton } from '@codexcrm/ui/components/ui/skeleton';
+import { Skeleton } from '@codexcrm/ui';
 
 /**
  * AppSidebarController declaratively renders the correct contextual sidebar

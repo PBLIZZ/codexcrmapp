@@ -16,17 +16,10 @@ import { toast } from 'sonner'; // For notifications
 
 import { BulkContactSelector } from './BulkContactSelector';
 import { GroupCreateDialog } from './GroupCreateDialog_archive';
-import { Alert, AlertDescription, AlertTitle } from '@codexcrm/ui/components/ui/alert';
-import { Badge } from '@codexcrm/ui/components/ui/badge';
-import { Button } from '@codexcrm/ui/components/ui/button';
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from '@codexcrm/ui/components/ui/card';
+import { Alert, AlertDescription, AlertTitle } from '@codexcrm/ui';
+import { Badge } from '@codexcrm/ui';
+import { Button } from '@codexcrm/ui';
+import { Card, CardContent, CardHeader, CardTitle } from '@codexcrm/ui';
 import { api } from '@/lib/trpc';
 
 // --- Interface for Group Data (matching what `api.groups.list` returns) ---

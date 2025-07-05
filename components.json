@@ -2,18 +2,19 @@
   "$schema": "https://ui.shadcn.com/schema.json",
   "style": "new-york",
   "rsc": true,
+  "tsx": true,
   "tailwind": {
-    "config": "packages/ui/tailwind.config.js",
+    "config": "packages/ui/tailwind.config.ts",
     "css": "packages/ui/src/styles/globals.css",
     "baseColor": "slate",
     "cssVariables": true
   },
+  "iconLibrary": "lucide-react",
   "aliases": {
-    "components": "packages/ui/src/components",
-    "utils": "packages/ui/src/lib/utils",
-    "ui": "packages/ui/src/components/ui",
-    "lib": "packages/ui/src/lib",
-    "hooks": "packages/ui/src/hooks"
+    "components": "@codexcrm/ui/components",
+    "utils": "@codexcrm/ui/lib/utils",
+    "ui": "@codexcrm/ui/components/ui",
+    "lib": "@codexcrm/ui/lib",
+    "hooks": "@codexcrm/ui/hooks"
   }
-
 }

@@ -15,9 +15,9 @@ import {
 } from 'lucide-react';
 
 import { Timeline, TimelineItem, TimelineContent, TimelineSeparator } from '@codexcrm/ui';
-import { Badge } from '@codexcrm/ui/components/ui/badge';
-import { Button } from '@codexcrm/ui/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@codexcrm/ui/components/ui/card';
+import { Badge } from '@codexcrm/ui';
+import { Button } from '@codexcrm/ui';
+import { Card, CardContent, CardHeader, CardTitle } from '@codexcrm/ui';
 
 interface TimelineEvent {
   id: string;

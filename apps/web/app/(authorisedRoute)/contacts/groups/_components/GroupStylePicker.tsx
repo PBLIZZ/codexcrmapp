@@ -3,7 +3,7 @@
 
 import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Label } from '@codexcrm/ui/components/ui/label';
+import { Label } from '@codexcrm/ui';
 
 interface GroupStylePickerProps {
   selectedColor: string;

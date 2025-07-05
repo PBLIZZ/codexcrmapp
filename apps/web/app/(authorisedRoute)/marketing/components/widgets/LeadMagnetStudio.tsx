@@ -3,17 +3,16 @@
 import _React, { useState } from 'react';
 import { Download, ArrowRight, Sparkles, FileText, Gift } from 'lucide-react';
 import Link from 'next/link';
-import { Input } from '@codexcrm/ui/components/ui/input';
-import { Button } from '@codexcrm/ui/components/ui/button';
+import { Input } from '@codexcrm/ui';
+import { Button } from '@codexcrm/ui';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-  CardFooter,
-} from '@codexcrm/ui/components/ui/card';
-import { Textarea } from '@codexcrm/ui/components/ui/textarea';
+} from '@codexcrm/ui';
+import { Textarea } from '@codexcrm/ui';
 
 export function LeadMagnetStudio() {
   const [leadMagnetTitle, setLeadMagnetTitle] = useState('');

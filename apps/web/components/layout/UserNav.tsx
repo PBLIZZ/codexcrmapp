@@ -15,7 +15,7 @@ import {
   Sparkles,
   ShieldCheck,
 } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@codexcrm/ui/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@codexcrm/ui';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,16 +23,20 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from '@codexcrm/ui/components/ui/dropdown-menu';
+} from '@codexcrm/ui';
 import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from '@codexcrm/ui/components/ui/sidebar';
-
-import { Skeleton } from '@codexcrm/ui/components/ui/skeleton';
+  Sidebar,
+  SidebarBody,
+  SidebarContent,
+  SidebarHeader,
+  SidebarItem,
+  SidebarLabel,
+  SidebarRoot,
+  SidebarTrigger,
+} from '@codexcrm/ui';
+import { Skeleton } from '@codexcrm/ui';
 
 export function UserNav() {
   // 1. Fetch user data internally using the useAuth hook

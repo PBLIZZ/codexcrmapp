@@ -1,89 +1,17 @@
-# Shared Configuration Package
+<!--
+Last Updated: 2025-06-15
+Version: 1.0.0
+Status: Active
+-->
 
-This package contains all shared configuration files for the CodexCRM monorepo.
+# `@codexcrm/config`
 
-## Contents
-- `typescript/` - TypeScript configurations
-- `eslint/` - ESLint configurations
-- `prettier/` - Prettier configurations
-- `tailwind/` - Tailwind CSS configurations
-- `sentry/` - Sentry error tracking configurations
-- `postcss/` - PostCSS configurations for different packages
-- `next/` - Next.js configuration
+This package is the single source of truth for all shared tooling configurations in the monorepo. It ensures that every package and application adheres to the same standards for code quality, formatting, and compilation.
 
-## Usage
+## Purpose
 
-### TypeScript Base Configuration
-```json
-// In tsconfig.json
-{
-  "extends": "@codexcrm/config/typescript/base"
-}
-```
+Instead of duplicating configuration files (`.eslintrc.js`, `tsconfig.json`, etc.) in every package, we define them once here and have other packages extend them.
 
-### TypeScript Next.js Configuration
-```json
-// In apps/web/tsconfig.json
-{
-  "extends": "@codexcrm/config/typescript/nextjs"
-}
-```
+## Connection to the System
 
-### Prettier Configuration
-```json
-// In .prettierrc.json
-"@codexcrm/config/prettier"
-```
-
-### ESLint Configuration
-```js
-// In eslint.config.js
-import baseConfig from '@codexcrm/config/eslint';
-
-export default baseConfig;
-```
-
-### Tailwind Configuration
-```js
-// In tailwind.config.js
-const baseConfig = require('@codexcrm/config/tailwind');
-
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  ...baseConfig,
-  // Override or extend as needed
-};
-```
-
-### Next.js Configuration
-```ts
-// In next.config.ts
-import nextConfig from '@codexcrm/config/next';
-
-// Use as-is or extend
-export default nextConfig;
-
-// Or access individual exports
-import { nextConfig, sentryConfig } from '@codexcrm/config/next';
-export default withSomeOtherPlugin(nextConfig);
-```
-
-### Sentry Configuration
-```ts
-// In sentry.server.config.ts
-import '@codexcrm/config/sentry/server';
-
-// In sentry.edge.config.ts
-import '@codexcrm/config/sentry/edge';
-```
-
-### PostCSS Configuration
-```js
-// For Next.js app (in postcss.config.mjs)
-import appConfig from '@codexcrm/config/postcss/app';
-export default appConfig;
-
-// For UI package (in postcss.config.js)
-const uiConfig = require('@codexcrm/config/postcss/ui');
-module.exports = uiConfig;
-```
+Other packages consume these configurations via the `exports` map in this package's `package.json`. This allows for clean imports like `extends: '@codexcrm/config/typescript/base'` or `presets: [require('@codexcrm/config/tailwind')]`.

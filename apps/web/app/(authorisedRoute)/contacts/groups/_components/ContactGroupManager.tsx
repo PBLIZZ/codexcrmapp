@@ -4,9 +4,9 @@ import { Tag, Plus, X, Loader2 } from 'lucide-react';
 import type { ReactNode} from 'react';
 import { useState, useContext, createContext, useEffect } from 'react';
 
-import { Alert, AlertDescription } from '@codexcrm/ui/components/ui/alert';
-import { Badge } from '@codexcrm/ui/components/ui/badge';
-import { Button } from '@codexcrm/ui/components/ui/button';
+import { Alert, AlertDescription } from '@codexcrm/ui';
+import { Badge } from '@codexcrm/ui';
+import { Button } from '@codexcrm/ui';
 import {
   Dialog,
   DialogContent,
@@ -14,14 +14,15 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@codexcrm/ui/components/ui/dialog';
+  DialogTrigger,
+} from '@codexcrm/ui';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@codexcrm/ui/components/ui/select';
+} from '@codexcrm/ui';
 import { api } from '@/lib/trpc';
 
 // Define the Group type

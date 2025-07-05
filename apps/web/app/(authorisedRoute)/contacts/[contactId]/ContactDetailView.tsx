@@ -29,10 +29,10 @@ import {
 } from 'lucide-react';
 
 // Shadcn/ui and local components
-import { Alert, AlertDescription, AlertTitle } from '@codexcrm/ui/components/ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '@codexcrm/ui';
 import { AvatarImage as CustomAvatarImage } from '@/app/(authorisedRoute)/contacts/_components/table/avatar-image';
-import { Badge } from '@codexcrm/ui/components/ui/badge';
-import { Button } from '@codexcrm/ui/components/ui/button';
+import { Badge } from '@codexcrm/ui';
+import { Button } from '@codexcrm/ui';
 import {
   Dialog,
   DialogContent,
@@ -40,9 +40,9 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@codexcrm/ui/components/ui/dialog';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@codexcrm/ui/components/ui/tabs';
-import { Textarea } from '@codexcrm/ui/components/ui/textarea'; // For inline notes
+} from '@codexcrm/ui';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@codexcrm/ui';
+import { Textarea } from '@codexcrm/ui'; // For inline notes
 import { toast } from 'sonner';
 
 // Utilities and API

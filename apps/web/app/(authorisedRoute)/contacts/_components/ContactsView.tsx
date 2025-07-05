@@ -8,15 +8,14 @@ import { useDebounce } from 'use-debounce';
 import { toast } from 'sonner';
 
 import { api } from '@/lib/trpc';
-import { Button } from '@codexcrm/ui/components/ui/button';
-import { Input } from '@codexcrm/ui/components/ui/input';
+import { Button } from '@codexcrm/ui';
+import { Input } from '@codexcrm/ui';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
+  DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@codexcrm/ui/components/ui/dropdown-menu';
+} from '@codexcrm/ui';
 
 // Import the refactored modular table components
 import type { Contact } from './table/types';

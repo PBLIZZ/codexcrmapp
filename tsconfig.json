@@ -1,16 +1,13 @@
 {
-  "extends": "@codexcrm/config/typescript/base",
+  "extends": "./tsconfig.base.json",
   "files": [],
   "references": [
-    // Your Apps
     { "path": "./apps/web" },
-
-    // Your Shared Packages
+    { "path": "./packages/api" },
     { "path": "./packages/auth" },
     { "path": "./packages/config" },
     { "path": "./packages/database" },
-    { "path": "./packages/api" },
-    { "path": "./packages/background-jobs" },
-    { "path": "./packages/ui" }
+    { "path": "./packages/ui" },
+    { "path": "./packages/background-jobs" }
   ]
 }

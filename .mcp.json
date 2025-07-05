@@ -1,30 +1,60 @@
 {
   "mcpServers": {
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "env": {}
+    },
+    "perplexity-ask": {
+      "command": "npx",
+      "args": ["-y", "server-perplexity-ask"],
+      "env": {
+        "PERPLEXITY_API_KEY": "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"
+      }
+    },
+    "taskmaster-ai": {
+      "command": "npx",
+      "args": ["-y", "--package=task-master-ai", "task-master-ai"],
+      "env": {
+        "ANTHROPIC_API_KEY": "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",
+        "PERPLEXITY_API_KEY": "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",
+        "MODEL": "claude-3-7-sonnet-20250219",
+        "PERPLEXITY_MODEL": "sonar-pro",
+        "MAX_TOKENS": "64000",
+        "TEMPERATURE": "0.2",
+        "DEFAULT_SUBTASKS": "5",
+        "DEFAULT_PRIORITY": "medium"
+      }
+    },
     "supabase": {
-      "type": "stdio",
       "command": "npx",
       "args": [
         "-y",
         "@supabase/mcp-server-supabase@latest",
         "--access-token",
-        "sbp_6fe2bba48bb0cb105ebe8e404226213759544af8"
+        "sbp_ca26d1f4c512091ffed166357e2680dd7a73ea13"
       ]
     },
     "memory": {
-      "type": "stdio",
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-memory"
-      ]
+      "args": ["-y", "@modelcontextprotocol/server-memory"],
+      "env": {
+        "MEMORY_FILE_PATH": ""
+      }
     },
-    "sequential-thinking": {
-      "type": "stdio",
+    "filesystem": {
       "command": "npx",
       "args": [
         "-y",
-        "@modelcontextprotocol/server-sequential-thinking"
-      ]
+        "@modelcontextprotocol/server-filesystem",
+        "Users/peterjamesblizzard/"
+      ],
+      "env": {}
+    },
+    "eslint": {
+      "command": "npx",
+      "args": ["@eslint/mcp@latest"],
+      "env": {}
     }
   }
 }

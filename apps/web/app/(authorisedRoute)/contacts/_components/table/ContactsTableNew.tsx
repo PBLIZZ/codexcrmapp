@@ -4,15 +4,15 @@ import { useState } from 'react';
 import { formatDistance } from 'date-fns';
 import Link from 'next/link';
 import { ArrowDown, ArrowUp, MoreHorizontal, Edit, Trash2 } from 'lucide-react';
-import { Badge } from '@codexcrm/ui/components/ui/badge';
-import { Button } from '@codexcrm/ui/components/ui/button';
-import { Checkbox } from '@codexcrm/ui/components/ui/checkbox';
+import { Badge } from '@codexcrm/ui';
+import { Button } from '@codexcrm/ui';
+import { Checkbox } from '@codexcrm/ui';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@codexcrm/ui/components/ui/dropdown-menu';
+} from '@codexcrm/ui';
 import { ProfileAvatar } from './ProfileAvatar';
 import type { Contact, ContactsTableProps } from './types';
 

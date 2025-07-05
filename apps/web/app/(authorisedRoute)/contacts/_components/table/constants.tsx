@@ -1,5 +1,5 @@
 import { formatDistance } from 'date-fns';
-import { Badge } from '@codexcrm/ui/components/ui/badge';
+import { Badge } from '@codexcrm/ui';
 import type { Contact, ColumnDefinition } from './types';
 
 // Default visible columns configuration

@@ -3,17 +3,16 @@
 import { useState } from 'react';
 import { HelpCircle, ArrowRight, Plus, Trash2, CheckCircle2, CircleOff } from 'lucide-react';
 import Link from 'next/link';
-import { Input } from '@codexcrm/ui/components/ui/input';
-import { Textarea } from '@codexcrm/ui/components/ui/textarea';
-import { Button } from '@codexcrm/ui/components/ui/button';
+import { Input } from '@codexcrm/ui';
+import { Textarea } from '@codexcrm/ui';
+import { Button } from '@codexcrm/ui';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-  CardFooter,
-} from '@codexcrm/ui/components/ui/card';
+} from '@codexcrm/ui';
 interface Question {
   question: string;
   options: string[];

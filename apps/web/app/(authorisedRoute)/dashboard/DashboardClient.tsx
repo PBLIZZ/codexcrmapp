@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Skeleton } from '@codexcrm/ui/components/ui/skeleton';
-import { Alert, AlertDescription, AlertTitle } from '@codexcrm/ui/components/ui/alert';
+import { Skeleton } from '@codexcrm/ui';
+import { Alert, AlertDescription, AlertTitle } from '@codexcrm/ui';
 import { AlertCircle } from 'lucide-react';
 import dynamic from 'next/dynamic';
 
