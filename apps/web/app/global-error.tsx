@@ -1,5 +1,7 @@
 'use client'; // Error boundaries must be Client Components
 
+import React from 'react';
+
 export default function GlobalError({
   error: _error,
   reset,

@@ -1,0 +1,16 @@
+{
+  "name": "@codexcrm/config-postcss",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "postcss.config.ts",
+  "files": [
+    "postcss.config.ts"
+  ],
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.11",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.33",
+    "tailwindcss": "^4.1.4"
+  }
+}

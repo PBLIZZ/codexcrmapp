@@ -8,6 +8,7 @@
     { "path": "./packages/config" },
     { "path": "./packages/database" },
     { "path": "./packages/ui" },
+    { "path": "./packages/trpc" },
     { "path": "./packages/background-jobs" }
   ]
 }

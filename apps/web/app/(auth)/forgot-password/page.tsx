@@ -14,9 +14,9 @@ import {
   CardFooter,
 } from '@codexcrm/ui';
 import { Input } from '@codexcrm/ui';
-import { createClient } from '@/lib/supabase/client';
+import { createBrowserClient } from '@codexcrm/auth';
 
-const supabase = createClient();
+const supabase = createBrowserClient();
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -24,7 +24,7 @@ export default function ForgotPasswordPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [messageType, setMessageType] = useState<'error' | 'success'>('error');
 
-  const handlePasswordReset = async (e: React.FormEvent) => {
+  const handlePasswordReset = async (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setMessage('');
@@ -72,7 +72,7 @@ export default function ForgotPasswordPage() {
         </CardHeader>
 
         <CardContent className='space-y-6'>
-          <form onSubmit={(e) => void handlePasswordReset(e)} className='space-y-4'>
+          <form onSubmit={(e: React.FormEvent<HTMLFormElement>) => void handlePasswordReset(e)} className='space-y-4'>
             <div>
               <Input
                 id='email'
@@ -82,7 +82,7 @@ export default function ForgotPasswordPage() {
                 required
                 placeholder='Email address'
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                 className='w-full border-gray-300 focus:border-teal-500 focus:ring-teal-500'
               />
             </div>
@@ -96,9 +96,7 @@ export default function ForgotPasswordPage() {
             )}
 
             <div>
-              <Button
-                type='submit'
-                className='w-full bg-teal-800 hover:bg-teal-700 text-teal-200 font-semibold disabled:opacity-50 transition-colors'
+              <Button type='submit' variant='default' size='md' className='w-full bg-teal-800 hover:bg-teal-700 text-teal-200 font-semibold disabled:opacity-50 transition-colors'
                 disabled={isLoading}
               >
                 {isLoading ? 'Sending...' : 'Send Reset Link'}

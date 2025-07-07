@@ -15,7 +15,7 @@ import {
 import { Input } from '@codexcrm/ui';
 import { Label } from '@codexcrm/ui';
 import { Separator } from '@codexcrm/ui';
-import { fetchCurrentUser, updateUserPassword, mapAuthErrorMessage } from '@/lib/auth/service';
+import { fetchCurrentUser, updateUserPassword, mapAuthErrorMessage } from '@codexcrm/auth';
 
 // Constants
 const MIN_PASSWORD_LENGTH = 6;

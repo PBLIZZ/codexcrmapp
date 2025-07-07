@@ -9,17 +9,3 @@ This involves creating a search-and-select component within the task detail view
 
 # Test Strategy:
 Open a task that has no assignees. Assign 'John Doe' and 'Jane Smith'. Save and reopen; both should be listed. Then, remove 'Jane Smith'. Save and reopen; only 'John Doe' should be listed.
-
-# Subtasks:
-## 1. Build Contact Search Component [pending]
-### Dependencies: None
-### Description: Create a reusable component with a search input that displays matching contacts.
-### Details:
-This component will use the `api.contact.search.useQuery` hook. As the user types, it should call the hook with the query and display the results in a list. Clicking a result should trigger a selection callback.
-
-## 2. Integrate Component into Task Detail View [pending]
-### Dependencies: None
-### Description: Place the contact search component into the task detail UI and manage the state of assigned contacts.
-### Details:
-The task detail UI will fetch current assignees. The search component will be used to add new assignees (`task.addAssignee`). A UI element (e.g., a list of names with 'x' buttons) will be used to display current assignees and allow their removal (`task.removeAssignee`).
-

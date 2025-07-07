@@ -1,0 +1,11 @@
+# Task ID: 350
+# Title: Centralize ESLint Versions
+# Status: pending
+# Dependencies: 348
+# Priority: medium
+# Description: Ensure consistent ESLint versions across all packages by centralizing its configuration and dependencies.
+# Details:
+Identify ESLint versions in root (`^9.0.0`), database, and UI (`^9.29.0`). Remove `eslint` from individual packages (`database`, `UI`). Add `eslint@^9.0.0` to the root `package.json` as a `devDependency`. Create a centralized `.eslintrc.js` or `eslint.config.js` in the root, leveraging ESLint's flat config system (introduced in ESLint v9) for better maintainability. Configure individual packages to extend or reference this root configuration. Ensure all linting scripts in `package.json` files point to the centralized ESLint executable. For example, use `pnpm eslint` or `../../node_modules/.bin/eslint`. Refer to ESLint v9 migration guide and flat config documentation: `https://eslint.org/docs/latest/use/configure/configuration-files-new`.
+
+# Test Strategy:
+Run linting scripts for all packages. Verify that linting passes without errors or unexpected warnings. Ensure that the correct ESLint rules are applied consistently across all packages. Check for any version conflicts or resolution issues during the linting process.

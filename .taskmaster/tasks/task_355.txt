@@ -1,0 +1,11 @@
+# Task ID: 355
+# Title: Standardize Build Tool Versions
+# Status: pending
+# Dependencies: 348, 349, 350, 353, 354
+# Priority: low
+# Description: Ensure all build tools use consistent versions across the monorepo.
+# Details:
+Review the `package.json` files across the entire monorepo. For each build tool (tsup, rimraf, eslint, postcss, tailwindcss), ensure that only the specified target versions (`tsup: ^8.2.3`, `rimraf: ^6.0.1`, `eslint: ^9.0.0`, `postcss: ^8.4.33`, `tailwindcss: ^4.1.4`) are present in the root `package.json` and removed from individual packages. Use `pnpm dedupe` or `pnpm why <package-name>` to identify and resolve any lingering version inconsistencies in the `node_modules` tree. This task is a consolidation and verification step after individual centralization efforts.
+
+# Test Strategy:
+Run `pnpm list <tool-name>` for each centralized tool (tsup, rimraf, eslint, postcss, tailwindcss) to verify that only a single, correct version is installed. Check the `pnpm-lock.yaml` file for any unexpected duplicate entries or version mismatches. Perform a full monorepo build and lint to ensure no new version conflicts arise.

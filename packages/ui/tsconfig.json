@@ -1,8 +1,9 @@
 {
-  "extends": "@codexcrm/config/typescript/react-library",
-  "include": ["src"],
+  "extends": "@codexcrm/config-typescript/react-library.json",
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["dist", "node_modules"],
   "compilerOptions": {
+    "composite": false,
     "outDir": "dist",
     "baseUrl": "./",
     "paths": {

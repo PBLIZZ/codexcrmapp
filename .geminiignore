@@ -1,0 +1,62 @@
+# ===================================================================
+# Gemini AI Agent Ignore File
+#
+# This file prevents the AI from accessing specified files/directories.
+# It helps improve focus, performance, and security.
+# ===================================================================
+
+# -------------------------------------------------------------------
+# Security: Block all sensitive files and credentials.
+# -------------------------------------------------------------------
+.env
+.env.*
+*.pem
+client_secret*.json
+.sentry.properties
+# Block MCP configs to protect tool API keys.
+**/.mcp.json
+**/.claude_config.json
+
+# -------------------------------------------------------------------
+# Performance & Focus: Ignore large, generated, or irrelevant dirs.
+# -------------------------------------------------------------------
+node_modules/
+.next/
+build/
+dist/
+out/
+.turbo/
+coverage/
+storybook-static/
+
+# Build artifacts and caches
+*.tsbuildinfo
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# -------------------------------------------------------------------
+# Noise Reduction: Ignore lock files and logs.
+# -------------------------------------------------------------------
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.DS_Store
+
+# -------------------------------------------------------------------
+# Other Tooling & Editor Configs
+# -------------------------------------------------------------------
+.vscode/
+.idea/
+.claude/
+.codeium/
+.recovery/
+

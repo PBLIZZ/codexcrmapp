@@ -166,8 +166,8 @@ export declare const contactUpdateSchema: z.ZodObject<{
     id: z.ZodString;
 }, "strip", z.ZodTypeAny, {
     id: string;
-    email?: string | null | undefined;
     full_name?: string | undefined;
+    email?: string | null | undefined;
     phone?: string | null | undefined;
     phone_country_code?: string | null | undefined;
     company_name?: string | null | undefined;
@@ -190,8 +190,8 @@ export declare const contactUpdateSchema: z.ZodObject<{
     wellness_status?: string | null | undefined;
 }, {
     id: string;
-    email?: string | null | undefined;
     full_name?: string | undefined;
+    email?: string | null | undefined;
     phone?: string | null | undefined;
     phone_country_code?: string | null | undefined;
     company_name?: string | null | undefined;
@@ -228,15 +228,15 @@ export declare const contactFilterSchema: z.ZodObject<{
     source: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     search?: string | undefined;
-    groupId?: string | undefined;
     tags?: string[] | undefined;
     source?: string | undefined;
+    groupId?: string | undefined;
     journeyStage?: string | undefined;
 }, {
     search?: string | undefined;
-    groupId?: string | undefined;
     tags?: string[] | undefined;
     source?: string | undefined;
+    groupId?: string | undefined;
     journeyStage?: string | undefined;
 }>;
 export declare const contactProfileSchema: z.ZodObject<{
@@ -251,24 +251,24 @@ export declare const contactProfileSchema: z.ZodObject<{
     custom_fields: z.ZodNullable<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>;
 }, "strip", z.ZodTypeAny, {
     contact_id: string;
-    custom_fields?: Record<string, unknown> | null | undefined;
     detailed_bio?: string | null | undefined;
     family_members?: string[] | null | undefined;
-    health_metrics?: Record<string, unknown> | null | undefined;
-    important_dates?: Record<string, unknown> | null | undefined;
     personality_traits?: string[] | null | undefined;
     preferences?: Record<string, unknown> | null | undefined;
+    health_metrics?: Record<string, unknown> | null | undefined;
+    important_dates?: Record<string, unknown> | null | undefined;
     wellness_history?: string | null | undefined;
+    custom_fields?: Record<string, unknown> | null | undefined;
 }, {
     contact_id: string;
-    custom_fields?: Record<string, unknown> | null | undefined;
     detailed_bio?: string | null | undefined;
     family_members?: string[] | null | undefined;
-    health_metrics?: Record<string, unknown> | null | undefined;
-    important_dates?: Record<string, unknown> | null | undefined;
     personality_traits?: string[] | null | undefined;
     preferences?: Record<string, unknown> | null | undefined;
+    health_metrics?: Record<string, unknown> | null | undefined;
+    important_dates?: Record<string, unknown> | null | undefined;
     wellness_history?: string | null | undefined;
+    custom_fields?: Record<string, unknown> | null | undefined;
 }>;
 export declare const contactWithProfileSchema: z.ZodObject<{
     full_name: z.ZodString;
@@ -307,24 +307,24 @@ export declare const contactWithProfileSchema: z.ZodObject<{
         custom_fields: z.ZodNullable<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>;
     }, "strip", z.ZodTypeAny, {
         contact_id: string;
-        custom_fields?: Record<string, unknown> | null | undefined;
         detailed_bio?: string | null | undefined;
         family_members?: string[] | null | undefined;
-        health_metrics?: Record<string, unknown> | null | undefined;
-        important_dates?: Record<string, unknown> | null | undefined;
         personality_traits?: string[] | null | undefined;
         preferences?: Record<string, unknown> | null | undefined;
+        health_metrics?: Record<string, unknown> | null | undefined;
+        important_dates?: Record<string, unknown> | null | undefined;
         wellness_history?: string | null | undefined;
+        custom_fields?: Record<string, unknown> | null | undefined;
     }, {
         contact_id: string;
-        custom_fields?: Record<string, unknown> | null | undefined;
         detailed_bio?: string | null | undefined;
         family_members?: string[] | null | undefined;
-        health_metrics?: Record<string, unknown> | null | undefined;
-        important_dates?: Record<string, unknown> | null | undefined;
         personality_traits?: string[] | null | undefined;
         preferences?: Record<string, unknown> | null | undefined;
+        health_metrics?: Record<string, unknown> | null | undefined;
+        important_dates?: Record<string, unknown> | null | undefined;
         wellness_history?: string | null | undefined;
+        custom_fields?: Record<string, unknown> | null | undefined;
     }>>>;
 }, "strip", z.ZodTypeAny, {
     id: string;
@@ -352,14 +352,14 @@ export declare const contactWithProfileSchema: z.ZodObject<{
     wellness_status?: string | null | undefined;
     profile?: {
         contact_id: string;
-        custom_fields?: Record<string, unknown> | null | undefined;
         detailed_bio?: string | null | undefined;
         family_members?: string[] | null | undefined;
-        health_metrics?: Record<string, unknown> | null | undefined;
-        important_dates?: Record<string, unknown> | null | undefined;
         personality_traits?: string[] | null | undefined;
         preferences?: Record<string, unknown> | null | undefined;
+        health_metrics?: Record<string, unknown> | null | undefined;
+        important_dates?: Record<string, unknown> | null | undefined;
         wellness_history?: string | null | undefined;
+        custom_fields?: Record<string, unknown> | null | undefined;
     } | null | undefined;
 }, {
     id: string;
@@ -387,14 +387,14 @@ export declare const contactWithProfileSchema: z.ZodObject<{
     wellness_status?: string | null | undefined;
     profile?: {
         contact_id: string;
-        custom_fields?: Record<string, unknown> | null | undefined;
         detailed_bio?: string | null | undefined;
         family_members?: string[] | null | undefined;
-        health_metrics?: Record<string, unknown> | null | undefined;
-        important_dates?: Record<string, unknown> | null | undefined;
         personality_traits?: string[] | null | undefined;
         preferences?: Record<string, unknown> | null | undefined;
+        health_metrics?: Record<string, unknown> | null | undefined;
+        important_dates?: Record<string, unknown> | null | undefined;
         wellness_history?: string | null | undefined;
+        custom_fields?: Record<string, unknown> | null | undefined;
     } | null | undefined;
 }>;
 export declare const ContactSchemas: {
@@ -565,8 +565,8 @@ export declare const ContactSchemas: {
         id: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         id: string;
-        email?: string | null | undefined;
         full_name?: string | undefined;
+        email?: string | null | undefined;
         phone?: string | null | undefined;
         phone_country_code?: string | null | undefined;
         company_name?: string | null | undefined;
@@ -589,8 +589,8 @@ export declare const ContactSchemas: {
         wellness_status?: string | null | undefined;
     }, {
         id: string;
-        email?: string | null | undefined;
         full_name?: string | undefined;
+        email?: string | null | undefined;
         phone?: string | null | undefined;
         phone_country_code?: string | null | undefined;
         company_name?: string | null | undefined;
@@ -627,15 +627,15 @@ export declare const ContactSchemas: {
         source: z.ZodOptional<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
         search?: string | undefined;
-        groupId?: string | undefined;
         tags?: string[] | undefined;
         source?: string | undefined;
+        groupId?: string | undefined;
         journeyStage?: string | undefined;
     }, {
         search?: string | undefined;
-        groupId?: string | undefined;
         tags?: string[] | undefined;
         source?: string | undefined;
+        groupId?: string | undefined;
         journeyStage?: string | undefined;
     }>;
     profile: z.ZodObject<{
@@ -650,24 +650,24 @@ export declare const ContactSchemas: {
         custom_fields: z.ZodNullable<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>;
     }, "strip", z.ZodTypeAny, {
         contact_id: string;
-        custom_fields?: Record<string, unknown> | null | undefined;
         detailed_bio?: string | null | undefined;
         family_members?: string[] | null | undefined;
-        health_metrics?: Record<string, unknown> | null | undefined;
-        important_dates?: Record<string, unknown> | null | undefined;
         personality_traits?: string[] | null | undefined;
         preferences?: Record<string, unknown> | null | undefined;
+        health_metrics?: Record<string, unknown> | null | undefined;
+        important_dates?: Record<string, unknown> | null | undefined;
         wellness_history?: string | null | undefined;
+        custom_fields?: Record<string, unknown> | null | undefined;
     }, {
         contact_id: string;
-        custom_fields?: Record<string, unknown> | null | undefined;
         detailed_bio?: string | null | undefined;
         family_members?: string[] | null | undefined;
-        health_metrics?: Record<string, unknown> | null | undefined;
-        important_dates?: Record<string, unknown> | null | undefined;
         personality_traits?: string[] | null | undefined;
         preferences?: Record<string, unknown> | null | undefined;
+        health_metrics?: Record<string, unknown> | null | undefined;
+        important_dates?: Record<string, unknown> | null | undefined;
         wellness_history?: string | null | undefined;
+        custom_fields?: Record<string, unknown> | null | undefined;
     }>;
     withProfile: z.ZodObject<{
         full_name: z.ZodString;
@@ -706,24 +706,24 @@ export declare const ContactSchemas: {
             custom_fields: z.ZodNullable<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>;
         }, "strip", z.ZodTypeAny, {
             contact_id: string;
-            custom_fields?: Record<string, unknown> | null | undefined;
             detailed_bio?: string | null | undefined;
             family_members?: string[] | null | undefined;
-            health_metrics?: Record<string, unknown> | null | undefined;
-            important_dates?: Record<string, unknown> | null | undefined;
             personality_traits?: string[] | null | undefined;
             preferences?: Record<string, unknown> | null | undefined;
+            health_metrics?: Record<string, unknown> | null | undefined;
+            important_dates?: Record<string, unknown> | null | undefined;
             wellness_history?: string | null | undefined;
+            custom_fields?: Record<string, unknown> | null | undefined;
         }, {
             contact_id: string;
-            custom_fields?: Record<string, unknown> | null | undefined;
             detailed_bio?: string | null | undefined;
             family_members?: string[] | null | undefined;
-            health_metrics?: Record<string, unknown> | null | undefined;
-            important_dates?: Record<string, unknown> | null | undefined;
             personality_traits?: string[] | null | undefined;
             preferences?: Record<string, unknown> | null | undefined;
+            health_metrics?: Record<string, unknown> | null | undefined;
+            important_dates?: Record<string, unknown> | null | undefined;
             wellness_history?: string | null | undefined;
+            custom_fields?: Record<string, unknown> | null | undefined;
         }>>>;
     }, "strip", z.ZodTypeAny, {
         id: string;
@@ -751,14 +751,14 @@ export declare const ContactSchemas: {
         wellness_status?: string | null | undefined;
         profile?: {
             contact_id: string;
-            custom_fields?: Record<string, unknown> | null | undefined;
             detailed_bio?: string | null | undefined;
             family_members?: string[] | null | undefined;
-            health_metrics?: Record<string, unknown> | null | undefined;
-            important_dates?: Record<string, unknown> | null | undefined;
             personality_traits?: string[] | null | undefined;
             preferences?: Record<string, unknown> | null | undefined;
+            health_metrics?: Record<string, unknown> | null | undefined;
+            important_dates?: Record<string, unknown> | null | undefined;
             wellness_history?: string | null | undefined;
+            custom_fields?: Record<string, unknown> | null | undefined;
         } | null | undefined;
     }, {
         id: string;
@@ -786,14 +786,15 @@ export declare const ContactSchemas: {
         wellness_status?: string | null | undefined;
         profile?: {
             contact_id: string;
-            custom_fields?: Record<string, unknown> | null | undefined;
             detailed_bio?: string | null | undefined;
             family_members?: string[] | null | undefined;
-            health_metrics?: Record<string, unknown> | null | undefined;
-            important_dates?: Record<string, unknown> | null | undefined;
             personality_traits?: string[] | null | undefined;
             preferences?: Record<string, unknown> | null | undefined;
+            health_metrics?: Record<string, unknown> | null | undefined;
+            important_dates?: Record<string, unknown> | null | undefined;
             wellness_history?: string | null | undefined;
+            custom_fields?: Record<string, unknown> | null | undefined;
         } | null | undefined;
     }>;
 };
+//# sourceMappingURL=contact.schema.d.ts.map

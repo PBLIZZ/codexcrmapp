@@ -1,0 +1,11 @@
+# Task ID: 332
+# Title: Align tRPC to Stable v11.3.1
+# Status: done
+# Dependencies: 331
+# Priority: high
+# Description: Remove all pre-release tRPC versions and standardize to the stable version 11.3.1 across all packages to ensure stability and type compatibility.
+# Details:
+Update `@trpc/client`, `@trpc/server`, and any other tRPC-related packages in all `package.json` files to `^11.3.1`. Remove any entries containing `-beta`, `-alpha`, or other pre-release tags. Ensure that type definitions are compatible with the new version. Example `package.json` entry: `"@trpc/client": "^11.3.1"`. Run `pnpm install` and then verify API functionality.
+
+# Test Strategy:
+Verify that all tRPC-based API calls function correctly. Check for any type compatibility errors during compilation. Ensure no pre-release tRPC versions are present in the dependency tree.

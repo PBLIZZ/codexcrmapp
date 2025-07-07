@@ -1,15 +1,14 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
+    "target": "es2022",
+    "lib": ["es2022", "dom", "dom.iterable", "esnext"],
     "paths": {
       "@codexcrm/api/*": ["./packages/api/src/*"],
       "@codexcrm/auth/*": ["./packages/auth/src/*"],
       "@codexcrm/database/*": ["./packages/database/src/*"],
       "@codexcrm/ui/*": ["./packages/ui/src/*"],
       "@codexcrm/background-jobs/*": ["./packages/background-jobs/src/*"],
-
-      "@codexcrm/config/*": ["./packages/config/*"],
-
       "@/*": ["./apps/web/*"]
     }
   }

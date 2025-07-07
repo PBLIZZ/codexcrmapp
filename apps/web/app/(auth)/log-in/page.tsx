@@ -16,9 +16,9 @@ import {
   CardFooter,
 } from '@codexcrm/ui';
 import { Input } from '@codexcrm/ui';
-import { createClient } from '@/lib/supabase/client';
+import { createBrowserClient } from '@codexcrm/auth';
 
-const supabase = createClient();
+const supabase = createBrowserClient();
 
 // Eye Icon SVG Components
 const EyeIcon = ({ className }: { className?: string }) => (
@@ -197,7 +197,7 @@ export default function LoginPage() {
                 required
                 placeholder='Email'
                 value={email}
-                onChange={(e) => {
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   setEmail(e.target.value);
                   if (emailError) {
                     setEmailError(null); // Clear error if user starts typing
@@ -246,7 +246,7 @@ export default function LoginPage() {
                 required
                 placeholder='Password'
                 value={password}
-                onChange={(e) => {
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   setPassword(e.target.value);
                   if (passwordError) {
                     setPasswordError(null);
@@ -297,8 +297,7 @@ export default function LoginPage() {
 
             {/* Submit Button and Forgot Password Link Container */}
             <div className='flex justify-between items-end mt-2'>
-              <Button
-                type='submit'
+              <Button variant='default' size='md' type='submit'
                 className='flex justify-center disabled:opacity-50 bg-teal-800 hover:bg-teal-700 text-teal-200 px-8 py-2 text-sm font-semibold shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600'
                 disabled={isLoading}
               >

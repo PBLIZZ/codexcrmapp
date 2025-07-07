@@ -69,3 +69,4 @@ export declare const dashboardRouter: import("@trpc/server").TRPCBuiltRouter<{
         meta: object;
     }>;
 }>>;
+//# sourceMappingURL=dashboard.d.ts.map

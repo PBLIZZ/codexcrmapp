@@ -1,0 +1,11 @@
+# Task ID: 352
+# Title: Consistent Package Manager Configuration
+# Status: pending
+# Dependencies: None
+# Priority: low
+# Description: Ensure all packages reference a consistent pnpm version by adding the `packageManager` field.
+# Details:
+Add the `packageManager` field to the `package.json` of all packages that currently lack it. The value should be consistent with the root's `packageManager` field, e.g., `"pnpm@<version>"`. This helps enforce the use of a specific pnpm version across the monorepo, preventing inconsistencies and build issues. For example, if the root uses `pnpm@9.0.0`, then all packages should have `"packageManager": "pnpm@9.0.0"`. After modification, run `pnpm install` at the root to ensure the lock file remains stable and dependencies are correctly resolved.
+
+# Test Strategy:
+Run `pnpm install` in the root and within individual packages. Verify that the installation process is consistent and completes without errors. Check the `pnpm-lock.yaml` file to ensure it remains stable and reflects the expected dependency tree. Attempt to install dependencies with a different pnpm version to confirm the `packageManager` field correctly enforces the specified version.

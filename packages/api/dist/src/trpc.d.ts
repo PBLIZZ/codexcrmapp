@@ -12,9 +12,9 @@ export declare const middleware: <$ContextOverrides>(fn: import("@trpc/server").
  * @param requiredRoles Array of roles that are allowed to access the resource
  */
 export declare const hasRole: (requiredRoles: string[]) => import("@trpc/server").TRPCMiddlewareBuilder<import("./context").Context, object, {
-    user: import("@supabase/auth-js").User;
+    user: import("@supabase/supabase-js").AuthUser;
     roles: any;
-    session: import("@supabase/auth-js").Session | null;
+    session: import("@supabase/supabase-js").AuthSession | null;
     supabaseAdmin: import("@supabase/supabase-js").SupabaseClient<any, "public", any>;
     supabaseUser: any;
 }, unknown>;
@@ -25,14 +25,15 @@ export declare const hasRole: (requiredRoles: string[]) => import("@trpc/server"
  * @param timeWindowMs Time window in milliseconds
  */
 export declare const rateLimit: (limit: number, timeWindowMs?: number) => import("@trpc/server").TRPCMiddlewareBuilder<import("./context").Context, object, {
-    user: import("@supabase/auth-js").User | null;
-    session: import("@supabase/auth-js").Session | null;
+    user: import("@supabase/supabase-js").AuthUser | null;
+    session: import("@supabase/supabase-js").AuthSession | null;
     supabaseAdmin: import("@supabase/supabase-js").SupabaseClient<any, "public", any>;
     supabaseUser: any;
 }, unknown>;
 export declare const protectedProcedure: import("@trpc/server").TRPCProcedureBuilder<import("./context").Context, object, {
-    user: import("@supabase/auth-js").User;
-    session: import("@supabase/auth-js").Session | null;
+    user: import("@supabase/supabase-js").AuthUser;
+    session: import("@supabase/supabase-js").AuthSession | null;
     supabaseAdmin: import("@supabase/supabase-js").SupabaseClient<any, "public", any>;
     supabaseUser: any;
 }, import("@trpc/server").TRPCUnsetMarker, import("@trpc/server").TRPCUnsetMarker, import("@trpc/server").TRPCUnsetMarker, import("@trpc/server").TRPCUnsetMarker, false>;
+//# sourceMappingURL=trpc.d.ts.map

@@ -36,3 +36,4 @@ export declare const storageRouter: import("@trpc/server").TRPCBuiltRouter<{
         meta: object;
     }>;
 }>>;
+//# sourceMappingURL=storage.d.ts.map

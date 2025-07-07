@@ -1,0 +1,11 @@
+# Task ID: 349
+# Title: Centralize rimraf Utility
+# Status: pending
+# Dependencies: 348
+# Priority: medium
+# Description: Standardize the `rimraf` utility across the monorepo by centralizing its version and usage.
+# Details:
+Identify `rimraf` usage in the root (`^6.0.1`) and UI package (`^5.0.9`). Remove `rimraf` from the UI package's `package.json`. Add `rimraf@^6.0.1` (or the latest stable version, e.g., `^6.0.1` as per PRD) to the root `package.json` as a `devDependency`. Update all `clean` scripts in individual packages to reference the centralized `rimraf` executable (e.g., `../../node_modules/.bin/rimraf` or via `pnpm` workspace resolution). Ensure all cleanup operations function correctly after centralization. Consider using `fs-extra` for more robust file system operations if `rimraf` proves insufficient for complex scenarios, but stick to `rimraf` as per PRD.
+
+# Test Strategy:
+Execute `clean` scripts in all relevant packages (e.g., UI, root). Verify that specified directories and files are correctly removed. Check for any errors during the cleanup process. Ensure subsequent builds start from a clean state.

@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss';
+import tailwindcssAnimate from 'tailwindcss-animate';
 
 /**
  * This is the shared Tailwind CSS configuration preset.
@@ -116,5 +117,5 @@ export const tailwindPreset: Omit<Config, 'content'> = {
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [tailwindcssAnimate],
 };

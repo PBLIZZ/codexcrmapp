@@ -1,6 +1,5 @@
-import { createServerClient } from '@supabase/ssr';
-import type { Session, User } from '@supabase/supabase-js';
-import { cookies } from 'next/headers';
+import type { Session, User, SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@codexcrm/database';
 
 import { supabaseAdmin } from './supabaseAdmin';
 
@@ -9,40 +8,19 @@ export interface Context {
   user: User | null;
   session: Session | null;
   supabaseAdmin: typeof supabaseAdmin;
-  supabaseUser: ReturnType<typeof createServerClient>;
+  supabaseUser: SupabaseClient<Database>;
 }
 
 /** Builds tRPC context for each request */
 export async function createContext({
   req: _req,
+  supabaseUser,
 }: {
   req: Request;
+  supabaseUser: SupabaseClient<Database>;
 }): Promise<Context> {
-  // Create a supabase client using Next.js cookies() for proper SSR support
-  const cookieStore = await cookies();
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            );
-          } catch {
-            // The `setAll` method was called from a Server Component.
-            // This can be ignored if you have middleware refreshing
-            // user sessions.
-          }
-        },
-      },
-    }
-  );
+  // Use the supabase client provided by the caller (Next.js app)
+  const supabase = supabaseUser;
 
   try {
     // Use getUser() as the primary authentication method (recommended by Supabase)

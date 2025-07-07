@@ -1,0 +1,11 @@
+# Task ID: 338
+# Title: Centralize Build Configuration
+# Status: done
+# Dependencies: 337
+# Priority: medium
+# Description: Consolidate build tools and configurations across the monorepo to ensure consistent build processes and improve performance.
+# Details:
+Identify common build tools (e.g., `tsup`, `rollup`, `webpack` configurations) used across multiple packages. Where possible, create shared configuration files or scripts at the root level that can be extended or imported by individual packages. For example, create a `tsup.config.js` in the root that exports a common configuration. Update package `build` scripts to reference these centralized configurations. This reduces redundancy and simplifies maintenance.
+
+# Test Strategy:
+Verify that all packages can still be built successfully using the centralized configurations. Ensure consistency in build outputs (e.g., target environments, module formats). Measure build times for improvement.

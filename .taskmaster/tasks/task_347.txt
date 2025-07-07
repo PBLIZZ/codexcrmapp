@@ -1,0 +1,11 @@
+# Task ID: 347
+# Title: Remove UI Dependencies from API Package
+# Status: done
+# Dependencies: None
+# Priority: high
+# Description: Remove UI-related dependencies (next-themes, sonner) from the API package to maintain clean architectural separation.
+# Details:
+Locate the `package.json` file within the API package. Identify and remove `next-themes` and `sonner` from its `dependencies` or `devDependencies`. These libraries are typically frontend-specific and should not reside in a backend API package. After removal, ensure the API package's core functionality (e.g., data fetching, business logic, database interactions) remains intact and unaffected. Use `npm uninstall next-themes sonner` or `yarn remove next-themes sonner` or `pnpm remove next-themes sonner` within the API package directory.
+
+# Test Strategy:
+Run all API unit and integration tests. Verify that all API endpoints function as expected. Ensure no build errors or runtime issues arise from the removal of these dependencies. Test data retrieval and manipulation to confirm API functionality is preserved.

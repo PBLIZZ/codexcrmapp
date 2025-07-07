@@ -9,17 +9,3 @@ This task provides the functionality to organize existing tasks into projects, a
 
 # Test Strategy:
 Create a task without a project (it should appear in the 'Inbox'). Open the task's detail view, use the project dropdown to assign it to 'Project A', and save. Return to the main view; the task should no longer be in the 'Inbox' but should now appear when you filter by 'Project A'.
-
-# Subtasks:
-## 1. Implement `task.updateProject` tRPC Mutation [pending]
-### Dependencies: None
-### Description: Create a mutation to update a task's `project_id`.
-### Details:
-In `taskRouter`, create a new `updateProject` mutation that takes `{ taskId: string, projectId: string | null }` and updates the `project_id` field of the specified task.
-
-## 2. Add Project Dropdown to Task Detail UI [pending]
-### Dependencies: None
-### Description: In the UI for viewing/editing a task, add a dropdown to change its project.
-### Details:
-In the task detail view, add a dropdown populated with the user's projects (from `project.list`). Its value should be the task's current `projectId`. When changed, it should call the `task.updateProject` mutation.
-

@@ -1,0 +1,11 @@
+# Task ID: 354
+# Title: Centralize Tailwind Configuration
+# Status: pending
+# Dependencies: 353
+# Priority: medium
+# Description: Optimize Tailwind CSS build setup by centralizing its configuration.
+# Details:
+Move multiple `tailwind.config.js` files from individual packages to a single, centralized `tailwind.config.js` in the monorepo root. Add `tailwindcss@^4.1.4` to the root `package.json` as a `devDependency`. Configure the root Tailwind file to include content paths for all packages that use Tailwind, ensuring proper purging and optimization. This might involve using glob patterns to cover all relevant source files (e.g., `content: ['./packages/**/*.{js,ts,jsx,tsx}']`). Ensure that the build process correctly applies Tailwind styles and that CSS purging works effectively to reduce bundle sizes. Refer to Tailwind CSS documentation for monorepo setup: `https://tailwindcss.com/docs/configuration#content-configuration`.
+
+# Test Strategy:
+Build packages that use Tailwind CSS. Inspect the generated CSS files to confirm that only used Tailwind classes are included (purging works). Verify that all Tailwind styles are correctly applied in the UI. Check for any build errors or warnings related to Tailwind configuration. Compare bundle sizes to ensure optimization.

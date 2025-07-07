@@ -9,17 +9,3 @@ This task lays the backend groundwork for handing off tasks to the AI worker age
 
 # Test Strategy:
 Create a new 'AI Worker' user in the `auth.users` table. Find its UUID. Create a normal task; its `owner_id` should be your ID. Use an API client to call the new `task.delegateToAI` mutation with the task's ID. Query the database and confirm the task's `owner_id` has changed to the AI Worker's UUID.
-
-# Subtasks:
-## 1. Update `tasks` Schema with `owner_id` [pending]
-### Dependencies: None
-### Description: Add an `owner_id` column to the `tasks` table to track ownership.
-### Details:
-Write and apply a migration to add a nullable `owner_id` column to `tasks`, with a foreign key constraint to `auth.users(id)`. Update the `task.create` procedure to set the `owner_id` to the creator's `user_id` by default.
-
-## 2. Implement `task.delegateToAI` Mutation [pending]
-### Dependencies: None
-### Description: Create a tRPC mutation to change the `owner_id` of a task to the designated AI user.
-### Details:
-First, hardcode the UUID of a pre-created 'AI Worker' user. Create the `delegateToAI(input: { taskId: string })` mutation in `taskRouter`. This procedure updates the `owner_id` of the specified task to the hardcoded AI Worker UUID.
-

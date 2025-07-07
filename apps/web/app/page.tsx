@@ -1,3 +1,4 @@
+import React from 'react';
 import { DashboardWidgets } from './(authorisedRoute)/dashboard/components/DashboardWidgets';
 
 /**

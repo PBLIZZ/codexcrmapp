@@ -1,0 +1,11 @@
+# Task ID: 331
+# Title: Standardize ESLint to v9.x
+# Status: done
+# Dependencies: None
+# Priority: high
+# Description: Standardize all ESLint dependencies across the monorepo to version 9.x to resolve critical build failures and version conflicts.
+# Details:
+Update `eslint` and all related plugins/configs (e.g., `@typescript-eslint/eslint-plugin`, `eslint-plugin-react`, `eslint-config-next`) in all `package.json` files to target version `^9.0.0`. Ensure compatibility with ESLint 9.x by reviewing plugin documentation and updating configurations as needed. Use `pnpm` for dependency management. Example `package.json` entry: `"eslint": "^9.0.0"`. After updating, run `pnpm install` at the root and then `pnpm lint` in each package to verify.
+
+# Test Strategy:
+Verify that `pnpm lint` runs successfully across all packages without errors or warnings related to ESLint versions. Confirm that build processes complete successfully.

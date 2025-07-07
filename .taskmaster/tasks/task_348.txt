@@ -1,0 +1,11 @@
+# Task ID: 348
+# Title: Centralize tsup Configuration
+# Status: done
+# Dependencies: 346, 347
+# Priority: high
+# Description: Centralize `tsup` dependencies and configurations to the root level of the monorepo to ensure consistent build processes.
+# Details:
+Move `tsup` from individual `package.json` files (UI package `^8.2.3`, trpc package `^8.0.0`, config package `^8.0.2`) to the root `package.json` as a `devDependency`. Standardize on `tsup@^8.2.3`. Create a centralized `tsup.config.ts` or similar configuration file in the root, exporting a configuration that can be extended or referenced by individual packages. Update package scripts to use the centralized `tsup` command. For example, in `package.json` scripts, replace `tsup` with `../../node_modules/.bin/tsup` or configure `pnpm` workspaces to resolve it correctly. Ensure all packages build successfully with this centralized setup. Refer to `tsup` documentation for extending configurations: `https://tsup.egoist.dev/`. Consider using `tsup`'s `defineConfig` for type safety and better configuration management.
+
+# Test Strategy:
+Run build scripts for UI, trpc, and config packages. Verify that all packages build successfully without errors. Compare build outputs (e.g., bundle sizes, file structure) to ensure consistency. Check that generated JavaScript and TypeScript declaration files are correct and functional. Perform basic runtime tests on components/functions from these packages to confirm they work as expected.

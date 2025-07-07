@@ -1,0 +1,11 @@
+# Task ID: 334
+# Title: Centralize Common Dev Dependencies
+# Status: done
+# Dependencies: 333
+# Priority: high
+# Description: Move common development dependencies like `typescript`, `@types/react`, `@types/react-dom`, `@types/node`, and `rimraf` to the root `package.json` to reduce duplication and improve build performance.
+# Details:
+Identify all instances of `typescript`, `@types/react`, `@types/react-dom`, `@types/node`, and `rimraf` in individual workspace `package.json` files. Remove them from these packages and add them as `devDependencies` to the root `package.json`. Ensure that the versions are consistent with the target state (e.g., `typescript: ^5.6.0`). After moving, run `pnpm install` at the root to ensure dependencies are hoisted correctly.
+
+# Test Strategy:
+Verify that all packages can still access and use these centralized dependencies. Check the `pnpm-lock.yaml` file to confirm that these dependencies are installed only once at the root level. Monitor build performance and memory usage for improvements.

@@ -39,7 +39,7 @@
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-memory"],
       "env": {
-        "MEMORY_FILE_PATH": ""
+        "MEMORY_FILE_PATH": "/Users/peterjamesblizzard/projects/memory/memory.json"
       }
     },
     "filesystem": {

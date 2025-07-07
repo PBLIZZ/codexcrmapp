@@ -1512,88 +1512,44 @@ function CsvUpload({ onFilesAccepted, maxSize = TEN_MB_IN_BYTES }) {
 }
 
 // src/components/ui/image-upload.tsx
-import { Loader2 as Loader22, Upload, X, UserCircle } from "lucide-react";
-import { useState as useState3, useCallback as useCallback3, useEffect as useEffect2 } from "react";
+import { Loader2 as Loader22, Upload, UserCircle, X } from "lucide-react";
+import { useCallback as useCallback3, useState as useState3 } from "react";
 import { useDropzone as useDropzone2 } from "react-dropzone";
-import { jsx as jsx20, jsxs as jsxs8 } from "react/jsx-runtime";
-function ImageUpload({ value, onChange, disabled = false, contactId }) {
-  const [isUploading, setIsUploading] = useState3(false);
-  const [uploadError, setUploadError] = useState3(null);
-  const [previewUrl, setPreviewUrl] = useState3(value);
+import { Fragment, jsx as jsx20, jsxs as jsxs8 } from "react/jsx-runtime";
+function ImageUpload({
+  value,
+  onDrop,
+  onRemove,
+  isUploading = false,
+  disabled = false,
+  uploadError
+}) {
   const [imageError, setImageError] = useState3(false);
-  useEffect2(() => {
-    if (value === null) {
-      setPreviewUrl(null);
-    }
-    setImageError(false);
-  }, [value]);
-  const onDrop = useCallback3(
-    async (acceptedFiles) => {
-      try {
-        if (acceptedFiles.length === 0) {
-          return;
-        }
-        setIsUploading(true);
-        setUploadError(null);
-        const file = acceptedFiles[0];
-        if (!file) {
-          setIsUploading(false);
-          return;
-        }
-        if (file.size > 2 * 1024 * 1024) {
-          setIsUploading(false);
-          throw new Error("File size must be less than 2MB");
-        }
-        if (!file.type.startsWith("image/")) {
-          throw new Error("Only image files are allowed");
-        }
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const result = reader.result;
-          setPreviewUrl(result);
-          onChange(result);
-          setIsUploading(false);
-        };
-        reader.onerror = () => {
-          setUploadError("Failed to read file.");
-          setIsUploading(false);
-        };
-        reader.readAsDataURL(file);
-      } catch (error) {
-        let message = "An unknown error occurred during upload.";
-        if (error instanceof Error) {
-          message = error.message;
-        }
-        setUploadError(message);
-      } finally {
+  const handleDrop = useCallback3(
+    (acceptedFiles) => {
+      if (acceptedFiles.length > 0) {
+        setImageError(false);
+        onDrop(acceptedFiles);
       }
     },
-    [onChange, contactId]
+    [onDrop]
   );
   const { getRootProps, getInputProps, isDragActive } = useDropzone2({
-    onDrop: useCallback3(
-      (acceptedFiles) => {
-        void onDrop(acceptedFiles);
-      },
-      [onDrop]
-    ),
+    onDrop: handleDrop,
     accept: {
       "image/*": [".jpeg", ".jpg", ".png", ".gif", ".webp"]
     },
     maxFiles: 1,
     disabled: isUploading || disabled
   });
-  const handleRemove = useCallback3(
-    (e) => {
-      e.stopPropagation();
-      setPreviewUrl(null);
-      onChange(null);
-    },
-    [onChange]
-  );
+  const handleRemoveClick = (e) => {
+    e.stopPropagation();
+    onRemove();
+  };
   const handleImageError = () => {
     setImageError(true);
   };
+  const hasPreview = value && !imageError;
   return /* @__PURE__ */ jsxs8("div", { className: "space-y-2", children: [
     /* @__PURE__ */ jsxs8(
       "div",
@@ -1608,42 +1564,46 @@ function ImageUpload({ value, onChange, disabled = false, contactId }) {
           p-4
           transition
           ${isDragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"}
-          ${isUploading ? "opacity-50 cursor-not-allowed" : ""}
-          ${disabled ? "opacity-50 cursor-not-allowed" : "hover:border-blue-400"}
+          ${isUploading || disabled ? "opacity-50 cursor-not-allowed" : "hover:border-blue-400"}
         `,
         children: [
           /* @__PURE__ */ jsx20("input", { ...getInputProps() }),
           isUploading ? /* @__PURE__ */ jsxs8("div", { className: "flex flex-col items-center justify-center p-4", children: [
             /* @__PURE__ */ jsx20(Loader22, { className: "h-10 w-10 text-blue-500 animate-spin mb-2" }),
             /* @__PURE__ */ jsx20("p", { className: "text-sm text-gray-500", children: "Uploading image..." })
-          ] }) : previewUrl ? /* @__PURE__ */ jsxs8("div", { className: "relative flex justify-center", children: [
-            /* @__PURE__ */ jsx20("div", { className: "relative h-32 w-32 rounded-full overflow-hidden", children: imageError ? /* @__PURE__ */ jsx20("div", { className: "flex items-center justify-center h-full w-full bg-gray-100", children: /* @__PURE__ */ jsx20(UserCircle, { className: "h-16 w-16 text-gray-400" }) }) : /* @__PURE__ */ jsx20(
+          ] }) : hasPreview ? /* @__PURE__ */ jsxs8("div", { className: "relative flex justify-center", children: [
+            /* @__PURE__ */ jsx20("div", { className: "relative h-32 w-32 rounded-full overflow-hidden", children: /* @__PURE__ */ jsx20(
               "img",
               {
-                src: previewUrl,
+                src: value,
                 alt: "Contact avatar",
                 className: "h-full w-full object-cover",
                 onError: handleImageError
               }
             ) }),
             !disabled && /* @__PURE__ */ jsx20(
-              "button",
+              Button,
               {
                 type: "button",
-                onClick: handleRemove,
-                className: "absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors",
+                variant: "destructive",
+                size: "icon",
+                onClick: handleRemoveClick,
+                className: "absolute top-0 right-0 h-6 w-6 rounded-full",
                 children: /* @__PURE__ */ jsx20(X, { className: "h-4 w-4" })
               }
             )
-          ] }) : /* @__PURE__ */ jsxs8("div", { className: "flex flex-col items-center justify-center p-4", children: [
+          ] }) : /* @__PURE__ */ jsx20("div", { className: "flex flex-col items-center justify-center p-4", children: imageError && value ? /* @__PURE__ */ jsxs8(Fragment, { children: [
+            /* @__PURE__ */ jsx20(UserCircle, { className: "h-16 w-16 text-gray-400" }),
+            /* @__PURE__ */ jsx20("p", { className: "text-xs text-red-500 mt-1", children: "Error loading image." })
+          ] }) : /* @__PURE__ */ jsxs8(Fragment, { children: [
             /* @__PURE__ */ jsx20(Upload, { className: "h-10 w-10 text-gray-400 mb-2" }),
             /* @__PURE__ */ jsx20("p", { className: "text-sm text-center text-gray-500 mb-1", children: isDragActive ? "Drop the image here" : "Upload a profile photo" }),
             /* @__PURE__ */ jsxs8("p", { className: "text-xs text-center text-gray-400", children: [
               "Drag & drop or click to select",
               /* @__PURE__ */ jsx20("br", {}),
-              "Supported formats: JPG, PNG, GIF, WEBP (max 2MB)"
+              "(Max 2MB)"
             ] })
-          ] })
+          ] }) })
         ]
       }
     ),
@@ -1653,25 +1613,7 @@ function ImageUpload({ value, onChange, disabled = false, contactId }) {
 
 // src/components/ui/sidebar.tsx
 import * as React4 from "react";
-
-// ../../node_modules/.pnpm/radix-ui@1.4.2_@types+react-dom@19.1.6_@types+react@19.1.8__@types+react@19.1.8_react-d_023f678e0f5f8938ef4ac664308c9eeb/node_modules/radix-ui/dist/index.mjs
-import * as AlertDialog from "@radix-ui/react-alert-dialog";
-import * as Avatar2 from "@radix-ui/react-avatar";
-import * as Checkbox2 from "@radix-ui/react-checkbox";
-import * as Collapsible from "@radix-ui/react-collapsible";
-import * as Dialog2 from "@radix-ui/react-dialog";
-import * as DropdownMenu2 from "@radix-ui/react-dropdown-menu";
-import * as HoverCard from "@radix-ui/react-hover-card";
-import * as Label4 from "@radix-ui/react-label";
-import * as Popover from "@radix-ui/react-popover";
-import * as Select2 from "@radix-ui/react-select";
-import * as Separator4 from "@radix-ui/react-separator";
-import * as Slot3 from "@radix-ui/react-slot";
-import * as Tabs2 from "@radix-ui/react-tabs";
-import * as Tooltip2 from "@radix-ui/react-tooltip";
-import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
-
-// src/components/ui/sidebar.tsx
+import { Slot as SlotPrimitive } from "@radix-ui/react-slot";
 import { cva as cva4 } from "class-variance-authority";
 import { PanelLeftIcon } from "lucide-react";
 
@@ -2136,7 +2078,7 @@ function SidebarGroupLabel({
   asChild = false,
   ...props
 }) {
-  const Comp = asChild ? Slot3.Slot : "div";
+  const Comp = asChild ? SlotPrimitive : "div";
   return /* @__PURE__ */ jsx23(
     Comp,
     {
@@ -2156,7 +2098,7 @@ function SidebarGroupAction({
   asChild = false,
   ...props
 }) {
-  const Comp = asChild ? Slot3.Slot : "button";
+  const Comp = asChild ? SlotPrimitive : "button";
   return /* @__PURE__ */ jsx23(
     Comp,
     {
@@ -2235,7 +2177,7 @@ function SidebarMenuButton({
   className,
   ...props
 }) {
-  const Comp = asChild ? Slot3.Slot : "button";
+  const Comp = asChild ? SlotPrimitive : "button";
   const { isMobile, state } = useSidebar();
   const button = /* @__PURE__ */ jsx23(
     Comp,
@@ -2275,7 +2217,7 @@ function SidebarMenuAction({
   showOnHover = false,
   ...props
 }) {
-  const Comp = asChild ? Slot3.Slot : "button";
+  const Comp = asChild ? SlotPrimitive : "button";
   return /* @__PURE__ */ jsx23(
     Comp,
     {
@@ -2379,7 +2321,7 @@ function SidebarMenuSubButton({
   className,
   ...props
 }) {
-  const Comp = asChild ? Slot3.Slot : "a";
+  const Comp = asChild ? SlotPrimitive : "a";
   return /* @__PURE__ */ jsx23(
     Comp,
     {
@@ -2401,7 +2343,7 @@ function SidebarMenuSubButton({
 }
 
 // src/components/ui/breadcrumb.tsx
-import { Slot as Slot4 } from "@radix-ui/react-slot";
+import { Slot as Slot3 } from "@radix-ui/react-slot";
 import { ChevronRight, MoreHorizontal } from "lucide-react";
 import { jsx as jsx24, jsxs as jsxs11 } from "react/jsx-runtime";
 function Breadcrumb({ ...props }) {
@@ -2435,7 +2377,7 @@ function BreadcrumbLink({
   className,
   ...props
 }) {
-  const Comp = asChild ? Slot4 : "a";
+  const Comp = asChild ? Slot3 : "a";
   return /* @__PURE__ */ jsx24(
     Comp,
     {
@@ -2498,7 +2440,7 @@ function BreadcrumbEllipsis({
 // src/components/ui/collapsible.tsx
 import * as CollapsiblePrimitive from "@radix-ui/react-collapsible";
 import { jsx as jsx25 } from "react/jsx-runtime";
-function Collapsible2({
+function Collapsible({
   ...props
 }) {
   return /* @__PURE__ */ jsx25(CollapsiblePrimitive.Root, { "data-slot": "collapsible", ...props });
@@ -2529,7 +2471,7 @@ function CollapsibleContent2({
 // src/components/ui/popover.tsx
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 import { jsx as jsx26 } from "react/jsx-runtime";
-function Popover2({
+function Popover({
   ...props
 }) {
   return /* @__PURE__ */ jsx26(PopoverPrimitive.Root, { "data-slot": "popover", ...props });
@@ -2750,7 +2692,7 @@ function CalendarDayButton({
 
 // src/components/ui/form.tsx
 import * as React6 from "react";
-import { Slot as Slot5 } from "@radix-ui/react-slot";
+import { Slot as Slot4 } from "@radix-ui/react-slot";
 import {
   Controller,
   FormProvider,
@@ -2819,7 +2761,7 @@ function FormLabel({
 function FormControl({ ...props }) {
   const { error, formItemId, formDescriptionId, formMessageId } = useFormField();
   return /* @__PURE__ */ jsx28(
-    Slot5,
+    Slot4,
     {
       "data-slot": "form-control",
       id: formItemId,
@@ -2862,7 +2804,7 @@ function FormMessage({ className, ...props }) {
 // src/components/ui/hover-card.tsx
 import * as HoverCardPrimitive from "@radix-ui/react-hover-card";
 import { jsx as jsx29 } from "react/jsx-runtime";
-function HoverCard2({
+function HoverCard({
   ...props
 }) {
   return /* @__PURE__ */ jsx29(HoverCardPrimitive.Root, { "data-slot": "hover-card", ...props });
@@ -3172,7 +3114,7 @@ function DrawerDescription({
 // src/components/ui/alert-dialog.tsx
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 import { jsx as jsx32, jsxs as jsxs14 } from "react/jsx-runtime";
-function AlertDialog2({
+function AlertDialog({
   ...props
 }) {
   return /* @__PURE__ */ jsx32(AlertDialogPrimitive.Root, { "data-slot": "alert-dialog", ...props });
@@ -3370,7 +3312,7 @@ function ThemeToggle() {
 export {
   Alert,
   AlertDescription,
-  AlertDialog2 as AlertDialog,
+  AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
@@ -3409,7 +3351,7 @@ export {
   CarouselNext,
   CarouselPrevious,
   Checkbox,
-  Collapsible2 as Collapsible,
+  Collapsible,
   CollapsibleContent2 as CollapsibleContent,
   CollapsibleTrigger2 as CollapsibleTrigger,
   Command,
@@ -3464,14 +3406,14 @@ export {
   FormItem,
   FormLabel,
   FormMessage,
-  HoverCard2 as HoverCard,
+  HoverCard,
   HoverCardContent,
   HoverCardTrigger,
   ImageUpload,
   Input,
   Label3 as Label,
   LoadingSpinner,
-  Popover2 as Popover,
+  Popover,
   PopoverAnchor,
   PopoverContent,
   PopoverTrigger,
@@ -3549,3 +3491,4 @@ export {
   useFormField,
   useSidebar
 };
+//# sourceMappingURL=index.js.map

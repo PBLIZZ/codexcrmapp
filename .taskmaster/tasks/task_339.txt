@@ -1,0 +1,11 @@
+# Task ID: 339
+# Title: Optimize Development Server Memory Usage
+# Status: done
+# Dependencies: 338
+# Priority: high
+# Description: Implement strategies to reduce the development server's memory consumption from 2GB+ to under 1GB.
+# Details:
+This task is a culmination of previous dependency cleanup efforts. Strategies include: ensuring proper hoisting of dependencies by pnpm, verifying no circular dependencies, optimizing webpack/rollup configurations for development builds (e.g., disabling unnecessary source maps or optimizations during dev), and potentially using tools like `heapdump` or Node.js's built-in profiler to identify memory leaks if issues persist. Focus on the `apps/web` package as it's likely the primary consumer.
+
+# Test Strategy:
+Start the development server and monitor its memory usage using system tools (e.g., `htop`, Task Manager, or `process.memoryUsage()` in Node.js). Confirm that memory consumption remains consistently below 1GB during active development.

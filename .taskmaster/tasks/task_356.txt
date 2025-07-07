@@ -1,0 +1,11 @@
+# Task ID: 356
+# Title: Standardize Development Tools
+# Status: pending
+# Dependencies: None
+# Priority: low
+# Description: Ensure consistent development tooling versions across the monorepo, specifically for tools like Supabase CLI.
+# Details:
+Identify any development tools that are installed inconsistently across packages (e.g., Supabase CLI). Centralize these tools to the root `package.json` as `devDependencies` if they are shared, or ensure consistent versions are specified in individual packages if they are package-specific but still need standardization. For Supabase CLI, consider adding it to the root `package.json` and documenting its usage for all developers. Use `pnpm add -w -D supabase` to add it to the root workspace. Ensure that all development scripts and workflows correctly utilize the standardized versions.
+
+# Test Strategy:
+Verify the version of key development tools (e.g., `supabase --version`) in different package contexts. Ensure that development scripts (e.g., database migrations, local server startup) function correctly with the standardized tool versions. Check for any warnings or errors related to tool version mismatches during development workflows.

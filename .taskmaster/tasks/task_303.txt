@@ -9,17 +9,3 @@ Refactor the existing files in `app/tasks/` to create a clean layout. The main p
 
 # Test Strategy:
 Navigate to the `/tasks` route in your browser. Verify that the list of mock tasks from your tRPC endpoint is being displayed correctly, with each task rendered as a distinct `ThingsTaskCard`.
-
-# Subtasks:
-## 1. Refactor `app/tasks/page.tsx` [pending]
-### Dependencies: None
-### Description: Clean up the main tasks page to orchestrate the data fetching and rendering.
-### Details:
-The component should use the `api.task.list.useQuery()` hook from tRPC. It should handle loading and error states gracefully. On success, it should map over the returned data and render a `ThingsTaskCard` for each task.
-
-## 2. Build `ThingsTaskCard` Component [pending]
-### Dependencies: None
-### Description: Create a reusable component to display a single task's information.
-### Details:
-Create `ThingsTaskCard.tsx`. It will receive a `task` object as a prop. For this task, it only needs to display the `task.title` and a checkbox. The checkbox should not have any functionality yet.
-

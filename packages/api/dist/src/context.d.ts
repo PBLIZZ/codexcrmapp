@@ -1,4 +1,4 @@
-import { createServerClient } from '@supabase/ssr';
+import { createServerClient } from '@codexcrm/auth';
 import type { Session, User } from '@supabase/supabase-js';
 import { supabaseAdmin } from './supabaseAdmin';
 /** Shape of the tRPC context object */
@@ -12,3 +12,4 @@ export interface Context {
 export declare function createContext({ req: _req, }: {
     req: Request;
 }): Promise<Context>;
+//# sourceMappingURL=context.d.ts.map

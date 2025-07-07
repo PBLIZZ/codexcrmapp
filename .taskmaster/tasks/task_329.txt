@@ -1,0 +1,16 @@
+# Task ID: 329
+# Title: Manual End-to-End Authentication Flow Testing
+# Status: pending
+# Dependencies: 328 (Not found)
+# Priority: high
+# Description: Manually test the sign-in, sign-out, and protected route access flows to confirm functionality.
+# Details:
+Perform the following manual tests:
+1.  **Sign-in:** Navigate to the login page, enter valid credentials, and verify successful redirection to a protected page.
+2.  **Protected Route Access (Logged In):** Access various protected routes and ensure content is displayed correctly.
+3.  **Protected Route Access (Logged Out):** Log out and attempt to access protected routes directly. Verify that the application redirects to the login page or displays an unauthorized message.
+4.  **Sign-out:** Log in, then navigate to the sign-out functionality and verify successful logout and redirection to a public page (e.g., login or home).
+5.  **Session Persistence:** Close and reopen the browser (or clear session storage/cookies) after logging in, then attempt to access a protected route to verify session persistence.
+
+# Test Strategy:
+Document each test case with steps, expected results, and actual results. All test cases must pass for successful verification. Use browser developer tools to inspect network requests and cookie states during the tests.

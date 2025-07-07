@@ -1,6 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { router, protectedProcedure } from '../trpc';
+import { router, protectedProcedure } from '@codexcrm/api/src/trpc';
 // Define Zod schemas for validation
 const dateRangeSchema = z.object({
     startDate: z.string().datetime().optional(),

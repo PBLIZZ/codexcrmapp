@@ -2,8 +2,8 @@ import * as Sentry from '@sentry/nextjs';
 import type { NextRequest} from 'next/server';
 import { NextResponse } from 'next/server';
 
-// Import the server client creator from our modern SSR helper
-import { createClient } from '@/lib/supabase/server';
+// Import the server client creator from our Next.js-specific auth module
+import { createServerClient } from '@/lib/auth/server';
 
 export const dynamic = 'force-dynamic';
 
@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
 
   try {
     // Create Supabase client using the modern SSR helper
-    const supabase = await createClient();
+    const supabase = await createServerClient();
     const { searchParams } = new URL(req.url);
     const code = searchParams.get('code');
     const nextParam = searchParams.get('next');

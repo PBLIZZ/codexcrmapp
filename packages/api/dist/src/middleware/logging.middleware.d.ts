@@ -14,3 +14,4 @@ export declare const errorHandlerMiddleware: import("@trpc/server").TRPCMiddlewa
  * @param thresholdMs Threshold in milliseconds for slow requests
  */
 export declare const performanceMonitoringMiddleware: (thresholdMs?: number) => import("@trpc/server").TRPCMiddlewareBuilder<import("..").Context, object, object, unknown>;
+//# sourceMappingURL=logging.middleware.d.ts.map

@@ -1,30 +1,19 @@
 {
   "name": "@codexcrm/config",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "packageManager": "pnpm@10.12.4",
   "files": [
-    "typescript",
-    "prettier",
-    "eslint",
-    "tailwind",
-    "sentry",
-    "src",
-    "postcss",
-    "next"
+    "dist"
   ],
-  "exports": {
-    ".": "./src/paths.ts",
-    "./paths": "./src/paths.ts",
-    "./typescript/base": "./typescript/base.json",
-    "./typescript/nextjs": "./typescript/nextjs.json",
-    "./typescript/react-library": "./typescript/react-library.json",
-    "./prettier": "./prettier/index.json",
-    "./eslint": "./eslint/index.js",
-    "./tailwind": "./tailwind/tailwind.config.ts",
-    "./sentry/edge": "./sentry/edge.config.ts",
-    "./sentry/server": "./sentry/server.config.ts",
-    "./postcss/app": "./postcss/app.mjs",
-    "./postcss/ui": "./postcss/ui.js",
-    "./next": "./next/index.ts"
+  "scripts": {
+    "build": "tsup && tsc --emitDeclarationOnly",
+    "dev": "tsup --watch",
+    "clean": "rimraf dist"
+  },
+  "devDependencies": {
+    "@codexcrm/config-tsup": "workspace:*"
   }
 }

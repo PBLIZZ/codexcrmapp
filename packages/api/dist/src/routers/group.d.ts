@@ -26,8 +26,8 @@ export declare const groupRouter: import("@trpc/server").TRPCBuiltRouter<{
     save: import("@trpc/server").TRPCMutationProcedure<{
         input: {
             name: string;
-            id?: string | undefined;
             description?: string | null | undefined;
+            id?: string | undefined;
             color?: string | null | undefined;
             emoji?: string | null | undefined;
         };
@@ -76,3 +76,4 @@ export declare const groupRouter: import("@trpc/server").TRPCBuiltRouter<{
         meta: object;
     }>;
 }>>;
+//# sourceMappingURL=group.d.ts.map

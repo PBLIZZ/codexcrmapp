@@ -1,6 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { router, protectedProcedure } from '../trpc';
+import { router, protectedProcedure } from '@codexcrm/api/src/trpc';
 // Schema for group input validation
 const groupInputSchema = z.object({
     id: z.string().uuid().optional(), // Optional for creation

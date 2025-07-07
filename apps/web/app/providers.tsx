@@ -1,9 +1,10 @@
-'use client';
+'use client'
 
+import React from 'react';
 import type { AppRouter } from '@codexcrm/api/src/root';
 import { QueryClient, QueryClientProvider, QueryCache, MutationCache } from '@tanstack/react-query';
 import { httpBatchLink } from '@trpc/client';
-import type { inferRouterInputs } from '@trpc/server';
+import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
 import type {
   ReactNode} from 'react';
 import {
@@ -15,14 +16,14 @@ import {
 import superjson from 'superjson';
 import { toast } from 'sonner';
 import type { User } from '@supabase/supabase-js';
-import { createClient } from '@/lib/supabase/client';
+import { createBrowserClient } from '@codexcrm/auth';
 
-import { api, API_VERSION } from '@/lib/trpc';
+import { api, API_VERSION } from '@codexcrm/trpc';
 
 // Export types for the entire app
 export const trpc = api;
 export type RouterInputs = inferRouterInputs<AppRouter>;
-export type RouterOutputs = inferRouterInputs<AppRouter>;
+export type RouterOutputs = inferRouterOutputs<AppRouter>;
 
 // ========================
 // AUTH PROVIDER (All in one file)
@@ -38,7 +39,7 @@ type AuthContextType = {
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 // Create a single Supabase client instance
-const supabase = createClient();
+const supabase = createBrowserClient();
 
 /**
  * AuthProvider component that manages client-side authentication state
@@ -175,7 +176,7 @@ export function Providers({
       `Creating new tRPC client (version: ${API_VERSION}) with baseUrl: ${baseUrl}`
     );
 
-    return api.createClient({
+    return api.createClient<AppRouter>({
       links: [
         httpBatchLink({
           transformer: superjson,

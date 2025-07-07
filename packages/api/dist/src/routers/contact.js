@@ -1,6 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { router, protectedProcedure } from '../trpc';
+import { router, protectedProcedure } from '@codexcrm/api/src/trpc';
 const contactInputSchema = z.object({
     id: z.string().uuid().optional(),
     full_name: z.string().min(1, 'Full name is required'),

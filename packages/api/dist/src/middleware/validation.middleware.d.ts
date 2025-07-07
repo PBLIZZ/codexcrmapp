@@ -16,3 +16,4 @@ export declare const validateOutput: <T>(schema: ZodSchema<T>) => import("@trpc/
  * Sanitizes the input to prevent security issues
  */
 export declare const sanitizeInput: import("@trpc/server").TRPCMiddlewareBuilder<import("..").Context, object, object, unknown>;
+//# sourceMappingURL=validation.middleware.d.ts.map
