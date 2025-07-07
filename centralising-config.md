@@ -1,6 +1,6 @@
 <!--
-Last Updated: 2025-06-15
-Version: 2.1.0
+Last Updated: 2025-07-05
+Version: 3.0.0
 Status: Active
 -->
 
@@ -8,32 +8,45 @@ Status: Active
 
 This document outlines the centralized configuration strategy for the CodexCRM monorepo. Adhering to this architecture is critical for maintaining consistency, stability, and developer efficiency.
 
-## 1. The Core Principle: `@codexcrm/config`
+## 1. The Core Principle: Granular Configuration Packages
 
-All shared tooling configurations (TypeScript, ESLint, Prettier, Tailwind CSS, PostCSS) are managed within a single internal package: `packages/config`.
+To ensure maximum clarity and maintainability, we use separate, scoped packages for each tool's configuration. These packages live inside the `packages/config/` directory.
 
-**This is the single source of truth.** We do not create separate packages like `@codexcrm/config-eslint`. Instead, we expose different configuration files from the single `@codexcrm/config` package.
+-   `@codexcrm/config-eslint`
+-   `@codexcrm/config-typescript`
+-   `@codexcrm/config-prettier`
+-   *(Other configs like Tailwind and PostCSS are exposed from a general `@codexcrm/config` package)*
 
-### How It Works: The `exports` Map
+**Benefits of this approach:**
+-   **Explicit Dependencies:** Each config package declares its own dependencies (e.g., ESLint plugins), keeping the root `package.json` clean.
+-   **Maintainability:** Changes to a tool's configuration are isolated to its specific package.
+-   **Scalability:** This pattern is easy to understand and manage as the project grows.
 
-The magic happens in `packages/config/package.json` via the `exports` map. This map creates clean, importable paths for each configuration file.
+### How It Works: `pnpm-workspace.yaml`
+
+The `pnpm-workspace.yaml` file is configured with `packages/config/*` to tell `pnpm` to discover these nested packages and treat them as part of the workspace.
+
+---
+
+## 2. Consuming Configurations
+
+Each application or package in the monorepo consumes these shared configurations in a standardized way.
+
+### TypeScript
+An app's `tsconfig.json` extends the appropriate preset from the `@codexcrm/config-typescript` package.
 
 ```json
-// packages/config/package.json (Simplified)
+// Example: apps/web/tsconfig.json
 {
-  "name": "@codexcrm/config",
-  "exports": {
-    "./typescript/base": "./typescript/base.json",
-    "./typescript/nextjs": "./typescript/nextjs.json",
-    "./eslint": "./eslint/index.js",
-    "./tailwind": "./tailwind/tailwind.config.ts"
+  "extends": "@codexcrm/config-typescript/nextjs.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    }
   }
 }
 ```
-
-This allows any other package in the monorepo to use a simple, readable import path to get the configuration it needs.
-
----
 
 ## 2. TypeScript Configuration Hierarchy
 
@@ -44,6 +57,32 @@ Our TypeScript setup is layered to separate concerns. Understanding this hierarc
 3.  **`tsconfig.json` (Root)**: The **development orchestrator**. It uses `"references"` to link all packages together for the IDE and for holistic type-checking (`pnpm typecheck`).
 4.  **`tsconfig.build.json` (Root)**: The **build orchestrator**. It uses `"references"` to list only the packages that produce a compiled JavaScript artifact (i.e., it omits `packages/config`).
 5.  **`apps/web/tsconfig.json` (Consumer)**: An application's `tsconfig` is minimal. It simply extends the appropriate preset from `@codexcrm/config` and re-declares its own local alias (`@/*`).
+
+### ESLint
+An app's `.eslintrc.js` file extends the base configuration from the `@codexcrm/config-eslint` package.
+
+```javascript
+// Example: apps/web/.eslintrc.js
+/** @type {import('eslint').Linter.Config} */
+module.exports = {
+  root: true,
+  extends: ["@codexcrm/config-eslint"],
+};
+```
+
+### Prettier
+The root `package.json` tells the Prettier CLI where to find the configuration by referencing the `@codexcrm/config-prettier` package.
+
+```json
+// root package.json
+{
+  "name": "codexcrm-monorepo",
+  "prettier": "@codexcrm/config-prettier",
+  "devDependencies": {
+    "@codexcrm/config-prettier": "workspace:*"
+  }
+}
+```
 
 ### Example: `apps/web/tsconfig.json`
 ```json

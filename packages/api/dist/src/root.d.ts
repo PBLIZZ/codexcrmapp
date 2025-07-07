@@ -63,8 +63,8 @@ export declare const appRouter: import("@trpc/server").TRPCBuiltRouter<{
         }>;
         updateNotes: import("@trpc/server").TRPCMutationProcedure<{
             input: {
-                contactId: string;
                 notes: string;
+                contactId: string;
             };
             output: {
                 success: boolean;
@@ -127,8 +127,8 @@ export declare const appRouter: import("@trpc/server").TRPCBuiltRouter<{
         }>;
         addContact: import("@trpc/server").TRPCMutationProcedure<{
             input: {
-                contactId: string;
                 groupId: string;
+                contactId: string;
             };
             output: {
                 success: boolean;
@@ -141,8 +141,8 @@ export declare const appRouter: import("@trpc/server").TRPCBuiltRouter<{
         }>;
         removeContact: import("@trpc/server").TRPCMutationProcedure<{
             input: {
-                contactId: string;
                 groupId: string;
+                contactId: string;
             };
             output: {
                 success: boolean;
@@ -192,273 +192,6 @@ export declare const appRouter: import("@trpc/server").TRPCBuiltRouter<{
             output: {
                 success: boolean;
             };
-            meta: object;
-        }>;
-    }>>;
-    sessions: import("@trpc/server").TRPCBuiltRouter<{
-        ctx: import("./context").Context;
-        meta: object;
-        errorShape: import("@trpc/server").TRPCDefaultErrorShape;
-        transformer: true;
-    }, import("@trpc/server").TRPCDecorateCreateRouterOptions<{
-        list: import("@trpc/server").TRPCQueryProcedure<{
-            input: {
-                contactId?: string | undefined;
-                upcoming?: boolean | undefined;
-                sessionType?: string | undefined;
-                followUpNeeded?: boolean | undefined;
-                limit?: number | undefined;
-            } | undefined;
-            output: any;
-            meta: object;
-        }>;
-        getById: import("@trpc/server").TRPCQueryProcedure<{
-            input: {
-                sessionId: string;
-            };
-            output: any;
-            meta: object;
-        }>;
-        getWithDetails: import("@trpc/server").TRPCQueryProcedure<{
-            input: {
-                sessionId: string;
-            };
-            output: any;
-            meta: object;
-        }>;
-        create: import("@trpc/server").TRPCMutationProcedure<{
-            input: {
-                contact_id: string;
-                session_time: string;
-                status?: string | null | undefined;
-                id?: string | undefined;
-                notes?: string | null | undefined;
-                session_type?: string | null | undefined;
-                duration_minutes?: number | null | undefined;
-                location?: string | null | undefined;
-                virtual_meeting_link?: string | null | undefined;
-                key_topics?: string[] | null | undefined;
-                outcomes?: string | null | undefined;
-                follow_up_needed?: boolean | null | undefined;
-                follow_up_details?: string | null | undefined;
-                service_id?: string | null | undefined;
-                program_id?: string | null | undefined;
-                sentiment?: string | null | undefined;
-                ai_insights?: any;
-            };
-            output: any;
-            meta: object;
-        }>;
-        update: import("@trpc/server").TRPCMutationProcedure<{
-            input: {
-                id: string;
-                status?: string | null | undefined;
-                contact_id?: string | undefined;
-                notes?: string | null | undefined;
-                session_time?: string | undefined;
-                session_type?: string | null | undefined;
-                duration_minutes?: number | null | undefined;
-                location?: string | null | undefined;
-                virtual_meeting_link?: string | null | undefined;
-                key_topics?: string[] | null | undefined;
-                outcomes?: string | null | undefined;
-                follow_up_needed?: boolean | null | undefined;
-                follow_up_details?: string | null | undefined;
-                service_id?: string | null | undefined;
-                program_id?: string | null | undefined;
-                sentiment?: string | null | undefined;
-                ai_insights?: any;
-            };
-            output: any;
-            meta: object;
-        }>;
-        delete: import("@trpc/server").TRPCMutationProcedure<{
-            input: {
-                sessionId: string;
-            };
-            output: {
-                success: any;
-                sessionId: string;
-            };
-            meta: object;
-        }>;
-        updateAiInsights: import("@trpc/server").TRPCMutationProcedure<{
-            input: {
-                sessionId: string;
-                insights?: any;
-            };
-            output: any;
-            meta: object;
-        }>;
-    }>>;
-    aiActions: import("@trpc/server").TRPCBuiltRouter<{
-        ctx: import("./context").Context;
-        meta: object;
-        errorShape: import("@trpc/server").TRPCDefaultErrorShape;
-        transformer: true;
-    }, import("@trpc/server").TRPCDecorateCreateRouterOptions<{
-        list: import("@trpc/server").TRPCQueryProcedure<{
-            input: {
-                contactId?: string | undefined;
-                sessionId?: string | undefined;
-                status?: string | undefined;
-                actionType?: string | undefined;
-            } | undefined;
-            output: any;
-            meta: object;
-        }>;
-        getById: import("@trpc/server").TRPCQueryProcedure<{
-            input: {
-                actionId: string;
-            };
-            output: any;
-            meta: object;
-        }>;
-        getWithDetails: import("@trpc/server").TRPCQueryProcedure<{
-            input: {
-                actionId: string;
-            };
-            output: any;
-            meta: object;
-        }>;
-        create: import("@trpc/server").TRPCMutationProcedure<{
-            input: {
-                action_type: string;
-                contact_id: string;
-                suggestion: string;
-                status?: string | undefined;
-                id?: string | undefined;
-                session_id?: string | null | undefined;
-                priority?: string | null | undefined;
-                context?: any;
-                implemented?: boolean | undefined;
-                implementation_date?: string | null | undefined;
-                feedback?: string | null | undefined;
-            };
-            output: any;
-            meta: object;
-        }>;
-        update: import("@trpc/server").TRPCMutationProcedure<{
-            input: {
-                id: string;
-                status?: string | undefined;
-                action_type?: string | undefined;
-                contact_id?: string | undefined;
-                session_id?: string | null | undefined;
-                suggestion?: string | undefined;
-                priority?: string | null | undefined;
-                context?: any;
-                implemented?: boolean | undefined;
-                implementation_date?: string | null | undefined;
-                feedback?: string | null | undefined;
-            };
-            output: any;
-            meta: object;
-        }>;
-        delete: import("@trpc/server").TRPCMutationProcedure<{
-            input: {
-                actionId: string;
-            };
-            output: {
-                success: any;
-                actionId: string;
-            };
-            meta: object;
-        }>;
-        updateStatus: import("@trpc/server").TRPCMutationProcedure<{
-            input: {
-                status: string;
-                actionId: string;
-                feedback?: string | undefined;
-            };
-            output: any;
-            meta: object;
-        }>;
-        markImplemented: import("@trpc/server").TRPCMutationProcedure<{
-            input: {
-                actionId: string;
-                feedback?: string | undefined;
-            };
-            output: any;
-            meta: object;
-        }>;
-    }>>;
-    notes: import("@trpc/server").TRPCBuiltRouter<{
-        ctx: import("./context").Context;
-        meta: object;
-        errorShape: import("@trpc/server").TRPCDefaultErrorShape;
-        transformer: true;
-    }, import("@trpc/server").TRPCDecorateCreateRouterOptions<{
-        list: import("@trpc/server").TRPCQueryProcedure<{
-            input: {
-                contactId?: string | undefined;
-                sessionId?: string | undefined;
-                topicTag?: string | undefined;
-            } | undefined;
-            output: any;
-            meta: object;
-        }>;
-        getById: import("@trpc/server").TRPCQueryProcedure<{
-            input: {
-                noteId: string;
-            };
-            output: any;
-            meta: object;
-        }>;
-        create: import("@trpc/server").TRPCMutationProcedure<{
-            input: {
-                contact_id: string;
-                content: string;
-                id?: string | undefined;
-                session_id?: string | null | undefined;
-                topic_tags?: string[] | null | undefined;
-                key_insights?: string[] | null | undefined;
-                ai_summary?: string | null | undefined;
-                sentiment_analysis?: any;
-            };
-            output: any;
-            meta: object;
-        }>;
-        update: import("@trpc/server").TRPCMutationProcedure<{
-            input: {
-                id: string;
-                contact_id?: string | undefined;
-                session_id?: string | null | undefined;
-                content?: string | undefined;
-                topic_tags?: string[] | null | undefined;
-                key_insights?: string[] | null | undefined;
-                ai_summary?: string | null | undefined;
-                sentiment_analysis?: any;
-            };
-            output: any;
-            meta: object;
-        }>;
-        delete: import("@trpc/server").TRPCMutationProcedure<{
-            input: {
-                noteId: string;
-            };
-            output: {
-                success: boolean;
-                noteId: string;
-            };
-            meta: object;
-        }>;
-        updateAiAnalysis: import("@trpc/server").TRPCMutationProcedure<{
-            input: {
-                noteId: string;
-                summary?: string | undefined;
-                topicTags?: string[] | undefined;
-                keyInsights?: string[] | undefined;
-                sentimentAnalysis?: any;
-            };
-            output: any;
-            meta: object;
-        }>;
-        getByTopicTag: import("@trpc/server").TRPCQueryProcedure<{
-            input: {
-                tag: string;
-            };
-            output: any;
             meta: object;
         }>;
     }>>;
@@ -533,166 +266,39 @@ export declare const appRouter: import("@trpc/server").TRPCBuiltRouter<{
             meta: object;
         }>;
     }>>;
-    tasks: import("@trpc/server").TRPCBuiltRouter<{
+    import: import("@trpc/server").TRPCBuiltRouter<{
         ctx: import("./context").Context;
         meta: object;
         errorShape: import("@trpc/server").TRPCDefaultErrorShape;
         transformer: true;
     }, import("@trpc/server").TRPCDecorateCreateRouterOptions<{
-        list: import("@trpc/server").TRPCQueryProcedure<{
+        contacts: import("@trpc/server").TRPCMutationProcedure<{
             input: {
-                contactId?: string | null | undefined;
-                view?: string | undefined;
-                projectId?: string | null | undefined;
-            };
-            output: any;
-            meta: object;
-        }>;
-        getById: import("@trpc/server").TRPCQueryProcedure<{
-            input: {
-                id: string;
-            };
-            output: any;
-            meta: object;
-        }>;
-        create: import("@trpc/server").TRPCMutationProcedure<{
-            input: {
-                [x: string]: any;
-                title?: unknown;
-                notes?: unknown;
-                status?: unknown;
-                priority?: unknown;
-                category?: unknown;
-                dueDate?: unknown;
-                completionDate?: unknown;
-                contactId?: unknown;
-                projectId?: unknown;
-                headingId?: unknown;
-                position?: unknown;
-                is_repeating?: unknown;
-            };
-            output: any;
-            meta: object;
-        }>;
-        update: import("@trpc/server").TRPCMutationProcedure<{
-            input: {
-                [x: string]: any;
-                id?: unknown;
-                title?: unknown;
-                notes?: unknown;
-                status?: unknown;
-                priority?: unknown;
-                category?: unknown;
-                dueDate?: unknown;
-                completionDate?: unknown;
-                contactId?: unknown;
-                projectId?: unknown;
-                headingId?: unknown;
-                position?: unknown;
-                is_repeating?: unknown;
-            };
-            output: any;
-            meta: object;
-        }>;
-        softDelete: import("@trpc/server").TRPCMutationProcedure<{
-            input: {
-                id: string;
-            };
-            output: {
-                success: boolean;
-            };
-            meta: object;
-        }>;
-        delete: import("@trpc/server").TRPCMutationProcedure<{
-            input: {
-                id: string;
-            };
-            output: {
-                success: boolean;
-            };
-            meta: object;
-        }>;
-        restore: import("@trpc/server").TRPCMutationProcedure<{
-            input: {
-                id: string;
-            };
-            output: any;
-            meta: object;
-        }>;
-        complete: import("@trpc/server").TRPCMutationProcedure<{
-            input: {
-                id: string;
-            };
-            output: any;
-            meta: object;
-        }>;
-        reopen: import("@trpc/server").TRPCMutationProcedure<{
-            input: {
-                id: string;
-            };
-            output: any;
-            meta: object;
-        }>;
-        cancel: import("@trpc/server").TRPCMutationProcedure<{
-            input: {
-                id: string;
-            };
-            output: any;
-            meta: object;
-        }>;
-        updatePositions: import("@trpc/server").TRPCMutationProcedure<{
-            input: {
-                id: string;
-                position: number;
+                full_name: string;
+                email?: string | null | undefined;
+                phone?: string | null | undefined;
+                phone_country_code?: string | null | undefined;
+                job_title?: string | null | undefined;
+                website?: string | null | undefined;
+                notes?: string | null | undefined;
+                tags?: string[] | null | undefined;
+                social_handles?: string[] | null | undefined;
+                company?: string | null | undefined;
+                address?: string | null | undefined;
             }[];
             output: {
                 success: boolean;
+                imported: number;
+                errors: string[];
+                skipped: number;
+            } | {
+                success: boolean;
+                imported: number;
+                errors: never[];
             };
-            meta: object;
-        }>;
-        moveToCategory: import("@trpc/server").TRPCMutationProcedure<{
-            input: {
-                [x: string]: any;
-                id?: unknown;
-                category?: unknown;
-            };
-            output: any;
-            meta: object;
-        }>;
-        moveToProject: import("@trpc/server").TRPCMutationProcedure<{
-            input: {
-                id: string;
-                projectId: string | null;
-                headingId?: string | null | undefined;
-            };
-            output: any;
-            meta: object;
-        }>;
-        setDueDate: import("@trpc/server").TRPCMutationProcedure<{
-            input: {
-                id: string;
-                dueDate: string | null;
-            };
-            output: any;
-            meta: object;
-        }>;
-        getCategoryCounts: import("@trpc/server").TRPCQueryProcedure<{
-            input: void;
-            output: any;
-            meta: object;
-        }>;
-        getCategories: import("@trpc/server").TRPCQueryProcedure<{
-            input: void;
-            output: unknown[];
-            meta: object;
-        }>;
-        getTasksByContactId: import("@trpc/server").TRPCQueryProcedure<{
-            input: {
-                contactId: string;
-            };
-            output: any;
             meta: object;
         }>;
     }>>;
 }>>;
 export type AppRouter = typeof appRouter;
+//# sourceMappingURL=root.d.ts.map

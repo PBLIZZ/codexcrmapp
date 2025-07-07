@@ -9,17 +9,3 @@ This provides necessary visibility into the AI's workload, building user trust.
 
 # Test Strategy:
 Delegate two tasks to the AI. Navigate to the 'AI Inbox'. Both tasks should be listed. Go back to your personal inbox and delegate a third task. Return to the 'AI Inbox' and verify the list updates to show all three tasks.
-
-# Subtasks:
-## 1. Create `task.listForAI` Procedure [pending]
-### Dependencies: None
-### Description: Create a new tRPC procedure to fetch tasks assigned to the AI.
-### Details:
-In `taskRouter`, create a new procedure `listForAI`. This query will be similar to `list` but will have a hardcoded `WHERE` clause to fetch tasks where `owner_id` matches the AI Worker's UUID. This is for the user to view the AI's queue.
-
-## 2. Create 'AI Inbox' Page [pending]
-### Dependencies: None
-### Description: Build a new page or view that displays the AI's task list.
-### Details:
-This could be a new page at `/tasks/ai-inbox` or a special filter in the sidebar. This view will call the `api.task.listForAI.useQuery()` hook and render the results, perhaps with a slightly different UI to indicate they are 'in progress' by the AI.
-

@@ -1,7 +1,7 @@
 'use client';
 
 import { useAuth } from '@/app/providers';
-import { createClient } from '@/lib/supabase/client';
+import { createBrowserClient } from '@codexcrm/auth';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
@@ -42,7 +42,7 @@ export function UserNav() {
   // 1. Fetch user data internally using the useAuth hook
   const { user, isLoading } = useAuth();
   const router = useRouter();
-  const supabase = createClient();
+  const supabase = createBrowserClient();
 
   const logOut = async () => {
     try {

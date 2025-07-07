@@ -15,9 +15,9 @@ import {
 } from '@codexcrm/ui';
 import { Input } from '@codexcrm/ui';
 import { Label } from '@codexcrm/ui';
-import { createClient } from '@/lib/supabase/client';
+import { createBrowserClient } from '@codexcrm/auth';
 
-const supabase = createClient();
+const supabase = createBrowserClient();
 
 export function ResetPasswordContent() {
   const router = useRouter();

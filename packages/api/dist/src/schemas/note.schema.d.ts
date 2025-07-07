@@ -95,20 +95,20 @@ export declare const noteFilterSchema: z.ZodObject<{
     sentiment: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     contactId?: string | undefined;
-    sessionId?: string | undefined;
-    sentiment?: string | undefined;
-    topicTag?: string | undefined;
     startDate?: string | undefined;
     endDate?: string | undefined;
+    sessionId?: string | undefined;
+    topicTag?: string | undefined;
     hasAiSummary?: boolean | undefined;
+    sentiment?: string | undefined;
 }, {
     contactId?: string | undefined;
-    sessionId?: string | undefined;
-    sentiment?: string | undefined;
-    topicTag?: string | undefined;
     startDate?: string | undefined;
     endDate?: string | undefined;
+    sessionId?: string | undefined;
+    topicTag?: string | undefined;
     hasAiSummary?: boolean | undefined;
+    sentiment?: string | undefined;
 }>;
 export declare const aiAnalysisSchema: z.ZodObject<{
     noteId: z.ZodString;
@@ -260,20 +260,20 @@ export declare const NoteSchemas: {
         sentiment: z.ZodOptional<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
         contactId?: string | undefined;
-        sessionId?: string | undefined;
-        sentiment?: string | undefined;
-        topicTag?: string | undefined;
         startDate?: string | undefined;
         endDate?: string | undefined;
+        sessionId?: string | undefined;
+        topicTag?: string | undefined;
         hasAiSummary?: boolean | undefined;
+        sentiment?: string | undefined;
     }, {
         contactId?: string | undefined;
-        sessionId?: string | undefined;
-        sentiment?: string | undefined;
-        topicTag?: string | undefined;
         startDate?: string | undefined;
         endDate?: string | undefined;
+        sessionId?: string | undefined;
+        topicTag?: string | undefined;
         hasAiSummary?: boolean | undefined;
+        sentiment?: string | undefined;
     }>;
     aiAnalysis: z.ZodObject<{
         noteId: z.ZodString;
@@ -329,3 +329,4 @@ export declare const NoteSchemas: {
     }>;
     commonTopicTags: z.ZodEnum<["wellness_goals", "health_concerns", "progress_update", "feedback", "questions", "action_items", "follow_up", "personal", "professional", "other"]>;
 };
+//# sourceMappingURL=note.schema.d.ts.map

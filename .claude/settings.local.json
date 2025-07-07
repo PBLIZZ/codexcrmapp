@@ -28,12 +28,24 @@
       "Bash(npx prettier:*)",
       "Bash(tree:*)",
       "Bash(pnpm install:*)",
-      "Bash(pnpm dev:*)"
+      "Bash(pnpm dev:*)",
+      "mcp__memory__read_graph",
+      "mcp__memory__create_entities",
+      "Bash(turbo:*)",
+      "Bash(pnpm turbo:*)",
+      "mcp__taskmaster-ai__set_task_status",
+      "mcp__taskmaster-ai__parse_prd",
+      "mcp__taskmaster-ai__get_tasks",
+      "mcp__taskmaster-ai__get_task"
     ]
   },
   "enabledMcpjsonServers": [
     "supabase",
     "memory",
-    "sequential-thinking"
+    "sequential-thinking",
+    "perplexity-ask",
+    "taskmaster-ai",
+    "filesystem",
+    "eslint"
   ]
 }

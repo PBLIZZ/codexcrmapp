@@ -1,8 +1,9 @@
 {
   "name": "@codexcrm/web",
   "version": "0.1.0",
-  "type": "module", 
+  "type": "module",
   "private": true,
+  "packageManager": "pnpm@10.12.4",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -15,7 +16,7 @@
     "@codexcrm/api": "workspace:*",
     "@codexcrm/auth": "workspace:*",
     "@codexcrm/background-jobs": "workspace:*",
-    "@codexcrm/config": "workspace:*",
+    "@codexcrm/trpc": "workspace:*",
     "@codexcrm/database": "workspace:*",
     "@codexcrm/ui": "workspace:*",
     "@hookform/resolvers": "^5.1.1",
@@ -28,34 +29,31 @@
     "@trpc/next": "^11.3.1",
     "@trpc/react-query": "^11.3.1",
     "@trpc/server": "^11.3.1",
-    "next": "15.3.1",
-    "react": "^19.0.2",
-    "react-dom": "^19.0.2",
     "@types/papaparse": "^5.3.16",
-    "papaparse": "^5.5.3",
-    "zod": "^3.25.67",
-    "zustand": "^5.0.5",
-    "uuid": "^11.1.0",
     "dotenv": "^16.5.0",
     "emoji-mart": "^5.6.0",
     "import-in-the-middle": "^1.14.0",
+    "next": "15.3.1",
+    "papaparse": "^5.5.3",
+    "react": "^19.0.2",
+    "react-dom": "^19.0.2",
     "react-hook-form": "^7.58.0",
     "react-swipeable": "7.0.2",
     "require-in-the-middle": "^7.5.2",
     "superjson": "^2.2.2",
-    "use-debounce": "^10.0.5"
-
+    "tailwind-merge": "^2.6.0",
+    "use-debounce": "^10.0.5",
+    "uuid": "^11.1.0",
+    "zod": "^3.25.67",
+    "zustand": "^5.0.5"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.1",
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@codexcrm/config-eslint": "workspace:*",
+    "@codexcrm/config-tailwind": "workspace:*",
+    "@codexcrm/config-typescript": "workspace:*",
+    "@codexcrm/config-postcss": "workspace:*",
     "@types/google-one-tap": "^1.2.6",
     "@types/google.accounts": "^0.0.16",
-    "eslint-config-next": "15.3.1",
-
-    "typescript": "^5.8.2"
+    "eslint-config-next": "15.3.1"
   }
 }

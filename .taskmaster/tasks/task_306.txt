@@ -9,17 +9,3 @@ This mirrors the task creation flow but for the 'Projects' entity. It involves t
 
 # Test Strategy:
 In the `TasksSidebar`, use the 'New Project' UI. Create a project named 'Q4 Marketing Campaign'. Verify it immediately appears in the project list in the sidebar and persists after a page refresh.
-
-# Subtasks:
-## 1. Implement `project.create` tRPC Mutation [pending]
-### Dependencies: None
-### Description: Flesh out the `project.create` procedure to save a new project to the database.
-### Details:
-The mutation will take `{ name: string }` and create a new record in the `projects` table for the current user.
-
-## 2. Build 'New Project' Form [pending]
-### Dependencies: None
-### Description: Create a UI form, likely in a modal or a dedicated view, for creating projects.
-### Details:
-The form will have an input for the project name and a submit button. On submit, it will call the `api.project.create.useMutation()` hook and refetch the project list on success.
-

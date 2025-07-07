@@ -9,17 +9,3 @@ This involves creating mutations to manage the records in the `task_assignees` j
 
 # Test Strategy:
 Use an API client to call `task.addAssignee` with a task ID and a contact ID. Query the `task_assignees` table in Supabase to verify the new record was created. Then call `task.removeAssignee` and verify the record was deleted.
-
-# Subtasks:
-## 1. Implement `task.addAssignee` Mutation [pending]
-### Dependencies: None
-### Description: Create a tRPC mutation to add a record to the `task_assignees` table.
-### Details:
-In `taskRouter`, create an `addAssignee` mutation that takes `{ taskId: string, contactId: string }` and inserts a new record into the join table.
-
-## 2. Implement `task.removeAssignee` Mutation [pending]
-### Dependencies: None
-### Description: Create a tRPC mutation to remove a record from the `task_assignees` table.
-### Details:
-In `taskRouter`, create a `removeAssignee` mutation that takes `{ taskId: string, contactId: string }` and deletes the corresponding record from the join table.
-

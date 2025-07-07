@@ -177,8 +177,8 @@ export declare const Schemas: {
             id: import("zod").ZodString;
         }, "strip", import("zod").ZodTypeAny, {
             id: string;
-            email?: string | null | undefined;
             full_name?: string | undefined;
+            email?: string | null | undefined;
             phone?: string | null | undefined;
             phone_country_code?: string | null | undefined;
             company_name?: string | null | undefined;
@@ -201,8 +201,8 @@ export declare const Schemas: {
             wellness_status?: string | null | undefined;
         }, {
             id: string;
-            email?: string | null | undefined;
             full_name?: string | undefined;
+            email?: string | null | undefined;
             phone?: string | null | undefined;
             phone_country_code?: string | null | undefined;
             company_name?: string | null | undefined;
@@ -239,15 +239,15 @@ export declare const Schemas: {
             source: import("zod").ZodOptional<import("zod").ZodString>;
         }, "strip", import("zod").ZodTypeAny, {
             search?: string | undefined;
-            groupId?: string | undefined;
             tags?: string[] | undefined;
             source?: string | undefined;
+            groupId?: string | undefined;
             journeyStage?: string | undefined;
         }, {
             search?: string | undefined;
-            groupId?: string | undefined;
             tags?: string[] | undefined;
             source?: string | undefined;
+            groupId?: string | undefined;
             journeyStage?: string | undefined;
         }>;
         profile: import("zod").ZodObject<{
@@ -262,24 +262,24 @@ export declare const Schemas: {
             custom_fields: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodRecord<import("zod").ZodString, import("zod").ZodUnknown>>>;
         }, "strip", import("zod").ZodTypeAny, {
             contact_id: string;
-            custom_fields?: Record<string, unknown> | null | undefined;
             detailed_bio?: string | null | undefined;
             family_members?: string[] | null | undefined;
-            health_metrics?: Record<string, unknown> | null | undefined;
-            important_dates?: Record<string, unknown> | null | undefined;
             personality_traits?: string[] | null | undefined;
             preferences?: Record<string, unknown> | null | undefined;
+            health_metrics?: Record<string, unknown> | null | undefined;
+            important_dates?: Record<string, unknown> | null | undefined;
             wellness_history?: string | null | undefined;
+            custom_fields?: Record<string, unknown> | null | undefined;
         }, {
             contact_id: string;
-            custom_fields?: Record<string, unknown> | null | undefined;
             detailed_bio?: string | null | undefined;
             family_members?: string[] | null | undefined;
-            health_metrics?: Record<string, unknown> | null | undefined;
-            important_dates?: Record<string, unknown> | null | undefined;
             personality_traits?: string[] | null | undefined;
             preferences?: Record<string, unknown> | null | undefined;
+            health_metrics?: Record<string, unknown> | null | undefined;
+            important_dates?: Record<string, unknown> | null | undefined;
             wellness_history?: string | null | undefined;
+            custom_fields?: Record<string, unknown> | null | undefined;
         }>;
         withProfile: import("zod").ZodObject<{
             full_name: import("zod").ZodString;
@@ -318,24 +318,24 @@ export declare const Schemas: {
                 custom_fields: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodRecord<import("zod").ZodString, import("zod").ZodUnknown>>>;
             }, "strip", import("zod").ZodTypeAny, {
                 contact_id: string;
-                custom_fields?: Record<string, unknown> | null | undefined;
                 detailed_bio?: string | null | undefined;
                 family_members?: string[] | null | undefined;
-                health_metrics?: Record<string, unknown> | null | undefined;
-                important_dates?: Record<string, unknown> | null | undefined;
                 personality_traits?: string[] | null | undefined;
                 preferences?: Record<string, unknown> | null | undefined;
+                health_metrics?: Record<string, unknown> | null | undefined;
+                important_dates?: Record<string, unknown> | null | undefined;
                 wellness_history?: string | null | undefined;
+                custom_fields?: Record<string, unknown> | null | undefined;
             }, {
                 contact_id: string;
-                custom_fields?: Record<string, unknown> | null | undefined;
                 detailed_bio?: string | null | undefined;
                 family_members?: string[] | null | undefined;
-                health_metrics?: Record<string, unknown> | null | undefined;
-                important_dates?: Record<string, unknown> | null | undefined;
                 personality_traits?: string[] | null | undefined;
                 preferences?: Record<string, unknown> | null | undefined;
+                health_metrics?: Record<string, unknown> | null | undefined;
+                important_dates?: Record<string, unknown> | null | undefined;
                 wellness_history?: string | null | undefined;
+                custom_fields?: Record<string, unknown> | null | undefined;
             }>>>;
         }, "strip", import("zod").ZodTypeAny, {
             id: string;
@@ -363,14 +363,14 @@ export declare const Schemas: {
             wellness_status?: string | null | undefined;
             profile?: {
                 contact_id: string;
-                custom_fields?: Record<string, unknown> | null | undefined;
                 detailed_bio?: string | null | undefined;
                 family_members?: string[] | null | undefined;
-                health_metrics?: Record<string, unknown> | null | undefined;
-                important_dates?: Record<string, unknown> | null | undefined;
                 personality_traits?: string[] | null | undefined;
                 preferences?: Record<string, unknown> | null | undefined;
+                health_metrics?: Record<string, unknown> | null | undefined;
+                important_dates?: Record<string, unknown> | null | undefined;
                 wellness_history?: string | null | undefined;
+                custom_fields?: Record<string, unknown> | null | undefined;
             } | null | undefined;
         }, {
             id: string;
@@ -398,413 +398,19 @@ export declare const Schemas: {
             wellness_status?: string | null | undefined;
             profile?: {
                 contact_id: string;
-                custom_fields?: Record<string, unknown> | null | undefined;
                 detailed_bio?: string | null | undefined;
                 family_members?: string[] | null | undefined;
-                health_metrics?: Record<string, unknown> | null | undefined;
-                important_dates?: Record<string, unknown> | null | undefined;
                 personality_traits?: string[] | null | undefined;
                 preferences?: Record<string, unknown> | null | undefined;
+                health_metrics?: Record<string, unknown> | null | undefined;
+                important_dates?: Record<string, unknown> | null | undefined;
                 wellness_history?: string | null | undefined;
+                custom_fields?: Record<string, unknown> | null | undefined;
             } | null | undefined;
         }>;
     };
-    Session: {
-        base: import("zod").ZodObject<{
-            contact_id: import("zod").ZodString;
-            session_time: import("zod").ZodString;
-            session_type: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-            duration_minutes: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodNumber>>;
-            location: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-            virtual_meeting_link: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-            notes: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-            key_topics: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodArray<import("zod").ZodString, "many">>>;
-            outcomes: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-            follow_up_needed: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodBoolean>>;
-            follow_up_details: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-            status: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-            service_id: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-            program_id: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-            sentiment: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-            ai_insights: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodAny>>;
-        }, "strip", import("zod").ZodTypeAny, {
-            contact_id: string;
-            session_time: string;
-            status?: string | null | undefined;
-            notes?: string | null | undefined;
-            session_type?: string | null | undefined;
-            duration_minutes?: number | null | undefined;
-            location?: string | null | undefined;
-            virtual_meeting_link?: string | null | undefined;
-            key_topics?: string[] | null | undefined;
-            outcomes?: string | null | undefined;
-            follow_up_needed?: boolean | null | undefined;
-            follow_up_details?: string | null | undefined;
-            service_id?: string | null | undefined;
-            program_id?: string | null | undefined;
-            sentiment?: string | null | undefined;
-            ai_insights?: any;
-        }, {
-            contact_id: string;
-            session_time: string;
-            status?: string | null | undefined;
-            notes?: string | null | undefined;
-            session_type?: string | null | undefined;
-            duration_minutes?: number | null | undefined;
-            location?: string | null | undefined;
-            virtual_meeting_link?: string | null | undefined;
-            key_topics?: string[] | null | undefined;
-            outcomes?: string | null | undefined;
-            follow_up_needed?: boolean | null | undefined;
-            follow_up_details?: string | null | undefined;
-            service_id?: string | null | undefined;
-            program_id?: string | null | undefined;
-            sentiment?: string | null | undefined;
-            ai_insights?: any;
-        }>;
-        create: import("zod").ZodObject<{
-            contact_id: import("zod").ZodString;
-            session_time: import("zod").ZodString;
-            session_type: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-            duration_minutes: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodNumber>>;
-            location: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-            virtual_meeting_link: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-            notes: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-            key_topics: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodArray<import("zod").ZodString, "many">>>;
-            outcomes: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-            follow_up_needed: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodBoolean>>;
-            follow_up_details: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-            status: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-            service_id: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-            program_id: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-            sentiment: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-            ai_insights: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodAny>>;
-        }, "strip", import("zod").ZodTypeAny, {
-            contact_id: string;
-            session_time: string;
-            status?: string | null | undefined;
-            notes?: string | null | undefined;
-            session_type?: string | null | undefined;
-            duration_minutes?: number | null | undefined;
-            location?: string | null | undefined;
-            virtual_meeting_link?: string | null | undefined;
-            key_topics?: string[] | null | undefined;
-            outcomes?: string | null | undefined;
-            follow_up_needed?: boolean | null | undefined;
-            follow_up_details?: string | null | undefined;
-            service_id?: string | null | undefined;
-            program_id?: string | null | undefined;
-            sentiment?: string | null | undefined;
-            ai_insights?: any;
-        }, {
-            contact_id: string;
-            session_time: string;
-            status?: string | null | undefined;
-            notes?: string | null | undefined;
-            session_type?: string | null | undefined;
-            duration_minutes?: number | null | undefined;
-            location?: string | null | undefined;
-            virtual_meeting_link?: string | null | undefined;
-            key_topics?: string[] | null | undefined;
-            outcomes?: string | null | undefined;
-            follow_up_needed?: boolean | null | undefined;
-            follow_up_details?: string | null | undefined;
-            service_id?: string | null | undefined;
-            program_id?: string | null | undefined;
-            sentiment?: string | null | undefined;
-            ai_insights?: any;
-        }>;
-        update: import("zod").ZodObject<{
-            contact_id: import("zod").ZodOptional<import("zod").ZodString>;
-            session_time: import("zod").ZodOptional<import("zod").ZodString>;
-            session_type: import("zod").ZodOptional<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>>;
-            duration_minutes: import("zod").ZodOptional<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodNumber>>>;
-            location: import("zod").ZodOptional<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>>;
-            virtual_meeting_link: import("zod").ZodOptional<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>>;
-            notes: import("zod").ZodOptional<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>>;
-            key_topics: import("zod").ZodOptional<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodArray<import("zod").ZodString, "many">>>>;
-            outcomes: import("zod").ZodOptional<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>>;
-            follow_up_needed: import("zod").ZodOptional<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodBoolean>>>;
-            follow_up_details: import("zod").ZodOptional<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>>;
-            status: import("zod").ZodOptional<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>>;
-            service_id: import("zod").ZodOptional<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>>;
-            program_id: import("zod").ZodOptional<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>>;
-            sentiment: import("zod").ZodOptional<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>>;
-            ai_insights: import("zod").ZodOptional<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodAny>>>;
-        } & {
-            id: import("zod").ZodString;
-        }, "strip", import("zod").ZodTypeAny, {
-            id: string;
-            status?: string | null | undefined;
-            notes?: string | null | undefined;
-            contact_id?: string | undefined;
-            session_time?: string | undefined;
-            session_type?: string | null | undefined;
-            duration_minutes?: number | null | undefined;
-            location?: string | null | undefined;
-            virtual_meeting_link?: string | null | undefined;
-            key_topics?: string[] | null | undefined;
-            outcomes?: string | null | undefined;
-            follow_up_needed?: boolean | null | undefined;
-            follow_up_details?: string | null | undefined;
-            service_id?: string | null | undefined;
-            program_id?: string | null | undefined;
-            sentiment?: string | null | undefined;
-            ai_insights?: any;
-        }, {
-            id: string;
-            status?: string | null | undefined;
-            notes?: string | null | undefined;
-            contact_id?: string | undefined;
-            session_time?: string | undefined;
-            session_type?: string | null | undefined;
-            duration_minutes?: number | null | undefined;
-            location?: string | null | undefined;
-            virtual_meeting_link?: string | null | undefined;
-            key_topics?: string[] | null | undefined;
-            outcomes?: string | null | undefined;
-            follow_up_needed?: boolean | null | undefined;
-            follow_up_details?: string | null | undefined;
-            service_id?: string | null | undefined;
-            program_id?: string | null | undefined;
-            sentiment?: string | null | undefined;
-            ai_insights?: any;
-        }>;
-        id: import("zod").ZodObject<{
-            sessionId: import("zod").ZodString;
-        }, "strip", import("zod").ZodTypeAny, {
-            sessionId: string;
-        }, {
-            sessionId: string;
-        }>;
-        filter: import("zod").ZodObject<{
-            contactId: import("zod").ZodOptional<import("zod").ZodString>;
-            upcoming: import("zod").ZodOptional<import("zod").ZodBoolean>;
-            sessionType: import("zod").ZodOptional<import("zod").ZodString>;
-            followUpNeeded: import("zod").ZodOptional<import("zod").ZodBoolean>;
-            startDate: import("zod").ZodOptional<import("zod").ZodString>;
-            endDate: import("zod").ZodOptional<import("zod").ZodString>;
-            limit: import("zod").ZodOptional<import("zod").ZodNumber>;
-        }, "strip", import("zod").ZodTypeAny, {
-            contactId?: string | undefined;
-            upcoming?: boolean | undefined;
-            sessionType?: string | undefined;
-            followUpNeeded?: boolean | undefined;
-            limit?: number | undefined;
-            startDate?: string | undefined;
-            endDate?: string | undefined;
-        }, {
-            contactId?: string | undefined;
-            upcoming?: boolean | undefined;
-            sessionType?: string | undefined;
-            followUpNeeded?: boolean | undefined;
-            limit?: number | undefined;
-            startDate?: string | undefined;
-            endDate?: string | undefined;
-        }>;
-        attendee: import("zod").ZodObject<{
-            session_id: import("zod").ZodString;
-            contact_id: import("zod").ZodString;
-            attended: import("zod").ZodOptional<import("zod").ZodBoolean>;
-            notes: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-        }, "strip", import("zod").ZodTypeAny, {
-            contact_id: string;
-            session_id: string;
-            notes?: string | null | undefined;
-            attended?: boolean | undefined;
-        }, {
-            contact_id: string;
-            session_id: string;
-            notes?: string | null | undefined;
-            attended?: boolean | undefined;
-        }>;
-        aiInsights: import("zod").ZodObject<{
-            sessionId: import("zod").ZodString;
-            insights: import("zod").ZodAny;
-        }, "strip", import("zod").ZodTypeAny, {
-            sessionId: string;
-            insights?: any;
-        }, {
-            sessionId: string;
-            insights?: any;
-        }>;
-        dateRange: import("zod").ZodObject<{
-            startDate: import("zod").ZodOptional<import("zod").ZodString>;
-            endDate: import("zod").ZodOptional<import("zod").ZodString>;
-        }, "strip", import("zod").ZodTypeAny, {
-            startDate?: string | undefined;
-            endDate?: string | undefined;
-        }, {
-            startDate?: string | undefined;
-            endDate?: string | undefined;
-        }>;
-    };
-    AiAction: {
-        base: import("zod").ZodObject<{
-            action_type: import("zod").ZodString;
-            contact_id: import("zod").ZodString;
-            session_id: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-            suggestion: import("zod").ZodString;
-            status: import("zod").ZodDefault<import("zod").ZodString>;
-            priority: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-            context: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodAny>>;
-            implemented: import("zod").ZodDefault<import("zod").ZodBoolean>;
-            implementation_date: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-            feedback: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-        }, "strip", import("zod").ZodTypeAny, {
-            status: string;
-            contact_id: string;
-            action_type: string;
-            suggestion: string;
-            implemented: boolean;
-            priority?: string | null | undefined;
-            session_id?: string | null | undefined;
-            context?: any;
-            implementation_date?: string | null | undefined;
-            feedback?: string | null | undefined;
-        }, {
-            contact_id: string;
-            action_type: string;
-            suggestion: string;
-            priority?: string | null | undefined;
-            status?: string | undefined;
-            session_id?: string | null | undefined;
-            context?: any;
-            implemented?: boolean | undefined;
-            implementation_date?: string | null | undefined;
-            feedback?: string | null | undefined;
-        }>;
-        create: import("zod").ZodObject<{
-            action_type: import("zod").ZodString;
-            contact_id: import("zod").ZodString;
-            session_id: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-            suggestion: import("zod").ZodString;
-            status: import("zod").ZodDefault<import("zod").ZodString>;
-            priority: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-            context: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodAny>>;
-            implemented: import("zod").ZodDefault<import("zod").ZodBoolean>;
-            implementation_date: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-            feedback: import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>;
-        }, "strip", import("zod").ZodTypeAny, {
-            status: string;
-            contact_id: string;
-            action_type: string;
-            suggestion: string;
-            implemented: boolean;
-            priority?: string | null | undefined;
-            session_id?: string | null | undefined;
-            context?: any;
-            implementation_date?: string | null | undefined;
-            feedback?: string | null | undefined;
-        }, {
-            contact_id: string;
-            action_type: string;
-            suggestion: string;
-            priority?: string | null | undefined;
-            status?: string | undefined;
-            session_id?: string | null | undefined;
-            context?: any;
-            implemented?: boolean | undefined;
-            implementation_date?: string | null | undefined;
-            feedback?: string | null | undefined;
-        }>;
-        update: import("zod").ZodObject<{
-            action_type: import("zod").ZodOptional<import("zod").ZodString>;
-            contact_id: import("zod").ZodOptional<import("zod").ZodString>;
-            session_id: import("zod").ZodOptional<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>>;
-            suggestion: import("zod").ZodOptional<import("zod").ZodString>;
-            status: import("zod").ZodOptional<import("zod").ZodDefault<import("zod").ZodString>>;
-            priority: import("zod").ZodOptional<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>>;
-            context: import("zod").ZodOptional<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodAny>>>;
-            implemented: import("zod").ZodOptional<import("zod").ZodDefault<import("zod").ZodBoolean>>;
-            implementation_date: import("zod").ZodOptional<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>>;
-            feedback: import("zod").ZodOptional<import("zod").ZodNullable<import("zod").ZodOptional<import("zod").ZodString>>>;
-        } & {
-            id: import("zod").ZodString;
-        }, "strip", import("zod").ZodTypeAny, {
-            id: string;
-            priority?: string | null | undefined;
-            status?: string | undefined;
-            contact_id?: string | undefined;
-            action_type?: string | undefined;
-            session_id?: string | null | undefined;
-            suggestion?: string | undefined;
-            context?: any;
-            implemented?: boolean | undefined;
-            implementation_date?: string | null | undefined;
-            feedback?: string | null | undefined;
-        }, {
-            id: string;
-            priority?: string | null | undefined;
-            status?: string | undefined;
-            contact_id?: string | undefined;
-            action_type?: string | undefined;
-            session_id?: string | null | undefined;
-            suggestion?: string | undefined;
-            context?: any;
-            implemented?: boolean | undefined;
-            implementation_date?: string | null | undefined;
-            feedback?: string | null | undefined;
-        }>;
-        id: import("zod").ZodObject<{
-            actionId: import("zod").ZodString;
-        }, "strip", import("zod").ZodTypeAny, {
-            actionId: string;
-        }, {
-            actionId: string;
-        }>;
-        statusUpdate: import("zod").ZodObject<{
-            actionId: import("zod").ZodString;
-            status: import("zod").ZodString;
-            feedback: import("zod").ZodOptional<import("zod").ZodString>;
-        }, "strip", import("zod").ZodTypeAny, {
-            status: string;
-            actionId: string;
-            feedback?: string | undefined;
-        }, {
-            status: string;
-            actionId: string;
-            feedback?: string | undefined;
-        }>;
-        implement: import("zod").ZodObject<{
-            actionId: import("zod").ZodString;
-            feedback: import("zod").ZodOptional<import("zod").ZodString>;
-        }, "strip", import("zod").ZodTypeAny, {
-            actionId: string;
-            feedback?: string | undefined;
-        }, {
-            actionId: string;
-            feedback?: string | undefined;
-        }>;
-        filter: import("zod").ZodObject<{
-            contactId: import("zod").ZodOptional<import("zod").ZodString>;
-            sessionId: import("zod").ZodOptional<import("zod").ZodString>;
-            status: import("zod").ZodOptional<import("zod").ZodString>;
-            actionType: import("zod").ZodOptional<import("zod").ZodString>;
-            implemented: import("zod").ZodOptional<import("zod").ZodBoolean>;
-            startDate: import("zod").ZodOptional<import("zod").ZodString>;
-            endDate: import("zod").ZodOptional<import("zod").ZodString>;
-        }, "strip", import("zod").ZodTypeAny, {
-            status?: string | undefined;
-            contactId?: string | undefined;
-            sessionId?: string | undefined;
-            actionType?: string | undefined;
-            implemented?: boolean | undefined;
-            startDate?: string | undefined;
-            endDate?: string | undefined;
-        }, {
-            status?: string | undefined;
-            contactId?: string | undefined;
-            sessionId?: string | undefined;
-            actionType?: string | undefined;
-            implemented?: boolean | undefined;
-            startDate?: string | undefined;
-            endDate?: string | undefined;
-        }>;
-        types: import("zod").ZodEnum<["contact_enrichment", "follow_up_suggestion", "session_insight", "wellness_recommendation", "relationship_opportunity", "content_suggestion", "other"]>;
-        statuses: import("zod").ZodEnum<["pending", "approved", "rejected", "implemented", "deferred"]>;
-        priorities: import("zod").ZodEnum<["high", "medium", "low"]>;
-    };
+    Session: any;
+    AiAction: any;
     Note: {
         base: import("zod").ZodObject<{
             contact_id: import("zod").ZodString;
@@ -902,20 +508,20 @@ export declare const Schemas: {
             sentiment: import("zod").ZodOptional<import("zod").ZodString>;
         }, "strip", import("zod").ZodTypeAny, {
             contactId?: string | undefined;
-            sessionId?: string | undefined;
-            sentiment?: string | undefined;
-            topicTag?: string | undefined;
             startDate?: string | undefined;
             endDate?: string | undefined;
+            sessionId?: string | undefined;
+            topicTag?: string | undefined;
             hasAiSummary?: boolean | undefined;
+            sentiment?: string | undefined;
         }, {
             contactId?: string | undefined;
-            sessionId?: string | undefined;
-            sentiment?: string | undefined;
-            topicTag?: string | undefined;
             startDate?: string | undefined;
             endDate?: string | undefined;
+            sessionId?: string | undefined;
+            topicTag?: string | undefined;
             hasAiSummary?: boolean | undefined;
+            sentiment?: string | undefined;
         }>;
         aiAnalysis: import("zod").ZodObject<{
             noteId: import("zod").ZodString;
@@ -1283,3 +889,4 @@ export declare const Schemas: {
         }>;
     };
 };
+//# sourceMappingURL=index.d.ts.map

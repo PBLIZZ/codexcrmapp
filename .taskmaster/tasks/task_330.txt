@@ -1,0 +1,16 @@
+# Task ID: 330
+# Title: Final Codebase Review and Architectural Compliance Check
+# Status: pending
+# Dependencies: 329
+# Priority: medium
+# Description: Conduct a final review of the refactored codebase to ensure adherence to architectural principles and best practices.
+# Details:
+Review the following:
+1.  **Dependency Flow:** Confirm that `apps/web` and `packages/api` depend on `packages/auth`, and `packages/auth` has no internal workspace dependencies.
+2.  **Single Source of Truth:** Verify that all Supabase client creation logic is centralized within `packages/auth`.
+3.  **Security:** Ensure `supabase.auth.getUser()` is consistently used for server-side revalidation in server components.
+4.  **Cookie Management:** Confirm that `middleware.ts` is the sole place for writing session cookies.
+5.  **Code Cleanliness:** Check for any remaining legacy Supabase client code or redundant files.
+
+# Test Strategy:
+Perform a comprehensive code review of the relevant files and directories. Use static analysis tools if available to check for dependency violations. Verify the absence of the old `apps/web/lib/supabase` directory.

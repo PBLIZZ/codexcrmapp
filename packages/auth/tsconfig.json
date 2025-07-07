@@ -1,8 +1,16 @@
 {
-  "extends": "@codexcrm/config/typescript/base",
-  "include": ["src"],
-  "exclude": ["dist", "node_modules"],
-  "compilerOptions": {
-    "outDir": "dist"
-  }
+    "extends": "@codexcrm/config-typescript/base.json",
+    "include": ["src"],
+    "exclude": ["dist", "node_modules"],
+    "compilerOptions": {
+      "composite": true,
+      "outDir": "dist",
+      "rootDir": "src",
+      "paths": {
+        "@codexcrm/trpc": ["../trpc/src"]
+      }
+    },
+    "references": [
+      { "path": "../trpc" }
+    ]
 }

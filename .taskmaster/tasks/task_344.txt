@@ -1,0 +1,11 @@
+# Task ID: 344
+# Title: Measure Dependency Count Reduction
+# Status: pending
+# Dependencies: 343
+# Priority: medium
+# Description: Measure and confirm the reduction in total dependency count, aiming for a 30% reduction.
+# Details:
+Before starting the cleanup, record the total number of installed packages (e.g., by analyzing `pnpm-lock.yaml` or using `pnpm list --json`). After all cleanup and centralization tasks are complete, re-measure the total dependency count. Compare the two numbers to verify the target reduction. This metric directly reflects the success of dependency cleanup and centralization.
+
+# Test Strategy:
+Compare the total number of unique packages in `pnpm-lock.yaml` before and after the changes. Calculate the percentage reduction to ensure it meets or exceeds 30%.

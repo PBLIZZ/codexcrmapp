@@ -1,5 +1,5 @@
 import type { Config } from 'tailwindcss';
-import { tailwindPreset } from '@codexcrm/config/tailwind';
+import { tailwindPreset } from '@codexcrm/config-tailwind';
 
 const config: Config = {
   presets: [tailwindPreset],
@@ -10,3 +10,5 @@ content: [
     '../../packages/ui/src/**/*.{js,ts,jsx,tsx}',
   ],
 };
+
+export default config;

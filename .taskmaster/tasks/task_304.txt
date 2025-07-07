@@ -9,17 +9,3 @@ This involves creating the frontend form and connecting it to a backend tRPC mut
 
 # Test Strategy:
 Go to the `/tasks` page. Type 'My first fully functional task' into the add task form and submit it. The task should instantly appear in your task list (via optimistic update) and should remain there after a full page refresh.
-
-# Subtasks:
-## 1. Implement `task.create` tRPC Mutation [pending]
-### Dependencies: None
-### Description: Flesh out the `task.create` procedure in `taskRouter` to save a new task to the database.
-### Details:
-The mutation will take an input `{ title: string, projectId?: string }`. It should insert a new record into the `tasks` table with the provided data and the current user's ID.
-
-## 2. Build 'Add Task' Form Component [pending]
-### Dependencies: None
-### Description: Create the UI form for adding new tasks.
-### Details:
-Create a new component `AddTaskForm.tsx`. It will contain a single text input. On submit, it will call the `api.task.create.useMutation()` hook. Implement logic to clear the input and refetch the task list upon successful creation.
-

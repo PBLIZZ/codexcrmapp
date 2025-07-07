@@ -5,9 +5,9 @@ import { useRouter } from 'next/navigation';
 import Script from 'next/script';
 import { useEffect, useRef } from 'react';
 
-import { createClient } from '@/lib/supabase/client';
+import { createBrowserClient } from '@codexcrm/auth';
 
-const supabase = createClient();
+const supabase = createBrowserClient();
 
 const OneTapComponent = () => {
   const router = useRouter();

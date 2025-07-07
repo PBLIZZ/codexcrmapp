@@ -6,7 +6,6 @@ import type { NextConfig } from "next";
  */
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  typedRoutes: true,
   compress: true,
   poweredByHeader: false,
   
@@ -16,6 +15,7 @@ const nextConfig: NextConfig = {
     '@codexcrm/database',
     '@codexcrm/ui',
     '@codexcrm/background-jobs',
+    '@codexcrm/trpc',
   ],
 
   serverExternalPackages: ['@whatwg-node/fetch', '@prisma/client', 'bcryptjs'],

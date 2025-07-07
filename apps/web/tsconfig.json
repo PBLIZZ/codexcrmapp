@@ -1,5 +1,5 @@
 {
-  "extends": "@codexcrm/config/typescript/nextjs",
+  "extends": "@codexcrm/config-typescript/nextjs.json",
   "compilerOptions": {
     "tsBuildInfoFile": ".next/tsconfig.tsbuildinfo",
     "baseUrl": ".",
@@ -14,7 +14,8 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "lib/trpc/**/*.ts"
   ],
   "exclude": [
     "node_modules"

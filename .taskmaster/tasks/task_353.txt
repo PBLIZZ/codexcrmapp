@@ -1,0 +1,11 @@
+# Task ID: 353
+# Title: Centralize PostCSS Configuration
+# Status: pending
+# Dependencies: 348, 350
+# Priority: medium
+# Description: Consolidate PostCSS tooling for Tailwind processing by centralizing its configuration.
+# Details:
+Move individual `postcss.config.js` files from packages to a single, centralized `postcss.config.js` in the monorepo root. Add `postcss@^8.4.33` to the root `package.json` as a `devDependency`. Configure the root PostCSS file to handle Tailwind CSS processing for all relevant packages. This might involve using `require.resolve` for plugins or dynamically loading configurations based on the current package. Ensure that the build process for packages using PostCSS (e.g., UI package) correctly picks up the centralized configuration. Refer to PostCSS documentation for configuration options: `https://postcss.org/`. Consider using `postcss-load-config` for more advanced configuration loading.
+
+# Test Strategy:
+Build packages that utilize PostCSS (e.g., UI package). Inspect the generated CSS output to ensure Tailwind CSS styles are correctly processed and applied. Verify that no PostCSS-related errors occur during the build. Check for consistent CSS output across different packages.

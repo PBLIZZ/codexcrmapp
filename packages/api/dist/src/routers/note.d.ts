@@ -77,3 +77,4 @@ export declare const noteRouter: import("@trpc/server").TRPCBuiltRouter<{
         meta: object;
     }>;
 }>>;
+//# sourceMappingURL=note.d.ts.map

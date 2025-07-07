@@ -1,6 +1,7 @@
 import { appRouter, createContext } from '@codexcrm/api';
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 import type { AnyRouter } from '@trpc/server';
+import { createServerClient } from '@/lib/auth/server';
 
 /**
  * tRPC API endpoint configuration
@@ -44,7 +45,8 @@ export const GET = async (req: Request) => {
       // Pass the request object to createContext with proper error handling
       createContext: async () => {
         try {
-          const ctx = await createContext({ req });
+          const supabaseUser = await createServerClient();
+          const ctx = await createContext({ req, supabaseUser });
           return ctx;
         } catch (contextError) {
           console.error('[TRPC API] Context creation error:', contextError);

@@ -9,29 +9,3 @@ Implement social media integration with: 1) Instagram Basic Display API for prof
 
 # Test Strategy:
 OAuth flow testing for each platform, API data retrieval validation, engagement metrics accuracy, and rate limit compliance testing
-
-# Subtasks:
-## 1. Instagram API Integration [pending]
-### Dependencies: None
-### Description: Implement Instagram Basic Display API integration with OAuth 2.0 authentication, user profile data retrieval, and media content access functionality
-### Details:
-Set up Instagram app registration, implement OAuth flow for user authorization, create endpoints for fetching user profile information and media posts, handle API rate limits and error responses, implement token refresh mechanism
-
-## 2. Facebook Graph API Setup [pending]
-### Dependencies: None
-### Description: Configure Facebook Graph API integration with proper permissions, user data access, and page management capabilities
-### Details:
-Register Facebook app and configure Graph API permissions, implement Facebook Login OAuth flow, create services for user profile data, friends list, and page information retrieval, handle API versioning and deprecation notices
-
-## 3. LinkedIn API Connection [pending]
-### Dependencies: None
-### Description: Establish LinkedIn API integration for professional profile data access and network information retrieval
-### Details:
-Set up LinkedIn app credentials and API access, implement LinkedIn OAuth 2.0 authorization flow, create endpoints for profile data, connections, and company information, handle LinkedIn-specific rate limiting and data access restrictions
-
-## 4. Unified Social Media Interface with OAuth Flows [pending]
-### Dependencies: 236.1, 236.2, 236.3
-### Description: Create a centralized interface that abstracts all social media APIs with standardized OAuth management and extensible architecture
-### Details:
-Design unified API interface for all social platforms, implement centralized OAuth token management system, create abstract base classes for future platform extensions, build configuration management for API credentials, implement unified error handling and logging across all platforms
-

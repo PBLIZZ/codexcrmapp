@@ -9,17 +9,3 @@ This feature provides a direct, actionable link between the planning done in the
 
 # Test Strategy:
 Create a new task with a title 'My Synced Task' and set its due date to next Tuesday at 2 PM. Open the task's detail view and click 'Add to Google Calendar'. Open your Google Calendar; a new event titled 'My Synced Task' should appear at the correct time on next Tuesday's date.
-
-# Subtasks:
-## 1. Implement `task.sendToGoogleCalendar` tRPC Mutation [pending]
-### Dependencies: None
-### Description: Create a backend procedure to create a Google Calendar event from a task.
-### Details:
-In `taskRouter`, create a new mutation `sendToGoogleCalendar(input: { taskId: string })`. This procedure will fetch the task details, retrieve the user's Google OAuth tokens from the vault, and then use the Google Calendar API to create a new event with the task's title and due date.
-
-## 2. Add 'Add to Calendar' Button in Task UI [pending]
-### Dependencies: None
-### Description: Add a UI button to trigger the calendar sync for a specific task.
-### Details:
-In the task detail view, conditionally render an 'Add to Google Calendar' button only if the task has a `due_date` set and the user has connected their calendar. The button's `onClick` handler should call the `api.task.sendToGoogleCalendar.useMutation()` hook.
-

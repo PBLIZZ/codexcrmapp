@@ -1,0 +1,21 @@
+# Task ID: 351
+# Title: Optimize UI Package Next.js Dependency
+# Status: pending
+# Dependencies: 348
+# Priority: medium
+# Description: Optimize the UI package's Next.js dependency by converting it to a peer dependency.
+# Details:
+In the UI package's `package.json`, move `next` from `dependencies` (`^15.0.0`) to `peerDependencies`. This signifies that the UI package expects the consuming application to provide Next.js, rather than bundling it directly. Update the `package.json` to include a `peerDependenciesMeta` entry if specific versions or optionality are required. Ensure the UI package still builds correctly and functions when consumed by a Next.js application. This change reduces the UI package's bundle size and prevents potential version conflicts. For example:
+```json
+"peerDependencies": {
+  "next": "^15.0.0"
+},
+"peerDependenciesMeta": {
+  "next": {
+    "optional": false
+  }
+}
+```
+
+# Test Strategy:
+Build the UI package. Verify that it builds successfully without errors related to Next.js. Integrate the UI package into a sample Next.js application. Run the Next.js application and ensure all UI components render and function correctly. Check the bundle size of the UI package to confirm reduction. Verify that proper peer dependency warnings (if any) are displayed during installation in consuming projects.

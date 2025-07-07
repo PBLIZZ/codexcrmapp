@@ -6,31 +6,6 @@
 # Description: Modify the Supabase authentication integration to collect and store the user's name during sign-up.
 # Details:
 1. Update the sign-up function to include the name field in the metadata:
-```tsx
-const handleSignUp = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  
-  try {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: name // Store name in user metadata
-        }
-      }
-    });
-    
-    if (error) throw error;
-    // Handle successful sign-up
-  } catch (error) {
-    // Handle error
-  } finally {
-    setLoading(false);
-  }
-};
-```
 
 2. Verify that the name is being stored in `auth.users.raw_user_meta_data`
 

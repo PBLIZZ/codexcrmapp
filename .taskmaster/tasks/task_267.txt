@@ -1,11 +1,11 @@
 # Task ID: 267
 # Title: Create TypeScript Type Definitions for Database Schema
 # Status: pending
-# Dependencies: 266
+# Dependencies: 266 (Not found)
 # Priority: high
 # Description: Define comprehensive TypeScript interfaces and types that map database snake_case columns to camelCase JavaScript properties
 # Details:
-Create types/database.ts with interfaces for all database tables using snake_case naming. Create types/api.ts with corresponding camelCase interfaces for frontend consumption. Use utility types like CamelCase<T> or libraries like type-fest for automatic conversion. Example: interface UserRow { user_id: string; first_name: string; created_at: Date } and interface User { userId: string; firstName: string; createdAt: Date }. Leverage Supabase CLI to generate types: supabase gen types typescript --project-id YOUR_PROJECT_ID
+
 
 # Test Strategy:
 Compile TypeScript without errors. Create unit tests that verify type compatibility between database and API types. Test with sample data transformations.

@@ -2,6 +2,10 @@
 'use client';
 
 import { ReactNode } from 'react';
+import { AppSidebarController } from './AppSidebarController';
+import { DynamicBreadcrumb } from './DynamicBreadcrumb';
+import { MainSectionNav } from './MainSectionNav';
+import { OmniBotFloat } from './OmniBotFloat';
 import { Toaster } from 'sonner';
 
 // Import the layout primitives from your UI library

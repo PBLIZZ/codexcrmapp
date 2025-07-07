@@ -15,9 +15,9 @@ import {
   CardFooter,
 } from '@codexcrm/ui';
 import { Input } from '@codexcrm/ui';
-import { createClient } from '@/lib/supabase/client';
+import { createBrowserClient } from '@codexcrm/auth';
 
-const supabase = createClient();
+const supabase = createBrowserClient();
 
 // Eye Icon SVG Components
 const EyeIcon = ({ className }: { className?: string }) => (
@@ -291,7 +291,7 @@ export default function SignUpPage() {
                 required
                 placeholder='Full Name'
                 value={fullName}
-                onChange={(e) => {
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   setFullName(e.target.value);
                   if (fullNameError) {
                     setFullNameError(null);
@@ -337,7 +337,7 @@ export default function SignUpPage() {
                 required
                 placeholder='Email' // Label as placeholder
                 value={email}
-                onChange={(e) => {
+                onChange={(e: React.ChangeEvent<HTMLInputElement> ) => {
                   setEmail(e.target.value);
                   if (emailError) {
                     setEmailError(null);
@@ -385,7 +385,7 @@ export default function SignUpPage() {
                 required
                 placeholder='Password' // Label as placeholder
                 value={password}
-                onChange={(e) => {
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   setPassword(e.target.value);
                   if (passwordError) {
                     setPasswordError(null);
@@ -439,8 +439,7 @@ export default function SignUpPage() {
             {passwordError && <p className='mt-1 text-xs text-red-600'>{passwordError}</p>}
             <PasswordRequirements password={password} />
             <div>
-              <Button
-                type='submit'
+              <Button variant='default' size='md' type='submit'
                 className='w-full flex justify-center disabled:opacity-50 bg-teal-800 hover:bg-teal-700 text-teal-200' // Orange button
                 disabled={isLoading}
               >

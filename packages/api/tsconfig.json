@@ -1,5 +1,5 @@
 {
-  "extends": "@codexcrm/config/typescript/base",
+  "extends": "@codexcrm/config-typescript/base.json",
   "include": ["src"],
   "exclude": ["dist", "node_modules"],
   "compilerOptions": {

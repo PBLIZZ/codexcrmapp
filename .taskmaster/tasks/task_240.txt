@@ -9,35 +9,3 @@ Set up testing infrastructure with: 1) Jest and React Testing Library for unit t
 
 # Test Strategy:
 Test coverage reporting, automated test execution in CI/CD, accessibility compliance validation, visual regression detection, and performance regression monitoring
-
-# Subtasks:
-## 1. Unit Testing Setup [pending]
-### Dependencies: None
-### Description: Configure unit testing framework, establish testing patterns, and create foundational test utilities for component and function testing
-### Details:
-Set up Jest/Vitest testing framework, configure test environment, create test utilities and mocks, establish testing conventions, implement code coverage reporting, and create initial unit tests for core components and utilities
-
-## 2. E2E Testing Implementation [pending]
-### Dependencies: 240.1
-### Description: Implement end-to-end testing framework and create comprehensive user journey tests
-### Details:
-Set up Playwright/Cypress framework, configure test environments, create page object models, implement user flow tests, set up test data management, and establish E2E testing best practices
-
-## 3. Accessibility Testing [pending]
-### Dependencies: 240.1
-### Description: Implement automated accessibility testing and establish compliance validation processes
-### Details:
-Integrate axe-core or similar accessibility testing tools, create automated a11y tests, implement WCAG compliance checks, set up screen reader testing, and establish accessibility testing guidelines
-
-## 4. Visual Regression Testing [pending]
-### Dependencies: 240.2
-### Description: Set up visual regression testing framework to detect unintended UI changes
-### Details:
-Configure visual testing tools (Percy, Chromatic, or Playwright visual comparisons), create baseline screenshots, implement visual diff detection, set up cross-browser visual testing, and establish visual review workflows
-
-## 5. CI/CD Pipeline Configuration [pending]
-### Dependencies: 240.1, 240.2, 240.3, 240.4
-### Description: Configure automated testing pipeline and deployment workflows with comprehensive quality gates
-### Details:
-Set up GitHub Actions/Jenkins pipeline, configure automated test execution, implement quality gates and coverage thresholds, set up parallel test execution, configure deployment automation, and establish testing reporting and notifications
-

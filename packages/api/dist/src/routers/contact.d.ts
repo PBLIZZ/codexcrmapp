@@ -57,8 +57,8 @@ export declare const contactRouter: import("@trpc/server").TRPCBuiltRouter<{
     }>;
     updateNotes: import("@trpc/server").TRPCMutationProcedure<{
         input: {
-            contactId: string;
             notes: string;
+            contactId: string;
         };
         output: {
             success: boolean;
@@ -73,3 +73,4 @@ export declare const contactRouter: import("@trpc/server").TRPCBuiltRouter<{
         meta: object;
     }>;
 }>>;
+//# sourceMappingURL=contact.d.ts.map

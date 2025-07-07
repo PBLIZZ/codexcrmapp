@@ -1,0 +1,11 @@
+# Task ID: 346
+# Title: Remove Next.js from Auth Package
+# Status: done
+# Dependencies: None
+# Priority: high
+# Description: Remove Next.js dependency from the auth package to ensure it remains framework-agnostic and eliminate architectural violations.
+# Details:
+Identify and remove `next` from `devDependencies` in the `auth` package's `package.json`. Verify that no other Next.js-specific code or configurations remain. Ensure the auth package's core functionality (e.g., authentication logic, utility functions) is not impacted and continues to work independently of a Next.js environment. This aligns with the architectural goal of keeping the auth package framework-agnostic. Use `npm uninstall next` or `yarn remove next` or `pnpm remove next` within the auth package directory.
+
+# Test Strategy:
+Run unit tests for the auth package. Verify that authentication flows (login, logout, session management) still function correctly in a test environment. Ensure no build errors or warnings related to missing Next.js dependencies appear after removal. Conduct integration tests with consuming applications to confirm auth functionality.
