@@ -3,6 +3,7 @@
 
 import prisma from '@codexcrm/database';
 import type { Session } from '@codexcrm/auth';
+import { supabaseAdmin } from './supabaseAdmin';
 
 /**
  * Creates the inner context for an tRPC procedure.
@@ -13,6 +14,7 @@ export const createInnerTRPCContext = (session: Session | null) => {
   return {
     prisma,
     session,
+    supabaseAdmin, // Added for storage operations
   };
 };
 
