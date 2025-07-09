@@ -1,19 +1,20 @@
 /* packages/ui/src/styles/globals.css */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 @layer base {
   /* ----------------------------------------- */
   /*  1. RAW COLOR PALETTE (YOUR BRAND ASSETS) */
   /* ----------------------------------------- */
   :root {
+    /* FONT FAMILIES */
+    --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
     /* SLATE (for backgrounds, text, borders) */
     --slate-50: oklch(0.985 0.01 250);
     --slate-100: oklch(0.97 0.008 250);
     --slate-200: oklch(0.87 0.01 250);
     --slate-600: oklch(0.5 0.05 250);
     --slate-900: oklch(0.27 0.05 250);
+    --slate-400: oklch(0.65 0.03 250); /* Added for dark mode muted text */
 
     /* TEAL (Primary Brand Color) */
     --teal-50: oklch(0.97 0.02 180);
@@ -36,7 +37,7 @@
     --amber-50: oklch(0.97 0.10 85);
     --amber-100: oklch(0.95 0.15 85); /* Your chosen --accent */
 
-    /* SKY (Info/Highlight Color) */
+    /* SKY (Info/Highlight Color) - Not used in semantic tokens yet, but good to have */
     --sky-50: oklch(0.97 0.03 235);
     --sky-100: oklch(0.94 0.06 235); /* Your chosen --info */
 
@@ -71,6 +72,16 @@
     --border: var(--slate-200);
     --input: var(--border);
     --ring: oklch(0.7 0.05 250); /* A mid-slate for focus rings */
+    
+    /* Sidebar Theme */
+    --sidebar-background: var(--slate-100);
+    --sidebar-foreground: var(--slate-900);
+    --sidebar-primary: var(--primary);
+    --sidebar-primary-foreground: var(--primary-foreground);
+    --sidebar-accent: var(--accent);
+    --sidebar-accent-foreground: var(--accent-foreground);
+    --sidebar-border: var(--border);
+    --sidebar-ring: var(--ring);
   }
 
   /* ----------------------------------------- */
@@ -99,17 +110,19 @@
     --border: oklch(0.35 0.01 250);
     --input: var(--border);
     --ring: oklch(0.6 0.02 250);
+    
+    /* Sidebar Theme - Dark Mode */
+    --sidebar-background: oklch(0.16 0.01 250); /* Slightly darker than regular background */
+    --sidebar-foreground: var(--foreground);
+    --sidebar-primary: var(--primary);
+    --sidebar-primary-foreground: var(--primary-foreground);
+    --sidebar-accent: var(--accent);
+    --sidebar-accent-foreground: var(--accent-foreground);
+    --sidebar-border: oklch(0.3 0.01 250); /* Slightly darker border */
+    --sidebar-ring: var(--ring);
   }
 }
 
 /* ----------------------------------------- */
 /*  4. BASE STYLES                           */
 /* ----------------------------------------- */
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground antialiased;
-  }
-}

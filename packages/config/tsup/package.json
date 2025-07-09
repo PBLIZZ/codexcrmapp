@@ -2,6 +2,7 @@
   "name": "@codexcrm/config-tsup",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "main": "index.ts",
   "types": "index.ts",
   "packageManager": "pnpm@10.12.4",

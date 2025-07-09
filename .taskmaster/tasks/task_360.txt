@@ -1,0 +1,20 @@
+# Task ID: 360
+# Title: Audit Server Components for Old Supabase Patterns
+# Status: pending
+# Dependencies: 359
+# Priority: medium
+# Description: Identify all Server Components in apps/web that use old Supabase patterns
+# Details:
+1. Search in the `apps/web/app` directory for all `.tsx` files that do NOT have `'use client'` directive
+2. Look for files that:
+   - Import from `@/lib/supabase/server` or similar
+   - Use `createServerSupabaseClient()` or similar
+   - Have `supabase.from('table_name')` calls
+   - Use `async/await` for data fetching
+3. Create a list of all such files with their current import statements and data fetching patterns
+4. Do not modify any code, only document findings
+
+# Test Strategy:
+1. Provide a complete list of affected files
+2. Show the specific lines that need to be changed
+3. Confirm no Server Components were missed

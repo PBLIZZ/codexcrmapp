@@ -2,6 +2,7 @@
   "name": "@codexcrm/config-tailwind",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "main": "tailwind.config.ts",
   "types": "tailwind.config.ts",
   "packageManager": "pnpm@10.12.4",

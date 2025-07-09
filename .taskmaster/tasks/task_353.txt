@@ -1,6 +1,6 @@
 # Task ID: 353
 # Title: Centralize PostCSS Configuration
-# Status: pending
+# Status: in-progress
 # Dependencies: 348, 350
 # Priority: medium
 # Description: Consolidate PostCSS tooling for Tailwind processing by centralizing its configuration.

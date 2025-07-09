@@ -1,6 +1,6 @@
 # Task ID: 350
 # Title: Centralize ESLint Versions
-# Status: pending
+# Status: done
 # Dependencies: 348
 # Priority: medium
 # Description: Ensure consistent ESLint versions across all packages by centralizing its configuration and dependencies.

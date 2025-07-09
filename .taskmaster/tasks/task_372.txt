@@ -1,0 +1,16 @@
+# Task ID: 372
+# Title: Remove Old Supabase Server Utility
+# Status: pending
+# Dependencies: 361, 362, 363, 369, 370, 371
+# Priority: low
+# Description: Remove or comment out the old Supabase server utility file
+# Details:
+1. Locate `apps/web/lib/supabase/server.ts` or similar Supabase server utility file
+2. Comment out the entire file content with a note: `// DEPRECATED: Replaced by tRPC server client`
+3. Do not delete the file (in case rollback is needed)
+4. Do not modify any other files
+
+# Test Strategy:
+1. Verify the file is commented out
+2. Check that the deprecation note is added
+3. Confirm file still exists but is non-functional

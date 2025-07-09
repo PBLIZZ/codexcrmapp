@@ -1,9 +1,9 @@
 import { initTRPC, TRPCError, inferProcedureOutput } from '@trpc/server';
 import superjson from 'superjson';
 
-import type { createContext } from './context';
+import type { createInnerTRPCContext } from './context';
 
-const t = initTRPC.context<typeof createContext>().create({
+const t = initTRPC.context<typeof createInnerTRPCContext>().create({
   transformer: superjson,
 });
 
@@ -16,11 +16,11 @@ export const middleware = t.middleware;
  * Checks if the user is authenticated and adds the user to the context
  */
 const isAuthed = t.middleware(({ ctx, next }) => {
-  if (!ctx.user) throw new TRPCError({
+  if (!ctx.session?.user) throw new TRPCError({
     code: 'UNAUTHORIZED',
     message: 'You must be logged in to access this resource'
   });
-  return next({ ctx: { ...ctx, user: ctx.user! } });
+  return next({ ctx: { ...ctx, user: ctx.session.user } });
 });
 
 /**
@@ -30,7 +30,7 @@ const isAuthed = t.middleware(({ ctx, next }) => {
  */
 export const hasRole = (requiredRoles: string[]) =>
   t.middleware(({ ctx, next }) => {
-    if (!ctx.user) {
+    if (!ctx.session?.user) {
       throw new TRPCError({
         code: 'UNAUTHORIZED',
         message: 'You must be logged in to access this resource',
@@ -38,7 +38,7 @@ export const hasRole = (requiredRoles: string[]) =>
     }
 
     // Get user roles from the session claims
-    const userRoles = ctx.session?.user?.app_metadata?.roles || [];
+    const userRoles = ctx.session.user.app_metadata?.roles || [];
     
     // Check if the user has any of the required roles
     const hasRequiredRole = requiredRoles.some(role => userRoles.includes(role));
@@ -53,7 +53,7 @@ export const hasRole = (requiredRoles: string[]) =>
     return next({
       ctx: {
         ...ctx,
-        user: ctx.user,
+        user: ctx.session.user,
         roles: userRoles,
       },
     });
@@ -71,11 +71,11 @@ export const rateLimit = (limit: number, timeWindowMs: number = 60000) => {
   const store = new Map<string, { count: number, resetTime: number }>();
   
   return t.middleware(({ ctx, next }) => {
-    if (!ctx.user) {
+    if (!ctx.session?.user) {
       return next({ ctx });
     }
     
-    const userId = ctx.user.id;
+    const userId = ctx.session.user.id;
     const now = Date.now();
     const userRateLimit = store.get(userId);
     

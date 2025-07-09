@@ -1,0 +1,24 @@
+# Task ID: 359
+# Title: Create Server-Side tRPC Client Helper
+# Status: pending
+# Dependencies: 358
+# Priority: high
+# Description: Create the server-side tRPC client helper that allows Server Components to call the API without HTTP requests
+# Details:
+1. Create the file `apps/web/lib/trpc/server-client.ts`
+2. Add the exact content:
+```typescript
+import { appRouter } from '@codexcrm/api/root';
+import { createContext } from '@codexcrm/api/context';
+
+// This server client allows you to call your API from Server Components
+// without making an HTTP request.
+export const api = appRouter.createCaller(await createContext({} as any));
+```
+3. Do not modify any other files
+4. Do not change imports or add additional logic
+
+# Test Strategy:
+1. Verify the file exists at the correct path
+2. Check that the file imports from the correct packages
+3. Ensure the exported `api` object is available for import

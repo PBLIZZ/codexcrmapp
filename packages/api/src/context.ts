@@ -1,75 +1,20 @@
-import type { Session, User, SupabaseClient } from '@supabase/supabase-js';
-import type { Database } from '@codexcrm/database';
+// path: packages/api/src/context.ts
+// This file is now PURE. It has no knowledge of Next.js or HTTP requests.
 
-import { supabaseAdmin } from './supabaseAdmin';
+import prisma from '@codexcrm/database';
+import type { Session } from '@codexcrm/auth';
 
-/** Shape of the tRPC context object */
-export interface Context {
-  user: User | null;
-  session: Session | null;
-  supabaseAdmin: typeof supabaseAdmin;
-  supabaseUser: SupabaseClient<Database>;
-}
+/**
+ * Creates the inner context for an tRPC procedure.
+ * This is the context that your business logic will receive.
+ * @param session The user session object (or null).
+ */
+export const createInnerTRPCContext = (session: Session | null) => {
+  return {
+    prisma,
+    session,
+  };
+};
 
-/** Builds tRPC context for each request */
-export async function createContext({
-  req: _req,
-  supabaseUser,
-}: {
-  req: Request;
-  supabaseUser: SupabaseClient<Database>;
-}): Promise<Context> {
-  // Use the supabase client provided by the caller (Next.js app)
-  const supabase = supabaseUser;
-
-  try {
-    // Use getUser() as the primary authentication method (recommended by Supabase)
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
-    if (userError) {
-      console.error('tRPC context error getting user:', userError.message);
-    }
-
-    // Only get session if needed for specific session-related data
-    let session = null;
-    if (user) {
-      const {
-        data: { session: sessionData },
-        error: sessionError,
-      } = await supabase.auth.getSession();
-      if (sessionError) {
-        console.error(
-          'tRPC context error getting session:',
-          sessionError.message
-        );
-      } else {
-        session = sessionData;
-      }
-    }
-
-    console.error('tRPC context auth status:', {
-      authenticated: !!user,
-      userId: user?.id,
-      email: user?.email,
-      cookiesFound: !!user,
-    });
-
-    return {
-      user,
-      session,
-      supabaseAdmin,
-      supabaseUser: supabase,
-    };
-  } catch (error) {
-    console.error('tRPC context error:', error);
-
-    return {
-      user: null,
-      session: null,
-      supabaseAdmin,
-      supabaseUser: supabase,
-    };
-  }
-}
+// We also export the type for convenience.
+export type Context = ReturnType<typeof createInnerTRPCContext>;

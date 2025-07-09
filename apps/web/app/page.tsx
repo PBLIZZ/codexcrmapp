@@ -1,3 +1,4 @@
+//apps/web/app/(authorisedRoute)/dashboard/page.tsx
 import React from 'react';
 import { DashboardWidgets } from './(authorisedRoute)/dashboard/components/DashboardWidgets';
 

@@ -1,0 +1,20 @@
+# Task ID: 368
+# Title: Audit Server Actions Directory
+# Status: pending
+# Dependencies: 359
+# Priority: medium
+# Description: Identify all Server Actions that use old Supabase patterns
+# Details:
+1. Search in `apps/web/actions` directory for all `.ts` files
+2. Look for files that:
+   - Have `'use server'` directive
+   - Import from `@/lib/supabase/server` or similar
+   - Use `createServerSupabaseClient()` or similar
+   - Have `supabase.from('table_name')` calls
+3. Create a list of all such files with their current patterns
+4. Do not modify any code, only document findings
+
+# Test Strategy:
+1. Provide a complete list of affected Server Action files
+2. Show the specific patterns that need to be changed
+3. Confirm no Server Actions were missed

@@ -738,11 +738,243 @@
         ],
         "status": "pending",
         "subtasks": []
+      },
+      {
+        "id": 358,
+        "title": "Project Phoenix: Verify Backend Foundation",
+        "description": "Validate that the backend packages are correctly structured according to the latest architectural decisions",
+        "details": "Before starting the Project Phoenix integration, ensure:\n1. `@codexcrm/api` correctly creates and exports its `appRouter` and `createContext` function\n2. The `apps/web/app/api/trpc/[trpc]/route.ts` file is correctly set up to handle requests and pass them to the `appRouter`\n3. Verify that the API endpoint is accessible and responds correctly to simple requests",
+        "testStrategy": "1. Check if the `@codexcrm/api` package exports the expected objects\n2. Run a basic HTTP request against the tRPC API endpoint to verify it responds\n3. Test a simple procedure call to confirm the full request-response cycle works",
+        "priority": "high",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 359,
+        "title": "Create Server-Side tRPC Client Helper",
+        "description": "Create the server-side tRPC client helper that allows Server Components to call the API without HTTP requests",
+        "details": "1. Create the file `apps/web/lib/trpc/server-client.ts`\n2. Add the exact content:\n```typescript\nimport { appRouter } from '@codexcrm/api/root';\nimport { createContext } from '@codexcrm/api/context';\n\n// This server client allows you to call your API from Server Components\n// without making an HTTP request.\nexport const api = appRouter.createCaller(await createContext({} as any));\n```\n3. Do not modify any other files\n4. Do not change imports or add additional logic",
+        "testStrategy": "1. Verify the file exists at the correct path\n2. Check that the file imports from the correct packages\n3. Ensure the exported `api` object is available for import",
+        "priority": "high",
+        "dependencies": [
+          358
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 360,
+        "title": "Audit Server Components for Old Supabase Patterns",
+        "description": "Identify all Server Components in apps/web that use old Supabase patterns",
+        "details": "1. Search in the `apps/web/app` directory for all `.tsx` files that do NOT have `'use client'` directive\n2. Look for files that:\n   - Import from `@/lib/supabase/server` or similar\n   - Use `createServerSupabaseClient()` or similar\n   - Have `supabase.from('table_name')` calls\n   - Use `async/await` for data fetching\n3. Create a list of all such files with their current import statements and data fetching patterns\n4. Do not modify any code, only document findings",
+        "testStrategy": "1. Provide a complete list of affected files\n2. Show the specific lines that need to be changed\n3. Confirm no Server Components were missed",
+        "priority": "medium",
+        "dependencies": [
+          359
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 361,
+        "title": "Refactor Contact List Page Server Component",
+        "description": "Replace old Supabase patterns with new tRPC server client in the contacts page",
+        "details": "1. Open `apps/web/app/contacts/page.tsx`\n2. Remove any imports related to Supabase (e.g., `import { createServerSupabaseClient } from '@/lib/supabase/server'`)\n3. Add import: `import { api } from '@/lib/trpc/server-client';`\n4. Replace any `supabase.from('contacts').select('*')` or similar with `await api.contact.getAll()`\n5. Remove any `createServerSupabaseClient()` calls\n6. Keep all UI components and other logic unchanged\n7. Do not modify any other files",
+        "testStrategy": "1. Verify no Supabase imports remain\n2. Check that tRPC server client is imported\n3. Confirm data fetching uses the new API pattern",
+        "priority": "high",
+        "dependencies": [
+          360
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 362,
+        "title": "Refactor Dashboard Page Server Component",
+        "description": "Replace old Supabase patterns with new tRPC server client in the dashboard page",
+        "details": "1. Open `apps/web/app/dashboard/page.tsx` or `apps/web/app/page.tsx` (whichever contains the dashboard)\n2. Remove any imports related to Supabase\n3. Add import: `import { api } from '@/lib/trpc/server-client';`\n4. Replace any database queries with appropriate `await api.*` calls\n5. Remove any `createServerSupabaseClient()` calls\n6. Keep all UI components and other logic unchanged\n7. Do not modify any other files",
+        "testStrategy": "1. Verify no Supabase imports remain\n2. Check that tRPC server client is imported\n3. Confirm data fetching uses the new API pattern",
+        "priority": "high",
+        "dependencies": [
+          360
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 363,
+        "title": "Refactor Individual Contact Page Server Component",
+        "description": "Replace old Supabase patterns with new tRPC server client in the individual contact page",
+        "details": "1. Open `apps/web/app/contacts/[id]/page.tsx` or similar contact detail page\n2. Remove any imports related to Supabase\n3. Add import: `import { api } from '@/lib/trpc/server-client';`\n4. Replace any `supabase.from('contacts').select('*').eq('id', id)` with `await api.contact.getById({ id })`\n5. Remove any `createServerSupabaseClient()` calls\n6. Keep all UI components and other logic unchanged\n7. Do not modify any other files",
+        "testStrategy": "1. Verify no Supabase imports remain\n2. Check that tRPC server client is imported\n3. Confirm data fetching uses the new API pattern with proper parameter passing",
+        "priority": "high",
+        "dependencies": [
+          360
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 364,
+        "title": "Audit Client Components for Old Patterns",
+        "description": "Identify all Client Components that use old fetch patterns or direct API calls",
+        "details": "1. Search in `apps/web` for all `.tsx` files that have `'use client'` directive\n2. Look for files that:\n   - Use `fetch('/api/contacts')` or similar direct API calls\n   - Use `useEffect` with data fetching\n   - Have form submission handlers that call `fetch()`\n3. Create a list of all such files with their current patterns\n4. Do not modify any code, only document findings",
+        "testStrategy": "1. Provide a complete list of affected Client Components\n2. Show the specific patterns that need to be changed\n3. Confirm no Client Components were missed",
+        "priority": "medium",
+        "dependencies": [
+          359
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 365,
+        "title": "Refactor Contact Form Client Component",
+        "description": "Replace old fetch patterns with tRPC mutations in contact form component",
+        "details": "1. Find the contact form component (likely in `apps/web/components` or similar)\n2. Add import: `import { trpc } from '@/lib/trpc/client';`\n3. Replace any `fetch('/api/contacts', { method: 'POST', ... })` with `trpc.contact.create.useMutation()`\n4. Update form submission handler to use `mutation.mutate(data)` instead of fetch\n5. Remove any direct fetch calls\n6. Keep all UI logic and validation unchanged\n7. Do not modify any other files",
+        "testStrategy": "1. Verify tRPC client is imported\n2. Check that mutations are used instead of fetch\n3. Confirm form submission logic works with new pattern",
+        "priority": "high",
+        "dependencies": [
+          364
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 366,
+        "title": "Refactor Contact Edit Client Component",
+        "description": "Replace old fetch patterns with tRPC mutations in contact edit component",
+        "details": "1. Find the contact edit component (likely in `apps/web/components` or similar)\n2. Add import: `import { trpc } from '@/lib/trpc/client';`\n3. Replace any `fetch('/api/contacts/[id]', { method: 'PUT', ... })` with `trpc.contact.update.useMutation()`\n4. Update form submission handler to use `mutation.mutate({ id, ...data })` instead of fetch\n5. Remove any direct fetch calls\n6. Keep all UI logic and validation unchanged\n7. Do not modify any other files",
+        "testStrategy": "1. Verify tRPC client is imported\n2. Check that update mutations are used instead of fetch\n3. Confirm edit form submission logic works with new pattern",
+        "priority": "high",
+        "dependencies": [
+          364
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 367,
+        "title": "Refactor Contact Delete Client Component",
+        "description": "Replace old fetch patterns with tRPC mutations in contact delete component",
+        "details": "1. Find the contact delete component or delete handler (likely in `apps/web/components` or similar)\n2. Add import: `import { trpc } from '@/lib/trpc/client';`\n3. Replace any `fetch('/api/contacts/[id]', { method: 'DELETE', ... })` with `trpc.contact.delete.useMutation()`\n4. Update delete handler to use `mutation.mutate({ id })` instead of fetch\n5. Remove any direct fetch calls\n6. Keep all UI logic and confirmation dialogs unchanged\n7. Do not modify any other files",
+        "testStrategy": "1. Verify tRPC client is imported\n2. Check that delete mutations are used instead of fetch\n3. Confirm delete functionality works with new pattern",
+        "priority": "high",
+        "dependencies": [
+          364
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 368,
+        "title": "Audit Server Actions Directory",
+        "description": "Identify all Server Actions that use old Supabase patterns",
+        "details": "1. Search in `apps/web/actions` directory for all `.ts` files\n2. Look for files that:\n   - Have `'use server'` directive\n   - Import from `@/lib/supabase/server` or similar\n   - Use `createServerSupabaseClient()` or similar\n   - Have `supabase.from('table_name')` calls\n3. Create a list of all such files with their current patterns\n4. Do not modify any code, only document findings",
+        "testStrategy": "1. Provide a complete list of affected Server Action files\n2. Show the specific patterns that need to be changed\n3. Confirm no Server Actions were missed",
+        "priority": "medium",
+        "dependencies": [
+          359
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 369,
+        "title": "Refactor Contact Creation Server Action",
+        "description": "Replace old Supabase patterns with tRPC server client in contact creation server action",
+        "details": "1. Open `apps/web/actions/contact-actions.ts` or similar contact action file\n2. Remove any imports related to Supabase\n3. Add imports: `import { api } from '@/lib/trpc/server-client';` and `import { revalidatePath } from 'next/cache';`\n4. Replace any `supabase.from('contacts').insert(...)` with `await api.contact.create(data)`\n5. Remove any `createServerSupabaseClient()` calls\n6. Add `revalidatePath('/contacts');` after successful operations\n7. Keep error handling and return structure unchanged\n8. Do not modify any other files",
+        "testStrategy": "1. Verify no Supabase imports remain\n2. Check that tRPC server client is imported\n3. Confirm actions use the new API pattern with proper revalidation",
+        "priority": "high",
+        "dependencies": [
+          368
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 370,
+        "title": "Refactor Contact Update Server Action",
+        "description": "Replace old Supabase patterns with tRPC server client in contact update server action",
+        "details": "1. Open the contact update server action file in `apps/web/actions`\n2. Remove any imports related to Supabase\n3. Add imports: `import { api } from '@/lib/trpc/server-client';` and `import { revalidatePath } from 'next/cache';`\n4. Replace any `supabase.from('contacts').update(...).eq('id', id)` with `await api.contact.update({ id, ...data })`\n5. Remove any `createServerSupabaseClient()` calls\n6. Add `revalidatePath('/contacts');` after successful operations\n7. Keep error handling and return structure unchanged\n8. Do not modify any other files",
+        "testStrategy": "1. Verify no Supabase imports remain\n2. Check that tRPC server client is imported\n3. Confirm actions use the new API pattern with proper revalidation",
+        "priority": "high",
+        "dependencies": [
+          368
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 371,
+        "title": "Refactor Contact Delete Server Action",
+        "description": "Replace old Supabase patterns with tRPC server client in contact delete server action",
+        "details": "1. Open the contact delete server action file in `apps/web/actions`\n2. Remove any imports related to Supabase\n3. Add imports: `import { api } from '@/lib/trpc/server-client';` and `import { revalidatePath } from 'next/cache';`\n4. Replace any `supabase.from('contacts').delete().eq('id', id)` with `await api.contact.delete({ id })`\n5. Remove any `createServerSupabaseClient()` calls\n6. Add `revalidatePath('/contacts');` after successful operations\n7. Keep error handling and return structure unchanged\n8. Do not modify any other files",
+        "testStrategy": "1. Verify no Supabase imports remain\n2. Check that tRPC server client is imported\n3. Confirm actions use the new API pattern with proper revalidation",
+        "priority": "high",
+        "dependencies": [
+          368
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 372,
+        "title": "Remove Old Supabase Server Utility",
+        "description": "Remove or comment out the old Supabase server utility file",
+        "details": "1. Locate `apps/web/lib/supabase/server.ts` or similar Supabase server utility file\n2. Comment out the entire file content with a note: `// DEPRECATED: Replaced by tRPC server client`\n3. Do not delete the file (in case rollback is needed)\n4. Do not modify any other files",
+        "testStrategy": "1. Verify the file is commented out\n2. Check that the deprecation note is added\n3. Confirm file still exists but is non-functional",
+        "priority": "low",
+        "dependencies": [
+          361,
+          362,
+          363,
+          369,
+          370,
+          371
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 373,
+        "title": "Final Build Test",
+        "description": "Test that the application builds successfully after all refactoring",
+        "details": "1. Run `pnpm exec turbo build` in the root directory\n2. Verify that the build completes without errors\n3. If there are build errors, create a list of the errors but do not fix them\n4. Run `pnpm exec turbo dev` to test local development\n5. Verify that the dev server starts without errors\n6. Do not modify any code, only report results",
+        "testStrategy": "1. Build completes successfully\n2. Dev server starts without errors\n3. No TypeScript errors related to missing imports or types",
+        "priority": "high",
+        "dependencies": [
+          361,
+          362,
+          363,
+          365,
+          366,
+          367,
+          369,
+          370,
+          371
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 374,
+        "title": "Search and Remove Remaining Supabase References",
+        "description": "Perform a final search for any remaining Supabase references in the apps/web directory",
+        "details": "1. Search for all occurrences of 'supabase' in `apps/web` directory (case-insensitive)\n2. Search for all occurrences of 'createServerSupabaseClient' in `apps/web` directory\n3. Search for all occurrences of '.from(' in `apps/web` directory (this catches database queries)\n4. Create a list of any remaining references\n5. Do not modify any code, only document findings\n6. Exclude package.json and lock files from the search",
+        "testStrategy": "1. Complete list of remaining Supabase references\n2. Verification that no active database queries remain\n3. Confirmation that only expected references (like package.json) exist",
+        "priority": "medium",
+        "dependencies": [
+          373
+        ],
+        "status": "pending",
+        "subtasks": []
       }
     ],
     "metadata": {
       "created": "2025-06-15T19:15:09.849Z",
-      "updated": "2025-07-07T21:10:32.269Z",
+      "updated": "2025-07-08T21:52:58.051Z",
       "description": "Tasks for master context"
     }
   }

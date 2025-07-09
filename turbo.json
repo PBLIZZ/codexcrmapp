@@ -1,24 +1,41 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": ["**/.env.*", "tsconfig.json"],
+  "globalDependencies": [
+    "**/.env.*",
+    "tsconfig.json"
+  ],
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        ".next/**",
+        "!.next/cache/**",
+        "dist/**"
+      ]
     },
-    "typecheck": {
-      "dependsOn": ["^build"],
-      "outputs": []
+    "@codexcrm/database#build": {
+      "outputs": [
+        "prisma/generated/**"
+      ],
+      "inputs": [
+        "prisma/schema.prisma"
+      ]
     },
-    "lint": {
-      "dependsOn": ["^build"]
+    "lint": {},
+    "dev": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false,
+      "persistent": true
     },
     "clean": {
       "cache": false
     },
-    "dev": {
-      "cache": false,
-      "persistent": true
+    "typecheck": {
+      "outputs": []
     }
   }
 }

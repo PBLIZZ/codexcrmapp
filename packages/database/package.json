@@ -5,16 +5,17 @@
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
-  "packageManager": "pnpm@10.12.4",
-  "dependencies": {
-    "@supabase/supabase-js": "^2.49.4"
-  },
   "scripts": {
-    "clean": "rimraf dist .turbo node_modules",
-    "lint": "eslint \"src/**/*.ts*\"",
-    "gen-types": "supabase gen types typescript --local > src/database.types.ts"
+    "dev": "prisma generate --watch",
+    "db:pull": "prisma db pull",
+    "db:studio": "prisma studio",
+    "db:generate": "prisma generate",
+    "build": "pnpm db:generate"
+  },
+  "dependencies": {
+    "@prisma/client": "6.11.1"
   },
   "devDependencies": {
-    "supabase": "^2.24.3"
+    "prisma": "6.11.1"
   }
 }

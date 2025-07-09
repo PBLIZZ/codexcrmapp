@@ -1,11 +1,14 @@
-import { getSupabaseClient } from '@codexcrm/database';
-const supabase = getSupabaseClient();
+/**
+ * @file /packages/auth/src/service.ts
+ */
+// Import the local auth client, NOT from @codexcrm/database
+import { supabaseAuthClient } from './supabase';
 /**
  * Fetches the current authenticated user
  * @returns Object containing user data and any error
  */
 export async function fetchCurrentUser() {
-    const { data: { user }, error, } = await supabase.auth.getUser();
+    const { data: { user }, error, } = await supabaseAuthClient.auth.getUser();
     return { user, error };
 }
 /**
@@ -14,7 +17,7 @@ export async function fetchCurrentUser() {
  * @returns Object containing any error that occurred
  */
 export async function updateUserPassword(password) {
-    const { error } = await supabase.auth.updateUser({ password });
+    const { error } = await supabaseAuthClient.auth.updateUser({ password });
     return { error };
 }
 /**

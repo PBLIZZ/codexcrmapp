@@ -1,7 +1,7 @@
 'use client';
 
 import { useActionState, useState, useEffect, type FormEvent, useCallback } from 'react';
-import { api } from '@/lib/trpc';
+import { trpc } from '@/lib/trpc/client';
 import * as z from 'zod/v4';
 import { ImageUpload } from '@codexcrm/ui';
 import { v4 as uuidv4 } from 'uuid';
@@ -123,7 +123,7 @@ export function ContactForm({
   isSubmitting,
   editingContactId,
 }: ContactFormProps) {
-  const utils = api.useUtils();
+  const utils = trpc.useUtils();
 
   const [formData, setFormData] = useState<ContactFormData>(
     initialData ?? {
@@ -161,8 +161,8 @@ export function ContactForm({
     }
   }, [initialData]);
 
-  const getUploadUrlMutation = api.storage.getUploadUrl.useMutation();
-  const deleteFileMutation = api.storage.deleteFile.useMutation();
+  const getUploadUrlMutation = trpc.storage.getUploadUrl.useMutation();
+  const deleteFileMutation = trpc.storage.deleteFile.useMutation();
 
   const handleImageDrop = useCallback(async (acceptedFiles: FileWithPath[]) => {
     if (acceptedFiles.length === 0) return;
@@ -215,16 +215,7 @@ export function ContactForm({
     }
   }, [formData.profile_image_url, deleteFileMutation]);
 
-
-  const createContact = api.contacts.save.useMutation({
-    onSuccess: () => {
-      void utils.contacts.list.invalidate();
-      onClose();
-    },
-    onError: (error) => console.error('Create contact error:', error),
-  });
-
-  const saveContact = api.contacts.save.useMutation({
+  const saveContact = trpc.contact.create.useMutation({
     onSuccess: () => {
       void utils.contacts.list.invalidate();
       if (editingContactId) {
@@ -283,11 +274,7 @@ export function ContactForm({
 
       const validatedData = contactSchema.parse(processedData);
 
-      if (editingContactId) {
-        await saveContact.mutateAsync({ id: editingContactId, ...validatedData });
-      } else {
-        await createContact.mutateAsync(validatedData);
-      }
+      await saveContact.mutateAsync(validatedData);
 
       return {
         success: true,
@@ -352,7 +339,7 @@ export function ContactForm({
     handleInputChange(field, arrayValue);
   };
 
-  const isLoading = isPending || isSubmitting || createContact.isPending || saveContact.isPending || isUploading;
+  const isLoading = isPending || isSubmitting || saveContact.isPending || isUploading;
 
   return (
     <div

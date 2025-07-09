@@ -8,17 +8,17 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@codexcrm/ui'
+} from '@/components/ui/collapsible'
 import {
-  Sidebar,
-  SidebarBody,
-  SidebarContent,
-  SidebarHeader,
-  SidebarItem,
-  SidebarLabel,
-  SidebarRoot,
-  SidebarTrigger,
-} from '@codexcrm/ui'
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+} from '@/components/ui/sidebar'
 
 // Define the structure for navigation items
 export interface NavItem {

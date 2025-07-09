@@ -1,0 +1,18 @@
+# Task ID: 374
+# Title: Search and Remove Remaining Supabase References
+# Status: pending
+# Dependencies: 373
+# Priority: medium
+# Description: Perform a final search for any remaining Supabase references in the apps/web directory
+# Details:
+1. Search for all occurrences of 'supabase' in `apps/web` directory (case-insensitive)
+2. Search for all occurrences of 'createServerSupabaseClient' in `apps/web` directory
+3. Search for all occurrences of '.from(' in `apps/web` directory (this catches database queries)
+4. Create a list of any remaining references
+5. Do not modify any code, only document findings
+6. Exclude package.json and lock files from the search
+
+# Test Strategy:
+1. Complete list of remaining Supabase references
+2. Verification that no active database queries remain
+3. Confirmation that only expected references (like package.json) exist

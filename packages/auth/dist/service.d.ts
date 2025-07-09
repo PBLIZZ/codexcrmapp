@@ -1,6 +1,3 @@
-/**
- * @file /packages/auth/src/service.ts
- */
 import type { User } from '@supabase/supabase-js';
 /**
  * Fetches the current authenticated user

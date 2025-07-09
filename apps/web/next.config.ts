@@ -1,3 +1,4 @@
+// apps/web/next.config.ts
 import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 
@@ -9,15 +10,6 @@ const nextConfig: NextConfig = {
   compress: true,
   poweredByHeader: false,
   
-  transpilePackages: [
-    '@codexcrm/api',
-    '@codexcrm/auth',
-    '@codexcrm/database',
-    '@codexcrm/ui',
-    '@codexcrm/background-jobs',
-    '@codexcrm/trpc',
-  ],
-
   serverExternalPackages: ['@whatwg-node/fetch', '@prisma/client', 'bcryptjs'],
 
   images: {

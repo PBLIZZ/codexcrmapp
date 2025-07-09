@@ -1,0 +1,20 @@
+# Task ID: 370
+# Title: Refactor Contact Update Server Action
+# Status: pending
+# Dependencies: 368
+# Priority: high
+# Description: Replace old Supabase patterns with tRPC server client in contact update server action
+# Details:
+1. Open the contact update server action file in `apps/web/actions`
+2. Remove any imports related to Supabase
+3. Add imports: `import { api } from '@/lib/trpc/server-client';` and `import { revalidatePath } from 'next/cache';`
+4. Replace any `supabase.from('contacts').update(...).eq('id', id)` with `await api.contact.update({ id, ...data })`
+5. Remove any `createServerSupabaseClient()` calls
+6. Add `revalidatePath('/contacts');` after successful operations
+7. Keep error handling and return structure unchanged
+8. Do not modify any other files
+
+# Test Strategy:
+1. Verify no Supabase imports remain
+2. Check that tRPC server client is imported
+3. Confirm actions use the new API pattern with proper revalidation

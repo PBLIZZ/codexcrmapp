@@ -19,8 +19,8 @@ alwaysApply: true
 
 - **File References:**
   - Use `[filename](mdc:path/to/file)` ([filename](mdc:filename)) to reference files
-  - Example: [roo_rules.md](mdc:.roo/rules/roo_rules.md) for rule references
-  - Example: [dev_workflow.md](mdc:.roo/rules/dev_workflow.md) for rule references
+  - Example: [prisma.md](.roo/rules/prisma.md) for rule references
+  - Example: [schema.prisma](mdc:prisma/schema.prisma) for code references
 
 - **Code Examples:**
   - Use language-specific code blocks

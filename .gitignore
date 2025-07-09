@@ -34,6 +34,7 @@ yarn-error.log*
 # environment files
 .env    
 .env.local
+.env.*.local
 /apps/web/.env.local
 
 # vercel
@@ -58,6 +59,14 @@ client_secret*.json
 **/mcp.json
 google_credentials.json
 .env.sentry-build-plugin
+.claude_config.json
+.mcp.json
+mcp_config.json
+settings.json
+mcp.json
+
+
+
 
 # Added by Claude Task Master
 # Logs
@@ -76,11 +85,14 @@ node_modules/
 *.sln
 *.sw?
 # OS specific
-# Task files
-# tasks.json
-# tasks/ 
-
 # Codeium Windsurf specific config
 .codeium/windsurf/mcp_config.json
 *storybook.log
 storybook-static
+
+# Exclude generated Prisma client + binary engine files
+packages/database/prisma/generated/
+
+# Task files
+# tasks.json
+# tasks/ 

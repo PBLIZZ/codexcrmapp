@@ -1,0 +1,19 @@
+# Task ID: 364
+# Title: Audit Client Components for Old Patterns
+# Status: pending
+# Dependencies: 359
+# Priority: medium
+# Description: Identify all Client Components that use old fetch patterns or direct API calls
+# Details:
+1. Search in `apps/web` for all `.tsx` files that have `'use client'` directive
+2. Look for files that:
+   - Use `fetch('/api/contacts')` or similar direct API calls
+   - Use `useEffect` with data fetching
+   - Have form submission handlers that call `fetch()`
+3. Create a list of all such files with their current patterns
+4. Do not modify any code, only document findings
+
+# Test Strategy:
+1. Provide a complete list of affected Client Components
+2. Show the specific patterns that need to be changed
+3. Confirm no Client Components were missed

@@ -1,0 +1,19 @@
+# Task ID: 365
+# Title: Refactor Contact Form Client Component
+# Status: pending
+# Dependencies: 364
+# Priority: high
+# Description: Replace old fetch patterns with tRPC mutations in contact form component
+# Details:
+1. Find the contact form component (likely in `apps/web/components` or similar)
+2. Add import: `import { trpc } from '@/lib/trpc/client';`
+3. Replace any `fetch('/api/contacts', { method: 'POST', ... })` with `trpc.contact.create.useMutation()`
+4. Update form submission handler to use `mutation.mutate(data)` instead of fetch
+5. Remove any direct fetch calls
+6. Keep all UI logic and validation unchanged
+7. Do not modify any other files
+
+# Test Strategy:
+1. Verify tRPC client is imported
+2. Check that mutations are used instead of fetch
+3. Confirm form submission logic works with new pattern

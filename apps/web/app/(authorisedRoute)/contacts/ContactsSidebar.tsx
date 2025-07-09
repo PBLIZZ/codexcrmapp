@@ -13,11 +13,14 @@ import {
   Sidebar,
   SidebarBody,
   SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
   SidebarHeader,
-  SidebarItem,
-  SidebarLabel,
-  SidebarRoot,
-  SidebarTrigger,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarRail,
 } from '@codexcrm/ui';
 
 // Define the Group type based on the expected structure

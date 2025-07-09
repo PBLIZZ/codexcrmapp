@@ -3,20 +3,19 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
-import { useForm, Controller } from 'react-hook-form';
-import type { SubmitHandler } from 'react-hook-form';
+import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod/v4';
-import { Button } from '@codexcrm/ui';
-import { Input } from '@codexcrm/ui';
-import { Label } from '@codexcrm/ui';
-import { Textarea } from '@codexcrm/ui';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { api } from '@/lib/trpc';
 import {
   GroupStylePicker,
   PRESET_COLORS,
   PRESET_EMOJIS,
-} from './GroupStylePicker';
+} from '@/components/groups/GroupStylePicker';
 
 // Zod Schema for Form Validation (consistent with backend expectations for group creation)
 const groupFormSchema = z.object({
@@ -35,8 +34,9 @@ const groupFormSchema = z.object({
     .string()
     .min(1, 'An Emoji is required')
     .or(z.literal('')) // Allow empty string
-    .transform((val) => (val === '' ? null : val))
-    .nullable(),
+    .nullable()
+    .optional()
+    .transform((val) => (val === '' ? null : val)), // Transform empty string to null for the database
 });
 type GroupFormData = z.infer<typeof groupFormSchema>;
 
@@ -84,17 +84,14 @@ export function GroupCreateForm({
 
   // tRPC mutation for saving (creating or updating) a group
   const saveGroupMutation = api.groups.save.useMutation({
-    onSuccess: async (savedGroup: Group) => {
+    onSuccess: (savedGroup) => {
       toast.success(isEditMode ? 'Group updated!' : 'Group created!', {
         description: `The group "${savedGroup.name}" has been successfully ${
           isEditMode ? 'updated' : 'created'
         }.`,
       });
-      // Await the cache invalidations to ensure completion and avoid floating promises
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: [['groups', 'list']] }),
-        queryClient.invalidateQueries({ queryKey: [['groups', 'listWithCounts']] }),
-      ]); // Refetch group lists
+      queryClient.invalidateQueries({ queryKey: [['groups', 'list']] });
+      queryClient.invalidateQueries({ queryKey: [['groups', 'listWithCounts']] }); // Refetch group list
 
       if (!isEditMode) {
         reset({
@@ -125,13 +122,8 @@ export function GroupCreateForm({
     saveGroupMutation.mutate(payload);
   };
 
-  // Wrap handleSubmit to avoid passing a promise-returning function directly to onSubmit
-  const handleFormSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
-    void handleSubmit(onSubmit)(event);
-  };
-
   return (
-    <form onSubmit={handleFormSubmit} className='space-y-6 py-2'>
+    <form onSubmit={handleSubmit(onSubmit)} className='space-y-6 py-2'>
       {/* Form fields: Emoji, Group Name, Description */}
       <div className='space-y-4'>
         <div>

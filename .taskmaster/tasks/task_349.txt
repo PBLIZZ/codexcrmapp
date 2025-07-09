@@ -1,6 +1,6 @@
 # Task ID: 349
 # Title: Centralize rimraf Utility
-# Status: pending
+# Status: done
 # Dependencies: 348
 # Priority: medium
 # Description: Standardize the `rimraf` utility across the monorepo by centralizing its version and usage.

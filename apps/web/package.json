@@ -54,6 +54,7 @@
     "@codexcrm/config-postcss": "workspace:*",
     "@types/google-one-tap": "^1.2.6",
     "@types/google.accounts": "^0.0.16",
+    "tailwindcss": "^4.1.4",
     "eslint-config-next": "15.3.1"
   }
 }

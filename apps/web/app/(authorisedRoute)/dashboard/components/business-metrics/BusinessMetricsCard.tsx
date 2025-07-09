@@ -1,11 +1,11 @@
 'use client';
 
 import React from 'react';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@codexcrm/ui";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "@/lib/trpc";
 import { AlertCircle, ArrowRight, TrendingUp, TrendingDown, Users, Calendar, AlertTriangle } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@codexcrm/ui";
-import { Button } from "@codexcrm/ui";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 
@@ -17,12 +17,20 @@ interface BusinessMetricsCardProps {
 }
 
 export function BusinessMetricsCard({ className }: BusinessMetricsCardProps) {
-  // Temporarily disabled API calls for auth testing - use mock data
-  const apiData = null;
-  const isLoading = false;
-  const error = null;
-  const apiContactMetrics = null;
-  const apiSessionMetrics = null;
+  // Try to fetch dashboard summary data, but use mock data if the endpoint doesn't exist
+  const { data: apiData, isLoading, error } = api.dashboard.summary.useQuery({}, {
+    retry: false
+  });
+  
+  // Try to fetch contact metrics, but use mock data if the endpoint doesn't exist
+  const { data: apiContactMetrics } = api.dashboard.contactMetrics.useQuery({}, {
+    retry: false
+  });
+  
+  // Try to fetch session metrics, but use mock data if the endpoint doesn't exist
+  const { data: apiSessionMetrics } = api.dashboard.sessionMetrics.useQuery({}, {
+    retry: false
+  });
 
   // Mock data to use when API endpoints are not available
   const mockData = {

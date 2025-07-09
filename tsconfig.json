@@ -1,14 +1,52 @@
 {
-  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@codexcrm/api/*": [
+        "packages/api/src/*"
+      ],
+      "@codexcrm/auth/*": [
+        "packages/auth/src/*"
+      ],
+      "@codexcrm/database/*": [
+        "packages/database/src/*"
+      ],
+      "@codexcrm/ui/*": [
+        "packages/ui/src/*"
+      ],
+      "@codexcrm/trpc/*": [
+        "packages/trpc/src/*"
+      ],
+      "@codexcrm/background-jobs/*": [
+        "packages/background-jobs/src/*"
+      ],
+      "@/*": [
+        "apps/web/*"
+      ]
+    }
+  },
   "files": [],
   "references": [
-    { "path": "./apps/web" },
-    { "path": "./packages/api" },
-    { "path": "./packages/auth" },
-    { "path": "./packages/config" },
-    { "path": "./packages/database" },
-    { "path": "./packages/ui" },
-    { "path": "./packages/trpc" },
-    { "path": "./packages/background-jobs" }
+    {
+      "path": "apps/web"
+    },
+    {
+      "path": "packages/api"
+    },
+    {
+      "path": "packages/auth"
+    },
+    {
+      "path": "packages/database"
+    },
+    {
+      "path": "packages/ui"
+    },
+    {
+      "path": "packages/trpc"
+    },
+    {
+      "path": "packages/background-jobs"
+    }
   ]
 }

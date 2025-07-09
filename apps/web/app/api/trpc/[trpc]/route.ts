@@ -1,95 +1,59 @@
-import { appRouter, createContext } from '@codexcrm/api';
+// path: apps/web/app/api/trpc/[trpc]/route.ts
+// This file is the bridge between the Next.js world and our pure API.
+
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
-import type { AnyRouter } from '@trpc/server';
-import { createServerClient } from '@/lib/auth/server';
+import { type NextRequest } from 'next/server';
+import { cookies } from 'next/headers';
+import { createServerClient } from '@supabase/ssr';
+
+// Import the PURE context creator and the appRouter from our business logic package.
+import { appRouter } from '@codexcrm/api/root';
+// Import directly from the source file instead of through the package index
+import { createInnerTRPCContext } from '@codexcrm/api/src/context';
+import { AnyRouter } from '@trpc/server';
 
 /**
- * tRPC API endpoint configuration
- * Handles both GET and POST requests for tRPC procedures
+ * This is the tRPC request handler.
+ * It's responsible for all Next.js-specific logic.
  */
+const handler = (req: NextRequest) => {
+  return fetchRequestHandler({
+    endpoint: '/api/trpc',
+    req,
+    router: appRouter as unknown as AnyRouter,
 
-// Define the tRPC endpoint path as a constant for maintainability
-const TRPC_ENDPOINT = '/api/trpc';
-
-// Remove edge runtime to use Node.js for better compatibility with tRPC and Supabase
-// export const runtime = 'edge';
-
-/**
- * Standard error response format for consistency
- */
-type ApiErrorResponse = {
-  error: string;
-  message: string;
-  code?: string;
-};
-
-/**
- * Main request handler for tRPC API calls
- */
-export const GET = async (req: Request) => {
-  console.warn(`[TRPC API] Handling ${req.method} request to ${req.url}`);
-
-  try {
-    // Log the headers at debug level for detailed troubleshooting only
-    if (process.env.NODE_ENV === 'development') {
-      const headers = Object.fromEntries(req.headers.entries());
-      // Use debug level for potentially sensitive or verbose information
-      console.warn('[TRPC API] Request headers:', JSON.stringify(headers, null, 2));
-    }
-
-    // Handle the request with tRPC's fetchRequestHandler
-    const response = await fetchRequestHandler({
-      endpoint: TRPC_ENDPOINT,
-      req,
-      router: appRouter as unknown as AnyRouter,
-      // Pass the request object to createContext with proper error handling
-      createContext: async () => {
-        try {
-          const supabaseUser = await createServerClient();
-          const ctx = await createContext({ req, supabaseUser });
-          return ctx;
-        } catch (contextError) {
-          console.error('[TRPC API] Context creation error:', contextError);
-          throw contextError;
-        }
-      },
-      // Configure error handling based on environment
-      onError:
-        process.env.NODE_ENV === 'development'
-          ? ({ path, error }) => {
-              console.error(`❌ [TRPC API] Failed on ${path}: ${error.message}`);
-              console.error(error.stack);
-            }
-          : ({ path }) => {
-              // Log errors in production but without sensitive details
-              console.error(`[TRPC API] Error in procedure: ${path}`);
+    /**
+     * This is the CONTEXT FACTORY. It runs for every incoming request.
+     * It performs the framework-specific task of getting the session and
+     * then uses that session to create the pure, framework-agnostic context
+     * that our business logic expects.
+     */
+    createContext: async () => {
+      // 1. Create a Supabase client using the Next.js `cookies` helper.
+      const supabase = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+          cookies: {
+            get: async (name: string) => {
+              const cookiesStore = await cookies();
+              return cookiesStore.get(name)?.value;
             },
-    });
+          },
+        }
+      );
 
-    console.warn(`[TRPC API] Response status: ${response.status}`);
-    return response;
-  } catch (error) {
-    console.error('[TRPC API] Unhandled error:', error);
+      // 2. Fetch the session.
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
-    // Create a standardized error response
-    const errorResponse: ApiErrorResponse = {
-      error: 'Internal Server Error',
-      // Provide generic message in production, detailed in development
-      message: 'An unexpected error occurred.',
-      // Log detailed error information on the server for debugging purposes
-      ...(process.env.NODE_ENV !== 'production' && error instanceof Error
-        ? { debugInfo: { message: error.message, stack: error.stack } }
-        : {}),
-      // Add error code for easier client-side handling
-      code: 'INTERNAL_SERVER_ERROR',
-    };
-
-    return new Response(JSON.stringify(errorResponse), {
-      status: 500,
-      headers: { 'content-type': 'application/json' },
-    });
-  }
+      // 3. Create the pure "inner" context and return it.
+      // This context object (`{ prisma, session }`) is what will be passed
+      // to all of your tRPC procedures in `@codexcrm/api`.
+      return createInnerTRPCContext(session);
+    },
+  });
 };
 
-// Use the same handler for POST requests
-export const POST = GET;
+export { handler as GET, handler as POST };

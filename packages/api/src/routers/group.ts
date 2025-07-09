@@ -1,7 +1,7 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
-import { router, protectedProcedure } from '@codexcrm/api/src/trpc';
+import { router, protectedProcedure } from '../trpc';
 
 interface Group {
   id: string;

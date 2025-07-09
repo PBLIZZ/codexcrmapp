@@ -1,20 +1,15 @@
 {
-  "extends": "../../tsconfig.base.json",
+  // CRITICAL FIX: Point to the correct shared config package.
+  "extends": "@codexcrm/config-typescript/base.json",
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ],
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "baseUrl": ".",
-    "moduleResolution": "bundler",
-    "composite": true,
-    "declaration": true,
-    "declarationMap": true,
-    "emitDeclarationOnly": false,
-    "lib": ["es2022", "dom", "dom.iterable", "esnext"],
-    "paths": {
-      "@codexcrm/trpc": ["./src/index.ts"],
-      "@trpc/react-query": ["../../node_modules/@trpc/react-query"]
-    }
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+    // It is good practice to explicitly state that this is a composite project for 'references' to work.
+    "composite": true
+  }
 }

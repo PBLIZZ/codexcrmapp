@@ -2,19 +2,21 @@
   "name": "@codexcrm/api",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.ts",
-  "types": "src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "packageManager": "pnpm@10.12.4",
   "exports": {
-    ".": "./src/index.ts",
-    "./src/root": "./src/root.ts",
-    "./src/context": "./src/context.ts",
-    "./src/trpc": "./src/trpc.ts",
-    "./src/supabaseAdmin": "./src/supabaseAdmin.ts",
-    "./src/routers/*": "./src/routers/*.ts",
-    "./src/utils/openapi": "./src/utils/openapi.ts"
+    ".": "./dist/index.js",
+    "./root": "./dist/root.js",
+    "./context": "./dist/context.js",
+    "./trpc": "./dist/trpc.js",
+    "./supabaseAdmin": "./dist/supabaseAdmin.js",
+    "./routers/*": "./dist/routers/*.js"
   },
   "scripts": {
+    "build": "tsup src/index.ts src/root.ts src/context.ts src/trpc.ts src/supabaseAdmin.ts 'src/routers/*' --format esm,cjs --dts --clean",
+    "dev": "pnpm build --watch",
+    "lint": "eslint .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -23,10 +25,17 @@
   "dependencies": {
     "@codexcrm/auth": "workspace:*",
     "@codexcrm/database": "workspace:*",
+    "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.49.4",
     "@trpc/server": "^11.3.1",
     "cookie": "^1.0.2",
     "superjson": "^2.2.2",
     "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "tsup": "^8.2.3",
+    "typescript": "^5.6.0",
+    "eslint": "^9.0.0",
+    "@codexcrm/config-eslint": "workspace:*"
   }
 }

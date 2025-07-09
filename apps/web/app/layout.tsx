@@ -2,15 +2,9 @@
 /**
  * Root Layout - Main Application Container (Server Component)
  */
-import React from 'react';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
-import { cookies } from 'next/headers'; // Add this import
 import '@codexcrm/ui/dist/index.css';
-import { ThemeProvider } from '@codexcrm/ui';
-import { AppContent } from '../components/layout/AppContent';
-import { Providers } from './providers'; // Providers and Components
-import { Toaster } from 'sonner';
 
 // Font configuration
 const geistSans = Geist({
@@ -31,31 +25,15 @@ export const metadata: Metadata = {
   description: 'The intelligent CRM for modern professionals.',
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieString = (await cookies()).toString();
-
   return (
     <html lang='en' suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ThemeProvider
-          attribute='class'
-          defaultTheme='system'
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Providers
-            cookies={cookieString}
-          >
-            <Toaster />
-            <AppContent>
-              {children}
-            </AppContent>
-          </Providers>
-        </ThemeProvider>
+        {children}
       </body>
     </html>
   );

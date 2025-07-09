@@ -1,12 +1,12 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
-import { supabaseAdmin as _supabaseAdmin } from '@codexcrm/api/src/supabaseAdmin';
-import { router, protectedProcedure } from '@codexcrm/api/src/trpc';
+import { supabaseAdmin as _supabaseAdmin } from '../supabaseAdmin';
+import { router, protectedProcedure } from '../trpc';
 
 const contactInputSchema = z.object({
   id: z.string().uuid().optional(),
-  full_name: z.string().min(1, 'Full name is required'),
+  full_name: z.string().min(1, 'Full name is required'),  
   email: z.string().email('Invalid email address').optional().nullable(),
   phone: z.string().optional().nullable(),
   phone_country_code: z.string().optional().nullable(), // New

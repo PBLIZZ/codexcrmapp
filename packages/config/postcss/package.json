@@ -8,7 +8,6 @@
     "postcss.config.ts"
   ],
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.11",
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.33",
     "tailwindcss": "^4.1.4"

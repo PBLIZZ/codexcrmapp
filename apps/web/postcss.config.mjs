@@ -1,1 +1,7 @@
-export { default } from '@codexcrm/config-postcss';
+// apps/web/postcss.config.mjs
+export default {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+};

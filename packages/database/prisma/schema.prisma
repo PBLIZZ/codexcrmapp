@@ -1,0 +1,124 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "./generated/client"
+  previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider = "postgresql"
+  // For the running app (uses connection pooler)
+  url      = env("DATABASE_URL")
+
+  // For `prisma db pull` and `prisma generate` (bypasses pooler)
+  directUrl = env("DIRECT_URL")
+  schemas   = ["public", "auth"]
+}
+
+// ===============================================
+// Supabase Auth Helper Model
+// This model will NOT be migrated by Prisma, it just provides
+// a way to create relations to the existing auth.users table.
+// ===============================================
+model User {
+  id        String   @id @db.Uuid
+  contacts  Contact[]
+  groups    Group[]
+
+  @@map("users")
+  @@schema("auth")
+}
+
+
+// ===============================================
+// Your Application Models
+// These models WILL be managed by Prisma going forward.
+// ===============================================
+
+model Contact {
+  id                        String    @id @default(uuid()) @db.Uuid
+  fullName                  String    @map("full_name")
+  email                     String
+  phone                     String?
+  jobTitle                  String?   @map("job_title")
+  companyName               String?   @map("company_name")
+  profileImageUrl           String?   @map("profile_image_url")
+  website                   String?
+  tags                      String[]
+  socialHandles             String[]  @map("social_handles")
+  addressStreet             String?   @map("address_street")
+  addressCity               String?   @map("address_city")
+  addressPostalCode         String?   @map("address_postal_code")
+  addressCountry            String?   @map("address_country")
+  phoneCountryCode          String?   @map("phone_country_code")
+  notes                     String?
+  source                    String?
+  lastContactedAt           DateTime? @map("last_contacted_at") @db.Timestamptz
+  
+  // Wellness Fields
+  wellnessGoals             String[]  @map("wellness_goals")
+  wellnessJourneyStage      String?   @map("wellness_journey_stage")
+  wellnessStatus            String?   @map("wellness_status")
+  lastAssessmentDate        DateTime? @map("last_assessment_date") @db.Timestamptz
+  clientSince               DateTime? @map("client_since") @db.Timestamptz
+  relationshipStatus        String?   @map("relationship_status")
+  referralSource            String?   @map("referral_source")
+  
+  // AI & Enrichment Fields
+  enrichmentStatus          String?   @default("pending") @map("enrichment_status")
+  enrichedData              Json?     @map("enriched_data") @db.JsonB
+  communicationPreferences  Json?     @map("communication_preferences") @db.JsonB
+  
+  createdAt                 DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt                 DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+  
+  // Relations
+  userId                    String    @map("user_id") @db.Uuid
+  user                      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Many-to-many relation with Group
+  groups                    GroupMember[]
+
+  @@map("contacts")
+  @@schema("public")
+}
+
+model Group {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
+  description String?
+  emoji       String?
+  color       String?
+  
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  userId      String   @map("user_id") @db.Uuid
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Many-to-many relation with Contact
+  members     GroupMember[]
+
+  @@map("groups")
+  @@schema("public")
+}
+
+model GroupMember {
+  id        String   @id @default(uuid()) @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  // Foreign Keys
+  groupId   String   @map("group_id") @db.Uuid
+  contactId String   @map("contact_id") @db.Uuid
+
+  // Relations
+  group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  contact   Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, contactId]) // A contact can only be in a group once
+  @@map("group_members")
+  @@schema("public")
+}

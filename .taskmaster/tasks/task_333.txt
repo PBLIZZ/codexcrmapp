@@ -5,7 +5,7 @@
 # Priority: medium
 # Description: Standardize all Supabase packages to the latest stable version 2.49.4 to ensure consistent authentication flows and stable database connections.
 # Details:
-Update `@supabase/supabase-js` and any other Supabase-related packages in all `package.json` files to `^2.49.4`. Review Supabase migration guides for any breaking changes between the current and target versions. Example `package.json` entry: `"@supabase/supabase-js": "^2.49.4"`. Run `pnpm install` and test authentication and database interactions.
+
 
 # Test Strategy:
-Verify that user authentication flows (sign-up, sign-in, sign-out) work correctly. Confirm that database queries and mutations function as expected. Check for any runtime errors related to Supabase.
+

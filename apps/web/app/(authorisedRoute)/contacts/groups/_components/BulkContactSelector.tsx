@@ -4,18 +4,17 @@ import { Check, Search, User, Mail } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@codexcrm/ui';
-import { Button } from '@codexcrm/ui';
-import { Checkbox } from '@codexcrm/ui';
-import { Database } from '@codexcrm/database/types';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from '@codexcrm/ui';
-import { Input } from '@codexcrm/ui';
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import { api } from '@/lib/trpc';
 
 interface Contact {
@@ -43,7 +42,8 @@ export function BulkContactSelector({
   const [selectedContactIds, setSelectedContactIds] = useState<string[]>([]);
 
   // Fetch all contacts
-  const { data: allContacts = [], isLoading: contactsLoading } = api.contacts.list.useQuery({});
+  const { data: allContacts = [], isLoading: contactsLoading } =
+    api.contacts.list.useQuery({});
 
   // Fetch contacts already in this group
   const { data: groupContacts = [] } = api.groups.getContacts.useQuery({
@@ -56,12 +56,14 @@ export function BulkContactSelector({
   // Add contacts to group mutation
   const addContactsMutation = api.groups.addContact.useMutation({
     onSuccess: () => {
-      toast.success(`Added ${selectedContactIds.length} contact(s) to ${groupName}`);
-
+      toast.success(
+        `Added ${selectedContactIds.length} contact(s) to ${groupName}`
+      );
+      
       // Invalidate relevant queries to refresh the UI
       utils.groups.list.invalidate(); // Refresh group list (for contact counts)
       utils.groups.getContacts.invalidate({ groupId }); // Refresh contacts in this group
-
+      
       setSelectedContactIds([]);
       onClose();
     },
@@ -86,7 +88,9 @@ export function BulkContactSelector({
 
   const handleSelectContact = (contactId: string) => {
     setSelectedContactIds((prev) =>
-      prev.includes(contactId) ? prev.filter((id) => id !== contactId) : [...prev, contactId]
+      prev.includes(contactId)
+        ? prev.filter((id) => id !== contactId)
+        : [...prev, contactId]
     );
   };
 
@@ -109,43 +113,43 @@ export function BulkContactSelector({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className='sm:max-w-2xl'>
+      <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>Add Contacts to {groupName}</DialogTitle>
         </DialogHeader>
 
-        <div className='space-y-4'>
+        <div className="space-y-4">
           {/* Search */}
-          <div className='relative'>
-            <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400' />
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
-              placeholder='Search contacts...'
+              placeholder="Search contacts..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className='pl-10'
+              className="pl-10"
             />
           </div>
 
           {/* Select All */}
           {availableContacts.length > 0 && (
-            <div className='flex items-center space-x-2'>
+            <div className="flex items-center space-x-2">
               <Checkbox
-                id='select-all'
+                id="select-all"
                 checked={selectedContactIds.length === availableContacts.length}
                 onCheckedChange={handleSelectAll}
               />
-              <label htmlFor='select-all' className='text-sm font-medium'>
+              <label htmlFor="select-all" className="text-sm font-medium">
                 Select All ({availableContacts.length} available)
               </label>
             </div>
           )}
 
           {/* Contact List */}
-          <div className='max-h-96 overflow-y-auto space-y-2'>
+          <div className="max-h-96 overflow-y-auto space-y-2">
             {contactsLoading ? (
-              <div className='text-center py-4'>Loading contacts...</div>
+              <div className="text-center py-4">Loading contacts...</div>
             ) : availableContacts.length === 0 ? (
-              <div className='text-center py-4 text-gray-500'>
+              <div className="text-center py-4 text-gray-500">
                 {searchTerm
                   ? 'No contacts found matching your search'
                   : 'All contacts are already in this group'}
@@ -155,7 +159,9 @@ export function BulkContactSelector({
                 <div
                   key={contact.id}
                   className={`flex items-center space-x-3 p-3 rounded-lg border cursor-pointer hover:bg-gray-50 ${
-                    selectedContactIds.includes(contact.id) ? 'bg-purple-50 border-purple-200' : ''
+                    selectedContactIds.includes(contact.id)
+                      ? 'bg-purple-50 border-purple-200'
+                      : ''
                   }`}
                   onClick={() => handleSelectContact(contact.id)}
                 >
@@ -163,7 +169,7 @@ export function BulkContactSelector({
                     checked={selectedContactIds.includes(contact.id)}
                     onChange={() => handleSelectContact(contact.id)}
                   />
-                  <Avatar className='h-10 w-10'>
+                  <Avatar className="h-10 w-10">
                     <AvatarImage src={contact.profile_image_url || undefined} />
                     <AvatarFallback>
                       {contact.full_name
@@ -174,16 +180,18 @@ export function BulkContactSelector({
                         .toUpperCase() || '??'}
                     </AvatarFallback>
                   </Avatar>
-                  <div className='flex-1'>
-                    <div className='font-medium'>{contact.full_name}</div>
-                    <div className='text-sm text-gray-500 flex items-center gap-2'>
+                  <div className="flex-1">
+                    <div className="font-medium">{contact.full_name}</div>
+                    <div className="text-sm text-gray-500 flex items-center gap-2">
                       {contact.email && (
-                        <span className='flex items-center gap-1'>
-                          <Mail className='h-3 w-3' />
+                        <span className="flex items-center gap-1">
+                          <Mail className="h-3 w-3" />
                           {contact.email}
                         </span>
                       )}
-                      {contact.company_name && <span>• {contact.company_name}</span>}
+                      {contact.company_name && (
+                        <span>• {contact.company_name}</span>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -193,13 +201,15 @@ export function BulkContactSelector({
         </div>
 
         <DialogFooter>
-          <Button variant='outline' onClick={onClose}>
+          <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
           <Button
             onClick={handleAddContacts}
-            disabled={selectedContactIds.length === 0 || addContactsMutation.isPending}
-            className='bg-purple-500 hover:bg-purple-600'
+            disabled={
+              selectedContactIds.length === 0 || addContactsMutation.isPending
+            }
+            className="bg-purple-500 hover:bg-purple-600"
           >
             {addContactsMutation.isPending
               ? 'Adding...'

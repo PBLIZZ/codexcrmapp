@@ -1,0 +1,19 @@
+# Task ID: 367
+# Title: Refactor Contact Delete Client Component
+# Status: pending
+# Dependencies: 364
+# Priority: high
+# Description: Replace old fetch patterns with tRPC mutations in contact delete component
+# Details:
+1. Find the contact delete component or delete handler (likely in `apps/web/components` or similar)
+2. Add import: `import { trpc } from '@/lib/trpc/client';`
+3. Replace any `fetch('/api/contacts/[id]', { method: 'DELETE', ... })` with `trpc.contact.delete.useMutation()`
+4. Update delete handler to use `mutation.mutate({ id })` instead of fetch
+5. Remove any direct fetch calls
+6. Keep all UI logic and confirmation dialogs unchanged
+7. Do not modify any other files
+
+# Test Strategy:
+1. Verify tRPC client is imported
+2. Check that delete mutations are used instead of fetch
+3. Confirm delete functionality works with new pattern

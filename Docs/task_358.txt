@@ -1,0 +1,16 @@
+# Task ID: 358
+# Title: Project Phoenix: Verify Backend Foundation
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: Validate that the backend packages are correctly structured according to the latest architectural decisions
+# Details:
+Before starting the Project Phoenix integration, ensure:
+1. `@codexcrm/api` correctly creates and exports its `appRouter` and `createContext` function
+2. The `apps/web/app/api/trpc/[trpc]/route.ts` file is correctly set up to handle requests and pass them to the `appRouter`
+3. Verify that the API endpoint is accessible and responds correctly to simple requests
+
+# Test Strategy:
+1. Check if the `@codexcrm/api` package exports the expected objects
+2. Run a basic HTTP request against the tRPC API endpoint to verify it responds
+3. Test a simple procedure call to confirm the full request-response cycle works

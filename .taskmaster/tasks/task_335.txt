@@ -5,7 +5,7 @@
 # Priority: medium
 # Description: Standardize the `pnpm` version to 10.12.4 across all packages and remove inconsistent `packageManager` fields to ensure consistent dependency management.
 # Details:
-Update the `packageManager` field in the root `package.json` to `pnpm@10.12.4`. Remove any `packageManager` fields from individual workspace `package.json` files. Ensure that the `.npmrc` or equivalent pnpm configuration files are set up correctly for consistent behavior. Run `pnpm install` at the root to regenerate a stable lockfile.
+
 
 # Test Strategy:
-Verify that `pnpm install` runs consistently across the monorepo. Check the `pnpm-lock.yaml` file for stability and consistency. Confirm that no `packageManager` fields exist in sub-packages.
+

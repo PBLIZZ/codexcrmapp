@@ -5,7 +5,7 @@
 # Priority: medium
 # Description: Identify and remove unused or misplaced dependencies, such as Next.js dependencies in non-frontend packages, duplicate build tools, and unused TypeScript installations.
 # Details:
-Manually review each `package.json` file within the monorepo. Look for dependencies that are not actively used by the package's code (e.g., `next` in a utility package). Identify duplicate build tools (e.g., multiple `tsup` or `rimraf` installations if they are already centralized). Remove these unused dependencies. Use `depcheck` or similar tools to assist in identification, but always verify manually. After removal, run `pnpm install` and test the package functionality.
+
 
 # Test Strategy:
-Verify that all packages still build and function correctly after dependency removal. Check the `pnpm-lock.yaml` to confirm the absence of removed dependencies. Monitor bundle sizes for reduction.
+

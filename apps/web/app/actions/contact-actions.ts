@@ -2,6 +2,8 @@
 
 import { z } from 'zod';
 import { contactSchema } from '@/app/(authorisedRoute)/contacts/new/ContactForm';
+import { api } from '@/lib/trpc/server-client';
+import { revalidatePath } from 'next/cache';
 
 export type SubmitContactActionState = {
   success: boolean;
@@ -11,7 +13,7 @@ export type SubmitContactActionState = {
 };
 
 // Server action for creating/updating contacts
-export function submitContactAction(formData: FormData) {
+export async function submitContactAction(formData: FormData): Promise<SubmitContactActionState> {
   try {
     // Convert FormData to object
     const rawData = Object.fromEntries(formData.entries());
@@ -39,12 +41,12 @@ export function submitContactAction(formData: FormData) {
     // Your database logic here
     const isEdit = validatedData.id;
     if (isEdit) {
-      // Update contact
-      // await updateContact(validatedData.id, validatedData);
+      await api.contact.update(validatedData);
     } else {
-      // Create contact
-      // await createContact(validatedData);
+      await api.contact.create(validatedData);
     }
+
+    revalidatePath('/contacts');
 
     return {
       success: true,
@@ -65,5 +67,15 @@ export function submitContactAction(formData: FormData) {
       message: 'Failed to save contact',
       errors: {},
     };
+  }
+}
+
+export async function deleteContactAction(id: string): Promise<{ success: boolean; message: string }> {
+  try {
+    await api.contact.delete({ id });
+    revalidatePath('/contacts');
+    return { success: true, message: 'Contact deleted successfully' };
+  } catch (error) {
+    return { success: false, message: 'Failed to delete contact' };
   }
 }

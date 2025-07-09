@@ -1,18 +1,17 @@
-//apps/web/components/layout/AppSidebarController.tsx
 'use client';
 
 import { usePathname } from 'next/navigation';
 
-import { ContactsSidebar } from '../../app/(authorisedRoute)/contacts/ContactsSidebar';
-import { DashboardSidebar } from '../../app/(authorisedRoute)/dashboard/DashboardSidebar';
-import { TasksSidebar } from '../../app/(authorisedRoute)/tasks/TasksSidebar';
-import { AnalyticsSidebar } from '../../app/(authorisedRoute)/analytics/AnalyticsSidebar';
-import { CalendarSidebar } from '../../app/(authorisedRoute)/calendar/CalendarSidebar';
-import { MessagesSidebar } from '../../app/(authorisedRoute)/messages/MessagesSidebar';
-import { MarketingSidebar } from '../../app/(authorisedRoute)/marketing/MarketingSidebar';
-import { SettingsSidebar } from '../../app/(authorisedRoute)/settings/SettingsSidebar';
+import { ContactsSidebar } from './sidebars/ContactsSidebar';
+import { DashboardSidebar } from './sidebars/DashboardSidebar';
+import { TasksSidebar } from './sidebars/TasksSidebar';
+import { AnalyticsSidebar } from './sidebars/AnalyticsSidebar';
+import { CalendarSidebar } from './sidebars/CalendarSidebar';
+import { MessagesSidebar } from './sidebars/MessagesSidebar';
+import { MarketingSidebar } from './sidebars/MarketingSidebar';
+import { SettingsSidebar } from './sidebars/SettingsSidebar';
 
-import { Skeleton } from '@codexcrm/ui';
+import { Skeleton } from '@/components/ui/skeleton';
 
 /**
  * AppSidebarController declaratively renders the correct contextual sidebar
@@ -23,7 +22,7 @@ export function AppSidebarController() {
 
   // Render a skeleton during the initial server render when pathname might not be available
   if (!pathname) {
-    return <Skeleton className='h-full w-full' />;
+    return <Skeleton className="h-full w-full" />;
   }
 
   // --- Declarative Sidebar Selection ---
@@ -33,11 +32,11 @@ export function AppSidebarController() {
   if (pathname === '/' || pathname.startsWith('/dashboard')) {
     return <DashboardSidebar />;
   }
-
+  
   if (pathname.startsWith('/contacts')) {
     return <ContactsSidebar />;
   }
-
+  
   if (pathname.startsWith('/tasks')) {
     return <TasksSidebar />;
   }
@@ -45,11 +44,11 @@ export function AppSidebarController() {
   if (pathname.startsWith('/calendar')) {
     return <CalendarSidebar />;
   }
-
+  
   if (pathname.startsWith('/messages')) {
     return <MessagesSidebar />;
   }
-
+  
   if (pathname.startsWith('/marketing')) {
     return <MarketingSidebar />;
   }
@@ -58,14 +57,7 @@ export function AppSidebarController() {
     return <AnalyticsSidebar />;
   }
 
-  if (
-    pathname.startsWith('/account') ||
-    pathname.startsWith('/billing') ||
-    pathname.startsWith('/settings') ||
-    pathname.startsWith('/upgrade') ||
-    pathname.startsWith('/notifications') ||
-    pathname.startsWith('/security')
-  ) {
+  if (pathname.startsWith('/account') || pathname.startsWith('/billing') || pathname.startsWith('/settings') || pathname.startsWith('/upgrade') || pathname.startsWith('/notifications') || pathname.startsWith('/security')) {
     return <SettingsSidebar />;
   }
   return <DashboardSidebar />;

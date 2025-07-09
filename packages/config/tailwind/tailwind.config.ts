@@ -1,4 +1,6 @@
+// packages/config/tailwind/tailwind.config.ts
 import type { Config } from 'tailwindcss';
+import type { PluginAPI } from 'tailwindcss/types/config';
 import tailwindcssAnimate from 'tailwindcss-animate';
 
 /**
@@ -17,26 +19,22 @@ export const tailwindPreset: Omit<Config, 'content'> = {
       },
     },
     extend: {
+            // THE FIX IS HERE.
+      // We are mapping the semantic CSS variables you defined in globals.css
+      // to Tailwind's color palette.
       colors: {
+        // This tells Tailwind: "When you see 'border', use the color defined by var(--border)".
+        // Now classes like `border-border`, `bg-border`, `text-border` will work.
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         primary: {
-          DEFAULT: 'oklch(0.70 0.12 183)', // Teal brand
+          // This maps `bg-primary`, `text-primary`, etc. to var(--primary)
+          DEFAULT: 'hsl(var(--primary))', 
+          // This maps `bg-primary-foreground`, etc. to var(--primary-foreground)
           foreground: 'hsl(var(--primary-foreground))',
-          50: 'oklch(0.95 0.02 183)',
-          100: 'oklch(0.90 0.04 183)',
-          200: 'hsl(var(--primary-200))',
-          300: 'hsl(var(--primary-300))',
-          400: 'hsl(var(--primary-400))',
-          500: 'oklch(0.70 0.12 183)',
-          600: 'oklch(0.60 0.12 183)',
-          700: 'oklch(0.50 0.12 183)',
-          800: 'hsl(var(--primary-800))',
-          900: 'hsl(var(--primary-900))',
-          950: 'hsl(var(--primary-950))',
         },
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',
@@ -51,19 +49,8 @@ export const tailwindPreset: Omit<Config, 'content'> = {
           foreground: 'hsl(var(--muted-foreground))',
         },
         accent: {
-          DEFAULT: 'oklch(0.76 0.16 56)', // Orange 400
+          DEFAULT: 'hsl(var(--accent))',
           foreground: 'hsl(var(--accent-foreground))',
-          50: 'oklch(0.95 0.03 56)',
-          100: 'oklch(0.90 0.06 56)',
-          200: 'hsl(var(--accent-200))',
-          300: 'hsl(var(--accent-300))',
-          400: 'oklch(0.76 0.16 56)',
-          500: 'oklch(0.70 0.16 56)',
-          600: 'hsl(var(--accent-600))',
-          700: 'hsl(var(--accent-700))',
-          800: 'hsl(var(--accent-800))',
-          900: 'hsl(var(--accent-900))',
-          950: 'hsl(var(--accent-950))',
         },
         popover: {
           DEFAULT: 'hsl(var(--popover))',
@@ -74,7 +61,7 @@ export const tailwindPreset: Omit<Config, 'content'> = {
           foreground: 'hsl(var(--card-foreground))',
         },
         sidebar: {
-          DEFAULT: 'hsl(var(--sidebar))',
+          DEFAULT: 'hsl(var(--sidebar-background))',
           foreground: 'hsl(var(--sidebar-foreground))',
           primary: 'hsl(var(--sidebar-primary))',
           'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
@@ -92,10 +79,10 @@ export const tailwindPreset: Omit<Config, 'content'> = {
         },
       },
       borderRadius: {
-        lg: 'var(--radius-lg)',
-        md: 'var(--radius-md)',
-        sm: 'var(--radius-sm)',
-        xl: 'var(--radius-xl)',
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)',
+        xl: 'calc(var(--radius) + 2px)',
       },
       fontFamily: {
         sans: ['var(--font-sans)'],
@@ -117,5 +104,27 @@ export const tailwindPreset: Omit<Config, 'content'> = {
       },
     },
   },
-  plugins: [tailwindcssAnimate],
+  plugins: [tailwindcssAnimate,
+    // This plugin adds the base styles you were trying to create with @apply
+    function ({ addBase }: PluginAPI) {
+      addBase({
+        // This is the correct way to apply global styles.
+        // It injects them into the same `@layer base` as your variables.
+        '*': {
+          // It's generally better to set the border color on components
+          // rather than globally on every single element with '*'.
+          // But if you must, this is how you'd do it.
+          // borderColor: 'hsl(var(--border))',
+        },
+        'body': {
+          // This correctly applies the background and foreground colors to the body.
+          backgroundColor: 'hsl(var(--background))',
+          color: 'hsl(var(--foreground))',
+          // You can add other base body styles here
+          '-webkit-font-smoothing': 'antialiased',
+          '-moz-osx-font-smoothing': 'grayscale',
+        },
+      })
+    }
+  ],
 };

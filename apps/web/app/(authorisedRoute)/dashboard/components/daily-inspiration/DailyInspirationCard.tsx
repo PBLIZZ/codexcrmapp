@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@codexcrm/ui";
-import { Button } from "@codexcrm/ui";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { RefreshCw, Quote } from "lucide-react";
 
 interface DailyInspirationCardProps {

@@ -1,0 +1,19 @@
+# Task ID: 361
+# Title: Refactor Contact List Page Server Component
+# Status: pending
+# Dependencies: 360
+# Priority: high
+# Description: Replace old Supabase patterns with new tRPC server client in the contacts page
+# Details:
+1. Open `apps/web/app/contacts/page.tsx`
+2. Remove any imports related to Supabase (e.g., `import { createServerSupabaseClient } from '@/lib/supabase/server'`)
+3. Add import: `import { api } from '@/lib/trpc/server-client';`
+4. Replace any `supabase.from('contacts').select('*')` or similar with `await api.contact.getAll()`
+5. Remove any `createServerSupabaseClient()` calls
+6. Keep all UI components and other logic unchanged
+7. Do not modify any other files
+
+# Test Strategy:
+1. Verify no Supabase imports remain
+2. Check that tRPC server client is imported
+3. Confirm data fetching uses the new API pattern

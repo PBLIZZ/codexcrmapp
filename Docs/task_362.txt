@@ -1,0 +1,19 @@
+# Task ID: 362
+# Title: Refactor Dashboard Page Server Component
+# Status: pending
+# Dependencies: 360
+# Priority: high
+# Description: Replace old Supabase patterns with new tRPC server client in the dashboard page
+# Details:
+1. Open `apps/web/app/dashboard/page.tsx` or `apps/web/app/page.tsx` (whichever contains the dashboard)
+2. Remove any imports related to Supabase
+3. Add import: `import { api } from '@/lib/trpc/server-client';`
+4. Replace any database queries with appropriate `await api.*` calls
+5. Remove any `createServerSupabaseClient()` calls
+6. Keep all UI components and other logic unchanged
+7. Do not modify any other files
+
+# Test Strategy:
+1. Verify no Supabase imports remain
+2. Check that tRPC server client is imported
+3. Confirm data fetching uses the new API pattern

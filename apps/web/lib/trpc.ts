@@ -1,11 +1,10 @@
-import type { AppRouter } from '@codexcrm/api/src/root';
-import { api, API_VERSION } from '@codexcrm/trpc';
 
-export { api, API_VERSION };
+import type { AppRouter } from '@codexcrm/server';
+import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
 
-// Define Api type locally since importing isn't working
-export type Api = typeof api;
+export { api, API_VERSION } from './trpc/client';
 
-// Re-export types for inputs and outputs
-export type { RouterInputs, RouterOutputs } from '../app/providers';
+// Export types directly
+export type RouterInputs = inferRouterInputs<AppRouter>;
+export type RouterOutputs = inferRouterOutputs<AppRouter>;
 export type { AppRouter };

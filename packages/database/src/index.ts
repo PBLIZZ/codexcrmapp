@@ -1,6 +1,8 @@
-export * from './database.types';
-export * from './utils/db-helpers';
+import { PrismaClient } from '../prisma/generated/client/client';
 
-// You can also export the main Database type for convenience
-import type { Database as DB } from './database.types';
-export type Database = DB;
+const prisma = new PrismaClient({
+  log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+});
+
+export default prisma;
+export * from '../prisma/generated/client/client';

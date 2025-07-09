@@ -2,10 +2,10 @@
 # Title: Optimize Peer Dependencies
 # Status: done
 # Dependencies: 336
-# Priority: low
+# Priority: medium
 # Description: Convert appropriate dependencies, such as React in the UI package, to peer dependencies to reduce bundle duplication and ensure proper dependency resolution.
 # Details:
-In the UI package's `package.json`, move `react` and `react-dom` from `dependencies` to `peerDependencies`. Ensure that the `peerDependenciesMeta` field is used if `react` is optional. This ensures that the consuming application provides its own React instance, preventing multiple React bundles. Example: `"peerDependencies": { "react": ">=18", "react-dom": ">=18" }`. Run `pnpm install` and test the UI package's integration.
+
 
 # Test Strategy:
-Verify that the UI package builds and renders correctly when consumed by an application. Check for any peer dependency warnings during installation or build. Confirm that the final application bundle does not contain duplicate React instances.
+

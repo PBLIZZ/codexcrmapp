@@ -1,4 +1,4 @@
-/** @file /packages/config/tsup.config.js */
+/* @file /packages/config/tsup.config.js */
 import { serverPackageConfig } from '@codexcrm/config-tsup';
 
 export default serverPackageConfig({

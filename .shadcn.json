@@ -1,0 +1,4 @@
+{
+  "path": "packages/ui/src/components/ui",
+  "importAlias": "@codexcrm/ui"
+}
