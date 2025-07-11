@@ -15,7 +15,7 @@
         "dist/**"
       ]
     },
-    "@codexcrm/database#build": {
+    "@codexcrm/db#build": {
       "outputs": [
         "prisma/generated/**"
       ],

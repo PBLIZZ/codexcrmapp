@@ -1,4 +1,5 @@
-import { appRouter, createContext } from '@codexcrm/server';
+import { appRouter } from '@/lib/trpc/root';
+import { createContext } from '@/lib/trpc/context';
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 import superjson from 'superjson';
 
@@ -27,7 +28,7 @@ type ApiErrorResponse = {
  */
 export const GET = async (req: Request) => {
   console.info(`[TRPC API] Handling ${req.method} request to ${req.url}`);
-  
+
   try {
     // Log the headers at debug level for detailed troubleshooting only
     if (process.env.NODE_ENV === 'development') {
@@ -35,7 +36,7 @@ export const GET = async (req: Request) => {
       // Use debug level for potentially sensitive or verbose information
       console.debug('[TRPC API] Request headers:', JSON.stringify(headers, null, 2));
     }
-    
+
     // Handle the request with tRPC's fetchRequestHandler
     const response = await fetchRequestHandler({
       endpoint: TRPC_ENDPOINT,
@@ -65,12 +66,12 @@ export const GET = async (req: Request) => {
               console.error(`[TRPC API] Error in procedure: ${path}`);
             },
     });
-    
+
     console.info(`[TRPC API] Response status: ${response.status}`);
     return response;
   } catch (error) {
     console.error('[TRPC API] Unhandled error:', error);
-    
+
     // Create a standardized error response
     const errorResponse: ApiErrorResponse = {
       error: 'Internal Server Error',
@@ -81,16 +82,13 @@ export const GET = async (req: Request) => {
         ? { debugInfo: { message: error.message, stack: error.stack } }
         : {}),
       // Add error code for easier client-side handling
-      code: 'INTERNAL_SERVER_ERROR'
+      code: 'INTERNAL_SERVER_ERROR',
     };
-    
-    return new Response(
-      JSON.stringify(errorResponse),
-      { 
-        status: 500, 
-        headers: { 'content-type': 'application/json' } 
-      }
-    );
+
+    return new Response(JSON.stringify(errorResponse), {
+      status: 500,
+      headers: { 'content-type': 'application/json' },
+    });
   }
 };
 

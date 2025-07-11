@@ -6,7 +6,7 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "scripts": {
-    "dev": "prisma generate --watch",
+    "dev": "echo 'Database package ready for development - client already generated'",
     "db:pull": "prisma db pull",
     "db:studio": "prisma studio",
     "db:generate": "prisma generate",

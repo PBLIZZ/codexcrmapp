@@ -10,7 +10,7 @@ export const storageRouter = router({
       z.object({
         fileName: z.string(),
         contentType: z.string(),
-        folderPath: z.string().default('contacts')
+        folderPath: z.string().default('contacts'),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -23,8 +23,7 @@ export const storageRouter = router({
         const filePath = `${input.folderPath}/${ctx.user.id}/${input.fileName}`;
 
         // Generate a signed URL for direct upload
-        const { data, error } = await ctx.supabaseAdmin
-          .storage
+        const { data, error } = await ctx.supabaseAdmin.storage
           .from('contact-profile-photo')
           .createSignedUploadUrl(filePath);
 
@@ -39,7 +38,7 @@ export const storageRouter = router({
         return {
           signedUrl: data.signedUrl,
           path: data.path,
-          token: data.token
+          token: data.token,
         };
       } catch (error) {
         console.error('Error generating upload URL:', error);
@@ -64,8 +63,7 @@ export const storageRouter = router({
 
       try {
         // Generate a signed URL for private access
-        const { data, error } = await ctx.supabaseAdmin
-          .storage
+        const { data, error } = await ctx.supabaseAdmin.storage
           .from('contact-profile-photo')
           .createSignedUrl(input.filePath, 3600); // URL valid for 1 hour
 
@@ -78,7 +76,7 @@ export const storageRouter = router({
         }
 
         return {
-          signedUrl: data.signedUrl
+          signedUrl: data.signedUrl,
         };
       } catch (error) {
         console.error('Error generating signed URL:', error);
@@ -111,8 +109,7 @@ export const storageRouter = router({
         }
 
         // Delete the file
-        const { error } = await ctx.supabaseAdmin
-          .storage
+        const { error } = await ctx.supabaseAdmin.storage
           .from('contact-profile-photo')
           .remove([input.filePath]);
 
