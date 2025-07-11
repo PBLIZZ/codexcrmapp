@@ -67,7 +67,7 @@ jobs:
     - name: Setup pnpm
       uses: pnpm/action-setup@v4
       with:
-        version: 10 # Match your local pnpm version if needed
+        version: 10.12.4 # Match package.json packageManager version
 
     # Setup Node.js (compatible with your project)
     - name: Setup Node.js

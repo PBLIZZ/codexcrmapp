@@ -55,6 +55,7 @@ next-env.d.ts
 client_secret*.json
 .cursor/mcp.json
 **/mcp.json
+mcp_config.json
 google_credentials.json
 .env.sentry-build-plugin
 
@@ -77,4 +78,4 @@ node_modules/
 # OS specific
 # Task files
 # tasks.json
-# tasks/ 
+# tasks/ .codeium/

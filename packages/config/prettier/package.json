@@ -1,0 +1,11 @@
+{
+  "name": "@codexcrm/config-prettier",
+  "version": "1.0.1",
+  "private": true,
+  "main": "index.json",
+  "packageManager": "pnpm@10.12.4",
+  "files": [
+    "index.json"
+  ]
+}
+

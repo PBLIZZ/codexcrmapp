@@ -1,23 +1,34 @@
 {
   "compilerOptions": {
-    "target": "es2022",
-    "lib": ["es2022", "dom", "dom.iterable"],
-    "module": "esnext",
-    "moduleResolution": "node",
-    "strict": true,
-    "skipLibCheck": true,
-    "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@codexcrm/server/*": ["packages/server/src/*"],
-      "@codexcrm/db/*":     ["packages/db/src/*"],
-      "@codexcrm/jobs/*":   ["packages/jobs/*"],
-      "@codexcrm/ui/*":     ["packages/ui/src/*"],
-      "@codexcrm/web/*":    ["apps/web/*"]
+      "@codexcrm/config/*": [
+        "packages/config/*"
+      ],
+      "@codexcrm/db/*": [
+        "packages/db/src/*"
+      ],
+      "@codexcrm/ui/*": [
+        "packages/ui/src/*"
+      ],
+      "@/*": [
+        "apps/web/*"
+      ]
     }
   },
-  "exclude": [
-    "node_modules",
-    "apps/web"
+  "files": [],
+  "references": [
+    {
+      "path": "apps/web"
+    },
+    {
+      "path": "packages/db"
+    },
+    {
+      "path": "packages/ui"
+    },
+    {
+      "path": "packages/config"
+    }
   ]
 }

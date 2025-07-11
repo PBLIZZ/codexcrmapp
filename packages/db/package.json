@@ -1,23 +1,21 @@
 {
   "name": "@codexcrm/db",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "files": [
-    "dist",
-    "src"
-  ],
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
   "scripts": {
-    "lint": "eslint --ext .ts ./src",
-    "build": "tsc -p tsconfig.build.json",
-    "dev": "tsc -p tsconfig.build.json --watch"
+    "dev": "echo 'Database package ready for development - client already generated'",
+    "db:pull": "prisma db pull",
+    "db:studio": "prisma studio",
+    "db:generate": "prisma generate",
+    "build": "pnpm db:generate"
   },
   "dependencies": {
-    "zod": "^3.24.3"
+    "@prisma/client": "6.11.1"
   },
   "devDependencies": {
-    "supabase": "^2.20.12",
-    "typescript": "^5"
+    "prisma": "6.11.1"
   }
 }

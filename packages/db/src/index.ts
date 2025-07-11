@@ -1,11 +1,17 @@
-import { type Database, Tables, TablesInsert, TablesUpdate, Enums } from './database.types';
+// path: packages/database/src/index.ts
+// @/SERVER-ONLY - This file should only be imported on the server.
+import { PrismaClient } from '../prisma/generated/client/client';
 
-export { Database, Tables, TablesInsert, TablesUpdate, Enums };
+// This ensures that in development, we don't end up with a dozen
+// prisma clients from hot-reloading. In production, it's a no-op.
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient | undefined };
 
-// Export convenience type helpers for easier access
-export type Contact = Tables<'contacts'>;
-export type FollowUp = Tables<'follow_ups'>;
-export type Note = Tables<'notes'>;
-export type Payment = Tables<'payments'>;
-export type Program = Tables<'programs'>;
-export type Session = Tables<'sessions'>;
+export const prisma =
+  globalForPrisma.prisma ??
+  new PrismaClient({
+    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+  });
+
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+
+export default prisma;

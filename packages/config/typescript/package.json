@@ -1,0 +1,11 @@
+{
+  "name": "@codexcrm/config-typescript",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@10.12.4",
+  "files": [
+    "base.json",
+    "nextjs.json",
+    "react-library.json"
+  ]
+}
