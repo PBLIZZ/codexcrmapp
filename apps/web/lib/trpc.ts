@@ -4,8 +4,8 @@
  */
 
 // Re-export the tRPC client from the correct path alias
-// Re-export AppRouter type for direct use in components if needed
-import type { AppRouter } from '@codexcrm/server/src/root';
+// Re-export AppRouter type from the correct local path
+import type { AppRouter } from '@/lib/trpc/root';
 
 export { api, API_VERSION } from '../src/lib/trpc/client';
 
