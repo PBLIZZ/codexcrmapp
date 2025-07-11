@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/nextjs';
-import type { NextRequest} from 'next/server';
+import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
 // Import the server client creator from our modern SSR helper

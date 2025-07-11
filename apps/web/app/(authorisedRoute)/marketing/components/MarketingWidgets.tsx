@@ -51,27 +51,27 @@ export function MarketingWidgets() {
         </TabsList>
         
         {/* Tab content sections */}
-        <TabsContent value="email">
+        <TabsContent value="email" className="mt-2">
           <EmailMarketing />
         </TabsContent>
         
-        <TabsContent value="creator">
+        <TabsContent value="creator" className="mt-2">
           <CreatorStudio />
         </TabsContent>
         
-        <TabsContent value="calendar">
+        <TabsContent value="calendar" className="mt-2">
           <ContentCalendar />
         </TabsContent>
         
-        <TabsContent value="leadmagnet">
+        <TabsContent value="leadmagnet" className="mt-2">
           <LeadMagnetStudio />
         </TabsContent>
         
-        <TabsContent value="membership">
+        <TabsContent value="membership" className="mt-2">
           <MembershipLoyalty />
         </TabsContent>
         
-        <TabsContent value="quiz">
+        <TabsContent value="quiz" className="mt-2">
           <QuizCreator />
         </TabsContent>
       </Tabs>

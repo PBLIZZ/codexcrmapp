@@ -6,10 +6,10 @@ import { Loader2 } from 'lucide-react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod/v4';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@codexcrm/ui';
+import { Input } from '@codexcrm/ui';
+import { Label } from '@codexcrm/ui';
+import { Textarea } from '@codexcrm/ui';
 import { api } from '@/lib/trpc';
 import {
   GroupStylePicker,

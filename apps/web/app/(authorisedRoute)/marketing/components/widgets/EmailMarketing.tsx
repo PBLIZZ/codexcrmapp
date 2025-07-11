@@ -1,6 +1,6 @@
 'use client';
 
-import _React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Mail, ArrowRight, Sparkles, Megaphone } from 'lucide-react';
 import Link from 'next/link';
 import { Input } from '@codexcrm/ui';
@@ -35,9 +35,10 @@ export function EmailMarketing() {
             <div>
               <label className='text-sm font-medium mb-1 block'>Email Subject Line</label>
               <Input
+                type="text"
                 placeholder="e.g., 'Your Wellness Journey Begins Today'"
                 value={emailSubject}
-                onChange={(e) => setEmailSubject(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmailSubject(e.target.value)}
                 className='bg-white dark:bg-teal-950/40'
               />
             </div>
@@ -62,32 +63,32 @@ export function EmailMarketing() {
               </div>
             </div>
 
-            <Button className='w-full bg-teal-600 hover:bg-teal-100 hover:text-teal-800 text-white'>
+            <Button variant='default' size='default' className='w-full bg-teal-600 hover:bg-teal-100 hover:text-teal-800 text-white'>
               <Sparkles className='h-4 w-4 mr-2' />
               Generate Email Template
             </Button>
           </div>
         </div>
 
-        <Card>
+        <Card className="">
           <CardHeader className='pb-3'>
             <CardTitle className='text-lg font-semibold'>Key Features</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="">
             <div className='space-y-2'>
-              <div className='flex items-center gap-2'>
+              <div className='flex items-center gap-2 text-gray-800'>
                 <div className='h-2 w-2 rounded-full bg-teal-500'></div>
                 <span className='text-sm'>Personalized templates with dynamic content</span>
               </div>
-              <div className='flex items-center gap-2'>
+              <div className='flex items-center gap-2 text-gray-800'>
                 <div className='h-2 w-2 rounded-full bg-teal-500'></div>
                 <span className='text-sm'>Behavior-based triggers and automations</span>
               </div>
-              <div className='flex items-center gap-2'>
+              <div className='flex items-center gap-2 text-gray-800'>
                 <div className='h-2 w-2 rounded-full bg-teal-500'></div>
                 <span className='text-sm'>Detailed performance analytics and insights</span>
               </div>
-              <div className='flex items-center gap-2'>
+              <div className='flex items-center gap-2 text-gray-800'>
                 <div className='h-2 w-2 rounded-full bg-teal-500'></div>
                 <span className='text-sm'>A/B testing to optimize open and click rates</span>
               </div>
@@ -100,12 +101,12 @@ export function EmailMarketing() {
         <Card className='border-teal-100 dark:border-teal-900/50 py-0'>
           <CardHeader className='pt-6 pb-3 bg-teal-50 dark:bg-teal-950/20 rounded-t-lg'>
             <CardTitle className='text-lg font-semibold'>Email Preview</CardTitle>
-            <CardDescription>How your email might look to recipients</CardDescription>
+            <CardDescription className="">How your email might look to recipients</CardDescription>
           </CardHeader>
           <CardContent className='pt-6'>
             <div className='border rounded-md p-4 bg-white dark:bg-teal-950/10'>
               <div className='border-b pb-2 mb-3'>
-                <div className='font-medium'>
+                <div className='font-medium text-teal-700'>
                   {emailSubject || 'Your Wellness Journey Begins Today'}
                 </div>
                 <div className='text-xs text-muted-foreground'>From: Your Practice Name</div>
@@ -129,7 +130,7 @@ export function EmailMarketing() {
             </div>
           </CardContent>
           <CardFooter className='flex justify-between border-t pt-4 pb-6'>
-            <Button variant='outline' size='sm' asChild>
+            <Button variant='outline' size='sm' asChild className='text-teal-600'>
               <Link href={{ pathname: '/marketing/email/templates' }}>Browse Templates</Link>
             </Button>
             <Button
@@ -158,6 +159,7 @@ export function EmailMarketing() {
           </p>
           <Button
             variant='link'
+            size='default'
             className='text-rose-600 dark:text-rose-400 p-0 h-auto mt-2'
             onClick={() =>
               document.querySelector('[value="creator"]')?.dispatchEvent(new MouseEvent('click'))

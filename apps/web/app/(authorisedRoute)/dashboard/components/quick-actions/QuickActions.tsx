@@ -1,20 +1,20 @@
 'use client';
 
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { 
-  UserPlus, 
-  Calendar, 
-  FileText, 
-  MessageSquare, 
-  Send, 
-  BarChart, 
-  Settings, 
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@codexcrm/ui';
+import { Button } from '@codexcrm/ui';
+import {
+  UserPlus,
+  Calendar,
+  FileText,
+  MessageSquare,
+  Send,
+  BarChart,
+  Settings,
   Users,
-  PlusCircle
-} from "lucide-react";
-import Link from "next/link";
+  PlusCircle,
+} from 'lucide-react';
+import Link from 'next/link';
 
 interface QuickActionsProps {
   className?: string;
@@ -87,29 +87,29 @@ export function QuickActions({ className }: QuickActionsProps) {
         <CardDescription>Common tasks and shortcuts</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className='grid grid-cols-2 sm:grid-cols-4 gap-3'>
           {quickActions.map((action) => {
             const Icon = action.icon;
             return (
               <Button
                 key={action.title}
-                variant="outline"
+                variant='outline'
                 className={`h-auto flex flex-col items-center justify-center p-4 space-y-2 ${action.bgColor} border-0 hover:bg-opacity-80`}
                 asChild
               >
                 <Link href={action.href}>
                   <Icon className={`h-6 w-6 mb-2 ${action.color}`} />
-                  <span className="text-xs font-medium">{action.title}</span>
+                  <span className='text-xs font-medium'>{action.title}</span>
                 </Link>
               </Button>
             );
           })}
         </div>
-        
-        <div className="mt-4">
-          <Button variant="outline" className="w-full" asChild>
+
+        <div className='mt-4'>
+          <Button variant='outline' className='w-full' asChild>
             <Link href={{ pathname: '/actions' }}>
-              <PlusCircle className="mr-2 h-4 w-4" />
+              <PlusCircle className='mr-2 h-4 w-4' />
               View All Actions
             </Link>
           </Button>

@@ -1,14 +1,8 @@
-"use client"
+'use client';
 
-import {
-  Folder,
-  Forward,
-  MoreHorizontal,
-  Trash2,
-  type LucideIcon,
-} from "lucide-react"
-import Link from "next/link"
-import { Route } from "next"
+import { Folder, Forward, MoreHorizontal, Trash2, type LucideIcon } from 'lucide-react';
+import Link from 'next/link';
+import { Route } from 'next';
 
 import {
   DropdownMenu,
@@ -16,8 +10,6 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
@@ -25,35 +17,38 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from '@/components/ui/sidebar'
+} from '@codexcrm/ui';
 
 // Define the structure for project items
 export interface ProjectItem {
-  id: string
-  name: string
-  url: string
-  icon: LucideIcon
+  id: string;
+  name: string;
+  url: string;
+  icon: LucideIcon;
 }
 
-export function NavProjects({
-  projects,
-}: {
-  projects: ProjectItem[]
-}) {
-  const { isMobile } = useSidebar()
+export function NavProjects({ projects }: { projects: ProjectItem[] }) {
+  const { isMobile } = useSidebar();
 
   // Function to generate project URLs that open within the tasks module
   const getProjectUrl = (projectId: string): Route<string> => {
-    return `/tasks?project=${projectId}` as Route<string>
-  }
+    return `/tasks?project=${projectId}` as Route<string>;
+  };
 
   return (
-    <SidebarGroup>
-      <SidebarGroupLabel>Projects</SidebarGroupLabel>
-      <SidebarMenu>
+    <SidebarGroup className='mt-2'>
+      <SidebarGroupLabel className='text-sm font-semibold text-sidebar-foreground'>
+        Projects
+      </SidebarGroupLabel>
+      <SidebarMenu className='mt-2'>
         {projects.map((item) => (
-          <SidebarMenuItem key={item.id}>
-            <SidebarMenuButton asChild tooltip={item.name}>
+          <SidebarMenuItem className='text-sidebar-foreground/70' key={item.id}>
+            <SidebarMenuButton
+              inset
+              className='text-sidebar-foreground/70'
+              asChild
+              tooltip={item.name}
+            >
               <Link href={getProjectUrl(item.id)}>
                 <item.icon />
                 <span>{item.name}</span>
@@ -61,46 +56,51 @@ export function NavProjects({
             </SidebarMenuButton>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <SidebarMenuAction showOnHover>
+                <SidebarMenuAction className='text-sidebar-foreground/70' showOnHover>
                   <MoreHorizontal />
-                  <span className="sr-only">More</span>
+                  <span className='sr-only'>More</span>
                 </SidebarMenuAction>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                className="w-48 rounded-lg"
-                side={isMobile ? "bottom" : "right"}
-                align={isMobile ? "end" : "start"}
+                className='w-48 rounded-lg'
+                side={isMobile ? 'bottom' : 'right'}
+                align={isMobile ? 'end' : 'start'}
               >
-                <DropdownMenuItem asChild>
+                <DropdownMenuItem inset className='text-sidebar-foreground/70' asChild>
                   <Link href={getProjectUrl(item.id)}>
-                    <Folder className="text-muted-foreground" />
+                    <Folder />
                     <span>View Project</span>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
+                <DropdownMenuItem inset className='text-sidebar-foreground/70' asChild>
                   <Link href={`/tasks/${item.id}/share` as Route<`/tasks/${string}/share`>}>
-                    <Forward className="text-muted-foreground" />
+                    <Forward />
                     <span>Share Project</span>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Trash2 className="text-muted-foreground" />
+                <DropdownMenuSeparator className='my-2' />
+                <DropdownMenuItem inset className='text-red-500 hover:text-red-600' asChild>
+                  <Trash2 />
                   <span>Delete Project</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarMenuItem>
         ))}
-        <SidebarMenuItem>
-          <SidebarMenuButton asChild className="text-sidebar-foreground/70">
-            <Link href={"/tasks/new-project" as Route<"/tasks/new-project">}>
-              <MoreHorizontal className="text-sidebar-foreground/70" />
+        <SidebarMenuItem className='mt-2'>
+          <SidebarMenuButton
+            inset
+            asChild
+            tooltip='Create Project'
+            className='text-sidebar-foreground/70'
+          >
+            <Link href={'/tasks/new-project' as Route<'/tasks/new-project'>}>
+              <MoreHorizontal />
               <span>Create Project</span>
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }

@@ -11,6 +11,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from '@codexcrm/ui';
 
 export function CreatorStudio() {
@@ -34,9 +35,10 @@ export function CreatorStudio() {
             <div>
               <label className='text-sm font-medium mb-1 block'>Design Prompt</label>
               <Input
+                type="text"
                 placeholder="e.g., 'Calming yoga pose in nature with soft lighting'"
                 value={promptText}
-                onChange={(e) => setPromptText(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPromptText(e.target.value)}
                 className='bg-white dark:bg-purple-950/40'
               />
             </div>
@@ -62,18 +64,18 @@ export function CreatorStudio() {
               </div>
             </div>
 
-            <Button className='w-full bg-purple-600 text-white hover:bg-teal-100 hover:text-teal-800'>
+            <Button variant='default' size='default' className='w-full bg-purple-600 text-white hover:bg-teal-100 hover:text-teal-800'>
               <Sparkles className='h-4 w-4 mr-2' />
               Generate Content
             </Button>
           </div>
         </div>
 
-        <Card>
+        <Card className="">
           <CardHeader className='pb-3'>
             <CardTitle className='text-lg font-semibold'>Key Features</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="">
             <div className='space-y-2'>
               <div className='flex items-center gap-2'>
                 <div className='h-2 w-2 rounded-full bg-purple-500'></div>
@@ -100,7 +102,7 @@ export function CreatorStudio() {
         <Card className='border-purple-100 dark:border-purple-900/50 py-0'>
           <CardHeader className='pt-6 pb-3 bg-purple-50 dark:bg-purple-950/20 rounded-t-lg'>
             <CardTitle className='text-lg font-semibold'>Design Preview</CardTitle>
-            <CardDescription>How your generated design might look</CardDescription>
+            <CardDescription className="">How your generated design might look</CardDescription>
           </CardHeader>
           <CardContent className='pt-6'>
             <div className='border rounded-md p-4 bg-white dark:bg-purple-950/10 aspect-square flex items-center justify-center relative overflow-hidden'>
@@ -127,7 +129,7 @@ export function CreatorStudio() {
             </div>
           </CardContent>
           <CardFooter className='flex justify-between border-t pt-4 pb-6'>
-            <Button variant='outline' size='sm' asChild>
+            <Button variant='outline' size='sm' asChild className='text-purple-600'>
               <Link href={{ pathname: '/marketing/creator/templates' }}>Browse Templates</Link>
             </Button>
             <Button
@@ -155,6 +157,7 @@ export function CreatorStudio() {
           </p>
           <Button
             variant='link'
+            size='default'
             className='text-blue-600 dark:text-blue-400 p-0 h-auto mt-2'
             onClick={() =>
               document.querySelector('[value="calendar"]')?.dispatchEvent(new MouseEvent('click'))

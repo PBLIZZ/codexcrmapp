@@ -34,10 +34,24 @@ __export(context_exports, {
 });
 module.exports = __toCommonJS(context_exports);
 var import_database = __toESM(require("@codexcrm/database"));
+
+// src/supabaseAdmin.ts
+var import_supabase_js = require("@supabase/supabase-js");
+var supabaseAdmin = (0, import_supabase_js.createClient)(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY,
+  {
+    auth: { autoRefreshToken: false, persistSession: false }
+  }
+);
+
+// src/context.ts
 var createInnerTRPCContext = (session) => {
   return {
     prisma: import_database.default,
-    session
+    session,
+    supabaseAdmin
+    // Added for storage operations
   };
 };
 // Annotate the CommonJS export names for ESM import in node:

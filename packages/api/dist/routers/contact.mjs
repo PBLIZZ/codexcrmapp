@@ -1,6 +1,6 @@
 import {
   contactRouter
-} from "../chunk-J6Q73ZYT.mjs";
+} from "../chunk-GPXHSCLR.mjs";
 import "../chunk-JTHPFO2B.mjs";
 export {
   contactRouter

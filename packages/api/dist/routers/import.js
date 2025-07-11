@@ -103,18 +103,53 @@ var importRouter = router({
       user_id: ctx.user.id
     }));
     try {
-      const { data, error } = await ctx.supabaseUser.from("contacts").insert(contactsToInsert).select("id, full_name, email");
-      if (error) {
-        importResults.success = false;
-        importResults.errors.push(`Database error: ${error.message}`);
-        return importResults;
-      }
-      importResults.imported = data?.length ?? 0;
+      const prismaContacts = contactsToInsert.map((contact) => {
+        const prismaContact = {
+          fullName: contact.full_name,
+          // Email is required in the schema, provide an empty string if missing
+          email: contact.email || "",
+          // Handle nullable fields properly
+          phone: contact.phone ?? void 0,
+          phoneCountryCode: contact.phone_country_code ?? void 0,
+          companyName: contact.company_name ?? void 0,
+          jobTitle: contact.job_title ?? void 0,
+          website: contact.website ?? void 0,
+          notes: contact.notes ?? void 0,
+          // Required arrays - provide empty arrays if null/undefined
+          tags: contact.tags ?? [],
+          socialHandles: contact.social_handles ?? [],
+          // For wellness goals (required array in schema)
+          wellnessGoals: [],
+          // Optional fields
+          addressStreet: contact.address_street ?? void 0,
+          // Connect to the user
+          user: {
+            connect: {
+              id: ctx.user.id
+            }
+          }
+        };
+        return prismaContact;
+      });
+      const createdContacts = await Promise.all(
+        prismaContacts.map(
+          (contactData) => ctx.prisma.contact.create({
+            data: contactData,
+            select: {
+              id: true,
+              fullName: true,
+              email: true
+            }
+          })
+        )
+      );
+      importResults.imported = createdContacts.length;
       return importResults;
     } catch (error) {
       importResults.success = false;
       const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
       importResults.errors.push(errorMessage);
+      console.error("Error importing contacts:", error);
       return importResults;
     }
   })

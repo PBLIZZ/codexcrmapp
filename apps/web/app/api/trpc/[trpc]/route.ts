@@ -3,14 +3,14 @@
 
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 import { type NextRequest } from 'next/server';
-import { cookies } from 'next/headers';
+import type { CookieOptions } from '@supabase/ssr';
 import { createServerClient } from '@supabase/ssr';
 
 // Import the PURE context creator and the appRouter from our business logic package.
 import { appRouter } from '@codexcrm/api/root';
 // Import directly from the source file instead of through the package index
-import { createInnerTRPCContext } from '@codexcrm/api/src/context';
-import { AnyRouter } from '@trpc/server';
+import { createInnerTRPCContext } from '@codexcrm/api/context';
+import { cookies } from 'next/headers';
 
 /**
  * This is the tRPC request handler.
@@ -20,7 +20,7 @@ const handler = (req: NextRequest) => {
   return fetchRequestHandler({
     endpoint: '/api/trpc',
     req,
-    router: appRouter as unknown as AnyRouter,
+    router: appRouter,
 
     /**
      * This is the CONTEXT FACTORY. It runs for every incoming request.
@@ -35,9 +35,9 @@ const handler = (req: NextRequest) => {
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
         {
           cookies: {
-            get: async (name: string) => {
+            getAll: async (name: string) => {
               const cookiesStore = await cookies();
-              return cookiesStore.get(name)?.value;
+              return cookiesStore.getAll(name)?.values;
             },
           },
         }
@@ -53,6 +53,15 @@ const handler = (req: NextRequest) => {
       // to all of your tRPC procedures in `@codexcrm/api`.
       return createInnerTRPCContext(session);
     },
+    /**
+     * Error handling.
+     */
+    onError:
+      process.env.NODE_ENV === 'development'
+        ? ({ path, error }) => {
+            console.error(`❌ tRPC failed on ${path ?? '<no-path>'}: ${error.message}`);
+          }
+        : undefined,
   });
 };
 

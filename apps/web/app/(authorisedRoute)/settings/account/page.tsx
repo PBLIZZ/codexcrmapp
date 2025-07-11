@@ -4,17 +4,18 @@ import type { User } from '@supabase/supabase-js';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, useReducer } from 'react';
-import { Button } from '@codexcrm/ui';
 import {
+  Button,
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
+  Input,
+  Label,
+  Separator,
 } from '@codexcrm/ui';
-import { Input } from '@codexcrm/ui';
-import { Label } from '@codexcrm/ui';
-import { Separator } from '@codexcrm/ui';
 import { fetchCurrentUser, updateUserPassword, mapAuthErrorMessage } from '@codexcrm/auth';
 
 // Constants
@@ -190,7 +191,9 @@ export default function AccountPage() {
       <Card className='w-full max-w-lg shadow-lg'>
         <CardHeader className='text-center'>
           <CardTitle className='text-3xl font-bold text-teal-600'>My Account</CardTitle>
-          <CardDescription>Manage your account details and settings.</CardDescription>
+          <CardDescription className='text-center'>
+            Manage your account details and settings.
+          </CardDescription>
         </CardHeader>
 
         <CardContent className='space-y-8'>
@@ -211,34 +214,56 @@ export default function AccountPage() {
             )}
           </div>
 
-          <Separator />
+          <Separator className='my-4' />
 
           <div className='space-y-4'>
             <h3 className='text-lg font-semibold'>Change Password</h3>
             <form onSubmit={(e) => void handlePasswordUpdate(e)} className='space-y-4'>
               <div>
-                <Label htmlFor='new_password'>New Password</Label>
+                <Label
+                  className='block text-sm font-medium leading-6 text-gray-900'
+                  htmlFor='new_password'
+                >
+                  New Password
+                </Label>
                 <Input
+                  className='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-teal-600 sm:text-sm sm:leading-6'
                   id='new_password'
                   type='password'
                   value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setNewPassword(e.target.value)
+                  }
                   placeholder='Enter new password'
                   required
                 />
               </div>
               <div>
-                <Label htmlFor='confirm_new_password'>Confirm New Password</Label>
+                <Label
+                  className='block text-sm font-medium leading-6 text-gray-900'
+                  htmlFor='confirm_new_password'
+                >
+                  Confirm New Password
+                </Label>
                 <Input
+                  className='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-teal-600 sm:text-sm sm:leading-6'
                   id='confirm_new_password'
                   type='password'
                   value={confirmNewPassword}
-                  onChange={(e) => setConfirmNewPassword(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setConfirmNewPassword(e.target.value)
+                  }
                   placeholder='Confirm new password'
                   required
                 />
               </div>
-              <Button type='submit' className='w-full sm:w-auto' disabled={isPasswordLoading}>
+              <Button
+                variant='primary'
+                size='lg'
+                type='submit'
+                className='w-full sm:w-auto'
+                disabled={isPasswordLoading}
+              >
                 {isPasswordLoading ? 'Updating...' : 'Update Password'}
               </Button>
             </form>
@@ -254,7 +279,7 @@ export default function AccountPage() {
             </p>
           )}
 
-          <Separator />
+          <Separator className='my-4' />
         </CardContent>
 
         <CardFooter className='justify-center'>

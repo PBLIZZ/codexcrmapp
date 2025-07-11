@@ -4,14 +4,12 @@
 import { Users, UserPlus, Upload, Plus } from 'lucide-react'; // Added Plus for consistency if needed, though GroupCreateDialog brings its own
 // import { GroupCreateDialog } from './groups/_components/GroupCreateDialog';
 import { UserNav } from '@/components/layout/UserNav';
-import { api } from '@/lib/trpc';
 import Link from 'next/link';
 import * as React from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Badge } from '@codexcrm/ui';
 import {
   Sidebar,
-  SidebarBody,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
@@ -61,7 +59,7 @@ export function ContactsSidebar(props: ContactsSidebarProps) {
 
   return (
     <Sidebar collapsible='icon' {...props}>
-      <SidebarHeader>
+      <SidebarHeader className=''>
         <div className='flex items-center justify-between'>
           <Link href='/' className='flex items-center gap-2 font-semibold'>
             <img src='/images/logo.png' alt='OmniCRM Logo' className='h-7' />
@@ -75,13 +73,13 @@ export function ContactsSidebar(props: ContactsSidebarProps) {
         </div>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className=''>
         {/* Contacts Navigation */}
-        <SidebarGroup>
-          <SidebarGroupLabel>Contacts</SidebarGroupLabel>
-          <SidebarMenu>
+        <SidebarGroup className=''>
+          <SidebarGroupLabel className=''>Contacts</SidebarGroupLabel>
+          <SidebarMenu className=''>
             {/* All Contacts link */}
-            <SidebarMenuItem>
+            <SidebarMenuItem className=''>
               <SidebarMenuButton
                 onClick={handleAllContactsSelect}
                 isActive={pathname === '/contacts' && !selectedGroupId}
@@ -100,8 +98,8 @@ export function ContactsSidebar(props: ContactsSidebarProps) {
               </SidebarMenuButton>
             </SidebarMenuItem>
             {/* Groups link */}
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild>
+            <SidebarMenuItem className=''>
+              <SidebarMenuButton asChild tooltip='Navigate' className=''>
                 <Link href='/contacts/groups' className='flex items-center w-full'>
                   <Users className='w-4 h-4 mr-3' />
                   <span className='font-medium'>Groups</span>
@@ -109,8 +107,8 @@ export function ContactsSidebar(props: ContactsSidebarProps) {
               </SidebarMenuButton>
             </SidebarMenuItem>
             {/* Import link */}
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild>
+            <SidebarMenuItem className=''>
+              <SidebarMenuButton asChild tooltip='Navigate' className=''>
                 <Link href='/contacts/import' className='flex items-center w-full'>
                   <Upload className='w-4 h-4 mr-2' />
                   <span className='font-medium'>Import Contacts</span>
@@ -118,16 +116,16 @@ export function ContactsSidebar(props: ContactsSidebarProps) {
               </SidebarMenuButton>
             </SidebarMenuItem>
             {/* Add Contact */}
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild>
+            <SidebarMenuItem className=''>
+              <SidebarMenuButton asChild tooltip='Navigate' className=''>
                 <Link href='/contacts/new' className='flex items-center w-full'>
                   <UserPlus className='w-4 h-4 mr-2' />
                   <span className='font-medium'>Add Contact</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild>
+            <SidebarMenuItem className=''>
+              <SidebarMenuButton asChild tooltip='Navigate' className=''>
                 <Link href='/contacts/groups/create' className='flex items-center w-full'>
                   <Plus className='w-4 h-4 mr-2' />
                   <span className='font-medium'>Create Group</span>
@@ -138,18 +136,19 @@ export function ContactsSidebar(props: ContactsSidebarProps) {
         </SidebarGroup>
 
         {/* Quick Actions */}
-        <SidebarGroup>
-          <SidebarGroupLabel>Quick Actions</SidebarGroupLabel>
-          <SidebarMenu>{/* Add other quick actions here if needed */}</SidebarMenu>
+        <SidebarGroup className=''>
+          <SidebarGroupLabel className=''>Quick Actions</SidebarGroupLabel>
+          <SidebarMenu className=''>{/* Add other quick actions here if needed */}</SidebarMenu>
         </SidebarGroup>
 
         {/* Groups List */}
-        <SidebarGroup>
-          <SidebarGroupLabel>Groups</SidebarGroupLabel>
-          <SidebarMenu>
+        <SidebarGroup className=''>
+          <SidebarGroupLabel className=''>Groups</SidebarGroupLabel>
+          <SidebarMenu className=''>
             {groups?.map((group: Group) => (
-              <SidebarMenuItem key={group.id}>
+              <SidebarMenuItem key={group.id} className=''>
                 <SidebarMenuButton
+                  tooltip='View Group'
                   onClick={() => handleGroupSelect(group.id)}
                   isActive={selectedGroupId === group.id}
                   className='justify-between w-full'
@@ -182,10 +181,10 @@ export function ContactsSidebar(props: ContactsSidebarProps) {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter>
+      <SidebarFooter className=''>
         <UserNav />
       </SidebarFooter>
-      <SidebarRail />
+      <SidebarRail className='' />
     </Sidebar>
   );
 }

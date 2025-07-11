@@ -1,0 +1,210 @@
+apps/web
+├── app
+│   ├── (auth)
+│   │   ├── components
+│   │   │   └── auth
+│   │   │       └── OneTapComponent.tsx
+│   │   ├── forgot-password
+│   │   │   └── page.tsx
+│   │   ├── log-in
+│   │   │   ├── page.tsx
+│   │   │   └── reset-password
+│   │   │       ├── page.tsx
+│   │   │       └── ResetPasswordContent.tsx
+│   │   ├── privacy
+│   │   │   └── page.tsx
+│   │   ├── sign-up
+│   │   │   ├── confirmation
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   └── terms
+│   │       └── page.tsx
+│   ├── (authorisedRoute)
+│   │   ├── analytics
+│   │   │   └── AnalyticsSidebar.tsx
+│   │   ├── calendar
+│   │   │   └── CalendarSidebar.tsx
+│   │   ├── contacts
+│   │   │   ├── _components
+│   │   │   │   ├── contact-view.tsx
+│   │   │   │   ├── ContactsView.tsx
+│   │   │   │   ├── ContactsWidgets.tsx
+│   │   │   │   ├── data-table.tsx
+│   │   │   │   └── table
+│   │   │   │       ├── avatar-image.tsx
+│   │   │   │       ├── ColumnSelector.tsx
+│   │   │   │       ├── components
+│   │   │   │       ├── ContactsTableNew.tsx
+│   │   │   │       ├── ContactsTableOrigin.tsx
+│   │   │   │       ├── hooks
+│   │   │   │       └── ProfileAvatar.tsx
+│   │   │   ├── [contactId]
+│   │   │   │   ├── ContactDetailView.tsx
+│   │   │   │   ├── ContactTimeline.tsx
+│   │   │   │   ├── edit
+│   │   │   │   │   ├── form-config.ts
+│   │   │   │   │   ├── FormComponents.tsx
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── error.tsx
+│   │   │   │   ├── loading.tsx
+│   │   │   │   ├── page.tsx
+│   │   │   │   └── README.md
+│   │   │   ├── ContactsSidebar.tsx
+│   │   │   ├── error.tsx
+│   │   │   ├── groups
+│   │   │   │   ├── _components
+│   │   │   │   │   ├── BulkContactSelector.tsx
+│   │   │   │   │   ├── ContactGroupManager.tsx
+│   │   │   │   │   ├── ContactGroupsSection.tsx
+│   │   │   │   │   ├── ContactGroupTags.tsx
+│   │   │   │   │   ├── GroupCreateDialog_archive.tsx
+│   │   │   │   │   ├── GroupCreateDialog.tsx
+│   │   │   │   │   ├── GroupCreateForm.tsx
+│   │   │   │   │   ├── GroupsContent.tsx
+│   │   │   │   │   └── GroupStylePicker.tsx
+│   │   │   │   ├── [groupId]
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── new
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── page.tsx
+│   │   │   │   └── README.md
+│   │   │   ├── import
+│   │   │   │   ├── csv-upload-test
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── layout.tsx
+│   │   │   ├── loading.tsx
+│   │   │   ├── new
+│   │   │   │   ├── ContactForm.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── not-found.tsx
+│   │   │   ├── page.tsx
+│   │   │   └── README.md
+│   │   ├── dashboard
+│   │   │   ├── components
+│   │   │   │   ├── ai-client-insights
+│   │   │   │   │   └── AiClientInsights.tsx
+│   │   │   │   ├── ai-task-panel
+│   │   │   │   │   └── AiTaskPanel.tsx
+│   │   │   │   ├── business-metrics
+│   │   │   │   │   └── BusinessMetricsCard.tsx
+│   │   │   │   ├── calendar-preview
+│   │   │   │   │   └── CalendarPreview.tsx
+│   │   │   │   ├── daily-inspiration
+│   │   │   │   │   └── DailyInspirationCard.tsx
+│   │   │   │   ├── DashboardWidgets.tsx
+│   │   │   │   ├── quick-actions
+│   │   │   │   │   └── QuickActions.tsx
+│   │   │   │   └── therapist-check-in
+│   │   │   │       └── TherapistCheckIn.tsx
+│   │   │   ├── DashboardClient.tsx
+│   │   │   ├── DashboardContent.tsx
+│   │   │   ├── DashboardSidebar.tsx
+│   │   │   ├── error.tsx
+│   │   │   ├── loading.tsx
+│   │   │   └── page.tsx
+│   │   ├── layout.tsx
+│   │   ├── marketing
+│   │   │   ├── components
+│   │   │   │   ├── MarketingWidgets.tsx
+│   │   │   │   └── widgets
+│   │   │   │       ├── ContentCalendar.tsx
+│   │   │   │       ├── CreatorStudio.tsx
+│   │   │   │       ├── EmailMarketing.tsx
+│   │   │   │       ├── LeadMagnetStudio.tsx
+│   │   │   │       ├── MembershipLoyalty.tsx
+│   │   │   │       └── QuizCreator.tsx
+│   │   │   ├── error.tsx
+│   │   │   ├── loading.tsx
+│   │   │   ├── MarketingSidebar.tsx
+│   │   │   └── page.tsx
+│   │   ├── messages
+│   │   │   └── MessagesSidebar.tsx
+│   │   ├── settings
+│   │   │   ├── account
+│   │   │   │   └── page.tsx
+│   │   │   └── SettingsSidebar.tsx
+│   │   └── tasks
+│   │       ├── page.tsx
+│   │       └── TasksSidebar.tsx
+│   ├── actions
+│   │   └── contact-actions.ts
+│   ├── api
+│   │   ├── auth
+│   │   │   ├── [...supabase]
+│   │   │   │   └── route.ts
+│   │   │   ├── callback
+│   │   │   │   └── route.ts
+│   │   │   └── logout
+│   │   │       └── route.ts
+│   │   └── trpc
+│   │       └── [trpc]
+│   │           ├── notes.md
+│   │           └── route.ts
+│   ├── global-error.tsx
+│   ├── layout.tsx
+│   ├── page.tsx
+│   └── providers.tsx
+├── components
+│   ├── layout
+│   │   ├── AppSidebarController.tsx
+│   │   ├── DynamicBreadcrumb.tsx
+│   │   ├── MainLayout.tsx
+│   │   ├── MainSectionNav.tsx
+│   │   ├── MobileMenu.tsx
+│   │   ├── OmniBotFloat.tsx
+│   │   ├── ProjectLinksNav.tsx
+│   │   ├── QuickLinksNav.tsx
+│   │   ├── SidebarGroupLink.tsx
+│   │   ├── SidebarNavLink.tsx
+│   │   └── UserNav.tsx
+│   ├── omni-bot
+│   │   └── OmniBot.tsx
+│   └── ui
+│       ├── avatar-image.tsx
+│       └── csv-upload.tsx
+├── components.json
+├── google.d.ts
+├── hooks
+│   └── use-mobile.ts
+├── instrumentation-client.ts
+├── instrumentation.ts
+├── lib
+│   ├── breadcrumb-config.ts
+│   ├── csv-import-service.ts
+│   ├── csv-utils.ts
+│   ├── dateUtils.ts
+│   ├── debug-helper.ts
+│   ├── supabase
+│   │   ├── client.ts
+│   │   └── server.ts
+│   ├── trpc
+│   │   ├── client.ts
+│   │   └── server-client.ts
+│   └── utils
+│       └── routes.ts
+├── middleware.ts
+├── next-env.d.ts
+├── next.config.ts
+├── package.json
+├── postcss.config.mjs
+├── public
+│   ├── csv_templates
+│   │   └── contact_import_template.csv
+│   ├── favicon.ico
+│   ├── file.svg
+│   ├── globe.svg
+│   ├── images
+│   │   ├── face-7401257_640.jpg
+│   │   ├── logo.png
+│   │   └── placeholder-avatar.jpg
+│   ├── next.svg
+│   ├── vercel.svg
+│   └── window.svg
+├── README_DEPRECATED_JULY_2025.md
+├── sentry.edge.config.ts
+├── sentry.server.config.ts
+├── tailwind.config.ts
+└── tsconfig.json
+
+65 directories, 143 files

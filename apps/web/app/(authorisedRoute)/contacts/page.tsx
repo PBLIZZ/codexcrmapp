@@ -1,5 +1,4 @@
 // /app/contacts/page.tsx
-import { requireAuth } from '@/lib/auth/require-auth';
 import { ContactsView } from './_components/ContactsView'; // We will create this new component
 import { Suspense } from 'react';
 import { Skeleton } from '@codexcrm/ui';
@@ -22,7 +21,6 @@ function ContactsPageSkeleton() {
 
 export default async function ContactsPage() {
   // Ensure user is authenticated - redirects to login if not
-  await (requireAuth as () => Promise<unknown>)();
 
   return (
     <main className='flex-1 p-4 md:p-6 bg-slate-50'>

@@ -35,9 +35,10 @@ export function MembershipLoyalty() {
             <div>
               <label className='text-sm font-medium mb-1 block'>Program Name</label>
               <Input
+                type="text"
                 placeholder="e.g., 'Wellness Circle' or 'Inner Balance Club'"
                 value={programName}
-                onChange={(e) => setProgramName(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setProgramName(e.target.value)}
                 className='bg-white dark:bg-indigo-950/40'
               />
             </div>
@@ -67,6 +68,9 @@ export function MembershipLoyalty() {
               <label className='text-sm font-medium mb-1 block'>Base Price</label>
               <div className='relative'>
                 <span className='absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground'>
+                  <p className='text-gray-500 text-sm'>
+                  Configure tiers to see a preview
+                </p>
                   $
                 </span>
                 <Input
@@ -77,32 +81,32 @@ export function MembershipLoyalty() {
               </div>
             </div>
 
-            <Button className='w-full bg-indigo-600 hover:bg-indigo-700 text-white'>
+            <Button variant='default' size='default' className='w-full bg-indigo-600 hover:bg-indigo-700 text-white'>
               <Sparkles className='h-4 w-4 mr-2' />
               Create Membership Program
             </Button>
           </div>
         </div>
 
-        <Card>
+        <Card className="">
           <CardHeader className='pb-3'>
             <CardTitle className='text-lg font-semibold'>Key Features</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className='space-y-2'>
-              <div className='flex items-center gap-2'>
+          <CardContent className='pb-4'>
+            <div className='space-y-2 text-gray-700'>
+              <div className='flex items-center gap-2 text-gray-800'>
                 <div className='h-2 w-2 rounded-full bg-indigo-500'></div>
                 <span className='text-sm'>Customizable membership tiers and benefits</span>
               </div>
-              <div className='flex items-center gap-2'>
+              <div className='flex items-center gap-2 text-gray-800'>
                 <div className='h-2 w-2 rounded-full bg-indigo-500'></div>
                 <span className='text-sm'>Automated billing and subscription management</span>
               </div>
-              <div className='flex items-center gap-2'>
+              <div className='flex items-center gap-2 text-gray-800'>
                 <div className='h-2 w-2 rounded-full bg-indigo-500'></div>
                 <span className='text-sm'>Member-only content and exclusive offers</span>
               </div>
-              <div className='flex items-center gap-2'>
+              <div className='flex items-center gap-2 text-gray-800'>
                 <div className='h-2 w-2 rounded-full bg-indigo-500'></div>
                 <span className='text-sm'>Loyalty points tracking and redemption</span>
               </div>
@@ -115,13 +119,13 @@ export function MembershipLoyalty() {
         <Card className='border-indigo-100 dark:border-indigo-900/50'>
           <CardHeader className='pb-3 bg-indigo-50 dark:bg-indigo-950/20 rounded-t-lg'>
             <CardTitle className='text-lg font-semibold'>Membership Tiers</CardTitle>
-            <CardDescription>Sample membership structure</CardDescription>
+            <CardDescription className="">Sample membership structure</CardDescription>
           </CardHeader>
           <CardContent className='pt-6'>
             <div className='space-y-4'>
               <div className='border rounded-md p-4 bg-white dark:bg-indigo-950/10'>
                 <div className='flex items-center justify-between mb-2'>
-                  <div className='flex items-center gap-2'>
+                  <div className='flex items-center gap-2 text-indigo-700'>
                     <Award className='h-5 w-5 text-amber-400' />
                     <h3 className='font-medium'>Gold Tier</h3>
                   </div>
@@ -130,7 +134,7 @@ export function MembershipLoyalty() {
                 <ul className='text-sm space-y-1 text-muted-foreground'>
                   <li className='flex items-center gap-1.5'>
                     <Star className='h-3 w-3 text-indigo-400' />
-                    <span>Unlimited sessions</span>
+                    <span className='text-sm'>Unlimited sessions</span>
                   </li>
                   <li className='flex items-center gap-1.5'>
                     <Star className='h-3 w-3 text-indigo-400' />
@@ -193,7 +197,7 @@ export function MembershipLoyalty() {
             </div>
           </CardContent>
           <CardFooter className='flex justify-between border-t pt-4'>
-            <Button variant='outline' size='sm' asChild>
+            <Button variant='outline' size='sm' asChild className='text-indigo-600'>
               <Link href={{ pathname: '/marketing/membership/templates' }}>Browse Templates</Link>
             </Button>
             <Button
@@ -221,6 +225,7 @@ export function MembershipLoyalty() {
           </p>
           <Button
             variant='link'
+            size='default'
             className='text-green-600 dark:text-green-400 p-0 h-auto mt-2'
             onClick={() =>
               document.querySelector('[value="quiz"]')?.dispatchEvent(new MouseEvent('click'))

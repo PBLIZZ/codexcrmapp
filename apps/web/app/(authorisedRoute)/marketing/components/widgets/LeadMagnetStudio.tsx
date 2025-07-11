@@ -11,6 +11,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from '@codexcrm/ui';
 import { Textarea } from '@codexcrm/ui';
 
@@ -35,9 +36,10 @@ export function LeadMagnetStudio() {
             <div>
               <label className='text-sm font-medium mb-1 block'>Lead Magnet Title</label>
               <Input
+                type="text"
                 placeholder="e.g., '10 Essential Wellness Practices for Busy Professionals'"
                 value={leadMagnetTitle}
-                onChange={(e) => setLeadMagnetTitle(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLeadMagnetTitle(e.target.value)}
                 className='bg-white dark:bg-amber-950/40'
               />
             </div>
@@ -72,32 +74,34 @@ export function LeadMagnetStudio() {
               </div>
             </div>
 
-            <Button className='w-full bg-amber-600 text-white hover:bg-teal-100 hover:text-teal-800'>
+            <Button variant='default' size='default' className='w-full bg-amber-600 text-white hover:bg-teal-100 hover:text-teal-800'>
               <Sparkles className='h-4 w-4 mr-2' />
               Generate Lead Magnet
             </Button>
           </div>
         </div>
 
-        <Card>
+        <Card className="">
           <CardHeader className='pb-3'>
             <CardTitle className='text-lg font-semibold'>Key Features</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="">
             <div className='space-y-2'>
-              <div className='flex items-center gap-2'>
+              <div className='flex items-center gap-2 text-gray-800'>
                 <div className='h-2 w-2 rounded-full bg-amber-500'></div>
-                <span className='text-sm'>AI-powered content generation</span>
+                <span className='text-sm'>AI-powered content suggestions and improvements</span>
               </div>
-              <div className='flex items-center gap-2'>
+              <div className='flex items-center gap-2 text-gray-800'>
                 <div className='h-2 w-2 rounded-full bg-amber-500'></div>
-                <span className='text-sm'>Professional design templates</span>
+                <span className='text-sm'>
+                  Professionally designed templates for various content types
+                </span>
               </div>
-              <div className='flex items-center gap-2'>
+              <div className='flex items-center gap-2 text-gray-800'>
                 <div className='h-2 w-2 rounded-full bg-amber-500'></div>
                 <span className='text-sm'>Automated email capture forms</span>
               </div>
-              <div className='flex items-center gap-2'>
+              <div className='flex items-center gap-2 text-gray-800'>
                 <div className='h-2 w-2 rounded-full bg-amber-500'></div>
                 <span className='text-sm'>Performance tracking and analytics</span>
               </div>
@@ -110,12 +114,13 @@ export function LeadMagnetStudio() {
         <Card className='border-amber-100 dark:border-amber-900/50 py-0'>
           <CardHeader className='pt-6 pb-3 bg-amber-50 dark:bg-amber-950/20 rounded-t-lg'>
             <CardTitle className='text-lg font-semibold'>Lead Magnet Preview</CardTitle>
-            <CardDescription>How your lead magnet might look</CardDescription>
+            <CardDescription className="">How your lead magnet might look</CardDescription>
           </CardHeader>
           <CardContent className='pt-6'>
             <div className='border rounded-md p-4 bg-white dark:bg-amber-950/10'>
               <div className='aspect-[3/4] flex flex-col border border-dashed border-amber-200 dark:border-amber-800 rounded-md overflow-hidden max-h-[400px]'>
                 <div className='bg-amber-100 dark:bg-amber-900/30 p-4 text-center'>
+                  <div className='font-medium text-amber-700'>eBook Preview</div>
                   <h3 className='font-medium text-lg'>
                     {leadMagnetTitle || '10 Essential Wellness Practices for Busy Professionals'}
                   </h3>
@@ -134,7 +139,7 @@ export function LeadMagnetStudio() {
             </div>
           </CardContent>
           <CardFooter className='flex justify-between border-t pt-4 pb-6'>
-            <Button variant='outline' size='sm' asChild>
+            <Button variant='outline' size='sm' asChild className='text-amber-600'>
               <Link href={{ pathname: '/marketing/lead-magnets/templates' }}>Browse Templates</Link>
             </Button>
             <Button
@@ -162,6 +167,7 @@ export function LeadMagnetStudio() {
           </p>
           <Button
             variant='link'
+            size='default'
             className='text-purple-600 dark:text-purple-400 p-0 h-auto mt-2'
             onClick={() =>
               document.querySelector('[value="membership"]')?.dispatchEvent(new MouseEvent('click'))

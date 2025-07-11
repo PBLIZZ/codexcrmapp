@@ -12,6 +12,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from '@codexcrm/ui';
 interface Question {
   question: string;
@@ -105,9 +106,10 @@ export function QuizCreator() {
             <div>
               <label className='text-sm font-medium mb-1 block'>Quiz Title</label>
               <Input
+                type="text"
                 placeholder="e.g., 'What's Your Wellness Type?' or 'Test Your Knowledge'"
                 value={quizTitle}
-                onChange={(e) => setQuizTitle(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQuizTitle(e.target.value)}
                 className='bg-white dark:bg-green-950/40'
               />
             </div>
@@ -133,7 +135,7 @@ export function QuizCreator() {
                   <Textarea
                     placeholder='Enter your question here'
                     value={question.question}
-                    onChange={(e) => updateQuestion(qIndex, e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => updateQuestion(qIndex, e.target.value)}
                     className='bg-white dark:bg-green-950/10'
                   />
 
@@ -141,26 +143,21 @@ export function QuizCreator() {
                     <div className='text-sm font-medium'>Answer Options</div>
                     {question.options.map((option, oIndex) => (
                       <div key={oIndex} className='flex items-center gap-2'>
-                        <Button
-                          variant='ghost'
-                          size='icon'
-                          className={`h-6 w-6 ${
-                            question.correctAnswer === oIndex
-                              ? 'text-green-600'
-                              : 'text-muted-foreground'
-                          }`}
-                          onClick={() => setCorrectAnswer(qIndex, oIndex)}
+                        <label
+                          className={`flex cursor-pointer items-center gap-2 rounded-md border p-2 ${question.correctAnswer === oIndex ? 'bg-green-100 border-green-300 dark:bg-green-950/40 dark:border-green-800' : 'bg-white dark:bg-green-950/10'}`}
+                          onClick={(e: React.MouseEvent<HTMLLabelElement>) => setCorrectAnswer(qIndex, oIndex)}
                         >
                           {question.correctAnswer === oIndex ? (
                             <CheckCircle2 className='h-4 w-4' />
                           ) : (
                             <CircleOff className='h-4 w-4' />
                           )}
-                        </Button>
+                        </label>
                         <Input
+                          type="text"
                           placeholder={`Option ${oIndex + 1}`}
                           value={option}
-                          onChange={(e) => updateOption(qIndex, oIndex, e.target.value)}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateOption(qIndex, oIndex, e.target.value)}
                           className='bg-white dark:bg-green-950/10'
                         />
                         {question.options.length > 2 && (
@@ -193,14 +190,15 @@ export function QuizCreator() {
 
             <Button
               variant='outline'
-              className='w-full border-dashed border-green-200 dark:border-green-800 hover:bg-green-50 dark:hover:bg-green-950/30'
-              onClick={addQuestion}
+              size='default'
+              className='border-dashed border-2 w-full bg-white dark:bg-green-950/10 hover:bg-green-50 dark:hover:bg-green-900/20 mb-6'
+              onClick={() => addQuestion()}
             >
               <Plus className='h-4 w-4 mr-2' />
               Add Question
             </Button>
 
-            <Button className='w-full bg-green-600 hover:bg-green-700 text-white'>
+            <Button variant='default' size='default' className='w-full bg-green-600 hover:bg-green-700 text-white'>
               Create Quiz
             </Button>
           </div>
@@ -211,7 +209,7 @@ export function QuizCreator() {
         <Card className='border-green-100 dark:border-green-900/50'>
           <CardHeader className='pb-3 bg-green-50 dark:bg-green-950/20 rounded-t-lg'>
             <CardTitle className='text-lg font-semibold'>Quiz Preview</CardTitle>
-            <CardDescription>How your quiz will appear to clients</CardDescription>
+            <CardDescription className="">How your quiz will appear to clients</CardDescription>
           </CardHeader>
           <CardContent className='pt-6'>
             <div className='space-y-6'>
@@ -240,17 +238,17 @@ export function QuizCreator() {
                     ))}
                   </div>
                   <div className='flex justify-between mt-4'>
-                    <Button variant='outline' size='sm' disabled>
+                    <Button variant='outline' size='sm' disabled className='text-green-600'>
                       Previous
                     </Button>
-                    <Button size='sm' className='bg-green-600 hover:bg-green-700'>
+                    <Button variant='default' size='sm' className='bg-green-600 hover:bg-green-700'>
                       Next
                     </Button>
                   </div>
                 </div>
               ) : (
                 <div className='border rounded-md p-4 bg-white dark:bg-green-950/10 text-center text-muted-foreground'>
-                  <p>Add questions to see a preview</p>
+                  <p className='text-gray-500 text-sm'>Add questions to see a preview</p>
                 </div>
               )}
 
@@ -266,7 +264,7 @@ export function QuizCreator() {
             </div>
           </CardContent>
           <CardFooter className='flex justify-between border-t pt-4'>
-            <Button variant='outline' size='sm' asChild>
+            <Button variant='outline' size='sm' asChild className='text-green-600'>
               <Link href={{ pathname: '/marketing/quiz/templates' }}>Browse Templates</Link>
             </Button>
             <Button
@@ -295,6 +293,7 @@ export function QuizCreator() {
           </p>
           <Button
             variant='link'
+            size='default'
             className='text-indigo-600 dark:text-indigo-400 p-0 h-auto mt-2'
             onClick={() =>
               document.querySelector('[value="membership"]')?.dispatchEvent(new MouseEvent('click'))

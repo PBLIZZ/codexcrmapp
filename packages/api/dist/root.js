@@ -35,8 +35,8 @@ __export(root_exports, {
 module.exports = __toCommonJS(root_exports);
 
 // src/routers/contact.ts
-var import_server2 = require("@trpc/server");
 var import_zod = require("zod");
+var import_server2 = require("@trpc/server");
 
 // src/trpc.ts
 var import_server = require("@trpc/server");
@@ -104,7 +104,7 @@ var contactRouter = router({
     import_zod.z.object({
       search: import_zod.z.string().optional(),
       groupId: import_zod.z.string().optional()
-      // Remove UUID validation to handle all group ID formats
+      // Optional group ID to filter contacts by
     })
   ).query(async ({ ctx, input }) => {
     const { search, groupId } = input;
@@ -112,156 +112,225 @@ var contactRouter = router({
     if (!userId) {
       throw new import_server2.TRPCError({ code: "UNAUTHORIZED" });
     }
-    if (groupId) {
-      const { data: groupMembers, error: memberError } = await ctx.supabaseUser.from("group_members").select("contact_id").eq("group_id", groupId);
-      if (memberError) {
-        console.error("Error fetching group members:", memberError);
-        throw new import_server2.TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: `Failed to retrieve group members: ${memberError.message}`
+    try {
+      if (groupId) {
+        const groupMembers = await ctx.prisma.groupMember.findMany({
+          where: {
+            groupId,
+            group: {
+              userId
+              // Ensure user has access to this group
+            }
+          },
+          select: {
+            contactId: true
+          }
+        });
+        if (!groupMembers || groupMembers.length === 0) {
+          return [];
+        }
+        const contactIds = groupMembers.map((member) => member.contactId);
+        return await ctx.prisma.contact.findMany({
+          where: {
+            id: { in: contactIds },
+            userId,
+            ...search ? {
+              OR: [
+                { fullName: { contains: search, mode: "insensitive" } },
+                { email: { contains: search, mode: "insensitive" } }
+              ]
+            } : {}
+          },
+          orderBy: {
+            createdAt: "desc"
+          }
         });
       }
-      if (!groupMembers || groupMembers.length === 0) {
-        return [];
-      }
-      const contactIds = groupMembers.map((member) => member.contact_id);
-      let contactsQuery = ctx.supabaseUser.from("contacts").select("*").in("id", contactIds);
-      if (search) {
-        contactsQuery = contactsQuery.or(
-          `full_name.ilike.%${search}%,email.ilike.%${search}%`
-        );
-      }
-      contactsQuery = contactsQuery.order("created_at", { ascending: false });
-      const { data: contacts, error } = await contactsQuery;
-      if (error) {
-        console.error("Error fetching contacts for group:", error);
-        throw new import_server2.TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: `Failed to retrieve contacts for group: ${error.message}`
-        });
-      }
-      return contacts || [];
-    } else {
-      let query = ctx.supabaseUser.from("contacts").select("*");
-      if (search) {
-        query = query.or(
-          `full_name.ilike.%${search}%,email.ilike.%${search}%`
-        );
-      }
-      query = query.order("created_at", { ascending: false });
-      const { data: contacts, error } = await query;
-      if (error) {
-        console.error("Error fetching all contacts:", error);
-        throw new import_server2.TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: `Failed to retrieve contacts: ${error.message}`
-        });
-      }
-      return contacts || [];
+      return await ctx.prisma.contact.findMany({
+        where: {
+          userId,
+          ...search ? {
+            OR: [
+              { fullName: { contains: search, mode: "insensitive" } },
+              { email: { contains: search, mode: "insensitive" } }
+            ]
+          } : {}
+        },
+        orderBy: {
+          createdAt: "desc"
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching contacts:", error);
+      throw new import_server2.TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Failed to retrieve contacts",
+        cause: error instanceof Error ? error : void 0
+      });
     }
   }),
   // Fetch a single contact by ID
   getById: protectedProcedure.input(import_zod.z.object({ contactId: import_zod.z.string().uuid() })).query(async ({ input, ctx }) => {
-    if (!ctx.user) {
+    const userId = ctx.user?.id;
+    if (!userId) {
       throw new import_server2.TRPCError({ code: "UNAUTHORIZED" });
     }
-    const { data, error } = await ctx.supabaseUser.from("contacts").select("*").eq("id", input.contactId).single();
-    if (error) {
+    try {
+      const contact = await ctx.prisma.contact.findUnique({
+        where: {
+          id: input.contactId,
+          userId
+          // Ensures users can only see their own contacts
+        }
+      });
+      if (!contact) {
+        throw new import_server2.TRPCError({
+          code: "NOT_FOUND",
+          message: "Contact not found"
+        });
+      }
+      return contact;
+    } catch (error) {
       console.error("Error fetching contact by id:", error);
       throw new import_server2.TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "Failed to fetch contact",
-        cause: error
+        cause: error instanceof Error ? error : void 0
       });
     }
-    return data;
   }),
   save: protectedProcedure.input(contactInputSchema).mutation(async ({ input, ctx }) => {
-    if (!ctx.user) {
+    const userId = ctx.user?.id;
+    if (!userId) {
       throw new import_server2.TRPCError({ code: "UNAUTHORIZED" });
     }
     const contactId = input.id;
-    const fieldsToSave = {
-      full_name: input.full_name,
-      email: input.email || null,
-      phone: input.phone || null,
-      phone_country_code: input.phone_country_code || null,
-      company_name: input.company_name || null,
-      job_title: input.job_title || null,
-      address_street: input.address_street || null,
-      address_city: input.address_city || null,
-      address_postal_code: input.address_postal_code || null,
-      address_country: input.address_country || null,
-      website: input.website || null,
-      profile_image_url: input.profile_image_url || null,
-      notes: input.notes || null,
-      tags: input.tags || null,
-      social_handles: input.social_handles || null,
-      source: input.source || null,
-      last_contacted_at: input.last_contacted_at || null,
-      enriched_data: input.enriched_data || null,
-      enrichment_status: input.enrichment_status || null
+    const contactData = {
+      fullName: input.full_name
+      // Required field
     };
-    let dataObject = null;
-    let dbError = null;
+    if (input.email !== void 0)
+      contactData.email = input.email === null ? { set: "" } : input.email;
+    if (input.phone !== void 0)
+      contactData.phone = input.phone === null ? { set: null } : input.phone;
+    if (input.phone_country_code !== void 0)
+      contactData.phoneCountryCode = input.phone_country_code === null ? { set: null } : input.phone_country_code;
+    if (input.company_name !== void 0)
+      contactData.companyName = input.company_name === null ? { set: null } : input.company_name;
+    if (input.job_title !== void 0)
+      contactData.jobTitle = input.job_title === null ? { set: null } : input.job_title;
+    if (input.address_street !== void 0)
+      contactData.addressStreet = input.address_street === null ? { set: null } : input.address_street;
+    if (input.address_city !== void 0)
+      contactData.addressCity = input.address_city === null ? { set: null } : input.address_city;
+    if (input.address_postal_code !== void 0)
+      contactData.addressPostalCode = input.address_postal_code === null ? { set: null } : input.address_postal_code;
+    if (input.address_country !== void 0)
+      contactData.addressCountry = input.address_country === null ? { set: null } : input.address_country;
+    if (input.website !== void 0)
+      contactData.website = input.website === null ? { set: null } : input.website;
+    if (input.profile_image_url !== void 0)
+      contactData.profileImageUrl = input.profile_image_url === null ? { set: null } : input.profile_image_url;
+    if (input.notes !== void 0)
+      contactData.notes = input.notes === null ? { set: null } : input.notes;
+    if (input.tags !== void 0)
+      contactData.tags = input.tags === null ? { set: [] } : input.tags;
+    if (input.social_handles !== void 0)
+      contactData.socialHandles = input.social_handles === null ? { set: [] } : input.social_handles;
+    if (input.source !== void 0)
+      contactData.source = input.source === null ? { set: null } : input.source;
+    if (input.last_contacted_at !== void 0)
+      contactData.lastContactedAt = input.last_contacted_at === null ? { set: null } : input.last_contacted_at;
+    if (input.enriched_data !== void 0)
+      contactData.enrichedData = input.enriched_data === null ? { set: null } : input.enriched_data;
+    if (input.enrichment_status !== void 0)
+      contactData.enrichmentStatus = input.enrichment_status === null ? { set: null } : input.enrichment_status;
     try {
+      let result;
       if (contactId) {
-        console.warn(`Attempting contact update for id: ${contactId}`, fieldsToSave);
-        let attemptFields = { ...fieldsToSave };
-        do {
-          const updateOp = await ctx.supabaseUser.from("contacts").update(attemptFields).match({ id: contactId, user_id: ctx.user.id }).select().single();
-          dataObject = updateOp.data;
-          dbError = updateOp.error;
-          if (dbError) {
-            const columnMatch = dbError.message.match(/Could not find the '(.+)' column/);
-            if (columnMatch && Object.hasOwn(attemptFields, columnMatch[1])) {
-              console.warn(`${columnMatch[1]} column missing, retrying update without it`);
-              delete attemptFields[columnMatch[1]];
-              continue;
-            }
+        console.warn(`Attempting contact update for id: ${contactId}`);
+        const existingContact = await ctx.prisma.contact.findUnique({
+          where: {
+            id: contactId,
+            userId
           }
-          break;
-        } while (dbError !== null);
-      } else {
-        const insertPayload = { ...fieldsToSave, user_id: ctx.user.id };
-        console.warn("[DEBUG] Attempting contact insert:", insertPayload);
-        const insertOp = await ctx.supabaseUser.from("contacts").insert(insertPayload).select("id, created_at, updated_at, user_id, email, full_name, profile_image_url").single();
-        dataObject = insertOp.data;
-        dbError = insertOp.error;
-        if (!dbError && !dataObject) {
-          console.warn("Contact insert: Supabase insert succeeded but .select() returned no data (RLS visibility issue?). Constructing response from input.");
-          dataObject = { ...insertPayload, id: void 0, created_at: void 0, updated_at: void 0 };
-        }
-      }
-      if (dbError) {
-        console.error("Supabase save error:", JSON.stringify(dbError, null, 2), { input, contactId });
-        if (dbError.code === "23505") {
+        });
+        if (!existingContact) {
           throw new import_server2.TRPCError({
-            code: "CONFLICT",
-            message: `A contact with this email (${input.email}) already exists.`,
-            cause: dbError
+            code: "NOT_FOUND",
+            message: "Contact not found or you do not have permission to update it"
           });
         }
-        throw new import_server2.TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: `Database error: ${dbError.message}`,
-          cause: dbError
+        result = await ctx.prisma.contact.update({
+          where: {
+            id: contactId
+          },
+          data: contactData
+        });
+      } else {
+        console.warn("[DEBUG] Attempting contact insert");
+        if (input.email) {
+          const existingContactWithEmail = await ctx.prisma.contact.findFirst({
+            where: {
+              email: input.email,
+              userId
+            }
+          });
+          if (existingContactWithEmail) {
+            throw new import_server2.TRPCError({
+              code: "CONFLICT",
+              message: `A contact with this email (${input.email}) already exists.`
+            });
+          }
+        }
+        const createData = {
+          fullName: input.full_name,
+          // Required field
+          email: input.email ?? "",
+          // Required by Prisma schema, provide empty string if null
+          user: { connect: { id: userId } }
+          // Required: use connect to link to existing user
+        };
+        if (input.phone !== void 0 && input.phone !== null) createData.phone = input.phone;
+        if (input.phone_country_code !== void 0 && input.phone_country_code !== null)
+          createData.phoneCountryCode = input.phone_country_code;
+        if (input.company_name !== void 0 && input.company_name !== null)
+          createData.companyName = input.company_name;
+        if (input.job_title !== void 0 && input.job_title !== null)
+          createData.jobTitle = input.job_title;
+        if (input.address_street !== void 0 && input.address_street !== null)
+          createData.addressStreet = input.address_street;
+        if (input.address_city !== void 0 && input.address_city !== null)
+          createData.addressCity = input.address_city;
+        if (input.address_postal_code !== void 0 && input.address_postal_code !== null)
+          createData.addressPostalCode = input.address_postal_code;
+        if (input.address_country !== void 0 && input.address_country !== null)
+          createData.addressCountry = input.address_country;
+        if (input.website !== void 0 && input.website !== null)
+          createData.website = input.website;
+        if (input.profile_image_url !== void 0 && input.profile_image_url !== null)
+          createData.profileImageUrl = input.profile_image_url;
+        if (input.notes !== void 0 && input.notes !== null) createData.notes = input.notes;
+        if (input.tags !== void 0) createData.tags = input.tags === null ? [] : input.tags;
+        if (input.social_handles !== void 0)
+          createData.socialHandles = input.social_handles === null ? [] : input.social_handles;
+        if (input.source !== void 0 && input.source !== null) createData.source = input.source;
+        if (input.last_contacted_at !== void 0)
+          createData.lastContactedAt = input.last_contacted_at;
+        if (input.enriched_data !== void 0) createData.enrichedData = input.enriched_data;
+        if (input.enrichment_status !== void 0)
+          createData.enrichmentStatus = input.enrichment_status;
+        result = await ctx.prisma.contact.create({
+          data: createData
         });
       }
-      if (!dataObject) {
-        console.error("Supabase save returned no data and no explicit error after processing.", { input, contactId });
-        throw new import_server2.TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to save contact: No data returned from database operation."
-        });
-      }
-      console.warn("Contact save successful:", dataObject);
-      return dataObject;
+      console.warn("Contact save successful:", result);
+      return result;
     } catch (error) {
       if (error instanceof import_server2.TRPCError) {
         throw error;
       }
-      console.error("Unhandled error in contact save procedure:", error, { input, contactId });
+      console.error("Unhandled error in contact save procedure:", error);
       throw new import_server2.TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "An unexpected error occurred while saving the contact.",
@@ -270,44 +339,80 @@ var contactRouter = router({
     }
   }),
   delete: protectedProcedure.input(import_zod.z.object({ contactId: import_zod.z.string().uuid() })).mutation(async ({ input, ctx }) => {
-    if (!ctx.user) {
+    const userId = ctx.user?.id;
+    if (!userId) {
       throw new import_server2.TRPCError({ code: "UNAUTHORIZED" });
     }
-    const { error } = await ctx.supabaseUser.from("contacts").delete().match({ id: input.contactId, user_id: ctx.user.id });
-    if (error) {
-      console.error("Error deleting contact:", error);
+    try {
+      const contact = await ctx.prisma.contact.findUnique({
+        where: {
+          id: input.contactId,
+          userId
+        }
+      });
+      if (!contact) {
+        throw new import_server2.TRPCError({
+          code: "NOT_FOUND",
+          message: "Contact not found or you do not have permission to delete it"
+        });
+      }
+      await ctx.prisma.contact.delete({
+        where: {
+          id: input.contactId,
+          userId
+          // Ensures users can only delete their own contacts
+        }
+      });
+      return { success: true, contactId: input.contactId };
+    } catch (error) {
+      if (error instanceof import_server2.TRPCError) {
+        throw error;
+      }
+      console.error("Unhandled error in delete procedure:", error);
       throw new import_server2.TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "Failed to delete contact",
-        cause: error
+        message: "Failed to delete contact due to an unexpected error",
+        cause: error instanceof Error ? error : void 0
       });
     }
-    return { success: true, contactId: input.contactId };
   }),
   // Update just the notes field of a contact
-  updateNotes: protectedProcedure.input(import_zod.z.object({
-    contactId: import_zod.z.string().uuid(),
-    notes: import_zod.z.string()
-  })).mutation(async ({ input, ctx }) => {
-    if (!ctx.user) {
+  updateNotes: protectedProcedure.input(
+    import_zod.z.object({
+      contactId: import_zod.z.string().uuid(),
+      notes: import_zod.z.string()
+    })
+  ).mutation(async ({ input, ctx }) => {
+    const userId = ctx.user?.id;
+    if (!userId) {
       throw new import_server2.TRPCError({ code: "UNAUTHORIZED" });
     }
     const { contactId, notes } = input;
     try {
-      const { data: existingContact, error: fetchError } = await ctx.supabaseAdmin.from("contacts").select("id").eq("id", contactId).eq("user_id", ctx.user.id).single();
-      if (fetchError || !existingContact) {
+      const existingContact = await ctx.prisma.contact.findUnique({
+        where: {
+          id: contactId,
+          userId
+        },
+        select: { id: true }
+      });
+      if (!existingContact) {
         throw new import_server2.TRPCError({
           code: "NOT_FOUND",
           message: "Contact not found or you do not have permission to update it"
         });
       }
-      const { error: updateError } = await ctx.supabaseAdmin.from("contacts").update({ notes, updated_at: /* @__PURE__ */ new Date() }).eq("id", contactId).eq("user_id", ctx.user.id);
-      if (updateError) {
-        throw new import_server2.TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: `Failed to update contact notes: ${updateError.message}`
-        });
-      }
+      await ctx.prisma.contact.update({
+        where: {
+          id: contactId,
+          userId
+          // Ensures users can only update their own contacts
+        },
+        data: {
+          notes,
+          updatedAt: /* @__PURE__ */ new Date()
+        }
+      });
       return { success: true };
     } catch (error) {
       if (error instanceof import_server2.TRPCError) {
@@ -316,30 +421,40 @@ var contactRouter = router({
       console.error("Unhandled error in updateNotes procedure:", error);
       throw new import_server2.TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "Failed to update contact notes due to an unexpected error"
+        message: "Failed to update contact notes due to an unexpected error",
+        cause: error instanceof Error ? error : void 0
       });
     }
   }),
   // Get total count of contacts for the authenticated user
   getTotalContactsCount: protectedProcedure.query(async ({ ctx }) => {
-    if (!ctx.user) {
+    const userId = ctx.user?.id;
+    if (!userId) {
       throw new import_server2.TRPCError({ code: "UNAUTHORIZED" });
     }
-    const { count, error } = await ctx.supabaseUser.from("contacts").select("*", { count: "exact", head: true });
-    if (error) {
+    try {
+      const count = await ctx.prisma.contact.count({
+        where: {
+          userId
+          // Ensures we only count user's own contacts
+        }
+      });
+      return { count };
+    } catch (error) {
       console.error("Failed to get total contact count:", error);
       throw new import_server2.TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "Could not retrieve contact count."
+        message: "Could not retrieve contact count.",
+        cause: error instanceof Error ? error : void 0
       });
     }
-    return { count: count ?? 0 };
   })
 });
 
 // src/routers/group.ts
 var import_server3 = require("@trpc/server");
 var import_zod2 = require("zod");
+var import_client = require("@codexcrm/database/prisma/generated/client/client");
 var groupInputSchema = import_zod2.z.object({
   id: import_zod2.z.string().uuid().optional(),
   // Optional for creation
@@ -359,34 +474,34 @@ var groupRouter = router({
       throw new import_server3.TRPCError({ code: "UNAUTHORIZED" });
     }
     try {
-      const { data: memberData, error: memberError } = await ctx.supabaseUser.from("group_members").select("group_id").eq("contact_id", input.contactId);
-      if (memberError) {
-        console.error("Error fetching group members:", memberError);
+      const contact = await ctx.prisma.contact.findUnique({
+        where: {
+          id: input.contactId,
+          userId: ctx.user.id
+        }
+      });
+      if (!contact) {
         throw new import_server3.TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to fetch group memberships"
+          code: "NOT_FOUND",
+          message: "Contact not found or you do not have permission to access it"
         });
       }
-      if (!memberData || memberData.length === 0) {
-        return [];
-      }
-      const groupIds = memberData.map(
-        (item) => item.group_id
-      );
-      const { data: groupsData, error: groupsError } = await ctx.supabaseUser.from("groups").select("id, name, description, color, created_at, updated_at").eq("user_id", ctx.user.id).in("id", groupIds);
-      if (groupsError) {
-        console.error("Error fetching groups for contact:", groupsError);
-        throw new import_server3.TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to fetch groups for contact"
-        });
-      }
-      return groupsData || [];
-    } catch (err) {
-      console.error("Unexpected error in getGroupsForContact:", err);
+      const groupMembers = await ctx.prisma.groupMember.findMany({
+        where: {
+          contactId: input.contactId
+        },
+        include: {
+          group: true
+        }
+      });
+      const groups = groupMembers.map((member) => member.group).filter((group) => group.userId === ctx.user.id);
+      return groups;
+    } catch (error) {
+      console.error("Error fetching groups for contact:", error);
       throw new import_server3.TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: err instanceof Error ? err.message : "An unknown error occurred"
+        message: "Failed to fetch groups for contact",
+        cause: error
       });
     }
   }),
@@ -395,146 +510,301 @@ var groupRouter = router({
     if (!ctx.user) {
       throw new import_server3.TRPCError({ code: "UNAUTHORIZED" });
     }
-    const { data, error } = await ctx.supabaseUser.from("groups").select("*, group_members(*)").order("name");
-    if (error) {
+    try {
+      const groups = await ctx.prisma.group.findMany({
+        where: {
+          userId: ctx.user.id
+        },
+        include: {
+          members: true
+        },
+        orderBy: {
+          name: "asc"
+        }
+      });
+      return groups.map((group) => {
+        const contactCount = group.members.length;
+        return {
+          id: group.id,
+          name: group.name,
+          description: group.description,
+          color: group.color,
+          emoji: group.emoji,
+          createdAt: group.createdAt,
+          updatedAt: group.updatedAt,
+          contactCount
+        };
+      });
+    } catch (error) {
       console.error("Error fetching groups with contact counts:", error);
       throw new import_server3.TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "Failed to fetch groups"
+        message: "Failed to fetch groups",
+        cause: error
       });
     }
-    return (data || []).map((group) => {
-      const contactCount = Array.isArray(group.group_members) ? group.group_members.length : 0;
-      const { group_members, ...groupFields } = group;
-      return {
-        ...groupFields,
-        contactCount
-      };
-    });
   }),
   // Get a single group by ID
   getById: protectedProcedure.input(import_zod2.z.object({ groupId: import_zod2.z.string().uuid() })).query(async ({ input, ctx }) => {
     if (!ctx.user) {
       throw new import_server3.TRPCError({ code: "UNAUTHORIZED" });
     }
-    const { data, error } = await ctx.supabaseUser.from("groups").select("*").eq("id", input.groupId).single();
-    if (error) {
+    try {
+      const group = await ctx.prisma.group.findUnique({
+        where: {
+          id: input.groupId,
+          userId: ctx.user.id
+          // Ensure user only accesses their own groups
+        }
+      });
+      if (!group) {
+        throw new import_server3.TRPCError({
+          code: "NOT_FOUND",
+          message: "Group not found"
+        });
+      }
+      return group;
+    } catch (error) {
       console.error("Error fetching group by ID:", error);
       throw new import_server3.TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "Failed to fetch group"
+        message: "Failed to fetch group",
+        cause: error
       });
     }
-    return data;
   }),
   // Create or update a group
   save: protectedProcedure.input(groupInputSchema).mutation(async ({ input, ctx }) => {
     if (!ctx.user) {
       throw new import_server3.TRPCError({ code: "UNAUTHORIZED" });
     }
-    const isUpdate = !!input.id;
-    const groupData = {
-      ...input,
-      user_id: ctx.user.id,
-      updated_at: (/* @__PURE__ */ new Date()).toISOString()
-    };
-    if (!isUpdate) {
-      delete groupData.id;
-    }
-    const { data, error } = await ctx.supabaseUser.from("groups").upsert(groupData).select().single();
-    if (error) {
+    try {
+      const isUpdate = !!input.id;
+      if (isUpdate) {
+        const existingGroup = await ctx.prisma.group.findUnique({
+          where: {
+            id: input.id,
+            userId: ctx.user.id
+          }
+        });
+        if (!existingGroup) {
+          throw new import_server3.TRPCError({
+            code: "NOT_FOUND",
+            message: "Group not found or you do not have permission to update it"
+          });
+        }
+        return await ctx.prisma.group.update({
+          where: {
+            id: input.id
+          },
+          data: {
+            name: input.name,
+            description: input.description,
+            color: input.color,
+            emoji: input.emoji
+          }
+        });
+      } else {
+        return await ctx.prisma.group.create({
+          data: {
+            name: input.name,
+            description: input.description,
+            color: input.color,
+            emoji: input.emoji,
+            user: {
+              connect: {
+                id: ctx.user.id
+              }
+            }
+          }
+        });
+      }
+    } catch (error) {
       console.error("Error saving group:", error);
       throw new import_server3.TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: `Failed to ${isUpdate ? "update" : "create"} group`
+        message: `Failed to ${input.id ? "update" : "create"} group`,
+        cause: error
       });
     }
-    return data;
   }),
   // Delete a group
   delete: protectedProcedure.input(import_zod2.z.object({ groupId: import_zod2.z.string().uuid() })).mutation(async ({ input, ctx }) => {
     if (!ctx.user) {
       throw new import_server3.TRPCError({ code: "UNAUTHORIZED" });
     }
-    const { error } = await ctx.supabaseUser.from("groups").delete().eq("id", input.groupId).eq("user_id", ctx.user.id);
-    if (error) {
+    try {
+      const existingGroup = await ctx.prisma.group.findUnique({
+        where: {
+          id: input.groupId,
+          userId: ctx.user.id
+        }
+      });
+      if (!existingGroup) {
+        throw new import_server3.TRPCError({
+          code: "NOT_FOUND",
+          message: "Group not found or you do not have permission to delete it"
+        });
+      }
+      await ctx.prisma.group.delete({
+        where: {
+          id: input.groupId
+        }
+      });
+      return { success: true, deletedGroupId: input.groupId };
+    } catch (error) {
       console.error("Error deleting group:", error);
       throw new import_server3.TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "Failed to delete group"
+        message: "Failed to delete group",
+        cause: error
       });
     }
-    return { success: true, deletedGroupId: input.groupId };
   }),
   // Add a contact to a group
   addContact: protectedProcedure.input(groupContactSchema).mutation(async ({ input, ctx }) => {
     if (!ctx.user) {
       throw new import_server3.TRPCError({ code: "UNAUTHORIZED" });
     }
-    const { data: existing, error: existingError } = await ctx.supabaseUser.from("group_members").select("id").eq("group_id", input.groupId).eq("contact_id", input.contactId).single();
-    if (existingError && existingError.code !== "PGRST116") {
-      console.error("Error checking for existing group member:", existingError);
-      throw new import_server3.TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Could not verify group membership."
-      });
-    }
-    if (existing) {
-      return { success: true, message: "Contact already in group." };
-    }
-    const { error } = await ctx.supabaseUser.from("group_members").insert([
-      {
-        group_id: input.groupId,
-        contact_id: input.contactId
-        // user_id field removed as it doesn't exist in the table schema
+    try {
+      const [group, contact] = await Promise.all([
+        ctx.prisma.group.findUnique({
+          where: {
+            id: input.groupId,
+            userId: ctx.user.id
+          }
+        }),
+        ctx.prisma.contact.findUnique({
+          where: {
+            id: input.contactId,
+            userId: ctx.user.id
+          }
+        })
+      ]);
+      if (!group) {
+        throw new import_server3.TRPCError({
+          code: "NOT_FOUND",
+          message: "Group not found or you do not have permission to access it"
+        });
       }
-    ]);
-    if (error) {
-      console.error("Detailed error adding contact to group:", JSON.stringify(error, null, 2));
-      console.error("Original error object adding contact to group:", error);
+      if (!contact) {
+        throw new import_server3.TRPCError({
+          code: "NOT_FOUND",
+          message: "Contact not found or you do not have permission to access it"
+        });
+      }
+      const existingRelationship = await ctx.prisma.groupMember.findUnique({
+        where: {
+          groupId_contactId: {
+            groupId: input.groupId,
+            contactId: input.contactId
+          }
+        }
+      });
+      if (existingRelationship) {
+        return { success: true, message: "Contact already in group." };
+      }
+      await ctx.prisma.groupMember.create({
+        data: {
+          group: {
+            connect: { id: input.groupId }
+          },
+          contact: {
+            connect: { id: input.contactId }
+          }
+        }
+      });
+      return { success: true };
+    } catch (error) {
+      console.error("Error adding contact to group:", error);
       throw new import_server3.TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "Failed to add contact to group"
+        message: "Failed to add contact to group",
+        cause: error
       });
     }
-    return { success: true };
   }),
   // Remove a contact from a group
   removeContact: protectedProcedure.input(groupContactSchema).mutation(async ({ input, ctx }) => {
     if (!ctx.user) {
       throw new import_server3.TRPCError({ code: "UNAUTHORIZED" });
     }
-    const { error } = await ctx.supabaseUser.from("group_members").delete().eq("contact_id", input.contactId).eq("group_id", input.groupId);
-    if (error) {
+    try {
+      const group = await ctx.prisma.group.findUnique({
+        where: {
+          id: input.groupId,
+          userId: ctx.user.id
+        }
+      });
+      if (!group) {
+        throw new import_server3.TRPCError({
+          code: "NOT_FOUND",
+          message: "Group not found or you do not have permission to modify it"
+        });
+      }
+      await ctx.prisma.groupMember.delete({
+        where: {
+          groupId_contactId: {
+            groupId: input.groupId,
+            contactId: input.contactId
+          }
+        }
+      });
+      return { success: true };
+    } catch (error) {
+      if (error instanceof import_client.Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
+        return { success: true };
+      }
       console.error("Error removing contact from group:", error);
       throw new import_server3.TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "Failed to remove contact from group"
+        message: "Failed to remove contact from group",
+        cause: error
       });
     }
-    return { success: true };
   }),
   // Get all contacts in a group
   getContacts: protectedProcedure.input(import_zod2.z.object({ groupId: import_zod2.z.string().uuid() })).query(async ({ input, ctx }) => {
     if (!ctx.user) {
       throw new import_server3.TRPCError({ code: "UNAUTHORIZED" });
     }
-    const { data: group, error: groupError } = await ctx.supabaseUser.from("groups").select("id").eq("id", input.groupId).single();
-    if (groupError || !group) {
-      throw new import_server3.TRPCError({ code: "NOT_FOUND", message: "Group not found" });
-    }
-    const { data, error } = await ctx.supabaseUser.from("group_members").select("contacts:contact_id (*)").eq("group_id", input.groupId);
-    if (error) {
+    try {
+      const group = await ctx.prisma.group.findUnique({
+        where: {
+          id: input.groupId,
+          userId: ctx.user.id
+        }
+      });
+      if (!group) {
+        throw new import_server3.TRPCError({
+          code: "NOT_FOUND",
+          message: "Group not found or you do not have permission to access it"
+        });
+      }
+      const groupWithMembers = await ctx.prisma.group.findUnique({
+        where: {
+          id: input.groupId
+        },
+        include: {
+          members: {
+            include: {
+              contact: true
+            }
+          }
+        }
+      });
+      if (!groupWithMembers || !groupWithMembers.members) {
+        return [];
+      }
+      return groupWithMembers.members.map((member) => member.contact);
+    } catch (error) {
       console.error("Error fetching contacts in group:", error);
       throw new import_server3.TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "Failed to fetch contacts in group"
+        message: "Failed to fetch contacts in group",
+        cause: error
       });
     }
-    if (!data) {
-      return [];
-    }
-    return data.map((item) => item.contacts).filter(Boolean);
   })
 });
 
@@ -657,19 +927,60 @@ var dashboardRouter = router({
       const startDate = input?.startDate ? new Date(input.startDate) : new Date(endDate.getTime() - 30 * 24 * 60 * 60 * 1e3);
       const startDateStr = startDate.toISOString();
       const endDateStr = endDate.toISOString();
-      const { count: totalContacts, error: countError } = await ctx.supabaseUser.from("contacts").select("*", { count: "exact", head: true });
-      if (countError) throw countError;
-      const { data: newContacts, error: newContactsError } = await ctx.supabaseUser.from("contacts").select("id").gte("created_at", startDateStr).lte("created_at", endDateStr);
-      if (newContactsError) throw newContactsError;
-      const { data: journeyStages, error: journeyError } = await ctx.supabaseUser.rpc("get_contacts_by_journey_stage");
-      if (journeyError) throw journeyError;
-      const { data: recentActivity, error: activityError } = await ctx.supabaseUser.from("contacts").select("id, full_name, last_contacted_at").order("last_contacted_at", { ascending: false }).limit(5);
-      if (activityError) throw activityError;
+      const totalContacts = await ctx.prisma.contact.count({
+        where: {
+          userId: ctx.user.id
+        }
+      });
+      const newContacts = await ctx.prisma.contact.count({
+        where: {
+          userId: ctx.user.id,
+          createdAt: {
+            gte: startDate,
+            lte: endDate
+          }
+        }
+      });
+      const contactsByStage = await ctx.prisma.contact.groupBy({
+        by: ["wellnessJourneyStage"],
+        where: {
+          userId: ctx.user.id,
+          wellnessJourneyStage: {
+            not: null
+          }
+        },
+        _count: true
+      });
+      const stageDistribution = contactsByStage.map((group) => ({
+        stage: group.wellnessJourneyStage || "Unknown",
+        count: group._count
+      }));
+      const recentActivity = await ctx.prisma.contact.findMany({
+        where: {
+          userId: ctx.user.id
+        },
+        orderBy: {
+          updatedAt: "desc"
+        },
+        take: 5,
+        select: {
+          id: true,
+          fullName: true,
+          email: true,
+          profileImageUrl: true,
+          createdAt: true,
+          updatedAt: true
+        }
+      });
       return {
         totalContacts: totalContacts || 0,
-        newContacts: newContacts?.length || 0,
-        journeyStageDistribution: journeyStages || [],
-        recentActivity: recentActivity || []
+        newContacts: newContacts || 0,
+        stageDistribution: stageDistribution || [],
+        recentActivity: recentActivity || [],
+        dateRange: {
+          startDate: startDateStr,
+          endDate: endDateStr
+        }
       };
     } catch (error) {
       console.error("Error fetching contact metrics:", error);
@@ -680,127 +991,40 @@ var dashboardRouter = router({
       });
     }
   }),
-  // Get session metrics
-  sessionMetrics: protectedProcedure.input(dateRangeSchema.optional()).query(async ({ ctx, input }) => {
-    if (!ctx.user) {
-      throw new import_server5.TRPCError({ code: "UNAUTHORIZED" });
-    }
-    try {
-      const endDate = input?.endDate ? new Date(input.endDate) : /* @__PURE__ */ new Date();
-      const startDate = input?.startDate ? new Date(input.startDate) : new Date(endDate.getTime() - 30 * 24 * 60 * 60 * 1e3);
-      const startDateStr = startDate.toISOString();
-      const endDateStr = endDate.toISOString();
-      const { count: totalSessions, error: countError } = await ctx.supabaseUser.from("sessions").select("*", { count: "exact", head: true });
-      if (countError) throw countError;
-      const { data: sessionsInRange, error: rangeError } = await ctx.supabaseUser.from("sessions").select("id, session_time, session_type").gte("session_time", startDateStr).lte("session_time", endDateStr).order("session_time", { ascending: true });
-      if (rangeError) throw rangeError;
-      const { data: sessionTypes, error: typesError } = await ctx.supabaseUser.rpc("get_sessions_by_type");
-      if (typesError) throw typesError;
-      const now = (/* @__PURE__ */ new Date()).toISOString();
-      const { data: upcomingSessions, error: upcomingError } = await ctx.supabaseUser.from("sessions").select("id, session_time, contact_id, contacts(full_name)").gt("session_time", now).order("session_time", { ascending: true }).limit(5);
-      if (upcomingError) throw upcomingError;
-      const sessionsByDay = /* @__PURE__ */ new Map();
-      const dayMs = 24 * 60 * 60 * 1e3;
-      for (let d = new Date(startDate); d <= endDate; d = new Date(d.getTime() + dayMs)) {
-        const dateStr = d.toISOString().split("T")[0];
-        sessionsByDay.set(dateStr, 0);
-      }
-      sessionsInRange?.forEach((session) => {
-        const dateStr = new Date(session.session_time).toISOString().split("T")[0];
-        sessionsByDay.set(dateStr, (sessionsByDay.get(dateStr) || 0) + 1);
-      });
-      const sessionTrend = Array.from(sessionsByDay.entries()).map(([date, count]) => ({
-        date,
-        count
-      }));
-      return {
-        totalSessions: totalSessions || 0,
-        sessionsInRange: sessionsInRange?.length || 0,
-        sessionTypeDistribution: sessionTypes || [],
-        upcomingSessions: upcomingSessions || [],
-        sessionTrend
-      };
-    } catch (error) {
-      console.error("Error fetching session metrics:", error);
-      throw new import_server5.TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Failed to fetch session metrics",
-        cause: error
-      });
-    }
-  }),
-  // Get AI action metrics
-  aiActionMetrics: protectedProcedure.input(dateRangeSchema.optional()).query(async ({ ctx, input }) => {
-    if (!ctx.user) {
-      throw new import_server5.TRPCError({ code: "UNAUTHORIZED" });
-    }
-    try {
-      const endDate = input?.endDate ? new Date(input.endDate) : /* @__PURE__ */ new Date();
-      const startDate = input?.startDate ? new Date(input.startDate) : new Date(endDate.getTime() - 30 * 24 * 60 * 60 * 1e3);
-      const startDateStr = startDate.toISOString();
-      const endDateStr = endDate.toISOString();
-      const { count: totalActions, error: countError } = await ctx.supabaseUser.from("ai_actions").select("*", { count: "exact", head: true });
-      if (countError) throw countError;
-      const { data: actionsByStatus, error: statusError } = await ctx.supabaseUser.rpc("get_ai_actions_by_status");
-      if (statusError) throw statusError;
-      const { data: actionsByType, error: typeError } = await ctx.supabaseUser.rpc("get_ai_actions_by_type");
-      if (typeError) throw typeError;
-      const { data: recentActions, error: recentError } = await ctx.supabaseUser.from("ai_actions").select("id, action_type, suggestion, status, created_at").order("created_at", { ascending: false }).limit(5);
-      if (recentError) throw recentError;
-      const { data: implementedActions, error: implementedError } = await ctx.supabaseUser.from("ai_actions").select("id").eq("implemented", true);
-      if (implementedError) throw implementedError;
-      const implementationRate = totalActions ? (implementedActions?.length || 0) / totalActions : 0;
-      return {
-        totalActions: totalActions || 0,
-        actionsByStatus: actionsByStatus || [],
-        actionsByType: actionsByType || [],
-        recentActions: recentActions || [],
-        implementationRate
-      };
-    } catch (error) {
-      console.error("Error fetching AI action metrics:", error);
-      throw new import_server5.TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Failed to fetch AI action metrics",
-        cause: error
-      });
-    }
-  }),
-  // Get overall dashboard summary
+  // Get overall dashboard summary with only available metrics
   summary: protectedProcedure.input(dateRangeSchema.optional()).query(async ({ ctx, input }) => {
     if (!ctx.user) {
       throw new import_server5.TRPCError({ code: "UNAUTHORIZED" });
     }
     try {
-      const endDate = input?.endDate ? new Date(input.endDate) : /* @__PURE__ */ new Date();
-      const startDate = input?.startDate ? new Date(input.startDate) : new Date(endDate.getTime() - 30 * 24 * 60 * 60 * 1e3);
+      const endDate = input && input.endDate ? new Date(input.endDate) : /* @__PURE__ */ new Date();
+      const startDate = input && input.startDate ? new Date(input.startDate) : new Date(endDate.getTime() - 30 * 24 * 60 * 60 * 1e3);
       const startDateStr = startDate.toISOString();
       const endDateStr = endDate.toISOString();
-      const [
-        { count: totalContacts },
-        { count: totalSessions },
-        { count: totalActions },
-        { count: totalNotes },
-        { data: newContacts },
-        { data: upcomingSessions },
-        { data: pendingActions }
-      ] = await Promise.all([
-        ctx.supabaseUser.from("contacts").select("*", { count: "exact", head: true }),
-        ctx.supabaseUser.from("sessions").select("*", { count: "exact", head: true }),
-        ctx.supabaseUser.from("ai_actions").select("*", { count: "exact", head: true }),
-        ctx.supabaseUser.from("notes").select("*", { count: "exact", head: true }),
-        ctx.supabaseUser.from("contacts").select("id").gte("created_at", startDateStr).lte("created_at", endDateStr),
-        ctx.supabaseUser.from("sessions").select("id").gt("session_time", (/* @__PURE__ */ new Date()).toISOString()),
-        ctx.supabaseUser.from("ai_actions").select("id").eq("status", "pending")
+      const [totalContacts, newContacts] = await Promise.all([
+        // Total contacts
+        ctx.prisma.contact.count({
+          where: {
+            userId: ctx.user.id
+          }
+        }),
+        // New contacts in date range
+        ctx.prisma.contact.findMany({
+          where: {
+            userId: ctx.user.id,
+            createdAt: {
+              gte: startDate,
+              lte: endDate
+            }
+          },
+          select: {
+            id: true
+          }
+        })
       ]);
       return {
         totalContacts: totalContacts || 0,
-        totalSessions: totalSessions || 0,
-        totalAiActions: totalActions || 0,
-        totalNotes: totalNotes || 0,
-        newContactsCount: newContacts?.length || 0,
-        upcomingSessionsCount: upcomingSessions?.length || 0,
-        pendingActionsCount: pendingActions?.length || 0,
+        newContactsCount: newContacts.length || 0,
         dateRange: {
           startDate: startDateStr,
           endDate: endDateStr
@@ -868,18 +1092,53 @@ var importRouter = router({
       user_id: ctx.user.id
     }));
     try {
-      const { data, error } = await ctx.supabaseUser.from("contacts").insert(contactsToInsert).select("id, full_name, email");
-      if (error) {
-        importResults.success = false;
-        importResults.errors.push(`Database error: ${error.message}`);
-        return importResults;
-      }
-      importResults.imported = data?.length ?? 0;
+      const prismaContacts = contactsToInsert.map((contact) => {
+        const prismaContact = {
+          fullName: contact.full_name,
+          // Email is required in the schema, provide an empty string if missing
+          email: contact.email || "",
+          // Handle nullable fields properly
+          phone: contact.phone ?? void 0,
+          phoneCountryCode: contact.phone_country_code ?? void 0,
+          companyName: contact.company_name ?? void 0,
+          jobTitle: contact.job_title ?? void 0,
+          website: contact.website ?? void 0,
+          notes: contact.notes ?? void 0,
+          // Required arrays - provide empty arrays if null/undefined
+          tags: contact.tags ?? [],
+          socialHandles: contact.social_handles ?? [],
+          // For wellness goals (required array in schema)
+          wellnessGoals: [],
+          // Optional fields
+          addressStreet: contact.address_street ?? void 0,
+          // Connect to the user
+          user: {
+            connect: {
+              id: ctx.user.id
+            }
+          }
+        };
+        return prismaContact;
+      });
+      const createdContacts = await Promise.all(
+        prismaContacts.map(
+          (contactData) => ctx.prisma.contact.create({
+            data: contactData,
+            select: {
+              id: true,
+              fullName: true,
+              email: true
+            }
+          })
+        )
+      );
+      importResults.imported = createdContacts.length;
       return importResults;
     } catch (error) {
       importResults.success = false;
       const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
       importResults.errors.push(errorMessage);
+      console.error("Error importing contacts:", error);
       return importResults;
     }
   })

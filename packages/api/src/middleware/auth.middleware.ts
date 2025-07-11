@@ -1,6 +1,6 @@
 import { TRPCError } from '@trpc/server';
-import { router, publicProcedure } from '@codexcrm/api/src/trpc';
-import type { Context } from '@codexcrm/api/src/context';
+import { router, publicProcedure } from '@codexcrm/api/trpc';
+import type { Context } from '@codexcrm/api/context';
 import { initTRPC } from '@trpc/server';
 
 // Initialize tRPC for middleware
@@ -18,7 +18,7 @@ export const isAuthenticated = middleware(async ({ ctx, next }) => {
       message: 'You must be logged in to access this resource',
     });
   }
-  
+
   return next({
     ctx: {
       ...ctx,
@@ -32,7 +32,7 @@ export const isAuthenticated = middleware(async ({ ctx, next }) => {
  * Checks if the user has the required role
  * @param requiredRoles Array of roles that are allowed to access the resource
  */
-export const hasRole = (requiredRoles: string[]) => 
+export const hasRole = (requiredRoles: string[]) =>
   middleware(async ({ ctx, next }) => {
     if (!ctx.user) {
       throw new TRPCError({
@@ -43,17 +43,17 @@ export const hasRole = (requiredRoles: string[]) =>
 
     // Get user roles from the session claims
     const userRoles = ctx.session?.user?.app_metadata?.roles || [];
-    
+
     // Check if the user has any of the required roles
-    const hasRequiredRole = requiredRoles.some(role => userRoles.includes(role));
-    
+    const hasRequiredRole = requiredRoles.some((role) => userRoles.includes(role));
+
     if (!hasRequiredRole) {
       throw new TRPCError({
         code: 'FORBIDDEN',
         message: 'You do not have permission to access this resource',
       });
     }
-    
+
     return next({
       ctx: {
         ...ctx,
@@ -70,7 +70,7 @@ export const hasRole = (requiredRoles: string[]) =>
  */
 export const isOwner = <TInput>(
   getResourceOwnerId: (input: TInput, ctx: Context) => Promise<string | null>
-) => 
+) =>
   middleware(async ({ ctx, input, next }) => {
     if (!ctx.user) {
       throw new TRPCError({
@@ -80,14 +80,14 @@ export const isOwner = <TInput>(
     }
 
     const ownerId = await getResourceOwnerId(input as TInput, ctx);
-    
+
     if (!ownerId || ownerId !== ctx.user.id) {
       throw new TRPCError({
         code: 'FORBIDDEN',
         message: 'You do not have permission to access this resource',
       });
     }
-    
+
     return next({
       ctx: {
         ...ctx,
@@ -100,15 +100,15 @@ export const isOwner = <TInput>(
  * Combine multiple middleware functions
  * @param middlewares Array of middleware functions to combine
  */
-export const combineMiddlewares = (middlewares: ReturnType<typeof middleware>[]) => 
+export const combineMiddlewares = (middlewares: ReturnType<typeof middleware>[]) =>
   middleware(async (opts) => {
     let { ctx } = opts;
-    
+
     for (const middleware of middlewares) {
       const result = await middleware(opts);
       ctx = result.ctx;
     }
-    
+
     return opts.next({
       ctx,
     });

@@ -6,16 +6,16 @@ import { useState } from 'react';
 import { z } from 'zod';
 
 import OneTapComponent from '@/app/(auth)/components/auth/OneTapComponent'; // Ensure this path is correct and component exists
-import { Button } from '@codexcrm/ui';
 import {
+  Button,
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
   CardContent,
   CardFooter,
+  Input,
 } from '@codexcrm/ui';
-import { Input } from '@codexcrm/ui';
 import { createBrowserClient } from '@codexcrm/auth';
 
 const supabase = createBrowserClient();
@@ -108,8 +108,12 @@ export default function LoginPage() {
 
     if (!validationResult.success) {
       const fieldErrors = validationResult.error.flatten().fieldErrors;
-      if (fieldErrors.email?.[0]) {setEmailError(fieldErrors.email[0]);}
-      if (fieldErrors.password?.[0]) {setPasswordError(fieldErrors.password[0]);}
+      if (fieldErrors.email?.[0]) {
+        setEmailError(fieldErrors.email[0]);
+      }
+      if (fieldErrors.password?.[0]) {
+        setPasswordError(fieldErrors.password[0]);
+      }
       setIsLoading(false);
       return;
     }
@@ -297,7 +301,10 @@ export default function LoginPage() {
 
             {/* Submit Button and Forgot Password Link Container */}
             <div className='flex justify-between items-end mt-2'>
-              <Button variant='default' size='md' type='submit'
+              <Button
+                variant='default'
+                size='md'
+                type='submit'
                 className='flex justify-center disabled:opacity-50 bg-teal-800 hover:bg-teal-700 text-teal-200 px-8 py-2 text-sm font-semibold shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600'
                 disabled={isLoading}
               >

@@ -3,26 +3,11 @@
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import type { Route } from 'next';
-import { createRoute } from '@/lib/utils/routes';
 import * as React from 'react';
 
 // UI and Icon Imports
-import { Button } from '@/components/ui/button';
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-  SheetClose,
-} from '@/components/ui/sheet';
-import {
-  Menu,
-  Home,
-  Users,
-  CheckSquare,
-  Calendar,
-  MessageSquare,
-  BarChart,
-} from 'lucide-react';
+import { Button, Sheet, SheetContent, SheetTrigger, SheetClose } from '@codexcrm/ui';
+import { Menu, Home, Users, CheckSquare, Calendar, MessageSquare, BarChart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const mainNavItems = [
@@ -43,18 +28,19 @@ export function MobileMenu() {
   const pathname = usePathname();
 
   return (
-    <div className="md:hidden">
+    <div className='md:hidden'>
       <Sheet>
         <SheetTrigger asChild>
-          <Button variant="outline" size="icon">
-            <Menu className="h-5 w-5" />
-            <span className="sr-only">Toggle main menu</span>
+          <Button variant='outline' size='icon' className='w-10 h-10'>
+            <Menu className='h-5 w-5' />
+            <span className='sr-only'>Toggle main menu</span>
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="w-[260px] pt-10"> {/* Added top padding */}
+        <SheetContent side='left' className='w-[260px] pt-10'>
+          {' '}
+          {/* Added top padding */}
           {/* The SheetHeader with the logo has been REMOVED. */}
-          
-          <nav className="flex flex-col p-4 space-y-1">
+          <nav className='flex flex-col p-4 space-y-1'>
             {mainNavItems.map((item) => (
               <SheetClose asChild key={item.href}>
                 <Link
@@ -66,7 +52,7 @@ export function MobileMenu() {
                       : 'text-muted-foreground hover:bg-muted'
                   )}
                 >
-                  <item.icon className="h-5 w-5" />
+                  <item.icon className='h-5 w-5' />
                   {item.title}
                 </Link>
               </SheetClose>

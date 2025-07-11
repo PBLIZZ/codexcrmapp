@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Plus, Edit, Loader2 } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@codexcrm/ui';
 import {
   Dialog,
   DialogContent,
@@ -11,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
+} from '@codexcrm/ui';
 import { GroupCreateForm } from './GroupCreateForm';
 
 // Interface for Group Data (matching what `api.groups.list` returns)
@@ -27,7 +27,7 @@ interface Group {
 
 interface GroupCreateDialogProps {
   triggerButtonLabel?: string;
-  triggerButtonVariant?: "default" | "outline" | "secondary" | "ghost" | "link" | "destructive";
+  triggerButtonVariant?: 'default' | 'outline' | 'secondary' | 'ghost' | 'link' | 'destructive';
   triggerButtonClassName?: string;
   group?: Group | null; // Optional group for editing mode
   isEditMode?: boolean; // Flag to indicate if we're in edit mode
@@ -63,32 +63,32 @@ export function GroupCreateDialog({
           <Button variant={triggerButtonVariant} className={triggerButtonClassName}>
             {isEditMode ? (
               <>
-                <Edit className="mr-2 h-4 w-4" /> {triggerButtonLabel || 'Edit Group'}
+                <Edit className='mr-2 h-4 w-4' /> {triggerButtonLabel || 'Edit Group'}
               </>
             ) : (
               <>
-                <Plus className="mr-2 h-4 w-4" /> {triggerButtonLabel}
+                <Plus className='mr-2 h-4 w-4' /> {triggerButtonLabel}
               </>
             )}
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className='sm:max-w-lg'>
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold text-gray-800">
+          <DialogTitle className='text-xl font-semibold text-gray-800'>
             {isEditMode ? 'Edit Group' : 'Create New Group'}
           </DialogTitle>
           <DialogDescription>
-            {isEditMode 
+            {isEditMode
               ? `Update the details for the group: ${editingGroup?.name}`
               : 'Fill in the details below to create a new contact group.'}
           </DialogDescription>
         </DialogHeader>
         {/* The form itself, with the onSuccess callback to close the dialog */}
-        <GroupCreateForm 
-          onSuccess={handleSuccess} 
-          editingGroup={editingGroup} 
-          isEditMode={isEditMode} 
+        <GroupCreateForm
+          onSuccess={handleSuccess}
+          editingGroup={editingGroup}
+          isEditMode={isEditMode}
         />
       </DialogContent>
     </Dialog>

@@ -1,12 +1,15 @@
-import { TRPCError } from '@trpc/server';
-import { z } from 'zod';
+// path: packages/api/src/routers/contact.ts
 
-import { supabaseAdmin as _supabaseAdmin } from '../supabaseAdmin';
+import type { Prisma } from '@codexcrm/database/prisma/generated/client/client';
+import { z } from 'zod';
+import { TRPCError } from '@trpc/server';
 import { router, protectedProcedure } from '../trpc';
+
+// Use Prisma namespace directly for all operations
 
 const contactInputSchema = z.object({
   id: z.string().uuid().optional(),
-  full_name: z.string().min(1, 'Full name is required'),  
+  full_name: z.string().min(1, 'Full name is required'),
   email: z.string().email('Invalid email address').optional().nullable(),
   phone: z.string().optional().nullable(),
   phone_country_code: z.string().optional().nullable(), // New
@@ -16,7 +19,7 @@ const contactInputSchema = z.object({
   address_city: z.string().optional().nullable(), // New
   address_postal_code: z.string().optional().nullable(), // New
   address_country: z.string().optional().nullable(), // New
-  website: z.string().url({ message: "Invalid URL" }).optional().nullable(), // New
+  website: z.string().url({ message: 'Invalid URL' }).optional().nullable(), // New
   profile_image_url: z.string().optional().nullable(), // Reverted: No strict URL validation to support upload paths
   notes: z.string().optional().nullable(),
   tags: z.array(z.string()).optional().nullable(), // New
@@ -43,7 +46,7 @@ export const contactRouter = router({
     .input(
       z.object({
         search: z.string().optional(),
-        groupId: z.string().optional(), // Remove UUID validation to handle all group ID formats
+        groupId: z.string().optional(), // Optional group ID to filter contacts by
       })
     )
     .query(async ({ ctx, input }) => {
@@ -54,226 +57,276 @@ export const contactRouter = router({
         throw new TRPCError({ code: 'UNAUTHORIZED' });
       }
 
-      // If a groupId is provided, we start from group_members and expand contacts.
-      // This is the most efficient way to filter by group.
-      if (groupId) {
-        // First, get the contact IDs that belong to this group
-        const { data: groupMembers, error: memberError } = await ctx.supabaseUser
-          .from('group_members')
-          .select('contact_id')
-          .eq('group_id', groupId);
+      try {
+        // If a groupId is provided, first get contact IDs from group_members
+        if (groupId) {
+          // Get contact IDs from group_members for this group
+          const groupMembers = await ctx.prisma.groupMember.findMany({
+            where: {
+              groupId: groupId,
+              group: {
+                userId: userId, // Ensure user has access to this group
+              },
+            },
+            select: {
+              contactId: true,
+            },
+          });
 
-        if (memberError) {
-          console.error("Error fetching group members:", memberError);
-          throw new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: `Failed to retrieve group members: ${memberError.message}`,
+          // If no contacts in the group, return empty array
+          if (!groupMembers || groupMembers.length === 0) {
+            return [];
+          }
+
+          // Extract contact IDs
+          const contactIds = groupMembers.map((member) => member.contactId);
+
+          // Query contacts filtered by both group membership and search term
+          return await ctx.prisma.contact.findMany({
+            where: {
+              id: { in: contactIds },
+              userId: userId,
+              ...(search
+                ? {
+                    OR: [
+                      { fullName: { contains: search, mode: 'insensitive' } },
+                      { email: { contains: search, mode: 'insensitive' } },
+                    ],
+                  }
+                : {}),
+            },
+            orderBy: {
+              createdAt: 'desc',
+            },
           });
         }
 
-        // If no contacts in the group, return empty array
-        if (!groupMembers || groupMembers.length === 0) {
-          return [];
-        }
-
-        // Extract contact IDs
-        const contactIds = groupMembers.map((member: { contact_id: string }) => member.contact_id);
-
-        // Now query contacts with both group filtering (via IDs) and search
-        let contactsQuery = ctx.supabaseUser
-          .from('contacts')
-          .select('*')
-          .in('id', contactIds);
-
-        // Add search filter if provided
-        if (search) {
-          contactsQuery = contactsQuery.or(
-            `full_name.ilike.%${search}%,email.ilike.%${search}%`
-          );
-        }
-
-        // Add ordering
-        contactsQuery = contactsQuery.order('created_at', { ascending: false });
-
-        // Execute the query
-        const { data: contacts, error } = await contactsQuery;
-
-        if (error) {
-          console.error("Error fetching contacts for group:", error);
-          throw new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: `Failed to retrieve contacts for group: ${error.message}`,
-          });
-        }
-
-        return contacts || [];
-      }
-
-      // If no groupId is provided, we query the contacts table directly.
-      else {
-        let query = ctx.supabaseUser.from('contacts').select('*');
-
-        // Conditionally add the search filter
-        if (search) {
-          query = query.or(
-            `full_name.ilike.%${search}%,email.ilike.%${search}%`
-          );
-        }
-
-        // Add default ordering
-        query = query.order('created_at', { ascending: false });
-
-        const { data: contacts, error } = await query;
-
-        if (error) {
-          console.error("Error fetching all contacts:", error);
-          throw new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: `Failed to retrieve contacts: ${error.message}`,
-          });
-        }
-        return contacts || [];
+        // If no groupId is provided, query all user's contacts
+        return await ctx.prisma.contact.findMany({
+          where: {
+            userId: userId,
+            ...(search
+              ? {
+                  OR: [
+                    { fullName: { contains: search, mode: 'insensitive' } },
+                    { email: { contains: search, mode: 'insensitive' } },
+                  ],
+                }
+              : {}),
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+        });
+      } catch (error) {
+        console.error('Error fetching contacts:', error);
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to retrieve contacts',
+          cause: error instanceof Error ? error : undefined,
+        });
       }
     }),
   // Fetch a single contact by ID
   getById: protectedProcedure
     .input(z.object({ contactId: z.string().uuid() }))
     .query(async ({ input, ctx }) => {
-      if (!ctx.user) {
+      const userId = ctx.user?.id;
+      if (!userId) {
         throw new TRPCError({ code: 'UNAUTHORIZED' });
       }
-      const { data, error } = await ctx.supabaseUser
-        .from('contacts')
-        .select('*')
-        .eq('id', input.contactId)
-        .single();
-      if (error) {
+
+      try {
+        const contact = await ctx.prisma.contact.findUnique({
+          where: {
+            id: input.contactId,
+            userId: userId, // Ensures users can only see their own contacts
+          },
+        });
+
+        if (!contact) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Contact not found',
+          });
+        }
+
+        return contact;
+      } catch (error) {
         console.error('Error fetching contact by id:', error);
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to fetch contact',
-          cause: error,
+          cause: error instanceof Error ? error : undefined,
         });
       }
-      return data;
     }),
 
   save: protectedProcedure
     .input(contactInputSchema) // Uses the schema defined above this router
     .mutation(async ({ input, ctx }) => {
-      if (!ctx.user) {
+      const userId = ctx.user?.id;
+      if (!userId) {
         throw new TRPCError({ code: 'UNAUTHORIZED' });
       }
 
       const contactId = input.id;
-      const fieldsToSave = {
-        full_name: input.full_name,
-        email: input.email || null,
-        phone: input.phone || null,
-        phone_country_code: input.phone_country_code || null,
-        company_name: input.company_name || null,
-        job_title: input.job_title || null,
-        address_street: input.address_street || null,
-        address_city: input.address_city || null,
-        address_postal_code: input.address_postal_code || null,
-        address_country: input.address_country || null,
-        website: input.website || null,
-        profile_image_url: input.profile_image_url || null,
-        notes: input.notes || null,
-        tags: input.tags || null,
-        social_handles: input.social_handles || null,
-        source: input.source || null,
-        last_contacted_at: input.last_contacted_at || null,
-        enriched_data: input.enriched_data || null,
-        enrichment_status: input.enrichment_status || null,
+
+      // Create properly typed update object for Prisma
+      const contactData: Prisma.ContactUpdateInput = {
+        fullName: input.full_name, // Required field
       };
 
-      let dataObject: Record<string, unknown> | null = null;
-      // Supabase errors have a 'code' property (string) among others
-      let dbError: { message: string; code?: string; details?: string; hint?: string } | null = null;
+      // Add optional fields only if they have values
+      // Use proper Prisma field update syntax for nullable fields
+      if (input.email !== undefined)
+        contactData.email = input.email === null ? { set: '' } : input.email;
+      if (input.phone !== undefined)
+        contactData.phone = input.phone === null ? { set: null } : input.phone;
+      if (input.phone_country_code !== undefined)
+        contactData.phoneCountryCode =
+          input.phone_country_code === null ? { set: null } : input.phone_country_code;
+      if (input.company_name !== undefined)
+        contactData.companyName = input.company_name === null ? { set: null } : input.company_name;
+      if (input.job_title !== undefined)
+        contactData.jobTitle = input.job_title === null ? { set: null } : input.job_title;
+      if (input.address_street !== undefined)
+        contactData.addressStreet =
+          input.address_street === null ? { set: null } : input.address_street;
+      if (input.address_city !== undefined)
+        contactData.addressCity = input.address_city === null ? { set: null } : input.address_city;
+      if (input.address_postal_code !== undefined)
+        contactData.addressPostalCode =
+          input.address_postal_code === null ? { set: null } : input.address_postal_code;
+      if (input.address_country !== undefined)
+        contactData.addressCountry =
+          input.address_country === null ? { set: null } : input.address_country;
+      if (input.website !== undefined)
+        contactData.website = input.website === null ? { set: null } : input.website;
+      if (input.profile_image_url !== undefined)
+        contactData.profileImageUrl =
+          input.profile_image_url === null ? { set: null } : input.profile_image_url;
+      if (input.notes !== undefined)
+        contactData.notes = input.notes === null ? { set: null } : input.notes;
+      if (input.tags !== undefined)
+        contactData.tags = input.tags === null ? { set: [] } : input.tags;
+      if (input.social_handles !== undefined)
+        contactData.socialHandles =
+          input.social_handles === null ? { set: [] } : input.social_handles;
+      if (input.source !== undefined)
+        contactData.source = input.source === null ? { set: null } : input.source;
+      if (input.last_contacted_at !== undefined)
+        contactData.lastContactedAt =
+          input.last_contacted_at === null ? { set: null } : input.last_contacted_at;
+      if (input.enriched_data !== undefined)
+        contactData.enrichedData =
+          input.enriched_data === null ? { set: null } : input.enriched_data;
+      if (input.enrichment_status !== undefined)
+        contactData.enrichmentStatus =
+          input.enrichment_status === null ? { set: null } : input.enrichment_status;
 
       try {
+        let result;
+
         if (contactId) {
           // UPDATE LOGIC
-          console.warn(`Attempting contact update for id: ${contactId}`, fieldsToSave);
-          let attemptFields = { ...fieldsToSave };
+          console.warn(`Attempting contact update for id: ${contactId}`);
 
-          do {
-            const updateOp = await ctx.supabaseUser
-              .from('contacts')
-              .update(attemptFields)
-              .match({ id: contactId, user_id: ctx.user.id })
-              .select()
-              .single();
-            dataObject = updateOp.data;
-            dbError = updateOp.error;
+          // First check if the contact belongs to this user
+          const existingContact = await ctx.prisma.contact.findUnique({
+            where: {
+              id: contactId,
+              userId: userId,
+            },
+          });
 
-            if (dbError) {
-              const columnMatch = dbError.message.match(/Could not find the '(.+)' column/);
-              if (columnMatch && Object.hasOwn(attemptFields, columnMatch[1] as keyof typeof attemptFields)) {
-                console.warn(`${columnMatch[1]} column missing, retrying update without it`);
-                delete (attemptFields as any)[columnMatch[1]];
-                continue;
-              }
-            }
-            break; 
-          } while (dbError !== null);
-
-        } else {
-          // INSERT LOGIC
-          const insertPayload = { ...fieldsToSave, user_id: ctx.user.id };
-          console.warn('[DEBUG] Attempting contact insert:', insertPayload);
-          
-          const insertOp = await ctx.supabaseUser
-            .from('contacts')
-            .insert(insertPayload)
-            .select('id, created_at, updated_at, user_id, email, full_name, profile_image_url') // Select minimal essential fields
-            .single();
-
-          dataObject = insertOp.data;
-          dbError = insertOp.error;
-
-          if (!dbError && !dataObject) {
-            console.warn("Contact insert: Supabase insert succeeded but .select() returned no data (RLS visibility issue?). Constructing response from input.");
-            // The insert was likely successful, but RLS prevents reading it back immediately.
-            // We return the input data merged with user_id, but server-generated fields like 'id' and 'created_at' will be missing.
-            // The client should be aware or refetch if these are critical immediately.
-            dataObject = { ...insertPayload, id: undefined, created_at: undefined, updated_at: undefined }; 
-          }
-        }
-
-        if (dbError) {
-          console.error('Supabase save error:', JSON.stringify(dbError, null, 2), { input, contactId });
-          if (dbError.code === '23505') { // PostgreSQL unique_violation
+          if (!existingContact) {
             throw new TRPCError({
-              code: 'CONFLICT',
-              message: `A contact with this email (${input.email}) already exists.`,
-              cause: dbError,
+              code: 'NOT_FOUND',
+              message: 'Contact not found or you do not have permission to update it',
             });
           }
-          throw new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: `Database error: ${dbError.message}`,
-            cause: dbError,
+
+          // Update the contact
+          result = await ctx.prisma.contact.update({
+            where: {
+              id: contactId,
+            },
+            data: contactData,
+          });
+        } else {
+          // INSERT LOGIC
+          console.warn('[DEBUG] Attempting contact insert');
+
+          // Check for email uniqueness if email is provided
+          if (input.email) {
+            const existingContactWithEmail = await ctx.prisma.contact.findFirst({
+              where: {
+                email: input.email,
+                userId: userId,
+              },
+            });
+
+            if (existingContactWithEmail) {
+              throw new TRPCError({
+                code: 'CONFLICT',
+                message: `A contact with this email (${input.email}) already exists.`,
+              });
+            }
+          }
+
+          // For creating a new contact, explicitly type to match Prisma schema
+          const createData: Prisma.ContactCreateInput = {
+            fullName: input.full_name, // Required field
+            email: input.email ?? '', // Required by Prisma schema, provide empty string if null
+            user: { connect: { id: userId } }, // Required: use connect to link to existing user
+          };
+
+          // Add optional fields with proper null handling
+          // Email is already set above as it's required
+          if (input.phone !== undefined && input.phone !== null) createData.phone = input.phone;
+          if (input.phone_country_code !== undefined && input.phone_country_code !== null)
+            createData.phoneCountryCode = input.phone_country_code;
+          if (input.company_name !== undefined && input.company_name !== null)
+            createData.companyName = input.company_name;
+          if (input.job_title !== undefined && input.job_title !== null)
+            createData.jobTitle = input.job_title;
+          if (input.address_street !== undefined && input.address_street !== null)
+            createData.addressStreet = input.address_street;
+          if (input.address_city !== undefined && input.address_city !== null)
+            createData.addressCity = input.address_city;
+          if (input.address_postal_code !== undefined && input.address_postal_code !== null)
+            createData.addressPostalCode = input.address_postal_code;
+          if (input.address_country !== undefined && input.address_country !== null)
+            createData.addressCountry = input.address_country;
+          if (input.website !== undefined && input.website !== null)
+            createData.website = input.website;
+          if (input.profile_image_url !== undefined && input.profile_image_url !== null)
+            createData.profileImageUrl = input.profile_image_url;
+          if (input.notes !== undefined && input.notes !== null) createData.notes = input.notes;
+          if (input.tags !== undefined) createData.tags = input.tags === null ? [] : input.tags;
+          if (input.social_handles !== undefined)
+            createData.socialHandles = input.social_handles === null ? [] : input.social_handles;
+          if (input.source !== undefined && input.source !== null) createData.source = input.source;
+          if (input.last_contacted_at !== undefined)
+            createData.lastContactedAt = input.last_contacted_at;
+          if (input.enriched_data !== undefined) createData.enrichedData = input.enriched_data;
+          if (input.enrichment_status !== undefined)
+            createData.enrichmentStatus = input.enrichment_status;
+
+          // Create the contact
+          result = await ctx.prisma.contact.create({
+            data: createData,
           });
         }
 
-        if (!dataObject) {
-          console.error('Supabase save returned no data and no explicit error after processing.', { input, contactId });
-          throw new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'Failed to save contact: No data returned from database operation.',
-          });
-        }
-        
-        console.warn('Contact save successful:', dataObject);
-        return dataObject;
-
+        console.warn('Contact save successful:', result);
+        return result;
       } catch (error) {
         if (error instanceof TRPCError) {
           throw error;
         }
-        console.error('Unhandled error in contact save procedure:', error, { input, contactId });
+        console.error('Unhandled error in contact save procedure:', error);
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'An unexpected error occurred while saving the contact.',
@@ -285,49 +338,76 @@ export const contactRouter = router({
   delete: protectedProcedure
     .input(z.object({ contactId: z.string().uuid() }))
     .mutation(async ({ input, ctx }) => {
-      if (!ctx.user) {
+      const userId = ctx.user?.id;
+      if (!userId) {
         throw new TRPCError({ code: 'UNAUTHORIZED' });
       }
 
-      const { error } = await ctx.supabaseUser
-        .from('contacts')
-        .delete()
-        .match({ id: input.contactId, user_id: ctx.user.id });
+      try {
+        // Check if contact exists and belongs to user
+        const contact = await ctx.prisma.contact.findUnique({
+          where: {
+            id: input.contactId,
+            userId: userId,
+          },
+        });
 
-      if (error) {
-        console.error('Error deleting contact:', error);
+        if (!contact) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Contact not found or you do not have permission to delete it',
+          });
+        }
+
+        // Delete the contact
+        await ctx.prisma.contact.delete({
+          where: {
+            id: input.contactId,
+            userId: userId, // Ensures users can only delete their own contacts
+          },
+        });
+
+        return { success: true, contactId: input.contactId };
+      } catch (error) {
+        if (error instanceof TRPCError) {
+          throw error;
+        }
+        console.error('Unhandled error in delete procedure:', error);
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to delete contact',
-          cause: error,
+          message: 'Failed to delete contact due to an unexpected error',
+          cause: error instanceof Error ? error : undefined,
         });
       }
-      return { success: true, contactId: input.contactId };
     }),
 
   // Update just the notes field of a contact
   updateNotes: protectedProcedure
-    .input(z.object({
-      contactId: z.string().uuid(),
-      notes: z.string()
-    }))
+    .input(
+      z.object({
+        contactId: z.string().uuid(),
+        notes: z.string(),
+      })
+    )
     .mutation(async ({ input, ctx }) => {
-      if (!ctx.user) {
+      const userId = ctx.user?.id;
+      if (!userId) {
         throw new TRPCError({ code: 'UNAUTHORIZED' });
       }
 
       const { contactId, notes } = input;
-      
-      try {
-        // Verify the contact belongs to the user
-        const { data: existingContact, error: fetchError } = await ctx.supabaseAdmin
-          .from('contacts')
-          .select('id')
-          .eq('id', contactId)
-          .eq('user_id', ctx.user.id)
-          .single();
 
-        if (fetchError || !existingContact) {
+      try {
+        // Check if contact exists and belongs to user
+        const existingContact = await ctx.prisma.contact.findUnique({
+          where: {
+            id: contactId,
+            userId: userId,
+          },
+          select: { id: true },
+        });
+
+        if (!existingContact) {
           throw new TRPCError({
             code: 'NOT_FOUND',
             message: 'Contact not found or you do not have permission to update it',
@@ -335,18 +415,16 @@ export const contactRouter = router({
         }
 
         // Update only the notes field
-        const { error: updateError } = await ctx.supabaseAdmin
-          .from('contacts')
-          .update({ notes, updated_at: new Date() })
-          .eq('id', contactId)
-          .eq('user_id', ctx.user.id);
-
-        if (updateError) {
-          throw new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: `Failed to update contact notes: ${updateError.message}`,
-          });
-        }
+        await ctx.prisma.contact.update({
+          where: {
+            id: contactId,
+            userId: userId, // Ensures users can only update their own contacts
+          },
+          data: {
+            notes,
+            updatedAt: new Date(),
+          },
+        });
 
         return { success: true };
       } catch (error) {
@@ -357,29 +435,34 @@ export const contactRouter = router({
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to update contact notes due to an unexpected error',
+          cause: error instanceof Error ? error : undefined,
         });
       }
     }),
 
   // Get total count of contacts for the authenticated user
   getTotalContactsCount: protectedProcedure.query(async ({ ctx }) => {
-    if (!ctx.user) {
+    const userId = ctx.user?.id;
+    if (!userId) {
       throw new TRPCError({ code: 'UNAUTHORIZED' });
     }
-    
-    // Use count with head: true for efficiency - doesn't return the body, just the count
-    const { count, error } = await ctx.supabaseUser
-      .from('contacts')
-      .select('*', { count: 'exact', head: true });
 
-    if (error) {
-      console.error("Failed to get total contact count:", error);
+    try {
+      // Use Prisma's count method to get total contacts for the user
+      const count = await ctx.prisma.contact.count({
+        where: {
+          userId: userId, // Ensures we only count user's own contacts
+        },
+      });
+
+      return { count };
+    } catch (error) {
+      console.error('Failed to get total contact count:', error);
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Could not retrieve contact count.',
+        cause: error instanceof Error ? error : undefined,
       });
     }
-    
-    return { count: count ?? 0 };
   }),
 });

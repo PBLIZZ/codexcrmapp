@@ -3,7 +3,7 @@
 
 import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Label } from '@/components/ui/label';
+import { Label } from '@codexcrm/ui';
 
 interface GroupStylePickerProps {
   selectedColor: string;
@@ -13,12 +13,57 @@ interface GroupStylePickerProps {
 }
 
 export const PRESET_COLORS = [
-  '#F0FDFF', '#FEF3C7', '#E0F2FE', '#F3E8FF', '#DCFCE7',
-  '#DBEAFE', '#FEF08A', '#D1FAE5', '#CFFAFE', '#FEFCE8',
+  '#F0FDFF',
+  '#FEF3C7',
+  '#E0F2FE',
+  '#F3E8FF',
+  '#DCFCE7',
+  '#DBEAFE',
+  '#FEF08A',
+  '#D1FAE5',
+  '#CFFAFE',
+  '#FEFCE8',
 ] as const;
 
 export const PRESET_EMOJIS = [
-  '⭐', '🎯', '🏆', '🆕', '🧘', '💆', '⚠️', '✅', '🔥', '💎', '📞', '💪', '🌟', '❤️', '🚨', '📅', '👑', '🎉', '🔔', '⏰', '🌱', '🎖️', '💯', '📊', '🚀', '💚', '⚡', '🎊', '🏅', '👍', '🌸', '💤', '🎈', '🔴', '🟡', '🟢', '💜', '📝',
+  '⭐',
+  '🎯',
+  '🏆',
+  '🆕',
+  '🧘',
+  '💆',
+  '⚠️',
+  '✅',
+  '🔥',
+  '💎',
+  '📞',
+  '💪',
+  '🌟',
+  '❤️',
+  '🚨',
+  '📅',
+  '👑',
+  '🎉',
+  '🔔',
+  '⏰',
+  '🌱',
+  '🎖️',
+  '💯',
+  '📊',
+  '🚀',
+  '💚',
+  '⚡',
+  '🎊',
+  '🏅',
+  '👍',
+  '🌸',
+  '💤',
+  '🎈',
+  '🔴',
+  '🟡',
+  '🟢',
+  '💜',
+  '📝',
 ] as const;
 
 export function GroupStylePicker({
@@ -28,14 +73,14 @@ export function GroupStylePicker({
   onEmojiSelect,
 }: GroupStylePickerProps) {
   return (
-    <div className="space-y-4">
+    <div className='space-y-4'>
       <div>
-        <Label className="font-medium text-gray-700">Color</Label>
-        <div className="grid grid-cols-5 gap-2 mt-2">
+        <Label className='font-medium text-gray-700'>Color</Label>
+        <div className='grid grid-cols-5 gap-2 mt-2'>
           {PRESET_COLORS.map((color) => (
             <button
               key={color}
-              type="button"
+              type='button'
               onClick={() => onColorSelect(color)}
               className={cn(
                 'w-full h-8 rounded-md border-2 flex items-center justify-center transition-all',
@@ -44,18 +89,18 @@ export function GroupStylePicker({
               style={{ backgroundColor: color }}
               aria-label={`Select color ${color}`}
             >
-              {selectedColor === color && <Check className="h-4 w-4 text-gray-700" />}
+              {selectedColor === color && <Check className='h-4 w-4 text-gray-700' />}
             </button>
           ))}
         </div>
       </div>
       <div>
-        <Label className="font-medium text-gray-700">Emoji</Label>
-        <div className="grid grid-cols-8 gap-1 mt-2">
+        <Label className='font-medium text-gray-700'>Emoji</Label>
+        <div className='grid grid-cols-8 gap-1 mt-2'>
           {PRESET_EMOJIS.map((emoji) => (
             <button
               key={emoji}
-              type="button"
+              type='button'
               onClick={() => onEmojiSelect(emoji)}
               className={cn(
                 'text-xl rounded-md flex items-center justify-center p-1 transition-all',

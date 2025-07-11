@@ -18,6 +18,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from '@codexcrm/ui';
 
 export function ContentCalendar() {
@@ -41,9 +42,10 @@ export function ContentCalendar() {
             <div>
               <label className='text-sm font-medium mb-1 block'>Content Title</label>
               <Input
+                type="text"
                 placeholder="e.g., '5 Mindfulness Practices for Busy Professionals'"
                 value={contentTitle}
-                onChange={(e) => setContentTitle(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setContentTitle(e.target.value)}
                 className='bg-white dark:bg-blue-950/40'
               />
             </div>
@@ -64,18 +66,18 @@ export function ContentCalendar() {
               </div>
             </div>
 
-            <Button className='w-full bg-teal-600 hover:bg-teal-100 hover:text-teal-800 text-white'>
+            <Button variant='default' size='default' className='w-full bg-teal-600 hover:bg-teal-100 hover:text-teal-800 text-white'>
               <Sparkles className='h-4 w-4 mr-2' />
               Add to Calendar
             </Button>
           </div>
         </div>
 
-        <Card>
+        <Card className="">
           <CardHeader className='pb-3'>
             <CardTitle className='text-lg font-semibold'>Key Features</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="">
             <div className='space-y-2'>
               <div className='flex items-center gap-2'>
                 <div className='h-2 w-2 rounded-full bg-blue-500'></div>
@@ -104,13 +106,13 @@ export function ContentCalendar() {
         <Card className='border-blue-100 dark:border-blue-900/50 py-0'>
           <CardHeader className='pt-6 pb-3 bg-blue-50 dark:bg-blue-950/20 rounded-t-lg'>
             <CardTitle className='text-lg font-semibold'>Calendar Preview</CardTitle>
-            <CardDescription>Your upcoming content schedule</CardDescription>
+            <CardDescription className="">Your upcoming content schedule</CardDescription>
           </CardHeader>
           <CardContent className='pt-6'>
             <div className='border rounded-md p-4 bg-white dark:bg-blue-950/10'>
               <div className='text-sm font-medium mb-3 pb-2 border-b flex items-center justify-between'>
-                <span>June 2025</span>
-                <div className='flex gap-1'>
+                <span className="text-blue-700">June 2025</span>
+                <div className='flex gap-1 text-blue-500'>
                   <button className='p-1 rounded hover:bg-blue-50 dark:hover:bg-blue-900/20'>
                     <ArrowRight className='h-4 w-4 rotate-180' />
                   </button>
@@ -149,7 +151,7 @@ export function ContentCalendar() {
             </div>
           </CardContent>
           <CardFooter className='flex justify-between border-t pt-4 pb-6'>
-            <Button variant='outline' size='sm' asChild>
+            <Button variant='outline' size='sm' asChild className='text-blue-600'>
               <Link href={{ pathname: '/marketing/calendar/analytics' }}>View Analytics</Link>
             </Button>
             <Button
@@ -177,6 +179,7 @@ export function ContentCalendar() {
           </p>
           <Button
             variant='link'
+            size='default'
             className='text-amber-600 dark:text-amber-400 p-0 h-auto mt-2'
             onClick={() =>
               document.querySelector('[value="lead"]')?.dispatchEvent(new MouseEvent('click'))

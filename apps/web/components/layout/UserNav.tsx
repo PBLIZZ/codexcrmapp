@@ -14,8 +14,10 @@ import {
   Sparkles,
   ShieldCheck,
 } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
@@ -23,17 +25,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar
-} from '@/components/ui/sidebar';
+  useSidebar,
+  Skeleton,
+} from '@codexcrm/ui';
 
-import { Skeleton } from '@/components/ui/skeleton';
-
-export function UserNav() { 
+export function UserNav() {
   // 1. Fetch user data internally using the useAuth hook
   const { user, isLoading } = useAuth();
   const router = useRouter();
@@ -48,13 +47,13 @@ export function UserNav() {
   // 2. Handle the loading state gracefully
   if (isLoading) {
     return (
-      <SidebarMenu>
-        <SidebarMenuItem>
-          <div className="flex items-center gap-3 p-2 w-full">
-            <Skeleton className="h-8 w-8 rounded-lg" />
-            <div className="flex-1 space-y-2">
-              <Skeleton className="h-3 w-3/4" />
-              <Skeleton className="h-3 w-1/2" />
+      <SidebarMenu className='w-full h-full'>
+        <SidebarMenuItem className='w-full h-full'>
+          <div className='flex items-center gap-3 p-2 w-full'>
+            <Skeleton className='h-8 w-8 rounded-lg' />
+            <div className='flex-1 space-y-2'>
+              <Skeleton className='h-3 w-3/4' />
+              <Skeleton className='h-3 w-1/2' />
             </div>
           </div>
         </SidebarMenuItem>
@@ -78,78 +77,107 @@ export function UserNav() {
   const { isMobile } = useSidebar();
 
   return (
-    <SidebarMenu>
-      <SidebarMenuItem>
+    <SidebarMenu className='w-full h-full'>
+      <SidebarMenuItem className='w-full h-full'>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              tooltip={userDetails.name}
+              size='lg'
+              className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
             >
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={userDetails.avatar} alt={userDetails.name} />
-                <AvatarFallback className="rounded-lg">{userInitial}</AvatarFallback>
+              <Avatar className='h-8 w-8 rounded-lg'>
+                <AvatarImage
+                  className='rounded-lg'
+                  src={userDetails.avatar}
+                  alt={userDetails.name}
+                />
+                <AvatarFallback className='rounded-lg'>{userInitial}</AvatarFallback>
               </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{userDetails.name}</span>
-                <span className="truncate text-xs">{userDetails.email}</span>
+              <div className='grid flex-1 text-left text-sm leading-tight'>
+                <span className='truncate font-medium'>{userDetails.name}</span>
+                <span className='truncate text-xs'>{userDetails.email}</span>
               </div>
-              <ChevronsUpDown className="ml-auto size-4" />
+              <ChevronsUpDown className='ml-auto size-4' />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-56 rounded-lg"
-            side={isMobile ? "bottom" : "right"}
-            align="end"
+            className='w-[var(--radix-dropdown-menu-trigger-width)] min-w-56 rounded-lg'
+            side={isMobile ? 'bottom' : 'right'}
+            align='end'
             sideOffset={4}
           >
             {/* ... Dropdown content remains mostly the same, just using userDetails ... */}
-            <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={userDetails.avatar} alt={userDetails.name} />
-                  <AvatarFallback className="rounded-lg">{userInitial}</AvatarFallback>
+            <DropdownMenuLabel inset={false} className='p-0 font-normal'>
+              <div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
+                <Avatar className='h-8 w-8 rounded-lg'>
+                  <AvatarImage
+                    className='rounded-lg'
+                    src={userDetails.avatar}
+                    alt={userDetails.name}
+                  />
+                  <AvatarFallback className='rounded-lg'>{userInitial}</AvatarFallback>
                 </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{userDetails.name}</span>
-                  <span className="truncate text-xs">{userDetails.email}</span>
+                <div className='grid flex-1 text-left text-sm leading-tight'>
+                  <span className='truncate font-semibold'>{userDetails.name}</span>
+                  <span className='truncate text-xs'>{userDetails.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator className='inset-0' />
             <DropdownMenuGroup>
-            <DropdownMenuItem onClick={() => router.push('/account')}>
-              <Sparkles className="mr-2 h-4 w-4" />
-              <span>Upgrade to Pro</span>
+              <DropdownMenuItem
+                inset={false}
+                className='inset-0'
+                onClick={() => router.push('/account')}
+              >
+                <Sparkles className='mr-2 h-4 w-4' />
+                <span>Upgrade to Pro</span>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator className='inset-0' />
+            <DropdownMenuGroup>
+              <DropdownMenuItem
+                inset={false}
+                className='inset-0'
+                onClick={() => router.push('/account')}
+              >
+                <BadgeCheck className='mr-2 h-4 w-4' />
+                <span>Account</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                inset={false}
+                className='inset-0'
+                onClick={() => router.push('/account')}
+              >
+                <CreditCard className='mr-2 h-4 w-4' />
+                <span>Billing</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                inset={false}
+                className='inset-0'
+                onClick={() => router.push('/account')}
+              >
+                <Bell className='mr-2 h-4 w-4' />
+                <span>Notifications</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                inset={false}
+                className='inset-0'
+                onClick={() => router.push('/account')}
+              >
+                <ShieldCheck className='mr-2 h-4 w-4' />
+                <span>Security</span>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator className='inset-0' />
+            <DropdownMenuItem inset={false} className='inset-0' onClick={handleSignOut}>
+              <LogOut className='mr-2 h-4 w-4' />
+              <span>Log out</span>
             </DropdownMenuItem>
-          </DropdownMenuGroup>
-          <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuItem onClick={() => router.push('/account')}>
-              <BadgeCheck className="mr-2 h-4 w-4" />
-              <span>Account</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => router.push('/account')}>
-              <CreditCard className="mr-2 h-4 w-4" />
-              <span>Billing</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => router.push('/account')}>
-              <Bell className="mr-2 h-4 w-4" />
-              <span>Notifications</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => router.push('/account')}>
-              <ShieldCheck className="mr-2 h-4 w-4" />
-              <span>Security</span>
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleSignOut}>
-            <LogOut className="mr-2 h-4 w-4" />
-            <span>Log out</span>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </SidebarMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </SidebarMenuItem>
     </SidebarMenu>
   );
 }

@@ -2,9 +2,8 @@
 
 import Link from 'next/link';
 import type { Route } from 'next';
-import { createRoute } from '@/lib/utils/routes';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { cn } from '@/lib/utils';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, cn } from '@codexcrm/ui';
+import * as React from 'react';
 
 interface SidebarNavLinkProps {
   href: string;
@@ -15,7 +14,14 @@ interface SidebarNavLinkProps {
   badgeContent?: string | number;
 }
 
-export function SidebarNavLink({ isCollapsed, href, title, icon, isActive, badgeContent }: SidebarNavLinkProps) {
+export function SidebarNavLink({
+  isCollapsed,
+  href,
+  title,
+  icon,
+  isActive,
+  badgeContent,
+}: SidebarNavLinkProps) {
   return (
     <TooltipProvider delayDuration={0}>
       <Tooltip>
@@ -28,18 +34,20 @@ export function SidebarNavLink({ isCollapsed, href, title, icon, isActive, badge
             )}
           >
             {icon}
-            <span className={cn('overflow-hidden transition-all', isCollapsed ? 'w-0' : 'w-auto ml-1')}>
+            <span
+              className={cn('overflow-hidden transition-all', isCollapsed ? 'w-0' : 'w-auto ml-1')}
+            >
               {title}
             </span>
             {badgeContent && !isCollapsed && (
-              <span className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs">
+              <span className='ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs'>
                 {badgeContent}
               </span>
             )}
           </Link>
         </TooltipTrigger>
         {isCollapsed && (
-          <TooltipContent side="right">
+          <TooltipContent className='inset-0' side='right'>
             {title}
           </TooltipContent>
         )}

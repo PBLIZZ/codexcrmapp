@@ -9,7 +9,7 @@ import {
   BreadcrumbLink,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
+} from '@codexcrm/ui';
 import { generateBreadcrumbs } from '@/lib/breadcrumb-config';
 
 export function DynamicBreadcrumb() {
@@ -23,7 +23,7 @@ export function DynamicBreadcrumb() {
 
   return (
     <Breadcrumb>
-      <BreadcrumbList>
+      <BreadcrumbList className="flex">
         {breadcrumbs.map((item, index) => {
           const isLast = index === breadcrumbs.length - 1;
           const Icon = item.icon;
@@ -37,7 +37,7 @@ export function DynamicBreadcrumb() {
                     {item.label}
                   </BreadcrumbPage>
                 ) : (
-                  <BreadcrumbLink asChild>
+                  <BreadcrumbLink asChild className="flex items-center">
                     <Link href={{ pathname: item.href }} className="flex items-center gap-1">
                       {Icon && <Icon className="h-4 w-4" />}
                       {item.label}
@@ -46,7 +46,7 @@ export function DynamicBreadcrumb() {
                 )}
               </BreadcrumbItem>
               {!isLast && (
-                <BreadcrumbSeparator className={index === 0 ? 'hidden md:block' : ''} />
+                <BreadcrumbSeparator className={index === 0 ? 'hidden md:block' : ''}>{null}</BreadcrumbSeparator>
               )}
             </div>
           );

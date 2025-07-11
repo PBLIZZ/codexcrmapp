@@ -1,13 +1,20 @@
 'use client';
 
 import React from 'react';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Calendar, Clock, User, MapPin, ArrowRight, AlertCircle } from "lucide-react";
-import { api } from "@/lib/trpc";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@codexcrm/ui';
+import { Button } from '@codexcrm/ui';
+import { Calendar, Clock, User, MapPin, ArrowRight, AlertCircle } from 'lucide-react';
+import { api } from '@/lib/trpc';
+import { Alert, AlertDescription, AlertTitle } from '@codexcrm/ui';
+import { Badge } from '@codexcrm/ui';
+import Link from 'next/link';
 
 interface CalendarPreviewProps {
   className?: string;
@@ -26,8 +33,8 @@ export function CalendarPreview({ className }: CalendarPreviewProps) {
           <CardDescription>Loading calendar data...</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex justify-center items-center h-40">
-            <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
+          <div className='flex justify-center items-center h-40'>
+            <div className='animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent'></div>
           </div>
         </CardContent>
       </Card>
@@ -45,17 +52,15 @@ export function CalendarPreview({ className }: CalendarPreviewProps) {
           </CardHeader>
           <CardContent>
             <Alert>
-              <AlertCircle className="h-4 w-4" />
+              <AlertCircle className='h-4 w-4' />
               <AlertTitle>Authentication Required</AlertTitle>
-              <AlertDescription>
-                Please sign in to view your upcoming sessions.
-              </AlertDescription>
+              <AlertDescription>Please sign in to view your upcoming sessions.</AlertDescription>
             </Alert>
           </CardContent>
         </Card>
       );
     }
-    
+
     // For other errors, show the standard error message
     return (
       <Card className={className}>
@@ -63,12 +68,10 @@ export function CalendarPreview({ className }: CalendarPreviewProps) {
           <CardTitle>Upcoming Sessions</CardTitle>
         </CardHeader>
         <CardContent>
-          <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
+          <Alert variant='destructive'>
+            <AlertCircle className='h-4 w-4' />
             <AlertTitle>Error</AlertTitle>
-            <AlertDescription>
-              Failed to load calendar data: {error.message}
-            </AlertDescription>
+            <AlertDescription>Failed to load calendar data: {error.message}</AlertDescription>
           </Alert>
         </CardContent>
       </Card>
@@ -78,11 +81,11 @@ export function CalendarPreview({ className }: CalendarPreviewProps) {
   // Get today's date
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  
+
   // Get tomorrow's date
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
-  
+
   // Mock upcoming sessions (would come from the API in a real implementation)
   const upcomingSessions = [
     {
@@ -134,17 +137,21 @@ export function CalendarPreview({ className }: CalendarPreviewProps) {
     const date = new Date(dateString);
     const todayDate = new Date();
     todayDate.setHours(0, 0, 0, 0);
-    
+
     const tomorrowDate = new Date(todayDate);
     tomorrowDate.setDate(tomorrowDate.getDate() + 1);
-    
-    if (date.getDate() === todayDate.getDate() && 
-        date.getMonth() === todayDate.getMonth() && 
-        date.getFullYear() === todayDate.getFullYear()) {
+
+    if (
+      date.getDate() === todayDate.getDate() &&
+      date.getMonth() === todayDate.getMonth() &&
+      date.getFullYear() === todayDate.getFullYear()
+    ) {
       return 'Today';
-    } else if (date.getDate() === tomorrowDate.getDate() && 
-               date.getMonth() === tomorrowDate.getMonth() && 
-               date.getFullYear() === tomorrowDate.getFullYear()) {
+    } else if (
+      date.getDate() === tomorrowDate.getDate() &&
+      date.getMonth() === tomorrowDate.getMonth() &&
+      date.getFullYear() === tomorrowDate.getFullYear()
+    ) {
       return 'Tomorrow';
     } else {
       return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
@@ -155,62 +162,67 @@ export function CalendarPreview({ className }: CalendarPreviewProps) {
   const getSessionTypeBadge = (type: string) => {
     switch (type) {
       case 'consultation':
-        return <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">Consultation</Badge>;
+        return <Badge className='bg-blue-100 text-blue-800 hover:bg-blue-100'>Consultation</Badge>;
       case 'follow-up':
-        return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Follow-up</Badge>;
+        return <Badge className='bg-green-100 text-green-800 hover:bg-green-100'>Follow-up</Badge>;
       case 'assessment':
-        return <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100">Assessment</Badge>;
+        return (
+          <Badge className='bg-purple-100 text-purple-800 hover:bg-purple-100'>Assessment</Badge>
+        );
       case 'workshop':
-        return <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100">Workshop</Badge>;
+        return <Badge className='bg-amber-100 text-amber-800 hover:bg-amber-100'>Workshop</Badge>;
       default:
         return <Badge>{type}</Badge>;
     }
   };
 
   // Group sessions by date
-  const sessionsByDate = upcomingSessions.reduce((acc, session) => {
-    const dateKey = formatDate(session.time);
-    if (!acc[dateKey]) {
-      acc[dateKey] = [];
-    }
-    acc[dateKey].push(session);
-    return acc;
-  }, {} as Record<string, typeof upcomingSessions>);
+  const sessionsByDate = upcomingSessions.reduce(
+    (acc, session) => {
+      const dateKey = formatDate(session.time);
+      if (!acc[dateKey]) {
+        acc[dateKey] = [];
+      }
+      acc[dateKey].push(session);
+      return acc;
+    },
+    {} as Record<string, typeof upcomingSessions>
+  );
 
   return (
     <Card className={className}>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+      <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
         <div>
           <CardTitle>Calendar</CardTitle>
           <CardDescription>Your upcoming sessions</CardDescription>
         </div>
-        <Calendar className="h-5 w-5 text-muted-foreground" />
+        <Calendar className='h-5 w-5 text-muted-foreground' />
       </CardHeader>
       <CardContent>
-        <div className="space-y-6">
+        <div className='space-y-6'>
           {Object.entries(sessionsByDate).map(([date, sessions]) => (
             <div key={date}>
-              <h3 className="font-medium text-sm mb-2">{date}</h3>
-              <div className="space-y-3">
+              <h3 className='font-medium text-sm mb-2'>{date}</h3>
+              <div className='space-y-3'>
                 {sessions.map((session) => (
-                  <div key={session.id} className="border rounded-lg p-3 space-y-2">
-                    <div className="flex items-start justify-between">
+                  <div key={session.id} className='border rounded-lg p-3 space-y-2'>
+                    <div className='flex items-start justify-between'>
                       <div>
-                        <h4 className="font-medium text-sm">{session.title}</h4>
-                        <div className="flex items-center text-xs text-muted-foreground mt-1">
-                          <User className="h-3 w-3 mr-1" />
+                        <h4 className='font-medium text-sm'>{session.title}</h4>
+                        <div className='flex items-center text-xs text-muted-foreground mt-1'>
+                          <User className='h-3 w-3 mr-1' />
                           {session.clientName}
                         </div>
                       </div>
                       {getSessionTypeBadge(session.type)}
                     </div>
-                    <div className="flex items-center justify-between text-xs">
-                      <div className="flex items-center text-muted-foreground">
-                        <Clock className="h-3 w-3 mr-1" />
+                    <div className='flex items-center justify-between text-xs'>
+                      <div className='flex items-center text-muted-foreground'>
+                        <Clock className='h-3 w-3 mr-1' />
                         {formatTime(session.time)} ({session.duration} min)
                       </div>
-                      <div className="flex items-center text-muted-foreground">
-                        <MapPin className="h-3 w-3 mr-1" />
+                      <div className='flex items-center text-muted-foreground'>
+                        <MapPin className='h-3 w-3 mr-1' />
                         {session.location}
                       </div>
                     </div>
@@ -221,21 +233,19 @@ export function CalendarPreview({ className }: CalendarPreviewProps) {
           ))}
 
           {Object.keys(sessionsByDate).length === 0 && (
-            <div className="flex flex-col items-center justify-center py-8 text-center">
-              <Calendar className="h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-medium">No upcoming sessions</h3>
-              <p className="text-muted-foreground mt-1">
-                Your schedule is clear for now.
-              </p>
+            <div className='flex flex-col items-center justify-center py-8 text-center'>
+              <Calendar className='h-12 w-12 text-muted-foreground mb-4' />
+              <h3 className='text-lg font-medium'>No upcoming sessions</h3>
+              <p className='text-muted-foreground mt-1'>Your schedule is clear for now.</p>
             </div>
           )}
         </div>
       </CardContent>
       <CardFooter>
-        <Button variant="outline" className="w-full" asChild>
+        <Button variant='outline' className='w-full' asChild>
           <Link href={{ pathname: '/calendar' }}>
             View Full Calendar
-            <ArrowRight className="ml-2 h-4 w-4" />
+            <ArrowRight className='ml-2 h-4 w-4' />
           </Link>
         </Button>
       </CardFooter>
