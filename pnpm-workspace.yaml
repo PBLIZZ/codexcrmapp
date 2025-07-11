@@ -1,7 +1,17 @@
 packages:
   - apps/*
   - packages/*
+  - packages/config/*
 
 ignoredBuiltDependencies:
+  - '@sentry/cli'
+  - supabase
+
+onlyBuiltDependencies:
+  - '@prisma/client'
+  - '@prisma/engines'
+  - '@tailwindcss/oxide'
+  - esbuild
+  - prisma
   - sharp
   - unrs-resolver

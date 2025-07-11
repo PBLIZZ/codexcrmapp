@@ -1,5 +1,5 @@
 {
-  "extends": "@codexcrm/config-typescript/base.json",
+  "extends": "./typescript/base.json",
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",

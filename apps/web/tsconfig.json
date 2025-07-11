@@ -6,8 +6,8 @@
     "baseUrl": ".", // enables "@/..." alias below
     "paths": {
       "@/*": [
-        "./*",     // allow imports from root (components/, lib/, app/, etc.)
-        "./src/*"  // include src for legacy utilities
+        "./*", // allow imports from root (components/, lib/, app/, etc.)
+        "./src/*" // include src for legacy utilities
       ]
     },
     /* Next.js / React settings */
@@ -30,7 +30,11 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "target": "ES2017",
+    "strict": false,
+    "module": "esnext",
+    "moduleResolution": "node"
   },
   /* Files the app should compile */
   "include": [

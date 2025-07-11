@@ -1,4 +1,10 @@
 {
-    "extends": "../../tsconfig.json",
-    "include": ["src/**/*"]
-  }
+  "extends": "@codexcrm/config-typescript/base.json",
+  "include": [
+    "src",
+    "prisma"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
