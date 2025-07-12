@@ -3,7 +3,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { httpBatchLink } from '@trpc/client';
 import React, { useState, createContext, useContext, useEffect } from 'react';
-import { createClient } from '@/lib/supabase/client';
+import { supabase } from '@/lib/supabase/client';
 import type { SupabaseClient, User } from '@supabase/supabase-js';
 
 import { api } from '@/lib/trpc';
@@ -33,20 +33,20 @@ export function useAuth() {
 
 // Auth Provider
 function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [supabase] = useState(() => createClient());
+  const [supabaseClient] = useState(() => supabase);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const getSession = async () => {
-      const { data } = await supabase.auth.getSession();
+      const { data } = await supabaseClient.auth.getSession();
       setUser(data.session?.user ?? null);
       setIsLoading(false);
     };
 
     getSession();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: authListener } = supabaseClient.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
       setIsLoading(false);
     });
@@ -54,10 +54,10 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => {
       authListener.subscription.unsubscribe();
     };
-  }, [supabase]);
+  }, [supabaseClient]);
 
   const value = {
-    supabase,
+    supabase: supabaseClient,
     user,
     isLoading,
   };
@@ -73,7 +73,17 @@ function getBaseUrl() {
 }
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const [queryClient] = useState(() => new QueryClient());
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 60 * 1000, // 1 minute
+          },
+        },
+      })
+  );
+
   const [trpcClient] = useState(() =>
     api.createClient({
       links: [
@@ -85,10 +95,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <AuthProvider>
+    <QueryClientProvider client={queryClient}>
       <api.Provider client={trpcClient} queryClient={queryClient}>
-        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+        <AuthProvider>{children}</AuthProvider>
       </api.Provider>
-    </AuthProvider>
+    </QueryClientProvider>
   );
 }

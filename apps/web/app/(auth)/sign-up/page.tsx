@@ -1,12 +1,10 @@
-"use client";
+'use client';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input'; 
-import { supabase } from '@/lib/supabase/client'; 
- 
+import { Button, Input } from '@codexcrm/ui';
+import { supabase } from '@/lib/supabase/client';
 
 export default function SignUpPage() {
   const [email, setEmail] = useState('');
@@ -28,7 +26,7 @@ export default function SignUpPage() {
     setIsLoading(true);
     try {
       // Attempt sign up with email confirmation redirect
-      const { data: _data, error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -49,71 +47,75 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
-      <h1 className="mb-6 text-2xl font-bold text-center">Create Account</h1>
-      
-      <form onSubmit={handleSignUp} className="space-y-4 mb-6">
+    <div className='max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md'>
+      <h1 className='mb-6 text-2xl font-bold text-center'>Create Account</h1>
+
+      <form onSubmit={handleSignUp} className='space-y-4 mb-6'>
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <label htmlFor='email' className='block text-sm font-medium text-gray-700 mb-1'>
+            Email
+          </label>
           <Input
-            id="email"
-            type="email"
-            placeholder="you@example.com"
+            id='email'
+            type='email'
+            placeholder='you@example.com'
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full"
+            className='w-full'
             required
-            autoComplete="email"
-          />
-        </div>
-        
-        <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-          <Input
-            id="password"
-            type="password"
-            placeholder="••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full"
-            required
-            autoComplete="new-password"
+            autoComplete='email'
           />
         </div>
 
         <div>
-          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+          <label htmlFor='password' className='block text-sm font-medium text-gray-700 mb-1'>
+            Password
+          </label>
           <Input
-            id="confirmPassword"
-            type="password"
-            placeholder="••••••••"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full"
+            id='password'
+            type='password'
+            placeholder='••••••••'
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className='w-full'
             required
-            autoComplete="new-password"
+            autoComplete='new-password'
           />
         </div>
-        
-        <Button 
-          type="submit" 
-          className="w-full bg-blue-600 hover:bg-blue-700"
-          disabled={isLoading}
-        >
+
+        <div>
+          <label htmlFor='confirmPassword' className='block text-sm font-medium text-gray-700 mb-1'>
+            Confirm Password
+          </label>
+          <Input
+            id='confirmPassword'
+            type='password'
+            placeholder='••••••••'
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            className='w-full'
+            required
+            autoComplete='new-password'
+          />
+        </div>
+
+        <Button type='submit' className='w-full bg-blue-600 hover:bg-blue-700' disabled={isLoading}>
           {isLoading ? 'Creating account...' : 'Sign Up'}
         </Button>
       </form>
 
       {message && (
-        <div className={`mt-4 p-3 rounded ${message.includes('Check your email') ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}>
+        <div
+          className={`mt-4 p-3 rounded ${message.includes('Check your email') ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}
+        >
           {message}
         </div>
       )}
 
-      <div className="text-center text-sm text-gray-600">
+      <div className='text-center text-sm text-gray-600'>
         Already have an account?{' '}
-        <Link href="/sign-in" className="font-medium text-blue-600 hover:underline">
-          Sign in
+        <Link href='/log-in' className='font-medium text-blue-600 hover:underline'>
+          Log in
         </Link>
       </div>
     </div>
