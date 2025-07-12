@@ -5,7 +5,7 @@ const baseConfig: Options = {
   splitting: false,
   sourcemap: true,
   clean: true,
-  dts: false, // DTS generation will be handled by tsc
+  dts: true, // Generate TypeScript declaration files
 };
 
 export const serverPackageConfig = defineConfig((options) => ({
