@@ -10,15 +10,15 @@ import { GroupsProvider } from './ContactGroupManager';
 import { ContactList, Contact, NameSortField, DateFilterPeriod, SourceOption } from './ContactList';
 
 import { AddContactModal } from '@/components/contacts/AddContactModal';
-import { Button } from '@/components/ui/button';
 import {
+  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
+  Input,
+} from '@codexcrm/ui';
 import { formatDateForInput, parseInputDateString } from '@/lib/dateUtils';
 import { api } from '@/lib/trpc';
 
