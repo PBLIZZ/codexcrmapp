@@ -10,5 +10,7 @@ import type { AppRouter } from '@/lib/trpc/root';
 export { api } from './trpc/client';
 
 // Re-export types for inputs and outputs
-export type { RouterInputs, RouterOutputs } from '../app/providers';
+import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
+export type RouterInputs = inferRouterInputs<AppRouter>;
+export type RouterOutputs = inferRouterOutputs<AppRouter>;
 export type { AppRouter };

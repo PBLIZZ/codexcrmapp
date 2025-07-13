@@ -1,18 +1,48 @@
 'use client';
 
 import * as React from 'react';
-import { Slot as SlotPrimitive } from '@radix-ui/react-slot';
-import { cva, VariantProps } from 'class-variance-authority';
+import { cva, VariantProps } from '@codexcrm/ui';
 import { PanelLeftIcon } from 'lucide-react';
 
-import { useIsMobile } from '@/hooks/use-mobile';
-import { cn } from '@codexcrm/ui';
-import { Button } from '@codexcrm/ui';
-import { Input } from '@codexcrm/ui';
-import { Separator } from '@codexcrm/ui';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@codexcrm/ui';
-import { Skeleton } from '@codexcrm/ui';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@codexcrm/ui';
+import { useIsMobile } from '@/components/hooks/use-mobile';
+import {
+  cn,
+  Button,
+  Input,
+  Separator,
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  Skeleton,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@codexcrm/ui';
+
+// Simple Slot implementation for now (dependency issue is separate)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const SlotPrimitive = React.forwardRef<
+  any,
+  React.HTMLAttributes<any> & { asChild?: boolean; children?: React.ReactNode }
+>(({ asChild, children, ...props }, ref) => {
+  if (asChild && React.isValidElement(children)) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const childProps = (children as any).props || {};
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return React.cloneElement(children as React.ReactElement<any>, {
+      ...childProps,
+      ...props,
+      ref,
+    });
+  }
+  return React.createElement('div', { ...props, ref }, children);
+});
+SlotPrimitive.displayName = 'Slot';
+
+const Slot = SlotPrimitive;
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -375,7 +405,7 @@ function SidebarGroupLabel({
   asChild = false,
   ...props
 }: React.ComponentProps<'div'> & { asChild?: boolean }) {
-  const Comp = asChild ? SlotPrimitive : 'div';
+  const Comp = asChild ? Slot : 'div';
 
   return (
     <Comp

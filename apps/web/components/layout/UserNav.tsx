@@ -14,10 +14,8 @@ import {
   Sparkles,
   ShieldCheck,
 } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@codexcrm/ui';
 import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
@@ -25,7 +23,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  Skeleton,
 } from '@codexcrm/ui';
 import {
   SidebarMenu,
@@ -33,6 +30,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
+import { Skeleton } from '@codexcrm/ui';
 
 // Type for user metadata
 interface UserMetadata {
@@ -45,7 +43,7 @@ export function UserNav() {
   // 1. Fetch user data internally using the useAuth hook
   const { user, isLoading } = useAuth();
   const router = useRouter();
-  const { isMobile } = useSidebar(); // Move hook call to top
+  const { isMobile } = useSidebar();
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -56,9 +54,9 @@ export function UserNav() {
   // 2. Handle the loading state gracefully
   if (isLoading) {
     return (
-      <SidebarMenu className='w-full h-full'>
-        <SidebarMenuItem className='w-full h-full'>
-          <div className='flex items-center gap-3 p-2 w-full'>
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <div className='flex items-center gap-3 p-2'>
             <Skeleton className='h-8 w-8 rounded-lg' />
             <div className='flex-1 space-y-2'>
               <Skeleton className='h-3 w-3/4' />
@@ -85,21 +83,16 @@ export function UserNav() {
   const userInitial = (userDetails.name[0] || 'U').toUpperCase();
 
   return (
-    <SidebarMenu className='w-full h-full'>
-      <SidebarMenuItem className='w-full h-full'>
+    <SidebarMenu>
+      <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
-              tooltip={userDetails.name}
               size='lg'
               className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
             >
               <Avatar className='h-8 w-8 rounded-lg'>
-                <AvatarImage
-                  className='rounded-lg'
-                  src={userDetails.avatar}
-                  alt={userDetails.name}
-                />
+                <AvatarImage src={userDetails.avatar} alt={userDetails.name} />
                 <AvatarFallback className='rounded-lg'>{userInitial}</AvatarFallback>
               </Avatar>
               <div className='grid flex-1 text-left text-sm leading-tight'>
@@ -110,57 +103,56 @@ export function UserNav() {
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className='w-[var(--radix-dropdown-menu-trigger-width)] min-w-56 rounded-lg'
+            className='w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg'
             side={isMobile ? 'bottom' : 'right'}
             align='end'
             sideOffset={4}
           >
-            <DropdownMenuLabel className='p-0 font-normal' inset={false}>
+            <DropdownMenuLabel className='p-0 font-normal'>
               <div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
                 <Avatar className='h-8 w-8 rounded-lg'>
-                  <AvatarImage
-                    className='rounded-lg'
-                    src={userDetails.avatar}
-                    alt={userDetails.name}
-                  />
+                  <AvatarImage src={userDetails.avatar} alt={userDetails.name} />
                   <AvatarFallback className='rounded-lg'>{userInitial}</AvatarFallback>
                 </Avatar>
                 <div className='grid flex-1 text-left text-sm leading-tight'>
-                  <span className='truncate font-semibold'>{userDetails.name}</span>
+                  <span className='truncate font-medium'>{userDetails.name}</span>
                   <span className='truncate text-xs'>{userDetails.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator className='' />
-            <DropdownMenuGroup className=''>
-              <DropdownMenuItem className='' inset={false} onClick={() => router.push('/account')}>
-                <Sparkles className='mr-2 h-4 w-4' />
-                <span>Upgrade to Pro</span>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem onClick={() => router.push('/account')}>
+                <Sparkles />
+                Upgrade to Pro
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator className='' />
-            <DropdownMenuGroup className=''>
-              <DropdownMenuItem className='' inset={false} onClick={() => router.push('/account')}>
-                <BadgeCheck className='mr-2 h-4 w-4' />
-                <span>Account</span>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem onClick={() => router.push('/settings/account')}>
+                <BadgeCheck />
+                Account
               </DropdownMenuItem>
-              <DropdownMenuItem className='' inset={false} onClick={() => router.push('/account')}>
-                <CreditCard className='mr-2 h-4 w-4' />
-                <span>Billing</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className='' inset={false} onClick={() => router.push('/account')}>
-                <Bell className='mr-2 h-4 w-4' />
-                <span>Notifications</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className='' inset={false} onClick={() => router.push('/account')}>
-                <ShieldCheck className='mr-2 h-4 w-4' />
-                <span>Security</span>
+              <DropdownMenuItem onClick={() => router.push('/settings/billing')}>
+                <CreditCard />
+                Billing
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator className='' />
-            <DropdownMenuItem className='' inset={false} onClick={handleSignOut}>
-              <LogOut className='mr-2 h-4 w-4' />
-              <span>Log out</span>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem onClick={() => router.push('/settings/notifications')}>
+                <Bell />
+                Notifications
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push('/settings/security')}>
+                <ShieldCheck />
+                Security
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleSignOut}>
+              <LogOut />
+              Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

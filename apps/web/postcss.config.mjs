@@ -1,5 +1,3 @@
-const config = {
-  plugins: ["@tailwindcss/postcss"],
-};
+import sharedConfig from '@codexcrm/config-postcss/postcss.config.ts';
 
-export default config;
+export default sharedConfig;

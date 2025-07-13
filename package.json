@@ -16,14 +16,6 @@
     "typecheck": "turbo typecheck",
     "prepare": "husky"
   },
-  "pnpm": {
-    "overrides": {
-      "@trpc/client": "11.4.3",
-      "@trpc/server": "11.4.3",
-      "@trpc/react-query": "11.4.3",
-      "@trpc/next": "11.4.3"
-    }
-  },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
       "eslint --fix",

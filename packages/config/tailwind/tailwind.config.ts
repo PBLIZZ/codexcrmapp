@@ -1,6 +1,5 @@
 // packages/config/tailwind/tailwind.config.ts
 import type { Config } from 'tailwindcss';
-import type { PluginAPI } from 'tailwindcss/types/config';
 import tailwindcssAnimate from 'tailwindcss-animate';
 
 /**
@@ -19,7 +18,7 @@ export const tailwindPreset: Omit<Config, 'content'> = {
       },
     },
     extend: {
-            // THE FIX IS HERE.
+      // THE FIX IS HERE.
       // We are mapping the semantic CSS variables you defined in globals.css
       // to Tailwind's color palette.
       colors: {
@@ -32,7 +31,7 @@ export const tailwindPreset: Omit<Config, 'content'> = {
         foreground: 'hsl(var(--foreground))',
         primary: {
           // This maps `bg-primary`, `text-primary`, etc. to var(--primary)
-          DEFAULT: 'hsl(var(--primary))', 
+          DEFAULT: 'hsl(var(--primary))',
           // This maps `bg-primary-foreground`, etc. to var(--primary-foreground)
           foreground: 'hsl(var(--primary-foreground))',
         },
@@ -61,7 +60,7 @@ export const tailwindPreset: Omit<Config, 'content'> = {
           foreground: 'hsl(var(--card-foreground))',
         },
         sidebar: {
-          DEFAULT: 'hsl(var(--sidebar-background))',
+          DEFAULT: 'hsl(var(--sidebar))',
           foreground: 'hsl(var(--sidebar-foreground))',
           primary: 'hsl(var(--sidebar-primary))',
           'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
@@ -104,9 +103,11 @@ export const tailwindPreset: Omit<Config, 'content'> = {
       },
     },
   },
-  plugins: [tailwindcssAnimate,
+  plugins: [
+    tailwindcssAnimate,
     // This plugin adds the base styles you were trying to create with @apply
-    function ({ addBase }: PluginAPI) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    function ({ addBase }: any) {
       addBase({
         // This is the correct way to apply global styles.
         // It injects them into the same `@layer base` as your variables.
@@ -116,7 +117,7 @@ export const tailwindPreset: Omit<Config, 'content'> = {
           // But if you must, this is how you'd do it.
           // borderColor: 'hsl(var(--border))',
         },
-        'body': {
+        body: {
           // This correctly applies the background and foreground colors to the body.
           backgroundColor: 'hsl(var(--background))',
           color: 'hsl(var(--foreground))',
@@ -124,7 +125,7 @@ export const tailwindPreset: Omit<Config, 'content'> = {
           '-webkit-font-smoothing': 'antialiased',
           '-moz-osx-font-smoothing': 'grayscale',
         },
-      })
-    }
+      });
+    },
   ],
 };

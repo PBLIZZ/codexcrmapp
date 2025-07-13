@@ -6,8 +6,11 @@ import { supabase } from '@/lib/supabase/client';
  * Fetches the current authenticated user
  * @returns Object containing user data and any error
  */
-export async function fetchCurrentUser(): Promise<{ user: User | null; error: any | null }> {
-  const { data: { user }, error } = await supabase.auth.getUser();
+export async function fetchCurrentUser(): Promise<{ user: User | null; error: Error | null }> {
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
   return { user, error };
 }
 
@@ -16,7 +19,7 @@ export async function fetchCurrentUser(): Promise<{ user: User | null; error: an
  * @param password New password to set
  * @returns Object containing any error that occurred
  */
-export async function updateUserPassword(password: string): Promise<{ error: any | null }> {
+export async function updateUserPassword(password: string): Promise<{ error: Error | null }> {
   const { error } = await supabase.auth.updateUser({ password });
   return { error };
 }
@@ -25,7 +28,7 @@ export async function updateUserPassword(password: string): Promise<{ error: any
  * Signs out the current user
  * @returns Object containing any error that occurred
  */
-export async function signOutUser(): Promise<{ error: any | null }> {
+export async function signOutUser(): Promise<{ error: Error | null }> {
   const { error } = await supabase.auth.signOut();
   return { error };
 }

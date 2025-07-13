@@ -9,18 +9,12 @@ const supabaseClient = createBrowserClient(
 
 // Add event listeners for auth state changes to help debug auth issues
 supabaseClient.auth.onAuthStateChange((event, session) => {
-  console.warn(`Supabase Auth State Change: ${event}`, { 
-    sessionExists: !!session, 
+  console.warn(`Supabase Auth State Change: ${event}`, {
+    sessionExists: !!session,
     userId: session?.user?.id,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
 // Export the enhanced client
 export const supabase = supabaseClient;
-
-// Helper function to get the current user (useful for components)
-export async function getCurrentUser() {
-  const { data: { user } } = await supabase.auth.getUser();
-  return user;
-}

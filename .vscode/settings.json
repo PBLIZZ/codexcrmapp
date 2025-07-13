@@ -1,6 +1,6 @@
 {
   "[typescript]": {
-    "editor.defaultFormatter": "denoland.vscode-deno"
+    "editor.defaultFormatter": "vscode.typescript-language-features"
   },
   "deno.enablePaths": [
     "supabase/functions"
@@ -21,5 +21,16 @@
     "http",
     "net"
   ],
-  "deno.enable": true
+  "deno.enable": true,
+  "tailwindCSS.experimental.configFile": {
+    "apps/web/tailwind.config.ts": "apps/web/**",
+    "packages/ui/tailwind.config.ts": "packages/ui/**"
+  },
+  "tailwindCSS.includeLanguages": {
+    "typescript": "javascript",
+    "typescriptreact": "javascript"
+  },
+  "css.validate": false,
+  "scss.validate": false,
+  "less.validate": false
 }

@@ -5,7 +5,8 @@ import { httpBatchLink } from '@trpc/client';
 import React, { useEffect } from 'react';
 
 import { logDebugInfo } from '@/lib/debug-helper';
-import { api, API_VERSION } from '@/lib/trpc';
+import { api } from '@/lib/trpc';
+import { API_VERSION } from '@/lib/trpc/client';
 
 export default function ClientProviders({ children }: { children: React.ReactNode }) {
   // Import the tRPC client from the correct location
@@ -45,9 +46,6 @@ export default function ClientProviders({ children }: { children: React.ReactNod
           queries: {
             refetchOnWindowFocus: false,
             retry: 1, // Only retry once
-            onError: (error) => {
-              console.error('React Query error:', error);
-            },
           },
           mutations: {
             onError: (error) => {

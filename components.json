@@ -11,11 +11,11 @@
     "prefix": ""
   },
   "aliases": {
-    "components": "@codexcrm/server/components",
-    "utils": "@codexcrm/server/lib/utils",
-    "ui": "@codexcrm/server/components/ui",
-    "lib": "@codexcrm/server/lib",
-    "hooks": "@codexcrm/server/hooks"
+    "components": "@codexcrm/ui/components",
+    "utils": "@codexcrm/ui/lib/utils",
+    "ui": "@codexcrm/ui/components/ui",
+    "lib": "@codexcrm/ui/lib",
+    "hooks": "@codexcrm/ui/hooks"
   },
   "iconLibrary": "lucide"
 }

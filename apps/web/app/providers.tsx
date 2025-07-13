@@ -9,6 +9,7 @@ import type { SupabaseClient, User } from '@supabase/supabase-js';
 import { api } from '@/lib/trpc';
 import type { AppRouter } from '@/lib/trpc/root';
 import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
+import { ThemeProvider } from '@codexcrm/ui';
 
 // tRPC types
 export type RouterInputs = inferRouterInputs<AppRouter>;
@@ -95,10 +96,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <api.Provider client={trpcClient} queryClient={queryClient}>
-        <AuthProvider>{children}</AuthProvider>
-      </api.Provider>
-    </QueryClientProvider>
+    <ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange>
+      <QueryClientProvider client={queryClient}>
+        <api.Provider client={trpcClient} queryClient={queryClient}>
+          <AuthProvider>{children}</AuthProvider>
+        </api.Provider>
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }
