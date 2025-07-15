@@ -32,7 +32,7 @@
     "jsx": "preserve",
     "skipLibCheck": true,
     "target": "ES2017",
-    "strict": false,
+    "strict": true,
     "module": "esnext",
     "moduleResolution": "node"
   },

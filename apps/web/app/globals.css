@@ -1,11 +1,9 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @import "tw-animate-css";
 
 /* Import the shared UI styles which contain the proper CSS variables */
-@import "@codexcrm/ui/src/styles/globals.css";
+@import "@codexcrm/ui/dist/index.css";
 
 @layer base {
   * {
@@ -49,7 +47,12 @@
   }
   
   .dark [data-theme-toggle] {
-    @apply text-teal-400 border-teal-400/30 hover:border-teal-400/50;
+    color: oklch(0.79 0.16 180);
+    border-color: oklch(0.79 0.16 180 / 0.3);
+  }
+  
+  .dark [data-theme-toggle]:hover {
+    border-color: oklch(0.79 0.16 180 / 0.5);
   }
   
   /* Ensure sidebar footer controls are visible */
@@ -61,19 +64,19 @@
   
   /* Force visibility of navigation colors */
   .main-nav-item {
-    @apply transition-all duration-200;
+    transition: all 200ms;
   }
   
   .main-nav-item:not(.active) {
-    @apply border-b-2 border-transparent;
+    border-bottom: 2px solid transparent;
   }
   
   .main-nav-item.active {
-    @apply border-b-2;
+    border-bottom: 2px solid;
   }
   
   /* Ensure sidebar colors are visible */
   .colored-sidebar-wrapper {
-    @apply border-l-4;
+    border-left: 4px solid;
   }
 }
