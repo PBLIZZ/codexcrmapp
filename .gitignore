@@ -79,3 +79,11 @@ node_modules/
 # Task files
 # tasks.json
 # tasks/ .codeium/
+
+.turbo
+.turbo.json
+.turbo/
+
+dist/
+apps/web/dist
+apps/web/.next
