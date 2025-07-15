@@ -85,8 +85,12 @@ node_modules/
 .turbo/
 
 dist/
+ui/dist
+config/dist
+
 apps/web/dist
 apps/web/.next
 
 # Prisma generated files
-packages/db/prisma/generated/
+packages/db/prisma/generated/client
+
