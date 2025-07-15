@@ -87,3 +87,6 @@ node_modules/
 dist/
 apps/web/dist
 apps/web/.next
+
+# Prisma generated files
+packages/db/prisma/generated/

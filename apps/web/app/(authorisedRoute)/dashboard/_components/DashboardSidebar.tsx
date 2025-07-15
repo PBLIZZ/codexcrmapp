@@ -6,22 +6,12 @@ import * as React from 'react';
 // These will be replaced later with real, data-driven components.
 import { NavMain } from '@/components/layout/QuickLinksNav';
 //import { NavProjects } from '@/components/layout/ProjectLinksNav';
-import { SidebarBrandHeader } from '@/components/layout/SidebarBrandHeader';
 // Import the types needed for the navigation components
 import { NavItem } from '@/components/layout/QuickLinksNav';
 //import { ProjectItem } from '@/components/layout/ProjectLinksNav';
 
-// 2. Import our existing, refactored UserNav component
-import { UserNav } from '@/components/layout/UserNav';
-
-// 3. Import the structural primitives from our sidebar system
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarRail,
-} from '@/components/ui/sidebar';
+// Import the structural primitives from our sidebar system
+import { SidebarContent } from '@/components/ui/sidebar';
 
 import {
   Settings2,
@@ -184,29 +174,16 @@ const quickLinksData: NavItem[] = [
 /**
  * DashboardSidebar provides the contextual navigation for the main dashboard area.
  */
-export function DashboardSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function DashboardSidebar() {
   //const { projects, loading } = useProjects();
 
   return (
-    <Sidebar collapsible='icon' {...props}>
-      <SidebarHeader>
-        <SidebarBrandHeader />
-      </SidebarHeader>
+    <SidebarContent>
+      {/* Quick Links Navigation */}
+      <NavMain items={quickLinksData} />
 
-      {/* The main scrollable content area of the sidebar */}
-      <SidebarContent>
-        {/* Quick Links Navigation */}
-        <NavMain items={quickLinksData} />
-
-        {/* Projects Navigation */}
-        {/* {!loading && <NavProjects projects={projects} />} */}
-      </SidebarContent>
-
-      {/* The footer is pinned to the bottom */}
-      <SidebarFooter>
-        <UserNav />
-      </SidebarFooter>
-      <SidebarRail />
-    </Sidebar>
+      {/* Projects Navigation */}
+      {/* {!loading && <NavProjects projects={projects} />} */}
+    </SidebarContent>
   );
 }

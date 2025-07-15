@@ -45,7 +45,7 @@ export function DynamicBreadcrumb() {
 
           return (
             <div key={segment} className='flex items-center'>
-              <BreadcrumbSeparator className='' children={undefined} />
+              <BreadcrumbSeparator className='' />
               <BreadcrumbItem className=''>
                 {isLast ? (
                   <BreadcrumbPage className=''>{label}</BreadcrumbPage>

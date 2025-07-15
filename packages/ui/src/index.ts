@@ -41,6 +41,7 @@ export * from './components/ui/drawer';
 export * from './components/ui/alert-dialog';
 export * from './components/ui/skeleton';
 export * from './components/ui/sonner';
+export * from './components/ui/slot';
 
 // Timeline
 export * from './components/ui/timeline';

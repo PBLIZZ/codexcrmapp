@@ -16,33 +16,12 @@ import {
   SheetHeader,
   SheetTitle,
   Skeleton,
+  Slot,
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@codexcrm/ui';
-
-// Simple Slot implementation for now (dependency issue is separate)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const SlotPrimitive = React.forwardRef<
-  any,
-  React.HTMLAttributes<any> & { asChild?: boolean; children?: React.ReactNode }
->(({ asChild, children, ...props }, ref) => {
-  if (asChild && React.isValidElement(children)) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const childProps = (children as any).props || {};
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return React.cloneElement(children as React.ReactElement<any>, {
-      ...childProps,
-      ...props,
-      ref,
-    });
-  }
-  return React.createElement('div', { ...props, ref }, children);
-});
-SlotPrimitive.displayName = 'Slot';
-
-const Slot = SlotPrimitive;
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -426,7 +405,7 @@ function SidebarGroupAction({
   asChild = false,
   ...props
 }: React.ComponentProps<'button'> & { asChild?: boolean }) {
-  const Comp = asChild ? SlotPrimitive : 'button';
+  const Comp = asChild ? Slot : 'button';
 
   return (
     <Comp
@@ -512,7 +491,7 @@ function SidebarMenuButton({
   isActive?: boolean;
   tooltip?: string | React.ComponentProps<typeof TooltipContent>;
 } & VariantProps<typeof sidebarMenuButtonVariants>) {
-  const Comp = asChild ? SlotPrimitive : 'button';
+  const Comp = asChild ? Slot : 'button';
   const { isMobile, state } = useSidebar();
 
   const button = (
@@ -560,7 +539,7 @@ function SidebarMenuAction({
   asChild?: boolean;
   showOnHover?: boolean;
 }) {
-  const Comp = asChild ? SlotPrimitive : 'button';
+  const Comp = asChild ? Slot : 'button';
 
   return (
     <Comp
@@ -672,7 +651,7 @@ function SidebarMenuSubButton({
   size?: 'sm' | 'md';
   isActive?: boolean;
 }) {
-  const Comp = asChild ? SlotPrimitive : 'a';
+  const Comp = asChild ? Slot : 'a';
 
   return (
     <Comp

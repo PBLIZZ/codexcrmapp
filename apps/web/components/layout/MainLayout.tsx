@@ -1,6 +1,4 @@
 'use client';
-
-import Image from 'next/image';
 import {
   Sidebar,
   SidebarContent,
@@ -8,6 +6,7 @@ import {
   SidebarHeader,
   SidebarInset,
   SidebarProvider,
+  SidebarRail,
   SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { Separator } from '@codexcrm/ui';
@@ -16,6 +15,7 @@ import { UserNav } from './UserNav';
 import { DynamicBreadcrumb } from './DynamicBreadcrumb';
 import { MainSectionNav } from './MainSectionNav';
 import { SidebarFooterControls } from './SidebarFooterControls';
+import { SidebarBrandHeader } from './SidebarBrandHeader';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -36,20 +36,7 @@ export function MainLayout({ children }: MainLayoutProps) {
       <div className='flex h-screen w-full'>
         <Sidebar collapsible='icon'>
           <SidebarHeader>
-            {/* Logo/Brand Area */}
-            <div className='flex items-center gap-2 px-4 py-2'>
-              <Image
-                src='/images/logo.png'
-                alt='OmniCRM'
-                width={32}
-                height={32}
-                className='h-8 w-8'
-              />
-              <div className='flex flex-col group-data-[collapsible=icon]:hidden'>
-                <span className='text-lg font-bold text-teal-800'>OmniCRM</span>
-                <span className='text-xs text-gray-500'>by Omnipotency ai</span>
-              </div>
-            </div>
+            <SidebarBrandHeader />
           </SidebarHeader>
 
           <SidebarContent>
@@ -60,6 +47,7 @@ export function MainLayout({ children }: MainLayoutProps) {
             <UserNav />
             <SidebarFooterControls />
           </SidebarFooter>
+          <SidebarRail />
         </Sidebar>
 
         <SidebarInset>
