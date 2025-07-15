@@ -1,7 +1,6 @@
 import { appRouter } from '@/lib/trpc/root';
 import { createContext } from '@/lib/trpc/context';
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
-import superjson from 'superjson';
 
 /**
  * tRPC API endpoint configuration
@@ -42,18 +41,8 @@ export const GET = async (req: Request) => {
       endpoint: TRPC_ENDPOINT,
       req,
       router: appRouter,
-      // Pass the request object to createContext with proper error handling
-      createContext: async () => {
-        try {
-          const ctx = await createContext({ req });
-          return ctx;
-        } catch (contextError) {
-          console.error('[TRPC API] Context creation error:', contextError);
-          throw contextError;
-        }
-      },
-      // Add transformer for proper data serialization (dates, BigInt, etc.)
-      transformer: superjson,
+      // createContext function doesn't take any arguments in tRPC v11
+      createContext: createContext,
       // Configure error handling based on environment
       onError:
         process.env.NODE_ENV === 'development'

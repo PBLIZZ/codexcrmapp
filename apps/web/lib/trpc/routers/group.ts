@@ -3,17 +3,6 @@ import { z } from 'zod';
 
 import { router, protectedProcedure } from '../trpc';
 
-interface Group {
-  id: string;
-  name: string;
-  description?: string | null;
-  color?: string | null;
-  emoji?: string | null;
-  created_at?: string | null;
-  updated_at?: string | null;
-  group_members?: Array<{ id: string; contact_id: string; group_id: string }>;
-}
-
 // Schema for group input validation
 const groupInputSchema = z.object({
   id: z.string().uuid().optional(), // Optional for creation
@@ -51,53 +40,27 @@ export const groupRouter = router({
       }
 
       try {
-        // First, get the group IDs that this contact belongs to
-        const { data: memberData, error: memberError } = await ctx.supabaseUser
-          .from('group_members')
-          .select('group_id')
-          .eq('contact_id', input.contactId);
+        // Get groups for the contact using Prisma
+        const groups = await ctx.prisma.group.findMany({
+          where: {
+            userId: ctx.user.id,
+            members: {
+              some: {
+                contactId: input.contactId,
+              },
+            },
+          },
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            color: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        });
 
-        if (memberError) {
-          console.error('Error fetching group members:', memberError);
-          throw new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'Failed to fetch group memberships',
-          });
-        }
-
-        // If there are no groups, return empty array
-        if (!memberData || memberData.length === 0) {
-          return [];
-        }
-
-        // Extract just the group IDs into an array
-        const groupIds = memberData.map((item: { group_id: string }) => item.group_id);
-
-        // Then fetch the actual groups using those IDs
-        const { data: groupsData, error: groupsError } = await ctx.supabaseUser
-          .from('groups')
-          .select(
-            `
-            id,
-            name,
-            description,
-            color,
-            created_at,
-            updated_at
-          `
-          )
-          .eq('user_id', ctx.user.id)
-          .in('id', groupIds);
-
-        if (groupsError) {
-          console.error('Error fetching groups for contact:', groupsError);
-          throw new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'Failed to fetch groups for contact',
-          });
-        }
-
-        return groupsData || [];
+        return groups;
       } catch (err) {
         console.error('Unexpected error in getGroupsForContact:', err);
         throw new TRPCError({
@@ -117,38 +80,44 @@ export const groupRouter = router({
       throw new TRPCError({ code: 'UNAUTHORIZED' });
     }
 
-    // Fetch groups along with their related group_members entries
-    const { data, error } = await ctx.supabaseUser
-      .from('groups')
-      .select('*, group_members(*)')
-      .order('name');
+    try {
+      // Fetch groups with member count using Prisma
+      const groups = await ctx.prisma.group.findMany({
+        where: {
+          userId: ctx.user.id,
+        },
+        include: {
+          _count: {
+            select: {
+              members: true,
+            },
+          },
+        },
+        orderBy: {
+          name: 'asc',
+        },
+      });
 
-    if (error) {
+      // Map to include contactCount property
+      const result = groups.map((group) => ({
+        id: group.id,
+        name: group.name,
+        description: group.description,
+        color: group.color,
+        emoji: group.emoji,
+        createdAt: group.createdAt,
+        updatedAt: group.updatedAt,
+        contactCount: group._count.members,
+      }));
+
+      return result;
+    } catch (error) {
       console.error('Error fetching groups with contact counts:', error);
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Failed to fetch groups',
       });
     }
-
-    // Map to include a contactCount property and strip out raw junction data
-    const result = (data || []).map((group: Group) => {
-      // group.group_members is an array of contact-group relationships
-      const contactCount = Array.isArray(group.group_members) ? group.group_members.length : 0;
-
-      // Return clean group object without junction data
-      return {
-        id: group.id,
-        name: group.name,
-        description: group.description,
-        color: group.color,
-        emoji: group.emoji,
-        created_at: group.created_at,
-        updated_at: group.updated_at,
-        contactCount,
-      };
-    });
-    return result;
   }),
 
   // Get a single group by ID
@@ -159,21 +128,30 @@ export const groupRouter = router({
         throw new TRPCError({ code: 'UNAUTHORIZED' });
       }
 
-      const { data, error } = await ctx.supabaseUser
-        .from('groups')
-        .select('*')
-        .eq('id', input.groupId)
-        .single();
+      try {
+        const group = await ctx.prisma.group.findFirst({
+          where: {
+            id: input.groupId,
+            userId: ctx.user.id,
+          },
+        });
 
-      if (error) {
+        if (!group) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Group not found',
+          });
+        }
+
+        return group;
+      } catch (error) {
         console.error('Error fetching group by ID:', error);
+        if (error instanceof TRPCError) throw error;
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to fetch group',
         });
       }
-
-      return data;
     }),
 
   // Create or update a group
@@ -184,34 +162,38 @@ export const groupRouter = router({
 
     const isUpdate = !!input.id;
     const groupData = {
-      ...input,
-      user_id: ctx.user.id,
-      updated_at: new Date().toISOString(),
+      name: input.name,
+      description: input.description,
+      color: input.color,
+      emoji: input.emoji,
     };
 
-    // If creating new group, don't include ID as it will be generated
-    if (!isUpdate) {
-      delete groupData.id;
-    }
-
     try {
-      const { data, error } = await ctx.supabaseUser
-        .from('groups')
-        .upsert(groupData)
-        .select()
-        .single();
+      let group;
 
-      if (error) {
-        console.error('Error saving group:', error);
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: `Failed to ${isUpdate ? 'update' : 'create'} group`,
+      if (isUpdate) {
+        // Update existing group
+        group = await ctx.prisma.group.update({
+          where: {
+            id: input.id,
+            userId: ctx.user.id, // Ensure user can only update their own groups
+          },
+          data: groupData,
+        });
+      } else {
+        // Create new group
+        group = await ctx.prisma.group.create({
+          data: {
+            ...groupData,
+            userId: ctx.user.id,
+          },
         });
       }
 
-      return data;
+      return group;
     } catch (err) {
       console.error('Unexpected error in save group procedure:', err);
+      if (err instanceof TRPCError) throw err;
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: err instanceof Error ? err.message : 'An unknown error occurred',
@@ -227,22 +209,24 @@ export const groupRouter = router({
         throw new TRPCError({ code: 'UNAUTHORIZED' });
       }
 
-      // Delete group (contact_groups will cascade delete due to foreign key constraint)
-      const { error } = await ctx.supabaseUser
-        .from('groups')
-        .delete()
-        .eq('id', input.groupId)
-        .eq('user_id', ctx.user.id);
+      try {
+        // Delete group (group_members will cascade delete due to foreign key constraint)
+        await ctx.prisma.group.delete({
+          where: {
+            id: input.groupId,
+            userId: ctx.user.id, // Ensure user can only delete their own groups
+          },
+        });
 
-      if (error) {
+        return { success: true, deletedGroupId: input.groupId };
+      } catch (error) {
         console.error('Error deleting group:', error);
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to delete group',
+          cause: error,
         });
       }
-
-      return { success: true, deletedGroupId: input.groupId };
     }),
 
   // Add a contact to a group
@@ -251,78 +235,68 @@ export const groupRouter = router({
       throw new TRPCError({ code: 'UNAUTHORIZED' });
     }
 
-    // Verify the contact exists using count
-    const { count: contactCount, error: contactError } = await ctx.supabaseUser
-      .from('contacts')
-      .select('*', { count: 'exact', head: true })
-      .eq('id', input.contactId)
-      .eq('user_id', ctx.user.id);
-
-    if (contactError || contactCount === 0) {
-      console.error('Error verifying contact:', contactError);
-      throw new TRPCError({
-        code: 'BAD_REQUEST',
-        message: 'Invalid contact ID',
+    try {
+      // Verify the contact exists and belongs to the user
+      const contact = await ctx.prisma.contact.findFirst({
+        where: {
+          id: input.contactId,
+          userId: ctx.user.id,
+        },
       });
-    }
 
-    // Verify the group exists using count
-    const { count: groupCount, error: groupError } = await ctx.supabaseUser
-      .from('groups')
-      .select('*', { count: 'exact', head: true })
-      .eq('id', input.groupId)
-      .eq('user_id', ctx.user.id);
+      if (!contact) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Invalid contact ID',
+        });
+      }
 
-    if (groupError || groupCount === 0) {
-      console.error('Error verifying group:', groupError);
-      throw new TRPCError({
-        code: 'BAD_REQUEST',
-        message: 'Invalid group ID',
+      // Verify the group exists and belongs to the user
+      const group = await ctx.prisma.group.findFirst({
+        where: {
+          id: input.groupId,
+          userId: ctx.user.id,
+        },
       });
-    }
 
-    // Check if the membership already exists
-    const { data: existing, error: checkError } = await ctx.supabaseUser
-      .from('group_members')
-      .select('id')
-      .eq('contact_id', input.contactId)
-      .eq('group_id', input.groupId)
-      .maybeSingle();
+      if (!group) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Invalid group ID',
+        });
+      }
 
-    if (checkError) {
-      console.error('Error checking existing membership:', checkError);
-      throw new TRPCError({
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Failed to check existing membership',
+      // Check if the membership already exists
+      const existing = await ctx.prisma.groupMember.findFirst({
+        where: {
+          contactId: input.contactId,
+          groupId: input.groupId,
+        },
       });
-    }
 
-    // If already exists, return success
-    if (existing) {
-      return [existing];
-    }
+      // If already exists, return success
+      if (existing) {
+        return [existing];
+      }
 
-    // Otherwise, insert new membership
-    const { data, error } = await ctx.supabaseUser
-      .from('group_members')
-      .insert({
-        contact_id: input.contactId,
-        group_id: input.groupId,
-      })
-      .select();
-
-    if (error) {
-      console.error('Error adding contact to group:', error, '\nPayload:', {
-        contact_id: input.contactId,
-        group_id: input.groupId,
+      // Otherwise, insert new membership
+      const groupMember = await ctx.prisma.groupMember.create({
+        data: {
+          contactId: input.contactId,
+          groupId: input.groupId,
+        },
       });
+
+      return [groupMember];
+    } catch (error) {
+      console.error('Error adding contact to group:', error);
+      if (error instanceof TRPCError) throw error;
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Failed to add contact to group',
+        cause: error,
       });
     }
-
-    return data || [];
   }),
 
   // Remove a contact from a group
@@ -331,21 +305,40 @@ export const groupRouter = router({
       throw new TRPCError({ code: 'UNAUTHORIZED' });
     }
 
-    const { error } = await ctx.supabaseUser
-      .from('group_members')
-      .delete()
-      .eq('contact_id', input.contactId)
-      .eq('group_id', input.groupId);
+    try {
+      // First verify the group belongs to the user
+      const group = await ctx.prisma.group.findFirst({
+        where: {
+          id: input.groupId,
+          userId: ctx.user.id,
+        },
+      });
 
-    if (error) {
+      if (!group) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Invalid group ID',
+        });
+      }
+
+      // Remove the group membership
+      const deletedMember = await ctx.prisma.groupMember.deleteMany({
+        where: {
+          contactId: input.contactId,
+          groupId: input.groupId,
+        },
+      });
+
+      return { success: true, count: deletedMember.count };
+    } catch (error) {
       console.error('Error removing contact from group:', error);
+      if (error instanceof TRPCError) throw error;
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Failed to remove contact from group',
+        cause: error,
       });
     }
-
-    return { success: true };
   }),
 
   // Get all contacts in a group
@@ -356,41 +349,43 @@ export const groupRouter = router({
         throw new TRPCError({ code: 'UNAUTHORIZED' });
       }
 
-      // First, verify the group exists and belongs to the user
-      const { data: group, error: groupError } = await ctx.supabaseUser
-        .from('groups')
-        .select('id')
-        .eq('id', input.groupId)
-        .single();
-
-      if (groupError || !group) {
-        console.error('Error verifying group:', groupError);
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Group not found',
+      try {
+        // First, verify the group exists and belongs to the user
+        const group = await ctx.prisma.group.findFirst({
+          where: {
+            id: input.groupId,
+            userId: ctx.user.id,
+          },
         });
-      }
 
-      // Get all contacts in the group via the junction table
-      const { data, error } = await ctx.supabaseUser
-        .from('group_members')
-        .select(
-          `
-          contact_id,
-          contacts:contact_id (*)
-        `
-        )
-        .eq('group_id', input.groupId);
+        if (!group) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Group not found',
+          });
+        }
 
-      if (error) {
+        // Get all contacts in the group via the junction table
+        const contacts = await ctx.prisma.contact.findMany({
+          where: {
+            userId: ctx.user.id,
+            groups: {
+              some: {
+                groupId: input.groupId,
+              },
+            },
+          },
+        });
+
+        return contacts;
+      } catch (error) {
         console.error('Error fetching contacts in group:', error);
+        if (error instanceof TRPCError) throw error;
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to fetch contacts in group',
+          cause: error,
         });
       }
-
-      // Extract the contact data from the joined query
-      return data?.map((item: { contacts: Record<string, unknown> }) => item.contacts) || [];
     }),
 });
