@@ -13,7 +13,7 @@ import {
 import Link from 'next/link';
 import { useState } from 'react';
 
-import { AddContactModal } from '@/components/contacts/AddContactModal';
+import { AddContactModal } from '@/app/contacts/AddContactModal';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";

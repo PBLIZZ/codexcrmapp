@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 
-export default function Home() {
-  // Redirect to the dashboard
+export default function HomePage() {
+  // Redirect to the dashboard route which is protected
   redirect('/dashboard');
 }

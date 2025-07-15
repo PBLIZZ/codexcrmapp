@@ -1,4 +1,3 @@
-// @ts-check
 import eslint from '@eslint/js';
 import nextPlugin from '@next/eslint-plugin-next';
 import queryPlugin from '@tanstack/eslint-plugin-query';
@@ -41,7 +40,7 @@ export const nextjsConfig = tseslint.config({
   files: ['apps/web/**/*.{ts,tsx}'],
   plugins: { '@next/next': nextPlugin },
   rules: {
-    '@next/next/no-html-link-for-pages': 'error',
+    '@next/next/no-html-link-for-pages': ['error', 'apps/web/app'],
     '@next/next/no-img-element': 'warn',
     '@next/next/no-sync-scripts': 'error',
   },

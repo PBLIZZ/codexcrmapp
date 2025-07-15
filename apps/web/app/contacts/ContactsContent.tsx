@@ -9,7 +9,7 @@ import { ContactForm, ContactFormData } from './ContactForm';
 import { GroupsProvider } from './ContactGroupManager';
 import { ContactList, Contact, NameSortField, DateFilterPeriod, SourceOption } from './ContactList';
 
-import { AddContactModal } from '@/components/contacts/AddContactModal';
+import { AddContactModal } from '@/app/contacts/AddContactModal';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,

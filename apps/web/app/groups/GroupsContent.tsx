@@ -9,7 +9,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { toast } from "sonner"; // For notifications
 import * as z from 'zod';
 
-import { BulkContactSelector } from "@/components/groups/BulkContactSelector";
+import { BulkContactSelector } from "@/app/groups/BulkContactSelector";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

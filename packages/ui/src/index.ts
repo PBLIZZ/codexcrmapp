@@ -1,5 +1,8 @@
 import './styles/globals.css';
 
+// Export class-variance-authority utilities
+export { cva, type VariantProps } from 'class-variance-authority';
+
 // Export UI components
 export * from './components/ui/avatar';
 export * from './components/ui/loading-spinner';
@@ -26,8 +29,6 @@ export * from './components/ui/textarea';
 export * from './components/ui/label';
 export * from './components/ui/carousel';
 export * from './components/ui/csv-upload';
-export * from './components/ui/image-upload';
-export * from './components/ui/sidebar';
 export * from './components/ui/breadcrumb';
 export * from './components/ui/sheet';
 export * from './components/ui/collapsible';
@@ -39,6 +40,7 @@ export * from './components/ui/command';
 export * from './components/ui/drawer';
 export * from './components/ui/alert-dialog';
 export * from './components/ui/skeleton';
+export * from './components/ui/sonner';
 
 // Timeline
 export * from './components/ui/timeline';
