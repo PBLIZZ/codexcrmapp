@@ -35,15 +35,7 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  // Refresh session if expired - This will also update the cookies in the response.
-  console.log('Middleware: Attempting to get session...');
-  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-  if (sessionError) {
-    console.error('Middleware: Error getting session:', sessionError.message);
-  }
-  console.log('Middleware: Session object:', JSON.stringify(session, null, 2));
-
-  // Now get the user based on the (potentially refreshed) session.
+  // Get authenticated user - this is secure as it validates with Supabase Auth server
   console.log('Middleware: Attempting to get user...');
   const { data: { user }, error: userError } = await supabase.auth.getUser();
   if (userError) {

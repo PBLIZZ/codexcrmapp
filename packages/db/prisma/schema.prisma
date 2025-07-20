@@ -2,19 +2,15 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client"
-  output   = "./generated/client"
+  provider = "prisma-client-js"
   previewFeatures = ["multiSchema"]
 }
 
 datasource db {
-  provider = "postgresql"
-  // For the running app (uses connection pooler)
-  url      = env("DATABASE_URL")
-
-  // For `prisma db pull` and `prisma generate` (bypasses pooler)
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
-  schemas   = ["public", "auth"]
+  schemas   = ["public"]
 }
 
 // ===============================================
@@ -22,14 +18,14 @@ datasource db {
 // This model will NOT be migrated by Prisma, it just provides
 // a way to create relations to the existing auth.users table.
 // ===============================================
-model User {
-  id        String   @id @db.Uuid
-  contacts  Contact[]
-  groups    Group[]
-
-  @@map("users")
-  @@schema("auth")
-}
+// model User {
+//   id        String   @id @db.Uuid
+//   contacts  Contact[]
+//   groups    Group[]
+//
+//   @@map("users")
+//   @@schema("auth")
+// }
 
 
 // ===============================================
@@ -76,7 +72,7 @@ model Contact {
   
   // Relations
   userId                    String    @map("user_id") @db.Uuid
-  user                      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // user                      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   // Many-to-many relation with Group
   groups                    GroupMember[]
@@ -97,7 +93,7 @@ model Group {
 
   // Relations
   userId      String   @map("user_id") @db.Uuid
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   // Many-to-many relation with Contact
   members     GroupMember[]

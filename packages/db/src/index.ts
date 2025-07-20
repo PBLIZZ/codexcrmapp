@@ -1,7 +1,7 @@
 // path: packages/database/src/index.ts
 // @/SERVER-ONLY - This file should only be imported on the server.
-import { PrismaClient } from '../prisma/generated/client/client';
-import { Prisma } from '../prisma/generated/client/client';
+import { PrismaClient } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 
 // This ensures that in development, we don't end up with a dozen
 // prisma clients from hot-reloading. In production, it's a no-op.

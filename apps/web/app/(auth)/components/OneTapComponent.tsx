@@ -1,158 +1,172 @@
 'use client';
-
-import { useEffect, useCallback } from 'react';
+import * as Sentry from '@sentry/nextjs'; // Added Sentry
+import { CredentialResponse, PromptMomentNotification } from 'google-one-tap';
+import { useRouter } from 'next/navigation';
+import Script from 'next/script';
+import { useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase/client';
-import { CredentialResponse } from 'google-one-tap';
 
-interface GoogleTokenPayload {
-  iss: string;
-  azp: string;
-  aud: string;
-  sub: string;
-  email: string;
-  email_verified: boolean;
-  at_hash: string;
-  name: string;
-  picture: string;
-  given_name: string;
-  family_name: string;
-  locale: string;
-  iat: number;
-  exp: number;
-  jti: string;
-  nbf: number;
-  nonce: string;
-}
+const OneTapComponent = () => {
+  const router = useRouter();
+  const initAttemptedRef = useRef(false);
 
-/**
- * OneTap Component for Google Sign-In
- *
- * This component handles Google One Tap authentication flow:
- * 1. Checks if user is already authenticated
- * 2. If not, initializes Google One Tap
- * 3. Handles the credential callback
- * 4. Signs in user with Supabase using the Google ID token
- * 5. Redirects to dashboard on success
- */
-export default function OneTapComponent() {
-  const performGoogleOneTapInit = useCallback(async () => {
-    try {
-      // Check if user is already authenticated
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+  // Removed nonce generation - it was breaking OAuth flow
 
-      if (user) {
-        // User is already authenticated, don't show One Tap
-        return;
-      }
-
-      // Generate a nonce for security
-      const nonce = generateNonce();
-
-      // Wait for Google Identity Services to load
-      if (!window.google?.accounts?.id) {
-        console.log('Google Identity Services not loaded yet');
-        return;
-      }
-
-      // Initialize Google One Tap
-      window.google.accounts.id.initialize({
-        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
-        callback: async (response: CredentialResponse) => {
-          try {
-            // Verify the JWT token contains our nonce
-            const payload = parseJwt(response.credential) as GoogleTokenPayload;
-            if (payload.nonce !== nonce) {
-              console.error('Nonce mismatch in Google token');
-              return;
-            }
-
-            // Use the Google ID token to sign in with Supabase
-            const { error } = await supabase.auth.signInWithIdToken({
-              provider: 'google',
-              token: response.credential,
-              nonce: nonce,
-            });
-
-            if (error) {
-              console.error('Google sign in error:', error);
-              return;
-            }
-
-            // Success! Redirect to dashboard
-            window.location.href = '/dashboard';
-          } catch (error) {
-            console.error('Error in Google One Tap callback:', error);
-          }
-        },
-        nonce: nonce,
-        auto_select: false,
-        cancel_on_tap_outside: true,
-      });
-
-      // Render the One Tap prompt
-      window.google.accounts.id.prompt(
-        (notification: { isNotDisplayed: () => boolean; isSkippedMoment: () => boolean }) => {
-          if (notification.isNotDisplayed()) {
-            console.log('One Tap was not displayed');
-          }
-          if (notification.isSkippedMoment()) {
-            console.log('One Tap was skipped');
-          }
-        }
-      );
-    } catch (error) {
-      console.error('Error in Google One Tap initialization:', error);
+  const performGoogleOneTapInit = async () => {
+    if (initAttemptedRef.current) {
+      // Removed: console.log('[OneTapComponent] Initialization already attempted, skipping.');
+      return;
     }
-  }, []);
+    initAttemptedRef.current = true;
+    Sentry.captureMessage('[OneTapComponent] Attempting Google One Tap initialization...', 'info');
+
+    // Check if Google Identity Services are loaded
+    if (!window.google || !window.google.accounts || !window.google.accounts.id) {
+      console.warn('Google GSI client not ready yet. Ensure script is loaded.');
+      Sentry.captureMessage('Google GSI client not ready yet. Ensure script is loaded.', 'warning');
+      // The <Script onLoad> should handle triggering this once GSI is ready.
+      // If GSI fails to load, this won't proceed, which is intended.
+      return;
+    }
+
+    // Check for an existing Supabase session
+    const {
+      data: { session },
+      error: sessionError,
+    } = await supabase.auth.getSession();
+    if (sessionError) {
+      console.error('Error getting session:', sessionError);
+      Sentry.captureException(sessionError);
+      return; // Don't proceed if session check fails
+    }
+
+    if (session?.user) {
+      return; // Don't initialize One Tap if a session already exists
+    }
+
+    Sentry.captureMessage(
+      '[OneTapComponent] No active session. Initializing Google One Tap.',
+      'info'
+    );
+    // Removed nonce generation - using simpler approach like working implementation
+    window.google.accounts.id.initialize({
+      client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
+      callback: async (response: CredentialResponse) => {
+        // Removed: console.log('Google Sign-In callback received:', response);
+        try {
+          const { error: signInError } = await supabase.auth.signInWithIdToken({
+            provider: 'google',
+            token: response.credential,
+            // Removed nonce completely - was causing OAuth to fail
+          });
+
+          if (signInError) {
+            console.error('Supabase signInWithIdToken error:', signInError);
+            Sentry.captureException(signInError);
+            throw signInError;
+          }
+
+          // Removed: console.log('Supabase session data after signInWithIdToken:', signInData);
+          Sentry.captureMessage('Successfully logged in with Google One Tap.', 'info');
+          router.push('/dashboard');
+          router.refresh(); // Ensure UI updates after redirect
+        } catch (error) {
+          console.error('Error processing Google One Tap sign-in:', error);
+          Sentry.captureException(error);
+        }
+      },
+      // Removed nonce from initialization - was causing OAuth to fail
+      use_fedcm_for_prompt: true,
+    });
+
+    Sentry.captureMessage(
+      '[OneTapComponent] Google ID initialized. Displaying One Tap prompt...',
+      'info'
+    );
+    window.google.accounts.id.prompt((notification: PromptMomentNotification) => {
+      // Changed type from any
+      // This notification callback can be used to understand prompt display status
+      if (notification.isNotDisplayed()) {
+        const reason = notification.getNotDisplayedReason();
+        console.warn('Google One Tap prompt was not displayed. Reason:', reason);
+        Sentry.captureMessage(
+          `Google One Tap prompt was not displayed. Reason: ${reason}`,
+          'warning'
+        );
+      } else if (notification.isSkippedMoment()) {
+        const reason = notification.getSkippedReason();
+        console.warn('Google One Tap prompt was skipped by the user. Reason:', reason);
+        Sentry.captureMessage(
+          `Google One Tap prompt was skipped by the user. Reason: ${reason}`,
+          'warning'
+        );
+      } else if (notification.isDismissedMoment()) {
+        const reason = notification.getDismissedReason();
+        console.warn('Google One Tap prompt was dismissed by the user. Reason:', reason);
+        Sentry.captureMessage(
+          `Google One Tap prompt was dismissed by the user. Reason: ${reason}`,
+          'warning'
+        );
+      }
+      // If the prompt is not displayed or skipped, Google's library might show a fallback button
+      // if one is configured via HTML (e.g., <div class="g_id_signin">...</div>), or nothing further happens.
+      // The Supabase JS example primarily relies on the prompt.
+    });
+  };
+  // This useEffect is primarily for cleanup if needed, or could be removed if onLoad is sufficient.
+  // For now, let's rely on onLoad.
+
+  // If the script is already loaded when this component mounts (e.g., cached or fast navigation),
+  // and onLoad might not fire, we can try to initialize here too.
+  if (window.google && window.google.accounts && window.google.accounts.id) {
+    // Removed: console.log('[OneTapComponent useEffect] GSI already loaded on mount, attempting init.');
+    performGoogleOneTapInit();
+  }
 
   useEffect(() => {
-    // Only initialize if we're on a sign-in page and Google client ID is available
-    if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID) {
-      // Small delay to ensure Google script is loaded
-      const timer = setTimeout(() => {
-        performGoogleOneTapInit();
-      }, 100);
+    // The <Script onLoad> prop will call initializeAndPrompt once the GSI client is loaded.
+    // This useEffect is primarily for cleanup if needed, or could be removed if onLoad is sufficient.
+    // For now, let's rely on onLoad.
 
-      return () => clearTimeout(timer);
+    // If the script is already loaded when this component mounts (e.g., cached or fast navigation),
+    // and onLoad might not fire, we can try to initialize here too.
+    if (window.google && window.google.accounts && window.google.accounts.id) {
+      // Removed: console.log('[OneTapComponent useEffect] GSI already loaded on mount, attempting init.');
+      performGoogleOneTapInit();
     }
-  }, [performGoogleOneTapInit]);
 
-  return null; // This component doesn't render anything
-}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Run once on mount
 
-// Helper function to generate a secure nonce
-function generateNonce(length: number = 32): string {
-  const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
-  const randomValues = new Uint8Array(length);
-  crypto.getRandomValues(randomValues);
+  return (
+    <>
+      <Script
+        src='https://accounts.google.com/gsi/client'
+        async
+        defer
+        onLoad={() => {
+          Sentry.captureMessage(
+            '[OneTapComponent <Script onLoad>] Google GSI Script loaded. Initializing One Tap...',
+            'info'
+          );
+          performGoogleOneTapInit();
+        }}
+        onError={(e) => {
+          console.error('Google GSI Script load error:', e);
+          Sentry.captureException(e);
+        }}
+        strategy='afterInteractive'
+      />
+      {/* This div is used by Google if it needs to anchor the prompt UI. */}
+      {/* Matching Supabase example's ID and styling suggestion. */}
+      <div id='oneTap' className='fixed top-0 right-0 z-[100]' />
+      {/* 
+        If a traditional button is desired as a fallback, it's typically added declaratively 
+        using HTML like <div class="g_id_signin" ...>. The Supabase Next.js example focuses on the prompt.
+        <div id="oneTapGoogleButton"></div> 
+      */}
+    </>
+  );
+};
 
-  for (let i = 0; i < length; i++) {
-    result += charset[randomValues[i] % charset.length];
-  }
-
-  return result;
-}
-
-// Helper function to parse JWT token
-function parseJwt(token: string): object {
-  try {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(
-      atob(base64)
-        .split('')
-        .map((c) => {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        })
-        .join('')
-    );
-
-    return JSON.parse(jsonPayload);
-  } catch (error) {
-    console.error('Error parsing JWT token:', error);
-    return {};
-  }
-}
+export default OneTapComponent;

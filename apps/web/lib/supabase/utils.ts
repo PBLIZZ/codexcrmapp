@@ -9,9 +9,9 @@ export type Tables = Database['public']['Tables'];
 export type TableName = keyof Tables;
 
 /**
- * Type-safe query function for contact components
+ * Type-safe query function for client components
  * @example
- * // In a contact component:
+ * // In a client component:
  * const { data, error } = await queryTyped('contacts')
  *   .select('*')
  *   .eq('contact_id', contactId);

@@ -2,6 +2,12 @@
 import { createBrowserClient } from '@supabase/ssr';
 
 // Enhanced Supabase client with debugging for authentication
+// Debug environment variables
+console.log('🔍 Supabase Environment Variables:', {
+  url: process.env.NEXT_PUBLIC_SUPABASE_URL,
+  anonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.substring(0, 20) + '...'
+});
+
 const supabaseClient = createBrowserClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!

@@ -1,8 +1,4 @@
-// Main exports from the server package
-export * from './root';
-export * from './context';
-export * from './trpc';
+// Main exports from the client package - only client-safe exports
 export * from './client';
-
-// Re-export API_VERSION for convenience
-export { API_VERSION } from './client';
+export * from './types';
+// Note: root, context, trpc, and supabaseAdmin are server-only and should be imported directly

@@ -5,9 +5,10 @@ import { httpBatchLink } from '@trpc/client';
 import React, { useState, createContext, useContext, useEffect } from 'react';
 import { supabase } from '@/lib/supabase/client';
 import type { SupabaseClient, User } from '@supabase/supabase-js';
+import superjson from 'superjson';
 
 import { api } from '@/lib/trpc';
-import type { AppRouter } from '@/lib/trpc/root';
+import type { AppRouter } from '@/lib/trpc';
 import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
 import { ThemeProvider } from '@codexcrm/ui';
 
@@ -90,6 +91,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       links: [
         httpBatchLink({
           url: `${getBaseUrl()}/api/trpc`,
+          transformer: superjson,
         }),
       ],
     })

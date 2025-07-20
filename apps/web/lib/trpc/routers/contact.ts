@@ -1,5 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
+import { Prisma } from '@codexcrm/db';
 
 import { router, protectedProcedure } from '../trpc';
 
@@ -48,7 +49,33 @@ export const contactRouter = router({
         },
       });
 
-      return contacts;
+      // Transform the data to match expected frontend format
+      const transformedContacts = contacts.map(contact => {
+        // Split fullName into first_name and last_name for backward compatibility
+        const nameParts = contact.fullName?.split(' ') || ['', ''];
+        const first_name = nameParts[0] || '';
+        const last_name = nameParts.slice(1).join(' ') || '';
+        
+        return {
+          id: contact.id,
+          first_name,
+          last_name,
+          email: contact.email,
+          phone: contact.phone,
+          company_name: contact.companyName,
+          job_title: contact.jobTitle,
+          profile_image_url: contact.profileImageUrl,
+          source: contact.source,
+          notes: contact.notes,
+          last_contacted_at: contact.lastContactedAt?.toISOString() || null,
+          enrichment_status: contact.enrichmentStatus,
+          enriched_data: contact.enrichedData,
+          created_at: contact.createdAt.toISOString(),
+          updated_at: contact.updatedAt.toISOString(),
+        };
+      });
+
+      return transformedContacts;
     } catch (error) {
       console.error('Error fetching contacts:', error);
       throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to fetch contacts' });
@@ -115,24 +142,39 @@ export const contactRouter = router({
       if (contactId) {
         // Update existing contact
         console.warn(`Attempting contact update for id: ${contactId}`, fields);
+        
+        // For updates, filter out null values and use proper Prisma update syntax
+        const updateData: Prisma.ContactUpdateInput = {};
+        Object.entries(fields).forEach(([key, value]) => {
+          const typedKey = key as keyof Prisma.ContactUpdateInput;
+          if (value !== null) {
+            (updateData as Record<string, unknown>)[typedKey] = value;
+          } else {
+            // Explicitly set null using Prisma's set operation
+            (updateData as Record<string, unknown>)[typedKey] = { set: null };
+          }
+        });
+        
         contact = await ctx.prisma.contact.update({
           where: {
             id: contactId,
             userId: ctx.user.id, // Ensure user can only update their own contacts
           },
-          data: fields,
+          data: updateData,
         });
       } else {
         // Create new contact
-        console.warn('Attempting contact insert with user context', {
-          ...fields,
-          userId: ctx.user.id,
+        console.warn('Attempting contact insert with user context', fields);
+        
+        const insertData: Prisma.ContactCreateInput = { userId: ctx.user.id };
+        Object.entries(fields).forEach(([key, value]) => {
+          if (value !== null) {
+            (insertData as Record<string, unknown>)[key] = value;
+          }
         });
+        
         contact = await ctx.prisma.contact.create({
-          data: {
-            ...fields,
-            userId: ctx.user.id,
-          },
+          data: insertData,
         });
       }
 
@@ -180,6 +222,40 @@ export const contactRouter = router({
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to delete contact',
+          cause: error,
+        });
+      }
+    }),
+
+  // Procedure to bulk delete contacts
+  bulkDelete: protectedProcedure
+    .input(
+      z.object({
+        contactIds: z.array(z.string().uuid()).min(1, 'At least one contact ID is required'),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      if (!ctx.user) {
+        throw new TRPCError({ code: 'UNAUTHORIZED' });
+      }
+
+      try {
+        console.warn(`Attempting to bulk delete contact IDs: ${input.contactIds.join(', ')} by user ${ctx.user.id}`);
+
+        const result = await ctx.prisma.contact.deleteMany({
+          where: {
+            id: { in: input.contactIds },
+            userId: ctx.user.id, // Ensure user can only delete their own contacts
+          },
+        });
+
+        console.warn(`${result.count} contacts deleted successfully by user ${ctx.user.id}`);
+        return { success: true, deletedCount: result.count, deletedContactIds: input.contactIds };
+      } catch (error) {
+        console.error('Error bulk deleting contacts:', error);
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to delete contacts',
           cause: error,
         });
       }

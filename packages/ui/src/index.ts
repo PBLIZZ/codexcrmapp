@@ -40,7 +40,6 @@ export * from './components/ui/command';
 export * from './components/ui/drawer';
 export * from './components/ui/alert-dialog';
 export * from './components/ui/skeleton';
-export * from './components/ui/sonner';
 export * from './components/ui/slot';
 
 // Timeline
@@ -48,6 +47,9 @@ export * from './components/ui/timeline';
 
 // Main export file for @codexcrm/ui
 // Components will be exported from here
+
+// Sonner
+export * from './components/ui/sonner';
 
 // Core components
 export * from './components/theme-provider';

@@ -22,7 +22,17 @@
       "@trpc/server": "11.4.3",
       "@trpc/react-query": "11.4.3",
       "@trpc/next": "11.4.3"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "@prisma/engines",
+      "@tailwindcss/oxide",
+      "esbuild",
+      "prisma",
+      "sharp",
+      "supabase",
+      "unrs-resolver"
+    ]
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
