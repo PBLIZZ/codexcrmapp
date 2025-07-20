@@ -1,5 +1,6 @@
 /** @file /packages/config/tsup/index.ts */
-import { defineConfig, type Options } from 'tsup';
+import { defineConfig } from 'tsup';
+import type { Options } from 'tsup';
 
 const baseConfig: Options = {
   splitting: false,

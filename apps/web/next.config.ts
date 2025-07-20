@@ -1,3 +1,5 @@
+import { withSentryConfig } from '@sentry/nextjs';
+
 /** @type {import('next').NextConfig} */
 const nextConfig: import('next').NextConfig = {
   // Do not ignore TypeScript errors during build
@@ -25,4 +27,19 @@ const nextConfig: import('next').NextConfig = {
   },
 };
 
-module.exports = nextConfig;
+// Sentry webpack plugin options
+const sentryWebpackPluginOptions = {
+  // For all available options, see:
+  // https://github.com/getsentry/sentry-webpack-plugin#options
+  silent: true, // Suppresses all logs
+  org: "omnipotency-ai", // Add your Sentry org slug here
+  project: "javascript-nextjs", // Add your Sentry project slug here
+  
+  // Additional options
+  widenClientFileUpload: true,
+  transpileClientSDK: true,
+  hideSourceMaps: true,
+  disableLogger: true,
+};
+
+module.exports = withSentryConfig(nextConfig, sentryWebpackPluginOptions);
