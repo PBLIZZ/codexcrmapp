@@ -1,11 +1,10 @@
-import { supabase } from './supabase';
+import { supabase } from '../supabase/client';
 import { authConfig } from './auth-config';
 
 export interface SignUpData {
   email: string;
   password: string;
-  firstName: string;
-  lastName: string;
+  fullName: string;
   businessName?: string;
 }
 
@@ -22,8 +21,7 @@ export const signUpWithEmail = async (data: SignUpData) => {
       password: data.password,
       options: {
         data: {
-          first_name: data.firstName,
-          last_name: data.lastName,
+          full_name: data.fullName,
           business_name: data.businessName,
         },
       },
@@ -33,15 +31,12 @@ export const signUpWithEmail = async (data: SignUpData) => {
 
     // Create profile if user was created
     if (authData.user) {
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({
-          id: authData.user.id,
-          email: data.email,
-          first_name: data.firstName,
-          last_name: data.lastName,
-          business_name: data.businessName,
-        });
+      const { error: profileError } = await supabase.from('profiles').insert({
+        id: authData.user.id,
+        email: data.email,
+        full_name: data.fullName,
+        business_name: data.businessName,
+      });
 
       if (profileError) {
         console.error('Profile creation error:', profileError);
@@ -49,7 +44,7 @@ export const signUpWithEmail = async (data: SignUpData) => {
     }
 
     return { data: authData, error: null };
-  } catch (error: any) {
+  } catch (error: unknown) {
     return { data: null, error };
   }
 };
@@ -64,7 +59,7 @@ export const signInWithEmail = async (data: SignInData) => {
     if (error) throw error;
 
     return { data: authData, error: null };
-  } catch (error: any) {
+  } catch (error: unknown) {
     return { data: null, error };
   }
 };
@@ -86,7 +81,7 @@ export const signInWithGoogle = async () => {
     if (error) throw error;
 
     return { data, error: null };
-  } catch (error: any) {
+  } catch (error: unknown) {
     return { data: null, error };
   }
 };
@@ -101,7 +96,7 @@ export const resetPassword = async (email: string) => {
     if (error) throw error;
 
     return { error: null };
-  } catch (error: any) {
+  } catch (error: unknown) {
     return { error };
   }
 };
@@ -115,7 +110,7 @@ export const updatePassword = async (newPassword: string) => {
     if (error) throw error;
 
     return { error: null };
-  } catch (error: any) {
+  } catch (error: unknown) {
     return { error };
   }
 };
@@ -128,7 +123,7 @@ export const signOut = async () => {
     if (error) throw error;
 
     return { error: null };
-  } catch (error: any) {
+  } catch (error: unknown) {
     return { error };
   }
 };
@@ -136,12 +131,15 @@ export const signOut = async () => {
 // Get Current User
 export const getCurrentUser = async () => {
   try {
-    const { data: { user }, error } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
 
     if (error) throw error;
 
     return { user, error: null };
-  } catch (error: any) {
+  } catch (error: unknown) {
     return { user: null, error };
   }
 };
@@ -149,22 +147,18 @@ export const getCurrentUser = async () => {
 // Get User Profile
 export const getUserProfile = async (userId: string) => {
   try {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .single();
+    const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
 
     if (error) throw error;
 
     return { profile: data, error: null };
-  } catch (error: any) {
+  } catch (error: unknown) {
     return { profile: null, error };
   }
 };
 
 // Update User Profile
-export const updateUserProfile = async (userId: string, updates: any) => {
+export const updateUserProfile = async (userId: string, updates: Record<string, unknown>) => {
   try {
     const { data, error } = await supabase
       .from('profiles')
@@ -176,7 +170,7 @@ export const updateUserProfile = async (userId: string, updates: any) => {
     if (error) throw error;
 
     return { profile: data, error: null };
-  } catch (error: any) {
+  } catch (error: unknown) {
     return { profile: null, error };
   }
 };

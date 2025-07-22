@@ -1,20 +1,21 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { Badge, Button } from '@codexcrm/ui';
-import { Tables } from '@/lib/types';
-import { Checkbox } from '@codexcrm/ui';
 import {
+  Badge,
+  Button,
+  Checkbox,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@codexcrm/ui';
+import { Contact, Group } from '@codexcrm/db';
 import { MoreHorizontal, Eye, Edit, Trash2, ArrowUpDown } from 'lucide-react';
+import { ContactAvatar } from './ContactAvatar';
 
-type Contact = Tables<'contacts'>;
-type Group = Tables<'groups'>;
+// Using Prisma types directly from @codexcrm/db
 
 export interface ContactWithGroups extends Contact {
-  groups?: Group[];
+  groups?: Pick<Group, 'id' | 'name' | 'emoji' | 'color'>[];
 }
 
 interface ColumnsProps {
@@ -46,6 +47,19 @@ export const createColumns = ({
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label='Select row'
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    id: 'avatar',
+    header: '',
+    cell: ({ row }) => (
+      <ContactAvatar
+        profileImageUrl={row.original.profileImageUrl}
+        fullName={row.original.fullName}
+        size='sm'
       />
     ),
     enableSorting: false,
@@ -181,7 +195,14 @@ export const createColumns = ({
       </Button>
     ),
     cell: ({ row }) => {
-      const date = new Date(row.getValue('created_at') as string);
+      const dateValue = row.getValue('created_at') as string | null;
+      if (!dateValue) {
+        return <div className='text-sm text-muted-foreground'>—</div>;
+      }
+      const date = new Date(dateValue);
+      if (isNaN(date.getTime())) {
+        return <div className='text-sm text-muted-foreground'>Invalid date</div>;
+      }
       return <div className='text-sm'>{date.toLocaleDateString()}</div>;
     },
   },
@@ -198,7 +219,14 @@ export const createColumns = ({
       </Button>
     ),
     cell: ({ row }) => {
-      const date = new Date(row.getValue('updated_at') as string);
+      const dateValue = row.getValue('updated_at') as string | null;
+      if (!dateValue) {
+        return <div className='text-sm text-muted-foreground'>—</div>;
+      }
+      const date = new Date(dateValue);
+      if (isNaN(date.getTime())) {
+        return <div className='text-sm text-muted-foreground'>Invalid date</div>;
+      }
       return <div className='text-sm'>{date.toLocaleDateString()}</div>;
     },
   },

@@ -1,75 +1,25 @@
-import { NextRequest, NextResponse } from 'next/server';
-
-// Import the server client creator from our shared helper
-import { createSupabaseServer } from '@/lib/supabase/server';
-
-export const dynamic = 'force-dynamic';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
 /**
- * Validates that a redirect URL is safe by ensuring it's a relative path
- * within our application and not an external URL
+ * This route handles the callback from Supabase Auth when a user clicks
+ * on a magic link in their email or when they complete the OAuth flow.
+ * It sets the user's session cookie and redirects them to the dashboard.
  */
-function validateRedirectPath(path: string | null): string {
-  // Default safe path if none provided or validation fails
-  const defaultPath = '/dashboard';
+export async function GET(request: NextRequest) {
+  const requestUrl = new URL(request.url);
+  const code = requestUrl.searchParams.get('code');
 
-  // If no path or empty, use default
-  if (!path || path.trim() === '') {
-    return defaultPath;
-  }
-
-  // Only allow relative paths that start with / but not // (protocol-relative URLs)
-  // Also reject paths with : which could be used for javascript: URLs
-  if (path.startsWith('/') && !path.startsWith('//') && !path.includes(':')) {
-    return path;
-  }
-
-  // If validation fails, return the default path
-  return defaultPath;
-}
-
-/**
- * This route handles all auth callbacks including OAuth and magic links
- * It exchanges the authorization code for a session and redirects the user
- * Consolidates both /api/auth/callback and /api/auth/[...supabase] functionality
- */
-export async function GET(req: NextRequest) {
-  console.log('Auth callback triggered, processing authentication...');
-
-  try {
-    // Create Supabase client using the shared server helper
-    const supabase = await createSupabaseServer();
-    const { searchParams, origin } = new URL(req.url);
-    const code = searchParams.get('code');
-    const nextParam = searchParams.get('next');
-
-    // Validate the next parameter to prevent open redirect vulnerabilities
-    const safeRedirectPath = validateRedirectPath(nextParam);
-
-    console.log(
-      `Auth callback params - code present: ${!!code}, redirect path: ${safeRedirectPath}`
-    );
-
-    // If no code is present, we can't authenticate the user
-    if (!code) {
-      console.warn('No code parameter found in callback URL');
-      return NextResponse.redirect(`${origin}/auth/auth-code-error`);
-    }
+  if (code) {
+    // Create a Supabase client using the request cookies
+    const supabase = createRouteHandlerClient({ cookies });
 
     // Exchange the code for a session
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-
-    if (error) {
-      console.error('Error exchanging code for session:', error);
-      return NextResponse.redirect(`${origin}/auth/auth-code-error`);
-    }
-
-    console.log('Successfully authenticated user');
-
-    // Redirect to the validated path after successful auth
-    return NextResponse.redirect(`${origin}${safeRedirectPath}`);
-  } catch (error) {
-    console.error('Unexpected error in auth callback:', error);
-    return NextResponse.redirect(`${origin}/auth/auth-code-error`);
+    await supabase.auth.exchangeCodeForSession(code);
   }
+
+  // Redirect to the dashboard page
+  return NextResponse.redirect(new URL('/dashboard', request.url));
 }

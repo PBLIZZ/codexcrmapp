@@ -1,4 +1,4 @@
-import { ContactsContent } from './_components/FullPrismaContactsContent';
+import { ContactsContent } from './_components/ContactsContent';
 
 /**
  * Server component for the Contacts page.

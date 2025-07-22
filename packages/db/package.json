@@ -7,11 +7,16 @@
   "types": "./src/index.ts",
   "prisma": "./prisma/schema.prisma",
   "scripts": {
-    "dev": "echo 'Database package ready for development - client already generated'",
+    "dev": "echo 'Database package ready - client generated'",
     "db:pull": "prisma db pull",
+    "db:push": "echo 'Push disabled on free plan - use Supabase dashboard'",
+    "db:migrate": "echo 'Migrations disabled on free plan - use db:pull'",
     "db:studio": "prisma studio",
     "db:generate": "prisma generate",
-    "build": "pnpm db:generate"
+    "build": "pnpm db:generate",
+    "introspect": "prisma db pull && prisma generate",
+    "test-connection": "prisma db execute --stdin < /dev/null",
+    "db:reset": "echo 'Reset disabled on free plan - manage schema via Supabase dashboard'"
   },
   "dependencies": {
     "@prisma/client": "6.11.1"

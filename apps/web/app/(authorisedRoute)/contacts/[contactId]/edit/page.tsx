@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
-
 import { createSupabaseServer } from '@/lib/supabase/server';
+import { UnifiedContactForm } from '../../_components/UnifiedContactForm';
 
 // Define a more specific interface for the params prop
 interface EditContactPageProps {
@@ -11,10 +11,6 @@ interface EditContactPageProps {
 
 /**
  * Server component for the Edit Contact page.
- *
- * This component performs server-side authentication and then redirects to the
- * main contact detail page. The client-side component at /contacts/[contactId]
- * will handle displaying the edit form based on the contact ID.
  *
  * @param props.params - Route parameters containing the contactId
  */
@@ -39,6 +35,5 @@ export default async function EditContactPage({ params }: EditContactPageProps) 
     redirect('/sign-in');
   }
 
-  // Redirect to contacts page, the client-side component will handle the edit mode
-  redirect(`/contacts/${contactId}`);
+  return <UnifiedContactForm contactId={contactId} mode='edit' />;
 }

@@ -1,4 +1,6 @@
-// Temporarily disabled for configuration consolidation
+import { createSupabaseServer } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
+import { UnifiedContactForm } from '../_components/UnifiedContactForm';
 
 /**
  * Props for the ContactDetailPage component following Next.js App Router conventions
@@ -9,8 +11,6 @@ interface ContactDetailPageProps {
   }>;
 }
 
-// Removed unused ContactDetailSkeleton component
-
 /**
  * Contact detail page component
  * Uses Next.js App Router conventions for dynamic route parameters
@@ -19,16 +19,20 @@ export default async function ContactDetailPage({ params }: ContactDetailPagePro
   // Extract contactId from params (await required in Next.js 15)
   const { contactId } = await params;
 
-  return (
-    <div className='container mx-auto py-8 px-4'>
-      <div className='text-center'>
-        <h1 className='text-2xl font-bold mb-4'>Contact Details</h1>
-        <p className='text-muted-foreground'>
-          Contact details feature temporarily disabled during configuration consolidation. Will be
-          re-enabled in a future branch.
-        </p>
-        <p className='text-sm text-muted-foreground mt-2'>Contact ID: {contactId}</p>
-      </div>
-    </div>
-  );
+  // Basic validation for contactId
+  if (!contactId) {
+    redirect('/contacts');
+  }
+
+  // Server-side auth check
+  const supabase = await createSupabaseServer();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    redirect('/sign-in');
+  }
+
+  return <UnifiedContactForm contactId={contactId} mode='view' />;
 }

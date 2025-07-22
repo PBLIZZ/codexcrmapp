@@ -49,31 +49,42 @@ export const contactRouter = router({
         },
       });
 
-      // Transform the data to match expected frontend format
-      const transformedContacts = contacts.map(contact => {
-        // Split fullName into first_name and last_name for backward compatibility
-        const nameParts = contact.fullName?.split(' ') || ['', ''];
-        const first_name = nameParts[0] || '';
-        const last_name = nameParts.slice(1).join(' ') || '';
-        
-        return {
-          id: contact.id,
-          first_name,
-          last_name,
-          email: contact.email,
-          phone: contact.phone,
-          company_name: contact.companyName,
-          job_title: contact.jobTitle,
-          profile_image_url: contact.profileImageUrl,
-          source: contact.source,
-          notes: contact.notes,
-          last_contacted_at: contact.lastContactedAt?.toISOString() || null,
-          enrichment_status: contact.enrichmentStatus,
-          enriched_data: contact.enrichedData,
-          created_at: contact.createdAt.toISOString(),
-          updated_at: contact.updatedAt.toISOString(),
-        };
-      });
+      // Return contacts with current Prisma schema format
+      const transformedContacts = contacts.map((contact) => ({
+        id: contact.id,
+        fullName: contact.fullName,
+        email: contact.email,
+        phone: contact.phone,
+        jobTitle: contact.jobTitle,
+        companyName: contact.companyName,
+        profileImageUrl: contact.profileImageUrl,
+        website: contact.website,
+        tags: contact.tags,
+        socialHandles: contact.socialHandles,
+        addressStreet: contact.addressStreet,
+        addressCity: contact.addressCity,
+        addressPostalCode: contact.addressPostalCode,
+        addressCountry: contact.addressCountry,
+        phoneCountryCode: contact.phoneCountryCode,
+        notes: contact.notes,
+        source: contact.source,
+        lastContactedAt: contact.lastContactedAt,
+        wellnessGoals: contact.wellnessGoals,
+        wellnessJourneyStage: contact.wellnessJourneyStage,
+        wellnessStatus: contact.wellnessStatus,
+        lastAssessmentDate: contact.lastAssessmentDate,
+        clientSince: contact.clientSince,
+        relationshipStatus: contact.relationshipStatus,
+        referralSource: contact.referralSource,
+        enrichmentStatus: contact.enrichmentStatus,
+        enrichedData: contact.enrichedData,
+        communicationPreferences: contact.communicationPreferences,
+        createdAt: contact.createdAt,
+        updatedAt: contact.updatedAt,
+        userId: contact.userId,
+        // Add empty groups array to match ContactWithGroups interface
+        groups: [],
+      }));
 
       return transformedContacts;
     } catch (error) {
@@ -142,7 +153,7 @@ export const contactRouter = router({
       if (contactId) {
         // Update existing contact
         console.warn(`Attempting contact update for id: ${contactId}`, fields);
-        
+
         // For updates, filter out null values and use proper Prisma update syntax
         const updateData: Prisma.ContactUpdateInput = {};
         Object.entries(fields).forEach(([key, value]) => {
@@ -154,7 +165,7 @@ export const contactRouter = router({
             (updateData as Record<string, unknown>)[typedKey] = { set: null };
           }
         });
-        
+
         contact = await ctx.prisma.contact.update({
           where: {
             id: contactId,
@@ -165,14 +176,37 @@ export const contactRouter = router({
       } else {
         // Create new contact
         console.warn('Attempting contact insert with user context', fields);
-        
-        const insertData: Prisma.ContactCreateInput = { userId: ctx.user.id };
-        Object.entries(fields).forEach(([key, value]) => {
-          if (value !== null) {
-            (insertData as Record<string, unknown>)[key] = value;
+
+        // Check for existing contact with same email for this user
+        if (fields.email) {
+          const existingContact = await ctx.prisma.contact.findFirst({
+            where: {
+              userId: ctx.user.id,
+              email: fields.email,
+            },
+          });
+
+          if (existingContact) {
+            throw new TRPCError({
+              code: 'CONFLICT',
+              message: `A contact with email "${fields.email}" already exists.`,
+            });
           }
-        });
-        
+        }
+
+        const insertData: Prisma.ContactCreateInput = {
+          userId: ctx.user.id,
+          fullName: fields.fullName || '', // Ensure fullName is never null/undefined
+          email: fields.email || null, // Handle optional email properly
+          phone: fields.phone,
+          companyName: fields.companyName,
+          jobTitle: fields.jobTitle,
+          profileImageUrl: fields.profileImageUrl,
+          notes: fields.notes,
+          source: fields.source,
+          lastContactedAt: fields.lastContactedAt,
+        };
+
         contact = await ctx.prisma.contact.create({
           data: insertData,
         });
@@ -240,7 +274,9 @@ export const contactRouter = router({
       }
 
       try {
-        console.warn(`Attempting to bulk delete contact IDs: ${input.contactIds.join(', ')} by user ${ctx.user.id}`);
+        console.warn(
+          `Attempting to bulk delete contact IDs: ${input.contactIds.join(', ')} by user ${ctx.user.id}`
+        );
 
         const result = await ctx.prisma.contact.deleteMany({
           where: {
