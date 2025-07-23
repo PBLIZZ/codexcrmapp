@@ -24,15 +24,6 @@ export async function updateUserPassword(password: string): Promise<{ error: Err
 }
 
 /**
- * Signs out the current user
- * @returns Object containing any error that occurred
- */
-export async function signOutUser(): Promise<{ error: Error | null }> {
-  const { error } = await supabase.auth.signOut();
-  return { error };
-}
-
-/**
  * Maps common Supabase error messages to user-friendly messages
  * @param errorMessage Original error message from Supabase
  * @returns User-friendly error message

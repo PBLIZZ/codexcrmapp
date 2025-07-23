@@ -14,124 +14,95 @@ import {
   CardFooter,
   Input,
 } from '@codexcrm/ui';
-import { supabase } from '@/lib/supabase/client';
-
-// Eye Icon SVG Components
-const EyeIcon = ({ className }: { className?: string }) => (
-  <svg
-    className={className}
-    xmlns='http://www.w3.org/2000/svg'
-    width='24'
-    height='24'
-    viewBox='0 0 24 24'
-    fill='none'
-    stroke='currentColor'
-    strokeWidth='2'
-    strokeLinecap='round'
-    strokeLinejoin='round'
-  >
-    <path d='M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z' />
-    <circle cx='12' cy='12' r='3' />
-  </svg>
-);
-
-const EyeOffIcon = ({ className }: { className?: string }) => (
-  <svg
-    className={className}
-    xmlns='http://www.w3.org/2000/svg'
-    width='24'
-    height='24'
-    viewBox='0 0 24 24'
-    fill='none'
-    stroke='currentColor'
-    strokeWidth='2'
-    strokeLinecap='round'
-    strokeLinejoin='round'
-  >
-    <path d='M9.88 9.88a3 3 0 1 0 4.24 4.24' />
-    <path d='M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68' />
-    <path d='M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61' />
-    <line x1='2' x2='22' y1='2' y2='22' />
-  </svg>
-);
-
-const CheckIcon = ({ className }: { className?: string }) => (
-  <svg
-    className={className}
-    xmlns='http://www.w3.org/2000/svg'
-    width='24'
-    height='24'
-    viewBox='0 0 24 24'
-    fill='none'
-    stroke='currentColor'
-    strokeWidth='2'
-    strokeLinecap='round'
-    strokeLinejoin='round'
-  >
-    <polyline points='20 6 9 17 4 12'></polyline>
-  </svg>
-);
+import { signUpWithEmail } from '@/lib/auth/auth-actions';
+import { Eye, EyeOff, Check } from 'lucide-react';
 
 export default function SignUpPage() {
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [businessName, setBusinessName] = useState('');
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState<'error' | 'success'>('error');
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [fullNameBlurred, setFullNameBlurred] = useState(false);
   const [emailBlurred, setEmailBlurred] = useState(false);
   const [passwordBlurred, setPasswordBlurred] = useState(false);
+  const [businessNameBlurred, setBusinessNameBlurred] = useState(false);
 
   // Zod schema for signup form
   const signupSchema = z.object({
-    email: z.string().email({ message: 'Invalid email address' }),
-    password: z.string().min(6, { message: 'Password must be at least 6 characters' }),
+    fullName: z
+      .string()
+      .min(1, 'Full name is required')
+      .min(2, 'Full name must be at least 2 characters'),
+    email: z.string().email('Please enter a valid email address'),
+    password: z.string().min(6, 'Password must be at least 6 characters long'),
+    businessName: z
+      .string()
+      .min(1, 'Business name is required')
+      .min(2, 'Business name must be at least 2 characters'),
   });
 
+  const [fullNameError, setFullNameError] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [businessNameError, setBusinessNameError] = useState<string | null>(null);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setMessage('');
-    setEmailError(null); // Clear previous errors
+    // Clear previous errors
+    setFullNameError(null);
+    setEmailError(null);
     setPasswordError(null);
+    setBusinessNameError(null);
 
     // Validate form data
-    const validationResult = signupSchema.safeParse({ email, password });
+    const validationResult = signupSchema.safeParse({ fullName, email, password, businessName });
 
     if (!validationResult.success) {
       const fieldErrors = validationResult.error.flatten().fieldErrors;
+      if (fieldErrors.fullName?.[0]) {
+        setFullNameError(fieldErrors.fullName[0]);
+      }
       if (fieldErrors.email?.[0]) {
         setEmailError(fieldErrors.email[0]);
       }
       if (fieldErrors.password?.[0]) {
         setPasswordError(fieldErrors.password[0]);
       }
+      if (fieldErrors.businessName?.[0]) {
+        setBusinessNameError(fieldErrors.businessName[0]);
+      }
       setIsLoading(false);
       return;
     }
 
     try {
-      // Attempt sign up with email confirmation redirect
-      const { error } = await supabase.auth.signUp({
+      // Use centralized signUpWithEmail function
+      const { error } = await signUpWithEmail({
+        fullName,
         email,
         password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/api/auth/callback`,
-        },
+        businessName,
       });
 
       if (error) {
-        setMessage(error.message);
+        const errorMessage =
+          error instanceof Error ? error.message : 'An error occurred during sign up';
+        setMessage(errorMessage);
         setMessageType('error');
       } else {
         setMessage('Check your email for a confirmation link to complete your registration.');
         setMessageType('success');
         // Clear form
+        setFullName('');
         setEmail('');
         setPassword('');
+        setBusinessName('');
       }
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'An error occurred during sign up');
@@ -192,6 +163,115 @@ export default function SignUpPage() {
 
           {/* Email Sign Up Form */}
           <form onSubmit={handleSignUp} className='space-y-4'>
+            {/* Full Name Field */}
+            <div>
+              <label htmlFor='fullName' className='block text-sm font-medium text-gray-700 mb-1'>
+                Full Name
+              </label>
+              <div className='relative mt-1 rounded-md'>
+                <Input
+                  id='fullName'
+                  name='fullName'
+                  type='text'
+                  autoComplete='name'
+                  required
+                  value={fullName}
+                  onChange={(e) => {
+                    setFullName(e.target.value);
+                    if (fullNameError) {
+                      setFullNameError(null);
+                    }
+                    if (fullNameBlurred) {
+                      const result = z
+                        .string()
+                        .min(2, { message: 'Full name must be at least 2 characters' })
+                        .safeParse(e.target.value);
+                      if (!result.success) {
+                        setFullNameError(result.error.flatten().formErrors[0] ?? null);
+                      } else {
+                        setFullNameError(null);
+                      }
+                    }
+                  }}
+                  onBlur={() => {
+                    setFullNameBlurred(true);
+                    const result = z
+                      .string()
+                      .min(2, { message: 'Full name must be at least 2 characters' })
+                      .safeParse(fullName);
+                    if (!result.success) {
+                      setFullNameError(result.error.flatten().formErrors[0] ?? null);
+                    } else {
+                      setFullNameError(null);
+                    }
+                  }}
+                  className={`w-full ${
+                    fullNameError ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
+                  }`}
+                  placeholder='Enter your full name'
+                />
+              </div>
+              {fullNameError && <p className='mt-1 text-sm text-red-600'>{fullNameError}</p>}
+            </div>
+
+            {/* Business Name Field */}
+            <div>
+              <label
+                htmlFor='businessName'
+                className='block text-sm font-medium text-gray-700 mb-1'
+              >
+                Business Name
+              </label>
+              <div className='relative mt-1 rounded-md'>
+                <Input
+                  id='businessName'
+                  name='businessName'
+                  type='text'
+                  autoComplete='organization'
+                  required
+                  value={businessName}
+                  onChange={(e) => {
+                    setBusinessName(e.target.value);
+                    if (businessNameError) {
+                      setBusinessNameError(null);
+                    }
+                    if (businessNameBlurred) {
+                      const result = z
+                        .string()
+                        .min(2, { message: 'Business name must be at least 2 characters' })
+                        .safeParse(e.target.value);
+                      if (!result.success) {
+                        setBusinessNameError(result.error.flatten().formErrors[0] ?? null);
+                      } else {
+                        setBusinessNameError(null);
+                      }
+                    }
+                  }}
+                  onBlur={() => {
+                    setBusinessNameBlurred(true);
+                    const result = z
+                      .string()
+                      .min(2, { message: 'Business name must be at least 2 characters' })
+                      .safeParse(businessName);
+                    if (!result.success) {
+                      setBusinessNameError(result.error.flatten().formErrors[0] ?? null);
+                    } else {
+                      setBusinessNameError(null);
+                    }
+                  }}
+                  className={`w-full ${
+                    businessNameError
+                      ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
+                      : ''
+                  }`}
+                  placeholder='Enter your business name'
+                />
+              </div>
+              {businessNameError && (
+                <p className='mt-1 text-sm text-red-600'>{businessNameError}</p>
+              )}
+            </div>
+
             {/* Email Field */}
             <div>
               <label htmlFor='email' className='block text-sm font-medium text-gray-700 mb-1'>
@@ -244,7 +324,7 @@ export default function SignUpPage() {
                   }`}
                 />
                 {emailBlurred && !emailError && email.length > 0 && (
-                  <CheckIcon className='absolute inset-y-0 right-0 flex items-center pr-3 text-green-500 h-5 w-5' />
+                  <Check className='absolute inset-y-0 right-0 flex items-center pr-3 text-green-500 h-5 w-5' />
                 )}
               </div>
               {emailError && <p className='mt-1 text-xs text-red-600'>{emailError}</p>}
@@ -302,7 +382,7 @@ export default function SignUpPage() {
                   }`}
                 />
                 {passwordBlurred && !passwordError && password.length > 0 && (
-                  <CheckIcon className='absolute inset-y-0 right-0 pr-10 flex items-center text-green-500 pointer-events-none h-5 w-5' />
+                  <Check className='absolute inset-y-0 right-0 pr-10 flex items-center text-green-500 pointer-events-none h-5 w-5' />
                 )}
                 <button
                   type='button'
@@ -310,11 +390,7 @@ export default function SignUpPage() {
                   className='absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 text-gray-500 hover:text-orange-500'
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
-                  {showPassword ? (
-                    <EyeOffIcon className='h-5 w-5' />
-                  ) : (
-                    <EyeIcon className='h-5 w-5' />
-                  )}
+                  {showPassword ? <EyeOff className='h-5 w-5' /> : <Eye className='h-5 w-5' />}
                 </button>
               </div>
               {passwordError && <p className='mt-1 text-xs text-red-600'>{passwordError}</p>}

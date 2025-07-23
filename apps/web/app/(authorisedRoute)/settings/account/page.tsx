@@ -17,12 +17,8 @@ import {
   Label,
   Separator,
 } from '@codexcrm/ui';
-import {
-  fetchCurrentUser,
-  updateUserPassword,
-  signOutUser,
-  mapAuthErrorMessage,
-} from '@/lib/auth/service';
+import { fetchCurrentUser, updateUserPassword, mapAuthErrorMessage } from '@/lib/auth/service';
+import { signOut } from '@/lib/auth/auth-actions';
 
 // Constants
 const MIN_PASSWORD_LENGTH = 6;
@@ -171,13 +167,14 @@ export default function AccountPage() {
     setIsSigningOut(true);
     dispatchMessage({ type: 'CLEAR_MESSAGE' });
 
-    const { error } = await signOutUser();
+    const { error } = await signOut();
 
     if (error) {
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
       dispatchMessage({
         type: 'SET_MESSAGE',
         payload: {
-          text: `Sign out failed: ${mapAuthErrorMessage(error.message)}`,
+          text: `Sign out failed: ${mapAuthErrorMessage(errorMessage)}`,
           type: 'error',
         },
       });

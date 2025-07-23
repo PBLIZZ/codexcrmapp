@@ -33,18 +33,6 @@ export const routeConfig: Record<string, RouteConfig> = {
     label: 'Import',
     parent: '/contacts',
   },
-  '/contacts/import/csv-upload-test': {
-    label: 'CSV Upload Test',
-    parent: '/contacts/import',
-  },
-  '/contacts/groups': {
-    label: 'Groups',
-    parent: '/contacts',
-  },
-  '/contacts/groups/create': {
-    label: 'Create',
-    parent: '/contacts/groups',
-  },
   '/tasks': {
     label: 'Tasks',
     parent: '/',

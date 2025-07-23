@@ -15,7 +15,7 @@ import {
   Input,
   Label,
 } from '@codexcrm/ui';
-import { supabase } from '@/lib/supabase/client';
+import { resetPassword } from '@/lib/auth/auth-actions';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -29,12 +29,11 @@ export default function ForgotPasswordPage() {
     setMessage('');
     setMessageType('error');
 
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`, // Important: This will be the page where user sets new password
-    });
+    const { error } = await resetPassword(email);
 
     if (error) {
-      setMessage(error.message);
+      const errorMessage = error instanceof Error ? error.message : 'An error occurred';
+      setMessage(errorMessage);
       setMessageType('error');
     } else {
       setMessage(
