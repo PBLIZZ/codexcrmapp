@@ -41,6 +41,9 @@ export * from './components/ui/drawer';
 export * from './components/ui/alert-dialog';
 export * from './components/ui/skeleton';
 export * from './components/ui/slot';
+export * from './components/ui/toast';
+export { Toaster } from './components/ui/toaster';
+export { useToast, toast } from './hooks/use-toast';
 
 // Timeline
 export * from './components/ui/timeline';

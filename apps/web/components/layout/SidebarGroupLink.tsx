@@ -3,13 +3,9 @@
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
 import { cn } from '@/lib/utils';
+import { type Group } from '@codexcrm/db';
 
-import { Group } from '@codexcrm/db';
-
-// Extended Group type with contact count for UI purposes
-interface GroupWithContactCount extends Pick<Group, 'id' | 'name' | 'emoji' | 'color'> {
-  contactCount?: number;
-}
+type GroupWithContactCount = Group & { contactCount?: number };
 
 export function SidebarGroupLink({ group }: { group: GroupWithContactCount }) {
   const router = useRouter();

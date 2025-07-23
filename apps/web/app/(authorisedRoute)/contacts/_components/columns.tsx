@@ -1,3 +1,5 @@
+'use client';
+
 import { ColumnDef } from '@tanstack/react-table';
 import {
   Badge,
@@ -66,7 +68,7 @@ export const createColumns = ({
     enableHiding: false,
   },
   {
-    accessorKey: 'full_name',
+    accessorKey: 'fullName',
     header: ({ column }) => (
       <Button
         variant='ghost'
@@ -78,7 +80,7 @@ export const createColumns = ({
       </Button>
     ),
     cell: ({ row }) => {
-      const name = row.getValue('full_name') as string;
+      const name = row.getValue('fullName') as string;
       return <div className='font-medium'>{name}</div>;
     },
   },
@@ -103,10 +105,10 @@ export const createColumns = ({
     },
   },
   {
-    accessorKey: 'social_handles',
+    accessorKey: 'socialHandles',
     header: 'Social Handles',
     cell: ({ row }) => {
-      const handles = row.getValue('social_handles') as string[] | null;
+      const handles = row.getValue('socialHandles') as string[] | null;
       return handles && handles.length > 0 ? (
         <div className='flex flex-wrap gap-1'>
           {handles.slice(0, 2).map((handle, index) => (
@@ -183,7 +185,7 @@ export const createColumns = ({
     },
   },
   {
-    accessorKey: 'created_at',
+    accessorKey: 'createdAt',
     header: ({ column }) => (
       <Button
         variant='ghost'
@@ -195,7 +197,7 @@ export const createColumns = ({
       </Button>
     ),
     cell: ({ row }) => {
-      const dateValue = row.getValue('created_at') as string | null;
+      const dateValue = row.getValue('createdAt') as string | null;
       if (!dateValue) {
         return <div className='text-sm text-muted-foreground'>—</div>;
       }
@@ -207,7 +209,7 @@ export const createColumns = ({
     },
   },
   {
-    accessorKey: 'updated_at',
+    accessorKey: 'updatedAt',
     header: ({ column }) => (
       <Button
         variant='ghost'
@@ -219,7 +221,7 @@ export const createColumns = ({
       </Button>
     ),
     cell: ({ row }) => {
-      const dateValue = row.getValue('updated_at') as string | null;
+      const dateValue = row.getValue('updatedAt') as string | null;
       if (!dateValue) {
         return <div className='text-sm text-muted-foreground'>—</div>;
       }

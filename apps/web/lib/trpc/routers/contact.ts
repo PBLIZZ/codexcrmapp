@@ -296,4 +296,165 @@ export const contactRouter = router({
         });
       }
     }),
+
+  // Bulk add tags to contacts
+  bulkAddTags: protectedProcedure
+    .input(
+      z.object({
+        contactIds: z.array(z.string().uuid()).min(1, 'At least one contact ID is required'),
+        tags: z
+          .array(z.string().min(1, 'Tag cannot be empty'))
+          .min(1, 'At least one tag is required'),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      if (!ctx.user) {
+        throw new TRPCError({ code: 'UNAUTHORIZED' });
+      }
+
+      try {
+        // Verify all contacts exist and belong to the user
+        const contacts = await ctx.prisma.contact.findMany({
+          where: {
+            id: { in: input.contactIds },
+            userId: ctx.user.id,
+          },
+          select: {
+            id: true,
+            tags: true,
+          },
+        });
+
+        if (contacts.length !== input.contactIds.length) {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'One or more contact IDs are invalid',
+          });
+        }
+
+        // Update each contact's tags by merging with existing tags
+        const updatePromises = contacts.map((contact) => {
+          const existingTags = contact.tags || [];
+          const newTags = [...new Set([...existingTags, ...input.tags])];
+
+          return ctx.prisma.contact.update({
+            where: { id: contact.id },
+            data: { tags: newTags },
+          });
+        });
+
+        await Promise.all(updatePromises);
+
+        return {
+          success: true,
+          updatedCount: contacts.length,
+          addedTags: input.tags,
+        };
+      } catch (error) {
+        console.error('Error bulk adding tags to contacts:', error);
+        if (error instanceof TRPCError) throw error;
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to add tags to contacts',
+          cause: error,
+        });
+      }
+    }),
+
+  // Bulk remove tags from contacts
+  bulkRemoveTags: protectedProcedure
+    .input(
+      z.object({
+        contactIds: z.array(z.string().uuid()).min(1, 'At least one contact ID is required'),
+        tags: z
+          .array(z.string().min(1, 'Tag cannot be empty'))
+          .min(1, 'At least one tag is required'),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      if (!ctx.user) {
+        throw new TRPCError({ code: 'UNAUTHORIZED' });
+      }
+
+      try {
+        // Verify all contacts exist and belong to the user
+        const contacts = await ctx.prisma.contact.findMany({
+          where: {
+            id: { in: input.contactIds },
+            userId: ctx.user.id,
+          },
+          select: {
+            id: true,
+            tags: true,
+          },
+        });
+
+        if (contacts.length !== input.contactIds.length) {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'One or more contact IDs are invalid',
+          });
+        }
+
+        // Update each contact's tags by removing specified tags
+        const updatePromises = contacts.map((contact) => {
+          const existingTags = contact.tags || [];
+          const filteredTags = existingTags.filter((tag) => !input.tags.includes(tag));
+
+          return ctx.prisma.contact.update({
+            where: { id: contact.id },
+            data: { tags: filteredTags },
+          });
+        });
+
+        await Promise.all(updatePromises);
+
+        return {
+          success: true,
+          updatedCount: contacts.length,
+          removedTags: input.tags,
+        };
+      } catch (error) {
+        console.error('Error bulk removing tags from contacts:', error);
+        if (error instanceof TRPCError) throw error;
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to remove tags from contacts',
+          cause: error,
+        });
+      }
+    }),
+
+  // Get all unique tags across user's contacts
+  getAllTags: protectedProcedure.query(async ({ ctx }) => {
+    if (!ctx.user) {
+      throw new TRPCError({ code: 'UNAUTHORIZED' });
+    }
+
+    try {
+      const contacts = await ctx.prisma.contact.findMany({
+        where: {
+          userId: ctx.user.id,
+        },
+        select: {
+          tags: true,
+        },
+      });
+
+      // Flatten and deduplicate all tags
+      const allTags = contacts
+        .flatMap((contact) => contact.tags || [])
+        .filter((tag, index, array) => array.indexOf(tag) === index)
+        .sort();
+
+      return allTags;
+    } catch (error) {
+      console.error('Error fetching all tags:', error);
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to fetch tags',
+        cause: error,
+      });
+    }
+  }),
 });

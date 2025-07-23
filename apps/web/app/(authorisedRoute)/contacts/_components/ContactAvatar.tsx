@@ -38,7 +38,7 @@ export function ContactAvatar({
   const { data: fileUrlData, error: storageError } = api.storage.getFileUrl.useQuery(
     { filePath: profileImageUrl || '' },
     {
-      enabled: !!profileImageUrl && profileImageUrl.includes('contact-profile-photo'),
+      enabled: !!profileImageUrl && profileImageUrl.startsWith('contacts/'),
       staleTime: 55 * 60 * 1000, // 55 minutes (URLs valid for 1 hour)
     }
   );
@@ -46,8 +46,8 @@ export function ContactAvatar({
   // Debug logging
   console.log('ContactAvatar Debug:', {
     profileImageUrl,
-    isStoragePath: profileImageUrl?.includes('contact-profile-photo'),
-    queryEnabled: !!profileImageUrl && profileImageUrl.includes('contact-profile-photo'),
+    isStoragePath: profileImageUrl?.startsWith('contacts/'),
+    queryEnabled: !!profileImageUrl && profileImageUrl.startsWith('contacts/'),
     fileUrlData,
     storageError,
     signedUrl,

@@ -98,15 +98,9 @@ export const groupRouter = router({
         },
       });
 
-      // Map to include contactCount property
+      // Map to include contactCount property while preserving full Group object
       const result = groups.map((group) => ({
-        id: group.id,
-        name: group.name,
-        description: group.description,
-        color: group.color,
-        emoji: group.emoji,
-        createdAt: group.createdAt,
-        updatedAt: group.updatedAt,
+        ...group,
         contactCount: group._count.members,
       }));
 
@@ -384,6 +378,142 @@ export const groupRouter = router({
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to fetch contacts in group',
+          cause: error,
+        });
+      }
+    }),
+
+  // Bulk add contacts to a group
+  bulkAddContacts: protectedProcedure
+    .input(
+      z.object({
+        groupId: z.string().uuid(),
+        contactIds: z.array(z.string().uuid()).min(1, 'At least one contact ID is required'),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      if (!ctx.user) {
+        throw new TRPCError({ code: 'UNAUTHORIZED' });
+      }
+
+      try {
+        // Verify the group exists and belongs to the user
+        const group = await ctx.prisma.group.findFirst({
+          where: {
+            id: input.groupId,
+            userId: ctx.user.id,
+          },
+        });
+
+        if (!group) {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'Invalid group ID',
+          });
+        }
+
+        // Verify all contacts exist and belong to the user
+        const contacts = await ctx.prisma.contact.findMany({
+          where: {
+            id: { in: input.contactIds },
+            userId: ctx.user.id,
+          },
+        });
+
+        if (contacts.length !== input.contactIds.length) {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'One or more contact IDs are invalid',
+          });
+        }
+
+        // Get existing memberships to avoid duplicates
+        const existingMemberships = await ctx.prisma.groupMember.findMany({
+          where: {
+            groupId: input.groupId,
+            contactId: { in: input.contactIds },
+          },
+        });
+
+        const existingContactIds = new Set(existingMemberships.map((m) => m.contactId));
+        const newContactIds = input.contactIds.filter((id) => !existingContactIds.has(id));
+
+        // Create new memberships for contacts not already in the group
+        if (newContactIds.length > 0) {
+          await ctx.prisma.groupMember.createMany({
+            data: newContactIds.map((contactId) => ({
+              groupId: input.groupId,
+              contactId,
+            })),
+            skipDuplicates: true,
+          });
+        }
+
+        return {
+          success: true,
+          addedCount: newContactIds.length,
+          skippedCount: input.contactIds.length - newContactIds.length,
+          totalRequested: input.contactIds.length,
+        };
+      } catch (error) {
+        console.error('Error bulk adding contacts to group:', error);
+        if (error instanceof TRPCError) throw error;
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to add contacts to group',
+          cause: error,
+        });
+      }
+    }),
+
+  // Bulk remove contacts from a group
+  bulkRemoveContacts: protectedProcedure
+    .input(
+      z.object({
+        groupId: z.string().uuid(),
+        contactIds: z.array(z.string().uuid()).min(1, 'At least one contact ID is required'),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      if (!ctx.user) {
+        throw new TRPCError({ code: 'UNAUTHORIZED' });
+      }
+
+      try {
+        // Verify the group exists and belongs to the user
+        const group = await ctx.prisma.group.findFirst({
+          where: {
+            id: input.groupId,
+            userId: ctx.user.id,
+          },
+        });
+
+        if (!group) {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'Invalid group ID',
+          });
+        }
+
+        // Remove the group memberships
+        const result = await ctx.prisma.groupMember.deleteMany({
+          where: {
+            groupId: input.groupId,
+            contactId: { in: input.contactIds },
+          },
+        });
+
+        return {
+          success: true,
+          removedCount: result.count,
+          totalRequested: input.contactIds.length,
+        };
+      } catch (error) {
+        console.error('Error bulk removing contacts from group:', error);
+        if (error instanceof TRPCError) throw error;
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to remove contacts from group',
           cause: error,
         });
       }
