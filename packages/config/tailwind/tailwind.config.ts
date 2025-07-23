@@ -1,13 +1,11 @@
 // packages/config/tailwind/tailwind.config.ts
-import type { Config } from 'tailwindcss';
 import tailwindcssAnimate from 'tailwindcss-animate';
 
 /**
  * This is the shared Tailwind CSS configuration preset.
- * It is typed as `Omit<Config, 'content'>` to ensure it doesn't contain
- * a `content` property, which must be defined in the consuming app's config.
+ * It doesn't contain a `content` property, which must be defined in the consuming app's config.
  */
-export const tailwindPreset: Omit<Config, 'content'> = {
+export const tailwindPreset = {
   darkMode: ['class', 'media'],
   theme: {
     container: {

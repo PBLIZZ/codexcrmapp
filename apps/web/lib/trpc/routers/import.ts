@@ -78,11 +78,7 @@ export const importRouter = router({
             // Optional fields
             addressStreet: contact.address_street ?? undefined,
             // Connect to the user
-            user: {
-              connect: {
-                id: ctx.user.id,
-              },
-            },
+            userId: ctx.user.id,
           };
 
           return prismaContact;

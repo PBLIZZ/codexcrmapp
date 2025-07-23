@@ -1643,14 +1643,7 @@ var CommandList = React23.forwardRef(({ className, ...props }, ref) => /* @__PUR
   }
 ));
 CommandList.displayName = CommandPrimitive.List.displayName;
-var CommandEmpty = React23.forwardRef((props, ref) => /* @__PURE__ */ jsx26(
-  CommandPrimitive.Empty,
-  {
-    ref,
-    className: "py-6 text-center text-sm",
-    ...props
-  }
-));
+var CommandEmpty = React23.forwardRef((props, ref) => /* @__PURE__ */ jsx26(CommandPrimitive.Empty, { ref, className: "py-6 text-center text-sm", ...props }));
 CommandEmpty.displayName = CommandPrimitive.Empty.displayName;
 var CommandGroup = React23.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx26(
   CommandPrimitive.Group,
@@ -1685,17 +1678,11 @@ var CommandItem = React23.forwardRef(({ className, ...props }, ref) => /* @__PUR
   }
 ));
 CommandItem.displayName = CommandPrimitive.Item.displayName;
-var CommandShortcut = ({
-  className,
-  ...props
-}) => {
+var CommandShortcut = ({ className, ...props }) => {
   return /* @__PURE__ */ jsx26(
     "span",
     {
-      className: cn(
-        "ml-auto text-xs tracking-widest text-muted-foreground",
-        className
-      ),
+      className: cn("ml-auto text-xs tracking-widest text-muted-foreground", className),
       ...props
     }
   );

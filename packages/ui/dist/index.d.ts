@@ -238,8 +238,7 @@ declare const TabsList: React$1.ForwardRefExoticComponent<Omit<TabsPrimitive.Tab
 declare const TabsTrigger: React$1.ForwardRefExoticComponent<Omit<TabsPrimitive.TabsTriggerProps & React$1.RefAttributes<HTMLButtonElement>, "ref"> & React$1.RefAttributes<HTMLButtonElement>>;
 declare const TabsContent: React$1.ForwardRefExoticComponent<Omit<TabsPrimitive.TabsContentProps & React$1.RefAttributes<HTMLDivElement>, "ref"> & React$1.RefAttributes<HTMLDivElement>>;
 
-interface TextareaProps extends React$1.TextareaHTMLAttributes<HTMLTextAreaElement> {
-}
+type TextareaProps = React$1.TextareaHTMLAttributes<HTMLTextAreaElement>;
 declare const Textarea: React$1.ForwardRefExoticComponent<TextareaProps & React$1.RefAttributes<HTMLTextAreaElement>>;
 
 declare const Label: React$1.ForwardRefExoticComponent<Omit<LabelPrimitive.LabelProps & React$1.RefAttributes<HTMLLabelElement>, "ref"> & VariantProps<(props?: class_variance_authority_types.ClassProp | undefined) => string> & React$1.RefAttributes<HTMLLabelElement>>;
@@ -361,8 +360,7 @@ declare const Command: React$1.ForwardRefExoticComponent<Omit<{
     disablePointerSelection?: boolean;
     vimBindings?: boolean;
 } & React$1.RefAttributes<HTMLDivElement>, "ref"> & React$1.RefAttributes<HTMLDivElement>>;
-interface CommandDialogProps extends DialogProps {
-}
+type CommandDialogProps = DialogProps;
 declare const CommandDialog: ({ children, ...props }: CommandDialogProps) => react_jsx_runtime.JSX.Element;
 declare const CommandInput: React$1.ForwardRefExoticComponent<Omit<Omit<Pick<Pick<React$1.DetailedHTMLProps<React$1.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>, "key" | keyof React$1.InputHTMLAttributes<HTMLInputElement>> & {
     ref?: React$1.Ref<HTMLInputElement>;

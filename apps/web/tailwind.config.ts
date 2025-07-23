@@ -1,7 +1,6 @@
-import type { Config } from 'tailwindcss';
 import { tailwindPreset } from '@codexcrm/config-tailwind';
 
-const config: Config = {
+const config = {
   presets: [tailwindPreset],
 
   content: [
