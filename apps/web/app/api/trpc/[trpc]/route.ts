@@ -65,12 +65,8 @@ export const GET = async (req: Request) => {
     // Create a standardized error response
     const errorResponse: ApiErrorResponse = {
       error: 'Internal Server Error',
-      // Provide generic message in production, detailed in development
+      // Always provide generic message - never expose internal details
       message: 'An unexpected error occurred.',
-      // Log detailed error information on the server for debugging purposes
-      ...(process.env.NODE_ENV !== 'production' && error instanceof Error
-        ? { debugInfo: { message: error.message, stack: error.stack } }
-        : {}),
       // Add error code for easier client-side handling
       code: 'INTERNAL_SERVER_ERROR',
     };

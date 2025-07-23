@@ -3,6 +3,7 @@ import * as Sentry from '@sentry/nextjs'; // Added Sentry
 import { CredentialResponse, PromptMomentNotification } from 'google-one-tap';
 import { useRouter } from 'next/navigation';
 import Script from 'next/script';
+import { useCallback } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { supabase } from '@/lib/supabase/client';
 
@@ -14,32 +15,35 @@ const OneTapComponent = () => {
 
   // Removed nonce generation - it was breaking OAuth flow
 
-  const handleGoogleSignIn = async (response: CredentialResponse) => {
-    setIsPending(true);
-    try {
-      const { error: signInError } = await supabase.auth.signInWithIdToken({
-        provider: 'google',
-        token: response.credential,
-      });
+  const handleGoogleSignIn = useCallback(
+    async (response: CredentialResponse) => {
+      setIsPending(true);
+      try {
+        const { error: signInError } = await supabase.auth.signInWithIdToken({
+          provider: 'google',
+          token: response.credential,
+        });
 
-      if (signInError) {
-        console.error('Supabase signInWithIdToken error:', signInError);
-        Sentry.captureException(signInError);
-        throw signInError;
+        if (signInError) {
+          console.error('Supabase signInWithIdToken error:', signInError);
+          Sentry.captureException(signInError);
+          throw signInError;
+        }
+
+        Sentry.captureMessage('Successfully logged in with Google.', 'info');
+        router.push('/dashboard');
+        router.refresh(); // Ensure UI updates after redirect
+      } catch (error) {
+        console.error('Error processing Google sign-in:', error);
+        Sentry.captureException(error);
+      } finally {
+        setIsPending(false);
       }
+    },
+    [router]
+  );
 
-      Sentry.captureMessage('Successfully logged in with Google.', 'info');
-      router.push('/dashboard');
-      router.refresh(); // Ensure UI updates after redirect
-    } catch (error) {
-      console.error('Error processing Google sign-in:', error);
-      Sentry.captureException(error);
-    } finally {
-      setIsPending(false);
-    }
-  };
-
-  const performGoogleOneTapInit = async () => {
+  const performGoogleOneTapInit = useCallback(async () => {
     if (initAttemptedRef.current) {
       return;
     }
@@ -119,7 +123,7 @@ const OneTapComponent = () => {
     setTimeout(() => {
       setShowButton(true);
     }, 2000);
-  };
+  }, [router, handleGoogleSignIn]);
 
   const renderGoogleButton = () => {
     if (window.google && window.google.accounts && window.google.accounts.id) {
@@ -143,7 +147,7 @@ const OneTapComponent = () => {
     if (window.google && window.google.accounts && window.google.accounts.id) {
       performGoogleOneTapInit();
     }
-  }, []);
+  }, [performGoogleOneTapInit]);
 
   // Render the Google button when showButton becomes true
   useEffect(() => {
