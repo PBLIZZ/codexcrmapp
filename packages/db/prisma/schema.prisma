@@ -89,39 +89,12 @@ model Contact {
   createdAt                DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt                DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
   userId                   String        @map("user_id") @db.Uuid
-  groups                   GroupMember[]
+  groups                   String[]
 
   @@map("contacts")
   @@schema("public")
 }
 
-model Group {
-  id          String        @id @default(uuid()) @db.Uuid
-  name        String
-  description String?
-  emoji       String?
-  color       String?
-  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt   DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
-  userId      String        @map("user_id") @db.Uuid
-  members     GroupMember[]
-
-  @@map("groups")
-  @@schema("public")
-}
-
-model GroupMember {
-  id        String   @id @default(uuid()) @db.Uuid
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  groupId   String   @map("group_id") @db.Uuid
-  contactId String   @map("contact_id") @db.Uuid
-  contact   Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
-  group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
-
-  @@unique([groupId, contactId])
-  @@map("group_members")
-  @@schema("public")
-}
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.

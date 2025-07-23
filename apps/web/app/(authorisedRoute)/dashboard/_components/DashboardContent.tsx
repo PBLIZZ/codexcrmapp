@@ -179,16 +179,6 @@ export default function DashboardContent() {
                 <Button
                   variant='outline'
                   className='h-auto flex flex-col items-center justify-center p-4 space-y-2'
-                  asChild
-                >
-                  <Link href='/groups'>
-                    <Users className='h-6 w-6 mb-2' />
-                    <span>Manage Groups</span>
-                  </Link>
-                </Button>
-                <Button
-                  variant='outline'
-                  className='h-auto flex flex-col items-center justify-center p-4 space-y-2'
                   disabled
                 >
                   <Calendar className='h-6 w-6 mb-2' />

@@ -25,8 +25,6 @@ export { Prisma };
 // Export model types
 export type User = Prisma.UserGetPayload<Record<string, never>>;
 export type Contact = Prisma.ContactGetPayload<Record<string, never>>;
-export type Group = Prisma.GroupGetPayload<Record<string, never>>;
-export type GroupMember = Prisma.GroupMemberGetPayload<Record<string, never>>;
 
 // Create a Database type that mimics Supabase structure but uses Prisma types
 export interface Database {
@@ -36,16 +34,6 @@ export interface Database {
         Row: Contact;
         Insert: Prisma.ContactCreateInput;
         Update: Prisma.ContactUpdateInput;
-      };
-      groups: {
-        Row: Group;
-        Insert: Prisma.GroupCreateInput;
-        Update: Prisma.GroupUpdateInput;
-      };
-      group_members: {
-        Row: GroupMember;
-        Insert: Prisma.GroupMemberCreateInput;
-        Update: Prisma.GroupMemberUpdateInput;
       };
       users: {
         Row: User;

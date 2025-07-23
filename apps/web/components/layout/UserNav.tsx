@@ -1,19 +1,10 @@
 'use client';
 
 import { useAuth } from '@/app/providers';
-import { supabase } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 
 // UI and Icon Imports
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-  ShieldCheck,
-} from 'lucide-react';
+import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, Sparkles, ShieldCheck } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@codexcrm/ui';
 import {
   DropdownMenu,
@@ -44,12 +35,6 @@ export function UserNav() {
   const { user, isLoading } = useAuth();
   const router = useRouter();
   const { isMobile } = useSidebar();
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    // Force a full page redirect to ensure clean logout
-    window.location.href = '/log-in';
-  };
 
   // 2. Handle the loading state gracefully
   if (isLoading) {
@@ -150,10 +135,6 @@ export function UserNav() {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleSignOut}>
-              <LogOut />
-              Log out
-            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

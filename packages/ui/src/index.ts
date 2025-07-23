@@ -12,6 +12,7 @@ export * from './lib/utils';
 export * from './lib/theme';
 
 // Primitive shadcn components
+export * from './components/ui/theme-toggle';
 export * from './components/ui/button';
 export * from './components/ui/badge';
 export * from './components/ui/input';
@@ -56,4 +57,4 @@ export * from './components/ui/sonner';
 
 // Core components
 export * from './components/theme-provider';
-export * from './components/theme-toggle';
+export * from './components/ui/theme-toggle';

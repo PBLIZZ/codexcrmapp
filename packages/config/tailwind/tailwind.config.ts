@@ -6,7 +6,7 @@ import tailwindcssAnimate from 'tailwindcss-animate';
  * It doesn't contain a `content` property, which must be defined in the consuming app's config.
  */
 export const tailwindPreset = {
-  darkMode: ['class', 'media'],
+  darkMode: 'class',
   theme: {
     container: {
       center: true,

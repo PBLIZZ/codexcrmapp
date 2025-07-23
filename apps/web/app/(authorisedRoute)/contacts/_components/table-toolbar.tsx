@@ -18,11 +18,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
   toast,
 } from '@codexcrm/ui';
 import { useRouter } from 'next/navigation';
@@ -34,10 +29,8 @@ import {
   SlidersHorizontal,
   X,
   Plus,
-  UserPlus,
   Trash2,
   Tag,
-  Users,
   CheckCircle2,
   Loader2,
 } from 'lucide-react';
@@ -58,9 +51,7 @@ export function TableToolbar({
   globalFilter,
   onGlobalFilterChange,
   activeTagFilter,
-  activeGroupFilter,
   onClearTagFilter,
-  onClearGroupFilter,
 }: TableToolbarProps) {
   const router = useRouter();
   const selectedRows = table.getFilteredSelectedRowModel().rows;
@@ -68,14 +59,11 @@ export function TableToolbar({
 
   // State for modals
   const [isTagModalOpen, setIsTagModalOpen] = useState(false);
-  const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [newTagInput, setNewTagInput] = useState('');
-  const [selectedGroupId, setSelectedGroupId] = useState<string>('');
 
   // tRPC hooks
   const utils = api.useUtils();
-  const { data: groups } = api.groups.list.useQuery();
   const { data: allTags } = api.contacts.getAllTags.useQuery();
 
   const bulkAddTagsMutation = api.contacts.bulkAddTags.useMutation({
@@ -94,35 +82,6 @@ export function TableToolbar({
       toast({
         title: 'Error',
         description: `Failed to add tags: ${error.message}`,
-        variant: 'destructive',
-      });
-    },
-  });
-
-  const bulkAddToGroupMutation = api.groups.bulkAddContacts.useMutation({
-    onSuccess: (data) => {
-      toast({
-        title: 'Success',
-        description: `Added ${data.addedCount} contacts to group`,
-        variant: 'default',
-      });
-      if (data.skippedCount > 0) {
-        toast({
-          title: 'Info',
-          description: `${data.skippedCount} contacts were already in the group`,
-          variant: 'default',
-        });
-      }
-      utils.contacts.list.invalidate();
-      utils.groups.list.invalidate();
-      setIsGroupModalOpen(false);
-      setSelectedGroupId('');
-      table.resetRowSelection();
-    },
-    onError: (error) => {
-      toast({
-        title: 'Error',
-        description: `Failed to add contacts to group: ${error.message}`,
         variant: 'destructive',
       });
     },
@@ -152,10 +111,6 @@ export function TableToolbar({
     setIsTagModalOpen(true);
   };
 
-  const handleBulkAddToGroup = () => {
-    setIsGroupModalOpen(true);
-  };
-
   const handleBulkDelete = () => {
     setIsDeleteModalOpen(true);
   };
@@ -170,13 +125,6 @@ export function TableToolbar({
     const contactIds = selectedRows.map((row) => row.original.id);
 
     bulkAddTagsMutation.mutate({ contactIds, tags });
-  };
-
-  const confirmAddToGroup = () => {
-    if (!selectedGroupId) return;
-
-    const contactIds = selectedRows.map((row) => row.original.id);
-    bulkAddToGroupMutation.mutate({ groupId: selectedGroupId, contactIds });
   };
 
   const confirmDelete = () => {
@@ -210,21 +158,6 @@ export function TableToolbar({
                 <button
                   className='ml-1 rounded-full hover:bg-teal-200/80 p-0.5'
                   onClick={onClearTagFilter}
-                >
-                  <X className='h-3 w-3' />
-                </button>
-              </Badge>
-            )}
-
-            {activeGroupFilter && (
-              <Badge
-                variant='outline'
-                className='flex items-center gap-1 bg-sky-100 text-sky-800 hover:bg-sky-200 border-sky-200'
-              >
-                <Users className='h-3 w-3 mr-1' /> Group Filter
-                <button
-                  className='ml-1 rounded-full hover:bg-sky-200/80 p-0.5'
-                  onClick={onClearGroupFilter}
                 >
                   <X className='h-3 w-3' />
                 </button>
@@ -307,15 +240,6 @@ export function TableToolbar({
               <Tag className='mr-1.5 h-4 w-4' />
               Add Tag
             </Button>
-            <Button
-              variant='outline'
-              size='sm'
-              className='bg-white border-teal-700/30 text-teal-700 hover:bg-teal-50 hover:text-teal-800 shadow-sm rounded-md'
-              onClick={handleBulkAddToGroup}
-            >
-              <UserPlus className='mr-1.5 h-4 w-4' />
-              Add to Group
-            </Button>
             <Separator orientation='vertical' className='h-6 bg-teal-200' />
             <Button
               variant='outline'
@@ -397,84 +321,6 @@ export function TableToolbar({
             >
               {bulkAddTagsMutation.isPending && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
               Add Tags
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Group Assignment Modal */}
-      <Dialog open={isGroupModalOpen} onOpenChange={setIsGroupModalOpen}>
-        <DialogContent className='sm:max-w-md'>
-          <DialogHeader>
-            <DialogTitle>Add Contacts to Group</DialogTitle>
-            <DialogDescription>
-              Add {selectedRows.length} selected contact{selectedRows.length === 1 ? '' : 's'} to a
-              group.
-            </DialogDescription>
-          </DialogHeader>
-          <div className='space-y-4'>
-            <div>
-              <label className='text-sm font-medium'>Select Group</label>
-              <Select value={selectedGroupId} onValueChange={setSelectedGroupId}>
-                <SelectTrigger className='mt-1'>
-                  <SelectValue placeholder='Choose a group' />
-                </SelectTrigger>
-                <SelectContent>
-                  {groups && groups.length > 0 ? (
-                    groups.map((group) => (
-                      <SelectItem key={group.id} value={group.id}>
-                        <div className='flex items-center gap-2'>
-                          {group.emoji && <span>{group.emoji}</span>}
-                          <span>{group.name}</span>
-                          <Badge variant='outline' className='ml-auto text-xs'>
-                            {group.contactCount || 0}
-                          </Badge>
-                        </div>
-                      </SelectItem>
-                    ))
-                  ) : (
-                    <SelectItem value='no-groups' disabled>
-                      No groups available
-                    </SelectItem>
-                  )}
-                </SelectContent>
-              </Select>
-            </div>
-            {groups && groups.length === 0 && (
-              <div className='text-center py-4'>
-                <p className='text-sm text-slate-500 mb-2'>No groups found</p>
-                <Button
-                  variant='outline'
-                  size='sm'
-                  onClick={() => {
-                    setIsGroupModalOpen(false);
-                    router.push('/contacts/groups/new');
-                  }}
-                >
-                  <Plus className='mr-2 h-4 w-4' />
-                  Create Group
-                </Button>
-              </div>
-            )}
-          </div>
-          <DialogFooter>
-            <Button
-              variant='outline'
-              onClick={() => {
-                setIsGroupModalOpen(false);
-                setSelectedGroupId('');
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={confirmAddToGroup}
-              disabled={!selectedGroupId || bulkAddToGroupMutation.isPending}
-            >
-              {bulkAddToGroupMutation.isPending && (
-                <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-              )}
-              Add to Group
             </Button>
           </DialogFooter>
         </DialogContent>

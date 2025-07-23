@@ -10,15 +10,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@codexcrm/ui';
-import { Contact, Group } from '@codexcrm/db';
+import { Contact } from '@codexcrm/db';
 import { MoreHorizontal, Eye, Edit, Trash2, ArrowUpDown } from 'lucide-react';
 import { ContactAvatar } from './ContactAvatar';
 
-// Using Prisma types directly from @codexcrm/db
+// Contact already has groups as string[] in the schema
+export type ContactWithGroups = Contact;
 
-export interface ContactWithGroups extends Contact {
-  groups?: Pick<Group, 'id' | 'name' | 'emoji' | 'color'>[];
-}
+// Using Prisma types directly from @codexcrm/db
 
 interface ColumnsProps {
   onTagFilter?: (tag: string) => void;
@@ -162,15 +161,14 @@ export const createColumns = ({
       const groups = row.original.groups;
       return groups && groups.length > 0 ? (
         <div className='flex flex-wrap gap-1'>
-          {groups.slice(0, 2).map((group) => (
+          {groups.slice(0, 2).map((groupName: string, index: number) => (
             <Badge
-              key={group.id}
+              key={`${groupName}-${index}`}
               variant='default'
               className='text-xs cursor-pointer hover:bg-primary/80'
-              onClick={() => onGroupFilter?.(group.id)}
+              onClick={() => onGroupFilter?.(groupName)}
             >
-              {group.emoji && <span className='mr-1'>{group.emoji}</span>}
-              {group.name}
+              {groupName}
             </Badge>
           ))}
           {groups.length > 2 && (

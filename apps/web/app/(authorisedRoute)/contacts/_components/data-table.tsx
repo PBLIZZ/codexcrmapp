@@ -8,6 +8,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   getFilteredRowModel,
+  getGroupedRowModel,
   RowSelectionState,
   useReactTable,
 } from '@tanstack/react-table';
@@ -31,6 +32,7 @@ export function DataTable({ columns, data }: DataTableProps) {
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
   const [activeTagFilter, setActiveTagFilter] = React.useState<string>();
   const [activeGroupFilter, setActiveGroupFilter] = React.useState<string>();
+  const [grouping, setGrouping] = React.useState<string[]>([]);
 
   const handleRowClick = (contactId: string, event: React.MouseEvent) => {
     // Don't navigate if user is selecting text or clicking on interactive elements
@@ -60,7 +62,7 @@ export function DataTable({ columns, data }: DataTableProps) {
 
     if (activeGroupFilter) {
       filtered = filtered.filter((contact) =>
-        contact.groups?.some((group) => group.id === activeGroupFilter)
+        contact.groups?.some((group: { id: string }) => group.id === activeGroupFilter)
       );
     }
 
@@ -74,6 +76,7 @@ export function DataTable({ columns, data }: DataTableProps) {
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getGroupedRowModel: getGroupedRowModel(),
     onSortingChange: (updater) => {
       const newSorting = typeof updater === 'function' ? updater(state.sorting) : updater;
       updateState({ sorting: newSorting });
@@ -95,6 +98,7 @@ export function DataTable({ columns, data }: DataTableProps) {
       updateState({ globalFilter: value });
     },
     onRowSelectionChange: setRowSelection,
+    onGroupingChange: setGrouping,
     globalFilterFn: 'includesString',
     state: {
       sorting: state.sorting,
@@ -103,6 +107,7 @@ export function DataTable({ columns, data }: DataTableProps) {
       pagination: state.pagination,
       globalFilter: state.globalFilter,
       rowSelection,
+      grouping,
     },
   });
 
