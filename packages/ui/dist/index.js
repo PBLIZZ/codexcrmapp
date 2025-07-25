@@ -365,7 +365,7 @@ function ModeToggle() {
   }
   return /* @__PURE__ */ jsxs3(DropdownMenu, { children: [
     /* @__PURE__ */ jsx5(DropdownMenuTrigger, { asChild: true, children: /* @__PURE__ */ jsxs3(Button, { variant: "ghost", size: "icon", children: [
-      resolvedTheme === "dark" ? /* @__PURE__ */ jsx5(Moon, { className: "h-[1.2rem] w-[1.2rem] text-teal-400" }) : /* @__PURE__ */ jsx5(Sun, { className: "h-[1.2rem] w-[1.2rem] text-teal-400" }),
+      resolvedTheme === "dark" ? /* @__PURE__ */ jsx5(Moon, { className: "h-[1.2rem] w-[1.2rem] text-amber-400" }) : /* @__PURE__ */ jsx5(Sun, { className: "h-[1.2rem] w-[1.2rem] text-amber-400" }),
       /* @__PURE__ */ jsx5("span", { className: "sr-only", children: "Toggle theme" })
     ] }) }),
     /* @__PURE__ */ jsxs3(DropdownMenuContent, { align: "end", children: [

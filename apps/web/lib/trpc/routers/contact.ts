@@ -27,6 +27,31 @@ const contactInputSchema = z.object({
     }
     return null; // Default to null for any other case
   }, z.date().optional().nullable()),
+  // Array fields for comprehensive contact management
+  groups: z.array(z.string()).optional(),
+  tags: z.array(z.string()).optional(),
+  socialHandles: z.array(z.string()).optional(),
+  wellnessGoals: z.array(z.string()).optional(),
+  // Additional contact fields
+  website: z.string().url('Invalid website URL').optional().nullable().or(z.literal('')),
+  addressStreet: z.string().optional().nullable(),
+  addressCity: z.string().optional().nullable(),
+  addressPostalCode: z.string().optional().nullable(),
+  addressCountry: z.string().optional().nullable(),
+  referralSource: z.string().optional().nullable(),
+  relationshipStatus: z.string().optional().nullable(),
+  wellnessStatus: z.string().optional().nullable(),
+  wellnessJourneyStage: z.string().optional().nullable(),
+  clientSince: z.preprocess((arg) => {
+    if (arg === '' || arg === null || arg === undefined) {
+      return null;
+    }
+    if (typeof arg === 'string' || arg instanceof Date) {
+      const date = new Date(arg);
+      return isNaN(date.getTime()) ? null : date;
+    }
+    return null;
+  }, z.date().optional().nullable()),
 });
 
 // Defines tRPC procedures for contacts.
@@ -49,44 +74,9 @@ export const contactRouter = router({
         },
       });
 
-      // Return contacts with current Prisma schema format
-      const transformedContacts = contacts.map((contact) => ({
-        id: contact.id,
-        fullName: contact.fullName,
-        email: contact.email,
-        phone: contact.phone,
-        jobTitle: contact.jobTitle,
-        companyName: contact.companyName,
-        profileImageUrl: contact.profileImageUrl,
-        website: contact.website,
-        tags: contact.tags,
-        socialHandles: contact.socialHandles,
-        addressStreet: contact.addressStreet,
-        addressCity: contact.addressCity,
-        addressPostalCode: contact.addressPostalCode,
-        addressCountry: contact.addressCountry,
-        phoneCountryCode: contact.phoneCountryCode,
-        notes: contact.notes,
-        source: contact.source,
-        lastContactedAt: contact.lastContactedAt,
-        wellnessGoals: contact.wellnessGoals,
-        wellnessJourneyStage: contact.wellnessJourneyStage,
-        wellnessStatus: contact.wellnessStatus,
-        lastAssessmentDate: contact.lastAssessmentDate,
-        clientSince: contact.clientSince,
-        relationshipStatus: contact.relationshipStatus,
-        referralSource: contact.referralSource,
-        enrichmentStatus: contact.enrichmentStatus,
-        enrichedData: contact.enrichedData,
-        communicationPreferences: contact.communicationPreferences,
-        createdAt: contact.createdAt,
-        updatedAt: contact.updatedAt,
-        userId: contact.userId,
-        // Add empty groups array to match ContactWithGroups interface
-        groups: [],
-      }));
-
-      return transformedContacts;
+      // Return contacts directly from Prisma - no transformation needed
+      // The Contact model already includes all fields including groups
+      return contacts;
     } catch (error) {
       console.error('Error fetching contacts:', error);
       throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to fetch contacts' });
@@ -145,6 +135,22 @@ export const contactRouter = router({
       notes: input.notes || null,
       source: input.source || null,
       lastContactedAt: input.lastContactedAt || null,
+      // Array fields
+      groups: input.groups || [],
+      tags: input.tags || [],
+      socialHandles: input.socialHandles || [],
+      wellnessGoals: input.wellnessGoals || [],
+      // Additional contact fields
+      website: input.website || null,
+      addressStreet: input.addressStreet || null,
+      addressCity: input.addressCity || null,
+      addressPostalCode: input.addressPostalCode || null,
+      addressCountry: input.addressCountry || null,
+      referralSource: input.referralSource || null,
+      relationshipStatus: input.relationshipStatus || null,
+      wellnessStatus: input.wellnessStatus || null,
+      wellnessJourneyStage: input.wellnessJourneyStage || null,
+      clientSince: input.clientSince || null,
     };
 
     try {
@@ -205,6 +211,22 @@ export const contactRouter = router({
           notes: fields.notes,
           source: fields.source,
           lastContactedAt: fields.lastContactedAt,
+          // Array fields
+          groups: fields.groups,
+          tags: fields.tags,
+          socialHandles: fields.socialHandles,
+          wellnessGoals: fields.wellnessGoals,
+          // Additional contact fields
+          website: fields.website,
+          addressStreet: fields.addressStreet,
+          addressCity: fields.addressCity,
+          addressPostalCode: fields.addressPostalCode,
+          addressCountry: fields.addressCountry,
+          referralSource: fields.referralSource,
+          relationshipStatus: fields.relationshipStatus,
+          wellnessStatus: fields.wellnessStatus,
+          wellnessJourneyStage: fields.wellnessJourneyStage,
+          clientSince: fields.clientSince,
         };
 
         contact = await ctx.prisma.contact.create({
@@ -356,6 +378,70 @@ export const contactRouter = router({
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to add tags to contacts',
+          cause: error,
+        });
+      }
+    }),
+
+  // Bulk add groups to contacts
+  bulkAddGroups: protectedProcedure
+    .input(
+      z.object({
+        contactIds: z.array(z.string().uuid()).min(1, 'At least one contact ID is required'),
+        groups: z
+          .array(z.string().min(1, 'Group cannot be empty'))
+          .min(1, 'At least one group is required'),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      if (!ctx.user) {
+        throw new TRPCError({ code: 'UNAUTHORIZED' });
+      }
+
+      try {
+        // Verify all contacts exist and belong to the user
+        const contacts = await ctx.prisma.contact.findMany({
+          where: {
+            id: { in: input.contactIds },
+            userId: ctx.user.id,
+          },
+          select: {
+            id: true,
+            groups: true,
+          },
+        });
+
+        if (contacts.length !== input.contactIds.length) {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'One or more contact IDs are invalid',
+          });
+        }
+
+        // Update each contact's groups by merging with existing groups
+        const updatePromises = contacts.map((contact) => {
+          const existingGroups = contact.groups || [];
+          const newGroups = [...new Set([...existingGroups, ...input.groups])];
+
+          return ctx.prisma.contact.update({
+            where: { id: contact.id },
+            data: { groups: newGroups },
+          });
+        });
+
+        await Promise.all(updatePromises);
+
+        return {
+          success: true,
+          updatedCount: contacts.length,
+          addedGroups: input.groups,
+        };
+      } catch (error) {
+        console.error('Error bulk adding groups to contacts:', error);
+        if (error instanceof TRPCError) throw error;
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to add groups to contacts',
           cause: error,
         });
       }

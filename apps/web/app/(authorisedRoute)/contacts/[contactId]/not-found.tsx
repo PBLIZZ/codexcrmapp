@@ -10,10 +10,10 @@ export default function NotFound() {
         <h2 className='text-xl font-semibold'>Not Found</h2>
       </div>
       <p className='text-sm text-muted-foreground text-center max-w-md'>
-        The page you&apos;re looking for doesn&apos;t exist or has been moved.
+        The contact you&apos;re looking for doesn&apos;t exist or may have been deleted.
       </p>
       <Button asChild>
-        <Link href='/'>Return Home</Link>
+        <Link href='/contacts'>Back to Contacts</Link>
       </Button>
     </div>
   );

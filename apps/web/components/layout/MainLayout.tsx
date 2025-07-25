@@ -33,8 +33,8 @@ interface MainLayoutProps {
 export function MainLayout({ children }: MainLayoutProps) {
   return (
     <SidebarProvider>
-      <div className='flex h-screen w-full'>
-        <Sidebar collapsible='icon'>
+      <div className='flex w-full'>
+        <Sidebar collapsible='icon' variant='floating'>
           <SidebarHeader>
             <SidebarBrandHeader />
           </SidebarHeader>
@@ -61,7 +61,7 @@ export function MainLayout({ children }: MainLayoutProps) {
             </div>
           </header>
 
-          <main className='flex flex-1 flex-col gap-4 p-4 overflow-auto'>{children}</main>
+          <main className='flex flex-1 flex-col gap-4 p-4 min-h-0'>{children}</main>
         </SidebarInset>
       </div>
     </SidebarProvider>

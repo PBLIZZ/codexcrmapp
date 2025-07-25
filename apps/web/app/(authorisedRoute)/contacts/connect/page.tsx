@@ -1,8 +1,8 @@
 import { createSupabaseServer } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
-import { NewContactForm } from '@/app/(authorisedRoute)/contacts/_components/NewContactForm';
+import { ConnectDataSources } from './ConnectDataSources';
 
-export default async function NewContactPage() {
+export default async function ConnectDataPage() {
   // Server-side auth check
   const supabase = await createSupabaseServer();
   const {
@@ -13,5 +13,5 @@ export default async function NewContactPage() {
     redirect('/sign-in');
   }
 
-  return <NewContactForm />;
+  return <ConnectDataSources />;
 }

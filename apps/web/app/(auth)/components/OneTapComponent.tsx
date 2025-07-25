@@ -13,8 +13,6 @@ const OneTapComponent = () => {
   const [showButton, setShowButton] = useState(false);
   const [isPending, setIsPending] = useState(false);
 
-  // Removed nonce generation - it was breaking OAuth flow
-
   const handleGoogleSignIn = useCallback(
     async (response: CredentialResponse) => {
       setIsPending(true);
@@ -123,7 +121,7 @@ const OneTapComponent = () => {
     setTimeout(() => {
       setShowButton(true);
     }, 2000);
-  }, [router, handleGoogleSignIn]);
+  }, [handleGoogleSignIn]);
 
   const renderGoogleButton = () => {
     if (window.google && window.google.accounts && window.google.accounts.id) {

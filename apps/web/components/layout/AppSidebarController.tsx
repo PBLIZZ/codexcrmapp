@@ -10,7 +10,6 @@ import { MessagesSidebar } from '@/app/(authorisedRoute)/messages/MessagesSideba
 import { CalendarSidebar } from '@/app/(authorisedRoute)/calendar/CalendarSidebar';
 import { SettingsSidebar } from '@/app/(authorisedRoute)/settings/SettingsSidebar';
 import { AnalyticsSidebar } from '@/app/(authorisedRoute)/analytics/AnalyticsSidebar';
-import { ColoredSidebarWrapper } from './ColoredSidebarWrapper';
 
 export function AppSidebarController() {
   const pathname = usePathname();
@@ -51,5 +50,5 @@ export function AppSidebarController() {
     return <DashboardSidebar />;
   };
 
-  return <ColoredSidebarWrapper>{getSidebarComponent()}</ColoredSidebarWrapper>;
+  return <>{getSidebarComponent()}</>;
 }

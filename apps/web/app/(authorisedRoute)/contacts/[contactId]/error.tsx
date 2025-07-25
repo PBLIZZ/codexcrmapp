@@ -22,8 +22,8 @@ export default function Error({
         <h2 className='text-lg font-semibold'>Something went wrong!</h2>
       </div>
       <p className='text-sm text-muted-foreground text-center max-w-md'>
-        An error occurred while loading this page. Please try again or contact support if the
-        problem persists.
+        An error occurred while loading this contact. The contact may not exist or there may be a
+        network issue.
       </p>
       <Button onClick={reset} variant='outline'>
         Try again

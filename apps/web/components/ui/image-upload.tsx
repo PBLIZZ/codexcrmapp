@@ -1,7 +1,6 @@
 'use client';
 
-import { createBrowserClient } from '@supabase/ssr';
-import { Loader2, Upload, X, UserCircle } from 'lucide-react';
+import { Loader2, Upload, X, User } from 'lucide-react';
 import Image from 'next/image';
 import { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
@@ -19,31 +18,33 @@ function isValidUrl(string: string): boolean {
   }
 }
 
+// Helper function to determine if URL is a Supabase storage path
+function isStoragePath(url: string | null | undefined): boolean {
+  return !!url && url.startsWith('contacts/');
+}
+
 interface ImageUploadProps {
   value: string | null;
   onChange: (value: string | null) => void;
   disabled?: boolean;
-  contactId?: string;
 }
 
-export function ImageUpload({ value, onChange, disabled = false, contactId }: ImageUploadProps) {
+export function ImageUpload({ value, onChange, disabled = false }: ImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(value);
   const [imageError, setImageError] = useState(false);
 
-  // Initialize Supabase client
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
-  );
+  // Get upload URL mutation
+  const getUploadUrlMutation = api.storage.getUploadUrl.useMutation();
 
-  // Generate signed URL for profile photos from Supabase Storage
+  // Generate signed URL for storage paths
   const { data: fileUrlData } = api.storage.getFileUrl.useQuery(
     { filePath: value || '' },
     {
-      enabled: !!value && value.includes('contact-profile-photo'),
-      staleTime: 55 * 60 * 1000, // 55 minutes (URLs valid for 1 hour)
+      enabled: isStoragePath(value),
+      staleTime: 50 * 60 * 1000, // 50 minutes (URLs valid for 1 hour)
+      retry: 2,
     }
   );
 
@@ -59,98 +60,111 @@ export function ImageUpload({ value, onChange, disabled = false, contactId }: Im
   useEffect(() => {
     if (value === null) {
       setPreviewUrl(null);
-    } else if (value && !value.includes('contact-profile-photo')) {
-      // If it's a direct URL (not a storage path), use it directly
+    } else if (isStoragePath(value)) {
+      // For storage paths, wait for signed URL
+      if (!fileUrlData?.signedUrl) {
+        setPreviewUrl(null);
+      }
+    } else if (value && isValidUrl(value)) {
+      // For direct URLs, use immediately
       setPreviewUrl(value);
     }
     setImageError(false);
-  }, [value]);
-
-  // Use tRPC mutation to get signed upload URL
-  const getUploadUrlMutation = api.storage.getUploadUrl.useMutation();
+  }, [value, fileUrlData]);
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
+      if (acceptedFiles.length === 0) return;
+
+      const file = acceptedFiles[0];
+      setIsUploading(true);
+      setUploadError(null);
+
       try {
-        if (acceptedFiles.length === 0) return;
+        // Validate file type
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        if (!allowedTypes.includes(file.type)) {
+          throw new Error('Please select a valid image file (JPG, PNG, GIF, or WEBP)');
+        }
 
-        setIsUploading(true);
-        setUploadError(null);
-
-        const file = acceptedFiles[0]; // Only use the first file
-
-        // Validate file size (max 2MB for Supabase free tier)
-        if (file.size > 2 * 1024 * 1024) {
+        // Validate file size (2MB limit)
+        const maxSize = 2 * 1024 * 1024;
+        if (file.size > maxSize) {
           throw new Error('File size must be less than 2MB');
         }
 
-        // Validate file type
-        if (!file.type.startsWith('image/')) {
-          throw new Error('Only image files are allowed');
-        }
+        // Generate unique filename with timestamp
+        const timestamp = Date.now();
+        const fileExtension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+        const uniqueFileName = `${timestamp}-${uuidv4()}.${fileExtension}`;
 
-        // Create unique filename
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${contactId || uuidv4()}-${Date.now()}.${fileExt}`;
+        console.log('Starting upload:', {
+          fileName: uniqueFileName,
+          fileSize: file.size,
+          fileType: file.type,
+        });
 
-        // Get signed upload URL from backend
-        const { signedUrl, path } = await getUploadUrlMutation.mutateAsync({
-          fileName,
+        // Get signed upload URL from tRPC
+        const uploadUrlResponse = await getUploadUrlMutation.mutateAsync({
+          fileName: uniqueFileName,
           contentType: file.type,
           folderPath: 'contacts',
         });
 
-        // Upload file directly to Storage using the signed URL
-        const uploadResponse = await fetch(signedUrl, {
+        if (!uploadUrlResponse?.signedUrl) {
+          throw new Error('Failed to get upload URL from server');
+        }
+
+        console.log('Got signed URL, uploading to storage...');
+
+        // Upload file directly to Supabase Storage using signed URL
+        const uploadResponse = await fetch(uploadUrlResponse.signedUrl, {
           method: 'PUT',
+          body: file,
           headers: {
             'Content-Type': file.type,
+            'Cache-Control': 'max-age=3600',
           },
-          body: file,
         });
+
         if (!uploadResponse.ok) {
           const errorText = await uploadResponse.text();
-          console.error('Upload failed:', {
+          console.error('Storage upload failed:', {
             status: uploadResponse.status,
             statusText: uploadResponse.statusText,
             errorText,
           });
-          throw new Error(
-            `Upload failed: ${uploadResponse.status} ${uploadResponse.statusText} - ${errorText}`
-          );
+          throw new Error(`Upload failed: ${uploadResponse.status} ${uploadResponse.statusText}`);
         }
 
-        // Get the URL for the file
-        const { data: fileData, error: urlError } = await supabase.storage
-          .from('contact-profile-photo')
-          .createSignedUrl(path, 3600); // URL valid for 1 hour
+        // The path returned by createSignedUploadUrl is the storage path
+        const storagePath = uploadUrlResponse.path;
+        console.log('Upload successful:', {
+          storagePath,
+          uploadResponse: {
+            status: uploadResponse.status,
+            statusText: uploadResponse.statusText,
+          },
+        });
 
-        if (urlError) {
-          // If bucket doesn't exist, provide helpful error message
-          if (urlError.message?.includes('bucket') || urlError.message?.includes('not found')) {
-            throw new Error(
-              'Storage bucket not set up. Please contact administrator to set up contact photo storage.'
-            );
-          }
-          throw new Error(`Failed to create signed URL: ${urlError.message}`);
-        }
+        // Update the form with the storage path
+        onChange(storagePath);
 
-        if (!fileData?.signedUrl) {
-          throw new Error('No signed URL returned from storage');
-        }
-
-        // Update the preview and pass the path to parent component
-        setPreviewUrl(fileData.signedUrl);
-        console.log('ImageUpload: Setting path value:', path);
-        onChange(path); // Store just the path, not the full signed URL
+        // Show success feedback
+        console.log('Image uploaded successfully!');
       } catch (error) {
         console.error('Upload error:', error);
-        setUploadError(error instanceof Error ? error.message : 'Failed to upload image');
+        const errorMessage =
+          error instanceof Error ? error.message : 'Upload failed. Please try again.';
+        setUploadError(errorMessage);
+
+        // Reset preview on error
+        setPreviewUrl(null);
       } finally {
         setIsUploading(false);
       }
     },
-    [getUploadUrlMutation, supabase, onChange, contactId]
+    [getUploadUrlMutation, onChange]
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -159,52 +173,29 @@ export function ImageUpload({ value, onChange, disabled = false, contactId }: Im
       'image/*': ['.jpeg', '.jpg', '.png', '.gif', '.webp'],
     },
     maxFiles: 1,
-    disabled: isUploading || disabled,
+    disabled: disabled || isUploading,
   });
 
-  // Delete file mutation
-  const deleteFileMutation = api.storage.deleteFile.useMutation();
+  const handleRemove = useCallback(() => {
+    setPreviewUrl(null);
+    onChange(null);
+    setImageError(false);
+    setUploadError(null);
+  }, [onChange]);
 
-  const handleRemove = useCallback(
-    async (e: React.MouseEvent) => {
-      e.stopPropagation();
-
-      // If the value is a storage path, delete the file
-      if (value && value.includes('contact-profile-photo')) {
-        try {
-          // Extract the path part from the URL if needed
-          const path = value.includes('?') ? value.split('?')[0] : value;
-          await deleteFileMutation.mutateAsync({ filePath: path });
-        } catch (error) {
-          console.error('Error deleting file:', error);
-        }
-      }
-
-      setPreviewUrl(null);
-      onChange(null);
-    },
-    [onChange, value, deleteFileMutation]
-  );
-
-  const handleImageError = () => {
+  const handleImageError = useCallback(() => {
+    console.warn('Image failed to load:', { value, previewUrl });
     setImageError(true);
-  };
+  }, [value, previewUrl]);
 
   return (
-    <div className='space-y-2'>
+    <div className='w-full'>
       <div
         {...getRootProps()}
         className={`
-          relative
-          cursor-pointer
-          border-2
-          border-dashed
-          rounded-md
-          p-4
-          transition
+          relative border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-colors
           ${isDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}
-          ${isUploading ? 'opacity-50 cursor-not-allowed' : ''}
-          ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:border-blue-400'}
+          ${disabled || isUploading ? 'cursor-not-allowed opacity-50' : 'hover:border-gray-400'}
         `}
       >
         <input {...getInputProps()} />
@@ -219,7 +210,7 @@ export function ImageUpload({ value, onChange, disabled = false, contactId }: Im
             <div className='relative h-32 w-32 rounded-full overflow-hidden'>
               {imageError || !isValidUrl(previewUrl) ? (
                 <div className='flex items-center justify-center h-full w-full bg-gray-100'>
-                  <UserCircle className='h-16 w-16 text-gray-400' />
+                  <User className='h-16 w-16 text-gray-400' />
                 </div>
               ) : (
                 <Image

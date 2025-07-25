@@ -1,17 +1,19 @@
 'use client';
 
 import { Table } from '@tanstack/react-table';
+import { Input, Button } from '@codexcrm/ui';
 import {
-  Button,
-  Input,
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuTrigger,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuCheckboxItem,
+  DropdownMenuTrigger,
   Badge,
   Separator,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   Dialog,
   DialogContent,
   DialogDescription,
@@ -20,51 +22,32 @@ import {
   DialogTitle,
   toast,
 } from '@codexcrm/ui';
-import { useRouter } from 'next/navigation';
-import { api } from '@/lib/trpc';
 import { useState } from 'react';
-
-import {
-  Search,
-  SlidersHorizontal,
-  X,
-  Plus,
-  Trash2,
-  Tag,
-  CheckCircle2,
-  Loader2,
-} from 'lucide-react';
-import { ContactWithGroups } from './columns';
+import { Search, SlidersHorizontal, Tag, Trash2, Loader2, X, Users } from 'lucide-react';
+import { api } from '@/lib/trpc/client';
+import { type Contact } from '@codexcrm/db';
 
 interface TableToolbarProps {
-  table: Table<ContactWithGroups>;
+  table: Table<Contact>;
   globalFilter: string;
   onGlobalFilterChange: (value: string) => void;
-  activeTagFilter?: string;
-  activeGroupFilter?: string;
-  onClearTagFilter?: () => void;
-  onClearGroupFilter?: () => void;
 }
 
-export function TableToolbar({
-  table,
-  globalFilter,
-  onGlobalFilterChange,
-  activeTagFilter,
-  onClearTagFilter,
-}: TableToolbarProps) {
-  const router = useRouter();
+// TableToolbar component provides search, filtering, column visibility, and bulk actions
+// Uses CSS variables for dark mode compatibility and proper z-index for overlay components
+export function TableToolbar({ table, globalFilter, onGlobalFilterChange }: TableToolbarProps) {
   const selectedRows = table.getFilteredSelectedRowModel().rows;
   const hasSelection = selectedRows.length > 0;
 
   // State for modals
-  const [isTagModalOpen, setIsTagModalOpen] = useState(false);
+  const [isTagPopoverOpen, setIsTagPopoverOpen] = useState(false);
+  const [isGroupPopoverOpen, setIsGroupPopoverOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [newTagInput, setNewTagInput] = useState('');
+  const [newGroupInput, setNewGroupInput] = useState('');
 
   // tRPC hooks
   const utils = api.useUtils();
-  const { data: allTags } = api.contacts.getAllTags.useQuery();
 
   const bulkAddTagsMutation = api.contacts.bulkAddTags.useMutation({
     onSuccess: (data) => {
@@ -74,14 +57,35 @@ export function TableToolbar({
         variant: 'default',
       });
       utils.contacts.list.invalidate();
-      setIsTagModalOpen(false);
+      setIsTagPopoverOpen(false);
       setNewTagInput('');
       table.resetRowSelection();
     },
     onError: (error) => {
       toast({
         title: 'Error',
-        description: `Failed to add tags: ${error.message}`,
+        description: error.message || 'Failed to add tags',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  const bulkAddGroupsMutation = api.contacts.bulkAddGroups.useMutation({
+    onSuccess: (data) => {
+      toast({
+        title: 'Success',
+        description: `Added groups to ${data.updatedCount} contacts`,
+        variant: 'default',
+      });
+      utils.contacts.list.invalidate();
+      setIsGroupPopoverOpen(false);
+      setNewGroupInput('');
+      table.resetRowSelection();
+    },
+    onError: (error) => {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to add groups',
         variant: 'destructive',
       });
     },
@@ -101,30 +105,14 @@ export function TableToolbar({
     onError: (error) => {
       toast({
         title: 'Error',
-        description: `Failed to delete contacts: ${error.message}`,
+        description: error.message || 'Failed to delete contacts',
         variant: 'destructive',
       });
     },
   });
 
-  const handleBulkAddTag = () => {
-    setIsTagModalOpen(true);
-  };
-
   const handleBulkDelete = () => {
     setIsDeleteModalOpen(true);
-  };
-
-  const confirmAddTags = () => {
-    if (!newTagInput.trim()) return;
-
-    const tags = newTagInput
-      .split(',')
-      .map((tag) => tag.trim())
-      .filter(Boolean);
-    const contactIds = selectedRows.map((row) => row.original.id);
-
-    bulkAddTagsMutation.mutate({ contactIds, tags });
   };
 
   const confirmDelete = () => {
@@ -132,119 +120,241 @@ export function TableToolbar({
     bulkDeleteMutation.mutate({ contactIds });
   };
 
+  // Get active column filters for display
+  const activeFilters = table.getState().columnFilters;
+
   return (
     <div className='space-y-4'>
       {/* Search and Column Visibility */}
-      <div className='flex items-center justify-between p-2 rounded-md bg-teal-50/80 shadow-sm border border-teal-700/30'>
-        <div className='flex items-center gap-3'>
+      <div className='flex items-center justify-between mb-2'>
+        <div className='flex items-center space-x-2'>
           <div className='relative'>
-            <Search className='absolute left-3 top-2.5 h-4 w-4 text-slate-500' />
+            <Search className='absolute left-2 top-2.5 h-4 w-4 text-muted-foreground' />
             <Input
               placeholder='Search contacts...'
               value={globalFilter ?? ''}
               onChange={(event) => onGlobalFilterChange(String(event.target.value))}
-              className='pl-9 w-[280px] border-teal-700/30 focus:border-teal-500 focus:ring-teal-500/30 bg-white rounded-md'
+              className='pl-8 w-[300px] border-input shadow-sm rounded-md'
             />
           </div>
-
-          {/* Active Filters */}
-          <div className='flex gap-2'>
-            {activeTagFilter && (
+        </div>
+        {/* Active Filters Display */}
+        {activeFilters.length > 0 && (
+          <div className='text-foreground border-border'>
+            <span className='text-sm text-muted-foreground'>Filters:</span>{' '}
+            {activeFilters.map((filter) => (
               <Badge
+                key={filter.id}
                 variant='outline'
-                className='flex items-center gap-1 bg-teal-100 text-teal-800 hover:bg-teal-200 border-teal-200'
+                className='text-xs bg-secondary border-border'
               >
-                <Tag className='h-3 w-3 mr-1' /> {activeTagFilter}
+                {filter.id}: {String(filter.value)}
                 <button
-                  className='ml-1 rounded-full hover:bg-teal-200/80 p-0.5'
-                  onClick={onClearTagFilter}
+                  onClick={() => {
+                    const column = table.getColumn(filter.id);
+                    column?.setFilterValue(undefined);
+                  }}
+                  className='ml-1 hover:bg-destructive/20 rounded-full'
                 >
                   <X className='h-3 w-3' />
                 </button>
               </Badge>
-            )}
+            ))}
           </div>
-        </div>
-
-        <div className='flex gap-2'>
-          <Button
-            variant='outline'
-            size='sm'
-            className='bg-white border-teal-700/30 hover:bg-teal-50 hover:text-teal-700 shadow-sm rounded-md'
-            onClick={() => router.push('/contacts/new')}
-          >
-            <Plus className='mr-2 h-4 w-4' />
-            New Contact
-          </Button>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant='outline'
-                size='sm'
-                className='bg-white border-teal-700/30 shadow-sm rounded-md'
-              >
-                <SlidersHorizontal className='mr-2 h-4 w-4' />
-                Columns
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align='end'
-              className='border-teal-700/30 bg-white shadow-md p-1 rounded-md'
+        )}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant='outline'
+              size='sm'
+              className='bg-background border-border shadow-sm rounded-md'
             >
-              <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
-              <DropdownMenuSeparator className='bg-teal-100/60' />
-              {table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className='capitalize'
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                    >
-                      {column.id.replace(/_/g, ' ')}
-                    </DropdownMenuCheckboxItem>
-                  );
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+              <SlidersHorizontal className='mr-2 h-4 w-4' />
+              Columns
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align='end'
+            className='z-50 border-border bg-background shadow-md p-1 rounded-md'
+          >
+            <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+            <DropdownMenuSeparator className='bg-border' />
+            {table
+              .getAllColumns()
+              .filter((column) => column.getCanHide())
+              .map((column) => {
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className='capitalize'
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                  >
+                    {column.id.replace(/_/g, ' ')}
+                  </DropdownMenuCheckboxItem>
+                );
+              })}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
-      {/* Bulk Actions Bar */}
+      {/* Bulk Actions */}
       {hasSelection && (
-        <div className='flex items-center justify-between p-3 bg-teal-50 border border-teal-700/30 rounded-lg shadow-md'>
-          <div className='flex items-center gap-2'>
-            <CheckCircle2 className='h-5 w-5 text-teal-600' />
-            <div className='font-medium text-teal-800'>
-              <span className='font-semibold'>{selectedRows.length}</span> contact
-              {selectedRows.length === 1 ? '' : 's'} selected
-            </div>
+        <div className='flex items-center justify-between p-3 bg-accent rounded-lg'>
+          <div className='text-sm font-medium'>
             <Badge
               variant='outline'
-              className='ml-1.5 bg-teal-50 border border-teal-700/30 text-teal-700 hover:bg-teal-100 shadow-sm rounded-md'
+              className='bg-secondary text-secondary-foreground border-border'
             >
-              {Math.round((selectedRows.length / table.getFilteredRowModel().rows.length) * 100)}%
+              {selectedRows.length} selected
             </Badge>
           </div>
           <div className='flex items-center gap-2'>
+            <Popover open={isTagPopoverOpen} onOpenChange={setIsTagPopoverOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant='outline'
+                  size='sm'
+                  disabled={!hasSelection}
+                  className='bg-background border-border text-foreground hover:bg-accent hover:text-accent-foreground shadow-sm rounded-md'
+                >
+                  <Tag className='mr-1.5 h-4 w-4' />
+                  Add Tag
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className='w-80 z-50 bg-background border shadow-md'>
+                <div className='space-y-4'>
+                  <div>
+                    <h4 className='font-medium'>Add Tags to Contacts</h4>
+                    <p className='text-sm text-muted-foreground'>
+                      Add tags to {selectedRows.length} selected contact
+                      {selectedRows.length === 1 ? '' : 's'}. Separate multiple tags with commas.
+                    </p>
+                  </div>
+                  <Input
+                    placeholder='Enter tags (comma-separated)'
+                    value={newTagInput}
+                    onChange={(e) => setNewTagInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (newTagInput.trim()) {
+                          const tags = newTagInput
+                            .split(',')
+                            .map((tag) => tag.trim())
+                            .filter(Boolean);
+                          const contactIds = selectedRows.map((row) => row.original.id);
+                          bulkAddTagsMutation.mutate({ contactIds, tags });
+                        }
+                      }
+                    }}
+                  />
+                  <div className='flex justify-end space-x-2'>
+                    <Button
+                      variant='outline'
+                      size='sm'
+                      onClick={() => {
+                        setIsTagPopoverOpen(false);
+                        setNewTagInput('');
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      size='sm'
+                      onClick={() => {
+                        if (newTagInput.trim()) {
+                          const tags = newTagInput
+                            .split(',')
+                            .map((tag) => tag.trim())
+                            .filter(Boolean);
+                          const contactIds = selectedRows.map((row) => row.original.id);
+                          bulkAddTagsMutation.mutate({ contactIds, tags });
+                        }
+                      }}
+                      disabled={!newTagInput.trim() || bulkAddTagsMutation.isPending}
+                    >
+                      {bulkAddTagsMutation.isPending ? 'Adding...' : 'Add Tags'}
+                    </Button>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+            <Popover open={isGroupPopoverOpen} onOpenChange={setIsGroupPopoverOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant='outline'
+                  size='sm'
+                  disabled={!hasSelection}
+                  className='bg-background border-border text-foreground hover:bg-accent hover:text-accent-foreground shadow-sm rounded-md'
+                >
+                  <Users className='mr-1.5 h-4 w-4' />
+                  Add Group
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className='w-80 z-50 bg-background border shadow-md'>
+                <div className='space-y-4'>
+                  <div>
+                    <h4 className='font-medium'>Add Groups to Contacts</h4>
+                    <p className='text-sm text-muted-foreground'>
+                      Add groups to {selectedRows.length} selected contact
+                      {selectedRows.length === 1 ? '' : 's'}. Separate multiple groups with commas.
+                    </p>
+                  </div>
+                  <Input
+                    placeholder='Enter groups (comma-separated)'
+                    value={newGroupInput}
+                    onChange={(e) => setNewGroupInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (newGroupInput.trim()) {
+                          const groups = newGroupInput
+                            .split(',')
+                            .map((group) => group.trim())
+                            .filter(Boolean);
+                          const contactIds = selectedRows.map((row) => row.original.id);
+                          bulkAddGroupsMutation.mutate({ contactIds, groups });
+                        }
+                      }
+                    }}
+                  />
+                  <div className='flex justify-end space-x-2'>
+                    <Button
+                      variant='outline'
+                      size='sm'
+                      onClick={() => {
+                        setIsGroupPopoverOpen(false);
+                        setNewGroupInput('');
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      size='sm'
+                      onClick={() => {
+                        if (newGroupInput.trim()) {
+                          const groups = newGroupInput
+                            .split(',')
+                            .map((group) => group.trim())
+                            .filter(Boolean);
+                          const contactIds = selectedRows.map((row) => row.original.id);
+                          bulkAddGroupsMutation.mutate({ contactIds, groups });
+                        }
+                      }}
+                      disabled={!newGroupInput.trim() || bulkAddGroupsMutation.isPending}
+                    >
+                      {bulkAddGroupsMutation.isPending ? 'Adding...' : 'Add Groups'}
+                    </Button>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+            <Separator orientation='vertical' className='h-6 bg-border' />
             <Button
               variant='outline'
               size='sm'
-              className='bg-white border-teal-700/30 text-teal-700 hover:bg-teal-50 hover:text-teal-800 shadow-sm rounded-md'
-              onClick={handleBulkAddTag}
-            >
-              <Tag className='mr-1.5 h-4 w-4' />
-              Add Tag
-            </Button>
-            <Separator orientation='vertical' className='h-6 bg-teal-200' />
-            <Button
-              variant='outline'
-              size='sm'
-              className='bg-white border-red-200 text-red-700 hover:bg-red-50 hover:text-red-800 shadow-sm rounded-md'
+              className='bg-background border-destructive/20 text-destructive hover:bg-destructive/10 hover:text-destructive shadow-sm rounded-md'
               onClick={handleBulkDelete}
             >
               <Trash2 className='mr-1.5 h-4 w-4' />
@@ -253,78 +363,6 @@ export function TableToolbar({
           </div>
         </div>
       )}
-
-      {/* Tag Assignment Modal */}
-      <Dialog open={isTagModalOpen} onOpenChange={setIsTagModalOpen}>
-        <DialogContent className='sm:max-w-md'>
-          <DialogHeader>
-            <DialogTitle>Add Tags to Contacts</DialogTitle>
-            <DialogDescription>
-              Add tags to {selectedRows.length} selected contact
-              {selectedRows.length === 1 ? '' : 's'}. Separate multiple tags with commas.
-            </DialogDescription>
-          </DialogHeader>
-          <div className='space-y-4'>
-            <div>
-              <label className='text-sm font-medium'>Tags</label>
-              <Input
-                placeholder='Enter tags separated by commas (e.g., client, vip, follow-up)'
-                value={newTagInput}
-                onChange={(e) => setNewTagInput(e.target.value)}
-                className='mt-1'
-              />
-            </div>
-            {allTags && allTags.length > 0 && (
-              <div>
-                <label className='text-sm font-medium text-slate-600'>Existing tags:</label>
-                <div className='flex flex-wrap gap-1 mt-2'>
-                  {allTags.slice(0, 10).map((tag) => (
-                    <Badge
-                      key={tag}
-                      variant='outline'
-                      className='cursor-pointer hover:bg-teal-50 text-xs'
-                      onClick={() => {
-                        const currentTags = newTagInput
-                          .split(',')
-                          .map((t) => t.trim())
-                          .filter(Boolean);
-                        if (!currentTags.includes(tag)) {
-                          setNewTagInput(currentTags.length > 0 ? `${newTagInput}, ${tag}` : tag);
-                        }
-                      }}
-                    >
-                      {tag}
-                    </Badge>
-                  ))}
-                  {allTags.length > 10 && (
-                    <Badge variant='outline' className='text-xs'>
-                      +{allTags.length - 10} more
-                    </Badge>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-          <DialogFooter>
-            <Button
-              variant='outline'
-              onClick={() => {
-                setIsTagModalOpen(false);
-                setNewTagInput('');
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={confirmAddTags}
-              disabled={!newTagInput.trim() || bulkAddTagsMutation.isPending}
-            >
-              {bulkAddTagsMutation.isPending && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
-              Add Tags
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       {/* Delete Confirmation Modal */}
       <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>

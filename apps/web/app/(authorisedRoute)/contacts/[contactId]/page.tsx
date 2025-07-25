@@ -1,6 +1,6 @@
 import { createSupabaseServer } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
-import { UnifiedContactForm } from '../_components/UnifiedContactForm';
+import { ViewContactForm } from '../_components/ViewContactForm';
 
 /**
  * Props for the ContactDetailPage component following Next.js App Router conventions
@@ -34,5 +34,5 @@ export default async function ContactDetailPage({ params }: ContactDetailPagePro
     redirect('/sign-in');
   }
 
-  return <UnifiedContactForm contactId={contactId} mode='view' />;
+  return <ViewContactForm contactId={contactId} />;
 }

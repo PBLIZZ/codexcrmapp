@@ -3,6 +3,7 @@ import nextPlugin from '@next/eslint-plugin-next';
 import queryPlugin from '@tanstack/eslint-plugin-query';
 import reactPlugin from 'eslint-plugin-react';
 import hooksPlugin from 'eslint-plugin-react-hooks';
+import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
 import tseslint from 'typescript-eslint';
 
 // Base configuration applied to all files
@@ -31,6 +32,17 @@ export const baseConfig = tseslint.config(
     rules: {
       '@tanstack/query/exhaustive-deps': 'error',
       '@tanstack/query/stable-query-client': 'error',
+    },
+  },
+  {
+    plugins: { 'jsx-a11y': jsxA11yPlugin },
+    rules: {
+      'jsx-a11y/alt-text': 'warn',
+      'jsx-a11y/aria-props': 'error',
+      'jsx-a11y/aria-proptypes': 'error',
+      'jsx-a11y/aria-unsupported-elements': 'error',
+      'jsx-a11y/role-has-required-aria-props': 'error',
+      'jsx-a11y/role-supports-aria-props': 'error',
     },
   }
 );

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@codexcrm/ui';
 import { api } from '@/lib/trpc';
 
@@ -25,6 +25,21 @@ const fallbackSizes = {
   xl: 'text-2xl',
 };
 
+// Helper function to determine if URL is a Supabase storage path
+const isStoragePath = (url: string | null | undefined): boolean => {
+  return !!url && url.startsWith('contacts/');
+};
+
+// Helper function to check if URL is valid
+const isValidUrl = (url: string): boolean => {
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 export function ContactAvatar({
   profileImageUrl,
   fullName,
@@ -32,58 +47,76 @@ export function ContactAvatar({
   className = '',
 }: ContactAvatarProps) {
   const [imageError, setImageError] = useState(false);
-  const [signedUrl, setSignedUrl] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Get signed URL for Supabase storage images
-  const { data: fileUrlData, error: storageError } = api.storage.getFileUrl.useQuery(
+  // Only fetch signed URL for storage paths
+  const shouldFetchSignedUrl = isStoragePath(profileImageUrl);
+
+  const {
+    data: fileUrlData,
+    error: storageError,
+    isLoading: isUrlLoading,
+  } = api.storage.getFileUrl.useQuery(
     { filePath: profileImageUrl || '' },
     {
-      enabled: !!profileImageUrl && profileImageUrl.startsWith('contacts/'),
-      staleTime: 55 * 60 * 1000, // 55 minutes (URLs valid for 1 hour)
+      enabled: shouldFetchSignedUrl,
+      staleTime: 50 * 60 * 1000, // 50 minutes (URLs valid for 1 hour)
+      retry: 2,
+      retryDelay: 1000,
     }
   );
 
-  // Debug logging
-  console.log('ContactAvatar Debug:', {
-    profileImageUrl,
-    isStoragePath: profileImageUrl?.startsWith('contacts/'),
-    queryEnabled: !!profileImageUrl && profileImageUrl.startsWith('contacts/'),
-    fileUrlData,
-    storageError,
-    signedUrl,
-  });
-
-  // Update signed URL when fetched
-  useEffect(() => {
-    if (fileUrlData?.signedUrl) {
-      setSignedUrl(fileUrlData.signedUrl);
-      setImageError(false);
-    }
-  }, [fileUrlData]);
-
-  // Reset image error when profileImageUrl changes
+  // Reset error state when profileImageUrl changes
   useEffect(() => {
     setImageError(false);
-    if (profileImageUrl?.includes('contact-profile-photo')) {
-      // Reset signed URL to trigger new fetch
-      setSignedUrl(null);
-    } else {
-      // Direct URL, use it directly
-      setSignedUrl(profileImageUrl || null);
-    }
-  }, [profileImageUrl]);
+    setIsLoading(shouldFetchSignedUrl);
+  }, [profileImageUrl, shouldFetchSignedUrl]);
 
-  const handleImageError = () => {
+  // Update loading state when URL fetch completes
+  useEffect(() => {
+    if (!isUrlLoading) {
+      setIsLoading(false);
+    }
+  }, [isUrlLoading]);
+
+  const handleImageError = useCallback(() => {
+    console.warn('Image failed to load:', {
+      profileImageUrl,
+      signedUrl: fileUrlData?.signedUrl,
+      storageError,
+    });
     setImageError(true);
+    setIsLoading(false);
+  }, [profileImageUrl, fileUrlData?.signedUrl, storageError]);
+
+  const handleImageLoad = useCallback(() => {
+    setImageError(false);
+    setIsLoading(false);
+  }, []);
+
+  // Determine the image source to use
+  const getImageSrc = (): string | null => {
+    if (!profileImageUrl) return null;
+
+    // For storage paths, use signed URL if available
+    if (isStoragePath(profileImageUrl)) {
+      return fileUrlData?.signedUrl || null;
+    }
+
+    // For direct URLs, validate and use directly
+    if (isValidUrl(profileImageUrl)) {
+      return profileImageUrl;
+    }
+
+    return null;
   };
 
-  // Determine the image source
-  const imageSrc = profileImageUrl?.includes('contact-profile-photo') ? signedUrl : profileImageUrl;
+  const imageSrc = getImageSrc();
 
   // Get initials for fallback
-  const getInitials = (name: string) => {
-    if (!name) return 'U';
-    const parts = name.trim().split(' ');
+  const getInitials = (name: string): string => {
+    if (!name?.trim()) return 'U';
+    const parts = name.trim().split(' ').filter(Boolean);
     if (parts.length === 1) {
       return parts[0].charAt(0).toUpperCase();
     }
@@ -92,16 +125,22 @@ export function ContactAvatar({
 
   const sizeClass = sizeClasses[size];
   const fallbackSizeClass = fallbackSizes[size];
+  const showImage = imageSrc && !imageError && !isLoading;
 
   return (
     <Avatar className={`${sizeClass} ${className}`}>
-      {imageSrc && !imageError ? (
-        <AvatarImage src={imageSrc} alt={fullName} onError={handleImageError} />
+      {showImage ? (
+        <AvatarImage
+          src={imageSrc}
+          alt={`${fullName}'s profile picture`}
+          onError={handleImageError}
+          onLoad={handleImageLoad}
+        />
       ) : null}
       <AvatarFallback
-        className={`bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold ${fallbackSizeClass}`}
+        className={`bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold ${fallbackSizeClass} ${isLoading ? 'animate-pulse' : ''}`}
       >
-        {getInitials(fullName)}
+        {isLoading ? '...' : getInitials(fullName)}
       </AvatarFallback>
     </Avatar>
   );

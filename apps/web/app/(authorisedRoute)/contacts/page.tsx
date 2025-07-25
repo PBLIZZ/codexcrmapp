@@ -6,7 +6,7 @@ import { ContactsContent } from './_components/ContactsContent';
  */
 export default function ContactsPage() {
   return (
-    <div className='container mx-auto py-8 px-4'>
+    <div className='h-full flex flex-col'>
       <ContactsContent />
     </div>
   );

@@ -23,7 +23,7 @@ import { signOut } from '@/lib/auth/auth-actions';
 // Constants
 const MIN_PASSWORD_LENGTH = 6;
 const ROUTES = {
-  signIn: '/sign-in',
+  LogIn: '/log-in',
   dashboard: '/dashboard',
 };
 
@@ -60,7 +60,7 @@ export default function AccountPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [isFetchingUser, setIsFetchingUser] = useState(true);
-  const [isSigningOut, setIsSigningOut] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [isPasswordLoading, setIsPasswordLoading] = useState(false);
@@ -81,7 +81,7 @@ export default function AccountPage() {
             type: 'error',
           },
         });
-        router.push(ROUTES.signIn);
+        router.push(ROUTES.LogIn);
       } else {
         setUser(currentUser);
       }
@@ -164,7 +164,7 @@ export default function AccountPage() {
 
   // Handle sign out
   const handleSignOut = async () => {
-    setIsSigningOut(true);
+    setIsLoggingOut(true);
     dispatchMessage({ type: 'CLEAR_MESSAGE' });
 
     const { error } = await signOut();
@@ -178,9 +178,9 @@ export default function AccountPage() {
           type: 'error',
         },
       });
-      setIsSigningOut(false);
+      setIsLoggingOut(false);
     } else {
-      router.push(ROUTES.signIn);
+      router.push(ROUTES.LogIn);
     }
   };
 
@@ -199,8 +199,8 @@ export default function AccountPage() {
       <div className='flex min-h-screen items-center justify-center bg-gray-100'>
         <p>
           Please{' '}
-          <Link href={ROUTES.signIn} className='underline'>
-            sign in
+          <Link href={ROUTES.LogIn} className='underline'>
+            log in
           </Link>{' '}
           to view your account.
         </p>
@@ -282,9 +282,9 @@ export default function AccountPage() {
               variant='destructive'
               onClick={handleSignOut}
               className='w-full sm:w-auto'
-              disabled={isSigningOut || isPasswordLoading}
+              disabled={isLoggingOut || isPasswordLoading}
             >
-              {isSigningOut ? 'Signing out...' : 'Sign Out'}
+              {isLoggingOut ? 'Logging out...' : 'Log Out'}
             </Button>
           </div>
         </CardContent>

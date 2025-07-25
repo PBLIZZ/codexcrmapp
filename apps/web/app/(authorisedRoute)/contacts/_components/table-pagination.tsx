@@ -11,7 +11,7 @@ interface TablePaginationProps<TData> {
 
 export function TablePagination<TData>({ table }: TablePaginationProps<TData>) {
   return (
-    <div className='flex items-center justify-between px-4 py-3 bg-white border-t border-teal-700/30'>
+    <div className='flex items-center justify-between px-4 py-3 bg-white'>
       <div className='flex-1 text-sm text-teal-700'>
         {table.getFilteredSelectedRowModel().rows.length > 0 ? (
           <span>

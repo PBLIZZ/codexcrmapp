@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { createSupabaseServer } from '@/lib/supabase/server';
-import { UnifiedContactForm } from '../../_components/UnifiedContactForm';
+import { EditContactForm } from '../../_components/EditContactForm';
 
 // Define a more specific interface for the params prop
 interface EditContactPageProps {
@@ -35,5 +35,5 @@ export default async function EditContactPage({ params }: EditContactPageProps) 
     redirect('/sign-in');
   }
 
-  return <UnifiedContactForm contactId={contactId} mode='edit' />;
+  return <EditContactForm contactId={contactId} />;
 }

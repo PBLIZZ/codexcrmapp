@@ -1,6 +1,6 @@
 'use client';
 
-import { Users, UserPlus, Upload, Loader2 } from 'lucide-react';
+import { Users, UserPlus, Upload } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { api } from '@/lib/trpc';
@@ -66,35 +66,14 @@ export function ContactsSidebar() {
             </SidebarMenuButton>
           </SidebarMenuItem>
 
-          {/* Import link */}
+          {/* Connect Data Sources */}
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href='/contacts/import' className='flex items-center w-full'>
+              <Link href='/contacts/connect' className='flex items-center w-full'>
                 <Upload className='w-4 h-4 mr-2' />
-                <span className='font-medium'>Import Contacts</span>
+                <span className='font-medium'>Connect Data</span>
               </Link>
             </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarGroup>
-
-      {/* Quick Stats */}
-      <SidebarGroup>
-        <SidebarGroupLabel>Quick Stats</SidebarGroupLabel>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <div className='px-2 py-2 space-y-2'>
-              <div className='flex justify-between text-xs'>
-                <span className='text-slate-600'>Total Contacts:</span>
-                <span className='font-medium text-teal-700'>
-                  {contactsLoading ? (
-                    <Loader2 className='h-3 w-3 animate-spin' />
-                  ) : (
-                    contacts?.length || 0
-                  )}
-                </span>
-              </div>
-            </div>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarGroup>

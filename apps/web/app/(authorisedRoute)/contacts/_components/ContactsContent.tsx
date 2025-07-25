@@ -1,107 +1,90 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@codexcrm/ui';
 import { Badge } from '@codexcrm/ui';
 import { Skeleton } from '@codexcrm/ui';
 import { Alert, AlertDescription } from '@codexcrm/ui';
 import { DataTable } from './data-table';
-import { createColumns } from './columns';
 import { api } from '@/lib/trpc';
 import { AlertCircle, Users } from 'lucide-react';
-import * as React from 'react';
 
+// ContactsContent component serves as the main container for the contacts table
+// Uses tRPC for server-side data fetching and follows shadcn card patterns for consistent layout
 export function ContactsContent() {
+  // This component fetches contacts data using tRPC for server-side data integration
   const { data: contacts, isLoading, error } = api.contacts.list.useQuery();
-
-  const columns = React.useMemo(
-    () =>
-      createColumns({
-        onTagFilter: (tag) => console.log('Filter by tag:', tag),
-        onGroupFilter: (groupId) => console.log('Filter by group:', groupId),
-      }),
-    []
-  );
 
   if (isLoading) {
     return (
-      <Card className='bg-white border-teal-700/30 shadow-md'>
-        <CardHeader className='pb-3'>
-          <CardTitle className='text-xl flex items-center gap-2'>
-            <Users className='h-5 w-5 text-sky-600' />
-            <span>Contacts</span>
-            <Badge
-              variant='outline'
-              className='ml-2 bg-sky-50 border border-teal-700/30 text-sky-700 hover:bg-sky-100 shadow-sm'
-            >
+      <div className='w-full max-w-none space-y-4'>
+        <div className='flex flex-col space-y-1.5 p-6 pb-3'>
+          <div className='flex items-center gap-2'>
+            <Users className='h-5 w-5' />
+            <h3 className='text-2xl font-semibold leading-none tracking-tight'>Contacts</h3>
+            <Badge variant='outline' className='ml-2'>
               Loading...
             </Badge>
-          </CardTitle>
-          <CardDescription>Manage your contacts and their information</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className='space-y-3'>
-            <div className='flex justify-between items-center'>
-              <Skeleton className='h-10 w-[300px]' />
-              <Skeleton className='h-10 w-[100px]' />
-            </div>
-            <Skeleton className='h-[400px] w-full rounded-lg bg-slate-100/70' />
-            <Skeleton className='h-10 w-full' />
           </div>
-        </CardContent>
-      </Card>
+          <p className='text-sm text-muted-foreground'>
+            Manage your contacts and their information
+          </p>
+        </div>
+        <div className='p-6 pt-0 space-y-4'>
+          <div className='flex justify-between items-center'>
+            <Skeleton className='h-10 w-[300px]' />
+            <Skeleton className='h-10 w-[100px]' />
+          </div>
+          <Skeleton className='h-[400px] w-full rounded-lg' />
+          <Skeleton className='h-10 w-full' />
+        </div>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <Card className='bg-white border-teal-700/30 shadow-md'>
-        <CardHeader className='pb-3'>
-          <CardTitle className='text-xl flex items-center gap-2'>
+      <div className='w-full max-w-none space-y-4'>
+        <div className='flex flex-col space-y-1.5 p-6 pb-3'>
+          <div className='flex items-center gap-2'>
             <Users className='h-5 w-5 text-red-500' />
-            <span>Contacts</span>
-            <Badge
-              variant='outline'
-              className='ml-2 bg-red-50 border border-teal-700/40 text-red-700 hover:bg-red-100 shadow-sm'
-            >
+            <h3 className='text-2xl font-semibold leading-none tracking-tight'>Contacts</h3>
+            <Badge variant='outline' className='ml-2 border-red-200 text-red-700'>
               Error
             </Badge>
-          </CardTitle>
-          <CardDescription>Manage your contacts and their information</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Alert
-            variant='destructive'
-            className='mt-2 border-teal-700/40 text-red-800 bg-red-50 shadow-sm'
-          >
+          </div>
+          <p className='text-sm text-muted-foreground'>
+            Manage your contacts and their information
+          </p>
+        </div>
+        <div className='p-6 pt-0'>
+          <Alert variant='destructive'>
             <AlertCircle className='h-4 w-4' />
             <AlertDescription className='font-semibold'>Error loading contacts</AlertDescription>
             <AlertDescription>
               {error instanceof Error ? error.message : 'An unknown error occurred'}
             </AlertDescription>
           </Alert>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     );
   }
 
+  // Main content - follows shadcn card pattern for consistent layout
   return (
-    <Card className='bg-white border-slate-200 shadow-md'>
-      <CardHeader className='pb-3'>
-        <CardTitle className='text-xl flex items-center gap-2'>
-          <Users className='h-5 w-5 text-teal-600' />
-          <span>Contacts</span>
-          <Badge
-            variant='outline'
-            className='ml-2 bg-teal-50 border border-teal-700/40 text-teal-700 hover:bg-teal-100 shadow-sm'
-          >
+    <div className='w-full max-w-none space-y-4'>
+      <div className='flex flex-col space-y-1.5 p-6 pb-3'>
+        <div className='flex items-center gap-2'>
+          <Users className='h-5 w-5' />
+          <h3 className='text-2xl font-semibold leading-none tracking-tight'>Contacts</h3>
+          <Badge variant='outline' className='ml-2'>
             {contacts?.length || 0} total
           </Badge>
-        </CardTitle>
-        <CardDescription>Manage your contacts and their information</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <DataTable columns={columns} data={contacts || []} />
-      </CardContent>
-    </Card>
+        </div>
+        <p className='text-sm text-muted-foreground'>Manage your contacts and their information</p>
+      </div>
+      <div className='p-6 pt-0'>
+        {/* DataTable component handles its own internal layout and scrolling */}
+        <DataTable data={contacts || []} />
+      </div>
+    </div>
   );
 }

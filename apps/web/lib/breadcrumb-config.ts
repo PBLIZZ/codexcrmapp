@@ -10,6 +10,8 @@ export interface RouteConfig {
   label: string;
   icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   parent?: string;
+  isDynamic?: boolean;
+  resolver?: (id: string) => Promise<string> | string;
 }
 
 export const routeConfig: Record<string, RouteConfig> = {
@@ -32,6 +34,15 @@ export const routeConfig: Record<string, RouteConfig> = {
   '/contacts/import': {
     label: 'Import',
     parent: '/contacts',
+  },
+  '/contacts/[contactId]': {
+    label: '[contactId]',
+    parent: '/contacts',
+    isDynamic: true,
+  },
+  '/contacts/[contactId]/edit': {
+    label: 'Edit',
+    parent: '/contacts/[contactId]',
   },
   '/tasks': {
     label: 'Tasks',
